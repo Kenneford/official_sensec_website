@@ -1,0 +1,15 @@
+@use "../../utilities/sizes";
+@use "../../utilities/colors";
+
+.pageLoading {
+  height: calc(sizes.$container_height_fit - 5rem);
+  display: flex;
+  background-color: transparent;
+  h3 {
+    margin-top: 2rem;
+    text-align: center;
+    width: 100%;
+    letter-spacing: 1px;
+    color: #cccc;
+  }
+}
