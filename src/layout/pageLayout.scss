@@ -1,0 +1,48 @@
+.pageLayoutWrap {
+  .navbar {
+    height: 10rem;
+    background-color: green;
+    color: #fff;
+    margin-bottom: 0.2rem;
+  }
+  .pageFlex {
+    display: flex;
+    height: 100%;
+    .sidebar {
+      background-color: #292929;
+      font-size: calc(0.7rem + 0.5vmin);
+      height: calc(100vh - 10rem);
+      overflow-y: scroll;
+      &::-webkit-scrollbar {
+        width: 3px;
+      }
+      &::-webkit-scrollbar-track {
+        background-color: #292929;
+      }
+      &::-webkit-scrollbar-thumb {
+        background-color: #b3b3b3;
+      }
+    }
+    .contents {
+      //   flex: 5;
+      background-color: #cccc;
+      height: calc(100vh - 10rem);
+      overflow-y: scroll;
+      &::-webkit-scrollbar {
+        width: 0.7rem;
+      }
+      &::-webkit-scrollbar-track {
+        background-color: #292929;
+      }
+      &::-webkit-scrollbar-thumb {
+        background-color: #b3b3b3;
+      }
+    }
+  }
+  // Landscape Mode
+  @media screen and (max-height: 38.75em) and (orientation: landscape) {
+    .navbar {
+      height: 7rem;
+    }
+  }
+}
