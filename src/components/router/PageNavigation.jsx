@@ -19,7 +19,6 @@ import {
   StudentPlacementVerification,
   StudentsData,
 } from "../lazyLoading/LazyComponents";
-import Testing from "../../test/Testing";
 import {
   AuthUserDashboard,
   UserDashboardLayout,
@@ -101,10 +100,6 @@ export default function PageNavigation() {
         {
           path: "sensec/users/dashboard",
           element: <CurrentUser />,
-        },
-        {
-          path: "sensec/testing",
-          element: <Testing />,
         },
         // For Authenticated Users
         {
