@@ -4,6 +4,8 @@ import FacilitiesSection from "../../components/forHomePage/facilitiesSection/Fa
 import lazyWithSuspense from "../../components/lazyLoading/LazyLoading";
 import PageLoading from "../../components/pageLoading/PageLoading";
 import { QuestionsSection } from "../../components/lazyLoading/LazyComponents";
+import AlumniTestimonialSection from "../../components/forHomePage/alumniSection/AlumniTestimonialSection";
+import Footer from "../../components/footer/Footer";
 
 export function Home() {
   return (
@@ -11,10 +13,12 @@ export function Home() {
       <ImageSlider />
       <SensecInfoSection />
       <HomeProgrammeSection />
-      <CoursesSection />
+      <PopularCoursesSection />
       <FacilitiesSection />
       <CadetSection />
       <QuestionsSection />
+      <AlumniTestimonialSection />
+      <Footer />
     </>
   );
 }
@@ -49,13 +53,13 @@ const HomeProgrammeSection = lazyWithSuspense(
   <PageLoading />,
   "PageLayout"
 );
-const CoursesSection = lazyWithSuspense(
+const PopularCoursesSection = lazyWithSuspense(
   () =>
-    import("../../components/forHomePage/coursesSection/CoursesSection").then(
-      (module) => {
-        return { default: module.CoursesSection };
-      }
-    ),
+    import(
+      "../../components/forHomePage/coursesSection/PopularCoursesSection"
+    ).then((module) => {
+      return { default: module.PopularCoursesSection };
+    }),
   <PageLoading />,
   "PageLayout"
 );

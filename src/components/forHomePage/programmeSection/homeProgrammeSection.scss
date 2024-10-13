@@ -4,8 +4,8 @@
 .programmeSectionWrap {
   font-size: calc(0.7rem + 1vmin);
   h1 {
-    font-size: 1.5em;
-    color: #696969;
+    font-size: 1.3em;
+    color: #ccc;
   }
   .secWrap {
     display: flex;
@@ -16,11 +16,6 @@
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
-      h1 {
-        font-size: 1.5em;
-        padding-bottom: 1.5rem;
-        color: #696969;
-      }
       .secContent {
         color: #696969;
         min-height: 30rem;

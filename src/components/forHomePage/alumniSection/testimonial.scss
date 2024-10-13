@@ -1,0 +1,206 @@
+@use "../../../utilities/sizes";
+@use "../../../utilities/colors";
+
+.testimonialWrap {
+  background-color: #fff;
+  color: #000;
+  // padding-bottom: 5rem;
+  overflow-x: hidden;
+  font-size: calc(0.7rem + 1vmin);
+  .testimonialHeader {
+    width: sizes.$container_Width_lg;
+    margin: auto;
+    h1 {
+      font-size: 1.3em;
+      color: #696969;
+      padding: 2rem;
+      text-align: center;
+    }
+  }
+  .testimonialCont {
+    width: sizes.$container_Width_lg;
+    margin: auto;
+    display: flex;
+    gap: 2rem;
+    padding-bottom: 3rem;
+    .testimonial {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding-top: 2rem;
+      border-radius: 5px;
+      transition: 0.35 ease;
+      .alumniImg {
+        img {
+          width: 6rem;
+          height: 6rem;
+          border-radius: 50%;
+          object-fit: cover;
+          overflow: hidden;
+          margin: 0 auto 1rem;
+        }
+      }
+      .alumniInfo {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding-bottom: 3rem;
+      }
+      .testimonialText {
+        width: inherit;
+        background-color: #292929;
+        color: colors.$primaryTextColor;
+        border-radius: 0 0 5px 5px;
+        padding: 2rem 1rem 1.5rem;
+        position: relative;
+        text-align: center;
+      }
+      .testimonialText::before {
+        content: "";
+        display: block;
+        width: 3rem;
+        height: 3rem;
+        background-color: #292929;
+        position: absolute;
+        left: 45%;
+        top: -1.5rem;
+        transform: rotate(45deg);
+      }
+    }
+  }
+  //   .testimonial:hover {
+  //     border: 2px solid #292929;
+  //   }
+  .footer {
+    position: relative;
+    color: #fff;
+    background-color: #292929;
+  }
+
+  @media screen and (max-width: 1024px) {
+    .testimonialCont {
+      width: sizes.$container_Width_md;
+      margin: auto;
+      display: flex;
+      gap: 2rem;
+      padding-bottom: 3rem;
+      .testimonial {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding-top: 2rem;
+        border-radius: 5px;
+        transition: 0.35 ease;
+        .alumniImg {
+          img {
+            width: 6rem;
+            height: 6rem;
+            border-radius: 50%;
+            object-fit: cover;
+            overflow: hidden;
+            margin: 0 auto 1rem;
+          }
+        }
+        .alumniInfo {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+          padding-bottom: 3rem;
+        }
+        .testimonialText {
+          background-color: #292929;
+          color: colors.$primaryTextColor;
+          border-radius: 0 0 5px 5px;
+          padding: 2rem 1rem 1.5rem;
+          position: relative;
+        }
+        .testimonialText::before {
+          content: "";
+          display: block;
+          width: 3rem;
+          height: 3rem;
+          background-color: #292929;
+          position: absolute;
+          left: 45%;
+          top: -1.5rem;
+          transform: rotate(45deg);
+        }
+      }
+    }
+  }
+  @media screen and (max-width: 960px) {
+  }
+  @media screen and (max-width: 460px) {
+    .testimonialHeader {
+      width: sizes.$container_Width_lg;
+      margin: auto;
+      h2 {
+        display: flex;
+        justify-content: center;
+        //   align-items: center;
+        font-size: 1.3rem;
+        padding: 2.5rem 0 0;
+      }
+    }
+    .testimonialCont {
+      width: sizes.$container_Width_lg;
+      margin: auto;
+      display: flex;
+      gap: 2rem;
+      padding-bottom: 3rem;
+      .testimonial {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding-top: 2rem;
+        border-radius: 5px;
+        transition: 0.35 ease;
+        .alumniImg {
+          img {
+            width: 4rem;
+            height: 4rem;
+            border-radius: 50%;
+            object-fit: cover;
+            overflow: hidden;
+            margin: 0 auto 1rem;
+          }
+        }
+        .alumniInfo {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+          padding-bottom: 3rem;
+        }
+        .testimonialText {
+          background-color: #292929;
+          color: colors.$primaryTextColor;
+          border-radius: 0 0 5px 5px;
+          padding: 2rem 1rem 1.5rem;
+          position: relative;
+          font-size: 0.8rem;
+          font-weight: 300;
+        }
+        .testimonialText::before {
+          content: "";
+          display: block;
+          width: 3rem;
+          height: 3rem;
+          background-color: #292929;
+          position: absolute;
+          left: 45%;
+          top: -1.5rem;
+          transform: rotate(45deg);
+        }
+      }
+    }
+  }
+}
