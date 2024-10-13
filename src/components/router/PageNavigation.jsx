@@ -4,6 +4,7 @@ import lazyWithSuspense from "../lazyLoading/LazyLoading";
 import PageLoading from "../pageLoading/PageLoading";
 import {
   About,
+  AdminDashboard,
   AllStudents,
   Contact,
   Courses,
@@ -12,13 +13,31 @@ import {
   FrequentlyAskedQuestions,
   Home,
   PageNotFound,
+  PageNotFoundError,
   StudentEnrollment,
   StudentPlacementCheck,
   StudentPlacementVerification,
   StudentsData,
 } from "../lazyLoading/LazyComponents";
+import Testing from "../../test/Testing";
+import {
+  AuthUserDashboard,
+  UserDashboardLayout,
+} from "../lazyLoading/AuthLazyComponents";
 
 export default function PageNavigation() {
+  const userInfo = { isAdmin: true };
+
+  // Function to redirect users to their dashboard
+  const getUserRolePath = () => {
+    if (userInfo?.isAdmin) return "admin";
+    if (userInfo?.isLecturer) return "lecturer";
+    if (userInfo?.isStudent) return "student";
+    if (userInfo?.isNTStaff) return "nt_staff";
+    return "page_not_found/404_ERROR";
+  };
+  const userRolePath = getUserRolePath();
+
   return useRoutes([
     {
       path: "/",
@@ -83,10 +102,42 @@ export default function PageNavigation() {
           path: "sensec/users/dashboard",
           element: <CurrentUser />,
         },
+        {
+          path: "sensec/testing",
+          element: <Testing />,
+        },
+        // For Authenticated Users
+        {
+          path: "sensec/users",
+          element: <AuthUserDashboard />,
+          children: [
+            {
+              element: <Navigate to={userRolePath} />,
+              index: true,
+            },
+            {
+              path: "admin",
+              element: <UserDashboardLayout />,
+              children: [
+                {
+                  element: <Navigate to={"Dashboard/Overview"} />,
+                  index: true,
+                },
+                {
+                  path: ":adminCurrentAction/:adminCurrentLink",
+                  element: <AdminDashboard />,
+                },
+              ],
+            },
+            {
+              path: "page_not_found/404_ERROR",
+              element: <PageNotFoundError />,
+            },
+          ],
+        },
         { path: "*", element: <PageNotFound /> },
       ],
     },
-    { path: "*", element: <PageNotFound /> },
   ]);
 }
 

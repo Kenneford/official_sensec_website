@@ -1,0 +1,56 @@
+#adminClassLevelsWrap {
+  .searchWrap {
+    position: relative;
+    display: flex;
+    // justify-content: center;
+    //   background-color: #383838;
+    font-size: calc(0.7rem + 1vmin);
+    .searchCont {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 2rem 1rem;
+      border-bottom: 1px solid #cccc;
+      h1.dashAction {
+        color: #696969;
+        padding: unset;
+        text-transform: uppercase;
+        font-size: 1em;
+        span {
+          color: #a09f9f;
+        }
+      }
+      .studentSearch {
+        #search {
+          padding: 0.5rem;
+          width: 17rem;
+          border-radius: 0.3rem;
+          background-color: #696969;
+          color: #fff;
+          transition: 0.4s ease;
+          font-size: 1.1rem;
+          border: 1px transparent;
+          &::placeholder {
+            color: #fff;
+            font-size: 1rem;
+          }
+          &:focus {
+            width: 25rem;
+            border: 1px solid #fff;
+          }
+        }
+        .pendingSearch {
+          padding: 1rem 0;
+        }
+        .searchIcon {
+          position: absolute;
+          right: 2.5rem;
+          top: 2.5rem;
+          color: #fff;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}

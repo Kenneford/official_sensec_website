@@ -1,4 +1,4 @@
-import { styled, Toolbar, TextField, Box } from "@mui/material";
+import { styled, Toolbar, TextField, Box, Button } from "@mui/material";
 import { color } from "framer-motion";
 
 // Navbar Styling
@@ -52,6 +52,7 @@ export const ImageSliderBtn = styled(Toolbar)({
   },
 });
 export const CenteredBox = styled(Box)({
+  width: { xs: "100%", sm: "95%", md: "90%", lg: "90%", xl: "75%" },
   // height: "70vh",
   display: "flex",
   flexDirection: "column",
@@ -68,7 +69,6 @@ export const ContainerBox = styled(Box)({
   display: "flex",
   flexDirection: "column",
 });
-
 export const CustomTextField = styled(TextField)({
   // Border styles for focused state
   "& .MuiOutlinedInput-root": {
@@ -93,3 +93,30 @@ export const CustomTextField = styled(TextField)({
     color: "red", // Change the asterisk color to red
   },
 });
+
+export const PageNotFoundWrapBox = styled(Box)({
+  width: "23em",
+  padding: "0 1rem 3rem",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "center",
+  marginTop: "2rem",
+  // border: ".5px solid #454343ad", // Disable border on hover
+  // boxShadow: "2px 2px 3px 0px #454343ad",
+  filter: "drop-shadow(2rem 3rem 4em #ffffffad)",
+  // webkitBoxShadow: " 0px 0px 16px -8px rgba(0, 0, 0, 0.68)",
+  boxShadow: "0px 0px 16px -8px rgba(0, 0, 0, 0.68)",
+});
+export const CustomizedButton = styled(Button)({
+  fontSize: ".8em",
+  letterSpacing: "1px",
+});
+
+export const SidebarSubLinksContainer = styled("div")(
+  ({ theme, isExpanded, contentHeight }) => ({
+    maxHeight: isExpanded ? `${contentHeight}px` : "0",
+    overflow: "hidden",
+    transition: "max-height 0.5s ease-out",
+  })
+);

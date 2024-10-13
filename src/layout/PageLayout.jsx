@@ -1,16 +1,24 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 // import NavigationBar from "../components/navbar/NavigationBar";
 import "./pageLayout.scss";
 import lazyWithSuspense from "../components/lazyLoading/LazyLoading";
 import PageLoading from "../components/pageLoading/PageLoading";
 import { Box } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NavigationBar } from "../components/lazyLoading/LazyComponents";
 
 export function PageLayout() {
   const [openSubNavLinks, setOpenSubNavLinks] = useState(false);
   const [openMenuLinks, setOpenMenuLinks] = useState(false);
   const [openUserActions, setOpenUserActions] = useState(false);
+  const [currentAction, setCurrentAction] = useState("Dashboard");
+  const [currentLink, setCurrentLink] = useState("Overview");
+  console.log(currentAction);
+
+  const location = useLocation();
+  const navigate = useNavigate();
+  const userInfo = { adminStatusExtend: { isAdmin: true } };
+
   const clearLogOptions = () => {
     if (openSubNavLinks) {
       setOpenSubNavLinks(false);
@@ -22,6 +30,7 @@ export function PageLayout() {
       setOpenUserActions(false);
     }
   };
+
   return (
     <Box onClick={clearLogOptions}>
       <NavigationBar
@@ -31,8 +40,19 @@ export function PageLayout() {
         openUserActions={openUserActions}
         setOpenMenuLinks={setOpenMenuLinks}
         openMenuLinks={openMenuLinks}
+        currentAction={currentAction}
+        setCurrentAction={setCurrentAction}
+        currentLink={currentLink}
+        setCurrentLink={setCurrentLink}
       />
-      <Outlet />
+      <Outlet
+        context={{
+          currentAction,
+          setCurrentAction,
+          currentLink,
+          setCurrentLink,
+        }}
+      />
     </Box>
   );
 }
