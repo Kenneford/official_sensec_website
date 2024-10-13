@@ -2,12 +2,11 @@
 @use "../../../utilities/colors";
 
 .courseWrap {
-  padding: 2rem 0 4rem;
   font-size: calc(0.7rem + 1vmin);
   .courseContainer {
     margin: auto;
     h1 {
-      font-size: 1.5em;
+      font-size: 1.3em;
       padding-bottom: 2rem;
       text-align: center;
       color: #696969;
@@ -44,7 +43,7 @@
         .courseInfo {
           // padding: 2rem;
           h4 {
-            font-size: 1.3em;
+            font-size: 1.1em;
             padding-top: 0.5rem;
           }
           p {

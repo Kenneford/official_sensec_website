@@ -3,7 +3,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { CenteredBox, PageNotFoundWrapBox } from "../../muiStyling/muiStyling";
 
-export function PageNotFound() {
+export function PageNotFoundError() {
   const navigate = useNavigate();
   return (
     <CenteredBox className="empty-page">
@@ -57,10 +57,10 @@ export function PageNotFound() {
           variant="contained"
           color="success"
           size="large"
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/")}
           sx={{ mt: 2 }}
         >
-          Go back
+          Go Home
         </Button>
       </PageNotFoundWrapBox>
     </CenteredBox>

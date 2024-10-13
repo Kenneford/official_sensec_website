@@ -1,7 +1,165 @@
-#sidebar {
-  flex: 5;
-  //   min-width: 20%;
-  //   height: 100vh;
-  background-color: #fff;
-  color: #555;
+.sidebar {
+  font-size: calc(0.7rem + 1vmin);
+  .userInfo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 0 1rem;
+    // margin-left: -1rem;
+    // margin: 1rem 0 0;
+    gap: 0.5rem;
+    color: #ccc;
+    img {
+      width: 5rem;
+      height: 5rem;
+      object-fit: cover;
+      border-radius: 0.4rem;
+    }
+    .infoText {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      span {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        font-size: 1rem;
+        font-weight: 500;
+      }
+      p {
+        padding-top: 0.5rem;
+      }
+    }
+  }
+  #sidebarContentWrap {
+    width: 100%;
+    height: calc(100vh - 14rem);
+    padding-top: 7rem;
+    // padding: 1rem;
+    overflow-y: auto;
+    padding-bottom: 1rem;
+    &::-webkit-scrollbar {
+      width: 5px;
+    }
+    &::-webkit-scrollbar-track {
+      background-color: #292929;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: #ccc;
+      border-radius: 0.4rem;
+    }
+    &::-webkit-scrollbar-track-piece {
+      width: 5px;
+    }
+    .sidebarContentLinksWrap {
+      a {
+        color: #fff;
+      }
+      .sidebarLinksTitle {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+        background-color: transparent;
+        color: #fff;
+        cursor: pointer;
+        text-align: unset;
+        .expandMoreIcon {
+          margin-top: -0.1rem;
+          cursor: pointer;
+        }
+        .dashboardSidebarLinksTitle {
+          width: inherit;
+          font-size: 1.2em;
+          font-weight: 300;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+        }
+      }
+      .sidebarLinksTitle.closed {
+        // text-align: center;
+        .dashboardSidebarLinksTitle {
+          text-transform: capitalize;
+        }
+      }
+      .sidebarContentLinks {
+        width: inherit;
+        transition: 0.5s ease;
+        .allSidebarLinksWrap {
+          padding-bottom: 0.5rem;
+          .currentAdminSidebarLink {
+            width: inherit;
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.7rem 0;
+            transition: 0.4s ease;
+            border-radius: 0.3rem;
+            cursor: pointer;
+            align-items: center;
+            margin: 0.2rem 0;
+            background-color: #383838;
+            border-left: 2px solid #fff;
+            .icon {
+              margin-left: 0.5rem;
+            }
+            h4 {
+              font-weight: 300;
+              font-size: 0.7em;
+            }
+          }
+          .notCurrentAdminSidebarLink {
+            width: inherit;
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.7rem 0;
+            transition: 0.4s ease;
+            border-radius: 0.3rem;
+            cursor: pointer;
+            position: relative;
+            align-items: center;
+            margin: 0.2rem 0;
+            h4 {
+              font-weight: 300;
+              font-size: 0.7em;
+            }
+            &:hover {
+              background-color: #383838;
+            }
+            .icon {
+              margin-left: 0.5rem;
+            }
+          }
+        }
+      }
+      .sidebarContentLinks.closed {
+        transition: 0.5s ease;
+        .allSidebarLinksWrap {
+          .currentAdminSidebarLink,
+          .notCurrentAdminSidebarLink {
+            display: flex;
+            justify-content: center;
+            .icon {
+              margin-left: unset;
+            }
+          }
+        }
+      }
+    }
+  }
+  .sideBarLogoutBtn {
+    position: fixed;
+    // width: 20%;
+    left: 0;
+    bottom: 0;
+    background-color: red;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    transition: 0.5s ease;
+    cursor: pointer;
+  }
 }

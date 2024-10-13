@@ -1,10 +1,10 @@
 import { Box } from "@mui/material";
-import "./courses.scss";
+import "./popularCoursesSection.scss";
 import { motion } from "framer-motion";
 import { HashLink } from "react-router-hash-link";
 import { ContainerBox } from "../../../muiStyling/muiStyling";
 
-export function CoursesSection() {
+export function PopularCoursesSection() {
   const scrollWithOffset = (el) => {
     const yCoordinate = el.getBoundingClientRect().top + window.scrollY;
     const yOffset = -80;

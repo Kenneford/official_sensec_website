@@ -2,15 +2,15 @@
 @use "../../../utilities/colors";
 
 .facilitiesWrap {
-  padding: 2rem 0 4rem;
-  background-color: #282828;
+  // padding: 2rem 0;
+  background-color: #504f4f;
   font-size: calc(0.7rem + 1vmin);
   .facilitiesContainer {
     // width: sizes.$container_Width_Center;
     // margin: auto;
     h1 {
       font-size: 1.5em;
-      color: #696969;
+      color: #ccc;
     }
     .facilitiesContent {
       .facilitiesLeft {
@@ -18,7 +18,7 @@
         p {
           margin: 1rem 0 2.4rem;
           line-height: sizes.$line_height;
-          color: #cccc;
+          color: #ccc;
           font-size: 1em;
           font-weight: 300;
         }

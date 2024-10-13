@@ -67,6 +67,14 @@ export const PageNotFound = lazyWithSuspense(
   <PageLoading />,
   "PageNotFound"
 );
+export const PageNotFoundError = lazyWithSuspense(
+  () =>
+    import("../pageNotFound/PageNotFoundError").then((module) => {
+      return { default: module.PageNotFoundError };
+    }),
+  <PageLoading />,
+  "PageNotFoundError"
+);
 export const EnrollmentPage = lazyWithSuspense(
   () =>
     import("../../pages/enrollment/EnrollmentPage").then((module) => {
@@ -128,4 +136,13 @@ export const FrequentlyAskedQuestions = lazyWithSuspense(
     }),
   <PageLoading />,
   "FrequentlyAskedQuestions"
+);
+// For Admin
+export const AdminDashboard = lazyWithSuspense(
+  () =>
+    import("../admin/AdminDashboard").then((module) => {
+      return { default: module.AdminDashboard };
+    }),
+  <PageLoading />,
+  "AdminDashboard"
 );

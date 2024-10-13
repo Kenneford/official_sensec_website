@@ -93,10 +93,10 @@ const otherLinks = [
   {
     name: "Dashboard",
     path: {
-      admin: "/sensec/admin#admin",
-      teacher: "/sensec/teacher#teacher",
-      nt_Staff: "/sensec/nt_staff#staff",
-      student: "/sensec/student#student",
+      admin: "/sensec/users/admin/Dashboard/Overview",
+      teacher: "/sensec/users/teacher#teacher",
+      nt_Staff: "/sensec/users/nt_staff#staff",
+      student: "/sensec/users/student#student",
     },
   },
   {
@@ -161,14 +161,16 @@ export function NavigationBar({
   openUserActions,
   setOpenMenuLinks,
   openMenuLinks,
+  setCurrentAction,
+  setCurrentLink,
 }) {
   const currentNavLink = localStorage.getItem("currentNavLink");
   const currentOtherNavLink = localStorage.getItem("currentOtherNavLink");
   const navigate = useNavigate();
   const location = useLocation();
   const { pathname } = location;
-  const userInfo = false;
-  //   const userInfo = { adminStatusExtend: { isAdmin: true } };
+  // const userInfo = true;
+  const userInfo = { adminStatusExtend: { isAdmin: true } };
   // console.log(pathname);
 
   const [navbar, setNavbar] = useState(false);
@@ -236,7 +238,7 @@ export function NavigationBar({
 
   //FUNCTION TO CHANGE THE NAVBAR BACKGROUND COLOR ON SCROLL
   const changeBackground = () => {
-    if (window.scrollY >= 165) {
+    if (window.scrollY >= 25) {
       setNavbar(true);
     } else {
       setNavbar(false);
@@ -297,6 +299,7 @@ export function NavigationBar({
           backgroundColor: "#fff",
           padding: ".3rem 0",
           cursor: "pointer",
+          height: "4.5rem",
         }}
         onClick={() => {
           // Click handler
@@ -318,12 +321,13 @@ export function NavigationBar({
         sx={{
           bgcolor: navbar ? "#292929" : "green",
           borderBottom: navbar ? "3px solid yellow" : "3px solid #fff",
-          height: "4rem",
+          height: "4.5rem",
           position: navbar ? "fixed" : "",
           zIndex: 1,
           width: "100%",
         }}
       >
+        {/* Menu Icons */}
         <Box
           sx={{
             flex: "1",
@@ -419,7 +423,7 @@ export function NavigationBar({
             </Box>
           )}
         </Box>
-        {/* <Box> */}
+        {/* Navbar Link */}
         <Box
           sx={{
             display: {
@@ -536,12 +540,19 @@ export function NavigationBar({
                                     ? link?.path?.student
                                     : link?.path
                                 }
-                                onClick={() =>
+                                onClick={() => {
                                   localStorage.setItem(
                                     "currentOtherNavLink",
                                     link?.name
-                                  )
-                                }
+                                  );
+                                  if (
+                                    link?.name === "Dashboard" &&
+                                    userInfo?.adminStatusExtend?.isAdmin
+                                  ) {
+                                    setCurrentAction("Dashboard");
+                                    setCurrentLink("Overview");
+                                  }
+                                }}
                               >
                                 {link?.name}
                               </HashLink>
@@ -590,7 +601,7 @@ export function NavigationBar({
             ))}
           </Box>
         </Box>
-        {/* </Box> */}
+        {/* Current User */}
         <Box
           sx={{
             flex: "1",
@@ -688,5 +699,7 @@ NavigationBar.propTypes = {
   setOpenMenuLinks: PropTypes.func,
   openMenuLinks: PropTypes.bool,
   setOpenUserActions: PropTypes.func,
+  setCurrentAction: PropTypes.func,
+  setCurrentLink: PropTypes.func,
   openUserActions: PropTypes.bool,
 };

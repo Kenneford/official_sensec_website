@@ -1,0 +1,188 @@
+@use "../../utilities/sizes";
+@use "../../utilities/colors";
+
+.footer {
+  background-color: #292929;
+  color: #fff;
+  .footerWrap {
+    min-height: 25rem;
+    .footerCont {
+      width: sizes.$container_Width_lg;
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 3rem;
+      .footerLogo {
+        padding-top: 2rem;
+        h1 {
+          padding-bottom: 0.5rem;
+          color: #0aca0a;
+          letter-spacing: 5px;
+          span {
+            color: #ffff00;
+          }
+        }
+      }
+      .footerContent {
+        //   background-color: brown;
+        // padding: 7rem 0 5rem;
+        flex: 10;
+        display: flex;
+        justify-content: space-around;
+        .pageLinks {
+          a {
+            display: block;
+            margin: 1rem 0;
+            color: #fff;
+            &:hover {
+              text-decoration: underline;
+            }
+          }
+        }
+        .policy {
+          a {
+            display: block;
+            margin: 1rem 0;
+            color: #fff;
+            &:hover {
+              text-decoration: underline;
+            }
+          }
+        }
+        .contactUs {
+          .contactIcons {
+            span {
+              display: flex;
+              gap: 0.5rem;
+              margin: 1rem 0;
+              align-items: center;
+              &:hover {
+                text-decoration: underline;
+              }
+              .icon:nth-child(2) {
+                color: red;
+              }
+              #myCallButton {
+                background-color: transparent;
+                a {
+                  display: flex;
+                  gap: 0.5rem;
+                  align-items: center;
+                  color: #ccc;
+                  &:hover {
+                    text-decoration: underline;
+                  }
+                  .icon:nth-child(2) {
+                    color: red;
+                  }
+                }
+              }
+              #myWhatsAppButton {
+                display: flex;
+                gap: 0.5rem;
+                align-items: center;
+                background-color: transparent;
+                color: #ccc;
+
+                a {
+                  display: flex;
+                  gap: 0.5rem;
+                  align-items: center;
+                  color: #ccc;
+                  &:hover {
+                    text-decoration: underline;
+                  }
+                  .icon:nth-child(2) {
+                    color: red;
+                  }
+                }
+              }
+            }
+          }
+          .socials {
+            padding-top: 1rem;
+            .socialsIcons {
+              display: flex;
+              gap: 1rem;
+              padding-top: 1rem;
+              .icon:nth-child(1) {
+                color: #58abfe;
+              }
+              .icon:nth-child(2) {
+                color: rgb(173, 25, 168);
+              }
+              // .icon:nth-child(3) {
+              //   color: rgb(88, 171, 254);
+              // }
+              .icon:nth-child(4) {
+                color: rgb(88, 171, 254);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  .rights {
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+    p {
+      margin: 0 5px;
+    }
+  }
+
+  @media screen and (max-width: 1024px) {
+    .footerWrap {
+      .footerCont {
+        width: sizes.$container_Width_md;
+        gap: 1rem;
+      }
+    }
+  }
+  @media screen and (max-width: 960px) {
+  }
+  @media screen and (max-width: 460px) {
+    .footerWrap {
+      .footerCont {
+        gap: 3rem;
+        .footerLogo {
+          h1 {
+            font-size: 1.5rem;
+          }
+          p {
+            font-size: 0.8rem;
+          }
+        }
+        .footerContent {
+          flex-wrap: wrap;
+          // display: grid;
+          // grid-template-columns: repeat(2, 1fr);
+          h3 {
+            font-size: 1rem;
+            font-weight: 400;
+          }
+          a,
+          span {
+            font-size: 0.8rem;
+          }
+          .contactUs {
+          }
+        }
+      }
+    }
+    .rights {
+      padding: 1rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: black;
+      p {
+        margin: 0 5px;
+        font-size: 0.8rem;
+      }
+    }
+  }
+}
