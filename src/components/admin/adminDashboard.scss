@@ -1,0 +1,51 @@
+#adminDashboardHeaderWrap {
+  font-size: calc(0.7rem + 1vmin);
+  width: 100%;
+  z-index: 1;
+  background-color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #cccc;
+  padding: 1rem 1rem;
+  h1.dashAction {
+    color: #696969;
+    padding: unset;
+    text-transform: uppercase;
+    font-size: 1em;
+    z-index: 5000;
+    span {
+      color: #a09f9f;
+      font-size: 0.8em;
+    }
+  }
+  .studentSearch {
+    #search {
+      padding: 0.5rem;
+      width: 17rem;
+      border-radius: 0.3rem;
+      background-color: #696969;
+      color: #fff;
+      transition: 0.4s ease;
+      font-size: 1.1rem;
+      border: 1px transparent;
+      &::placeholder {
+        color: #fff;
+        font-size: 1rem;
+      }
+      &:focus {
+        width: 25rem;
+      }
+    }
+    .pendingSearch {
+      //   padding: 1rem 0;
+    }
+    .searchIcon {
+      position: absolute;
+      right: 2rem;
+      top: 1.5rem;
+      color: #fff;
+      cursor: pointer;
+    }
+  }
+}

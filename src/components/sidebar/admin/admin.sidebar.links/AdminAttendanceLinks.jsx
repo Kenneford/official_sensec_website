@@ -12,7 +12,7 @@ import {
 import { SidebarSubLinksContainer } from "../../../../muiStyling/muiStyling";
 import { Box } from "@mui/material";
 
-const quickLinks = [{ name: "View Attendance" }, { name: "Search" }];
+const quickLinks = [{ name: "View Attendance" }, { name: "Search Attendance" }];
 
 export function AdminAttendanceLinks({
   isSidebarOpen,
@@ -79,7 +79,10 @@ export function AdminAttendanceLinks({
           {quickLinks.map((Qlink) => (
             <NavHashLink
               key={Qlink.name}
-              to={`/sensec/admin/Actions/${Qlink.name.replace(/ /g, "_")}`}
+              to={`/sensec/users/admin/Attendance/${Qlink.name.replace(
+                / /g,
+                "_"
+              )}`}
               // className="links"
               className={
                 Qlink.name?.replace(/ /g, "_") === adminCurrentLink
@@ -96,7 +99,9 @@ export function AdminAttendanceLinks({
               {Qlink.name === "View Attendance" && (
                 <ListAltOutlined className="icon" />
               )}
-              {Qlink.name === "Search" && <Search className="icon" />}
+              {Qlink.name === "Search Attendance" && (
+                <Search className="icon" />
+              )}
               {isSidebarOpen && <h4>{Qlink.name}</h4>}
             </NavHashLink>
           ))}

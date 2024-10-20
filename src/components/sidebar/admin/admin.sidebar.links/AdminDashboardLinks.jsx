@@ -24,7 +24,7 @@ const quickLinks = [
   { name: "Blogs" },
 ];
 
-export function DashboardLinks({
+export function AdminDashboardLinks({
   isSidebarOpen,
   setCurrentAction,
   setCurrentLink,
@@ -122,7 +122,7 @@ export function DashboardLinks({
   );
 }
 
-DashboardLinks.propTypes = {
+AdminDashboardLinks.propTypes = {
   isSidebarOpen: PropTypes.bool,
   setCurrentAction: PropTypes.func,
   setCurrentLink: PropTypes.func,

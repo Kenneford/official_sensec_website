@@ -27,7 +27,7 @@ export default function SideBar({
 
   return (
     <Box
-      component="nav"
+      component="div"
       className="sidebar"
       sx={{
         backgroundColor: "#292929",

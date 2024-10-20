@@ -13,11 +13,11 @@ body {
     "Droid Sans", "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  // width: 100vw;
   min-height: 100vh;
-  overflow-x: hidden;
 }
-html {
-  overflow-y: scroll;
+html,
+body {
+  overflow-x: hidden; /* Prevents horizontal overflow */
+  // height: 100%;
   scroll-behavior: smooth;
 }

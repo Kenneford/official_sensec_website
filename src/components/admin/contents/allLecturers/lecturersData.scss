@@ -1,0 +1,81 @@
+@use "../../../../utilities/sizes";
+@use "../../../../utilities/colors";
+.allAdminsData {
+  position: relative;
+  width: 100%;
+  background-color: #383838;
+  font-size: calc(0.7rem + 1vmin);
+  .searchDetails {
+    display: flex;
+    justify-content: flex-end;
+    background-color: #fff;
+    .searchInfo {
+      padding: 0.3rem;
+      padding-left: 2rem;
+      font-size: 1.2rem;
+    }
+  }
+  .addNewAdminBtnsWrap {
+    padding: 1rem 0;
+    gap: 1%;
+    .adminDashAddBtn {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0.5rem;
+      border: none;
+      background-color: #849784;
+      color: white;
+      cursor: pointer;
+      transition: 0.5s ease-out;
+      font-size: 0.8em;
+      border-radius: 0.4rem;
+      text-align: center;
+      &:hover {
+        background-color: #16a216;
+      }
+    }
+    .adminDashBtn {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 3rem;
+      padding: 0.5rem;
+      border-radius: 0.4rem;
+      font-size: 0.8em;
+      cursor: pointer;
+      background-color: #fff;
+      text-align: center;
+    }
+    .adminDashBtn.isActive {
+      background-color: #05a605;
+      color: #fff;
+    }
+  }
+  .pendingClassLevelLecturers {
+    padding: 0 0 1rem;
+    gap: 1%;
+    .classLevelLecturersBtn {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      max-width: 7rem;
+      min-height: 3rem;
+      padding: 0.5rem;
+      border-radius: 0.4rem;
+      font-size: 0.8em;
+      cursor: pointer;
+      background-color: #fff;
+      text-align: center;
+    }
+    .classLevelLecturersBtn.isActive {
+      background-color: #05a605;
+      color: #fff;
+    }
+  }
+  // Update data-table title font
+  .bzRuyo {
+    font-size: 1.1em;
+    padding: 0.5rem;
+  }
+}

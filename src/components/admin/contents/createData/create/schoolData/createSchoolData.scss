@@ -1,0 +1,131 @@
+.schoolDataCont {
+  font-size: calc(0.7rem + 1vmin);
+  .schoolDataWrap {
+    // width: 50%;
+    margin: auto;
+    h1 {
+      padding-bottom: 2rem;
+      // margin-top: -1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #696969;
+      font-size: 1.2em;
+      text-align: center;
+    }
+    form {
+      .topSchData {
+        display: flex;
+        align-items: center;
+        .topInputs {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+        }
+        .logoFile {
+          // border: 1px solid #cccc;
+          // display: flex;
+          // justify-content: flex-end;
+          cursor: pointer;
+          padding: 0.3rem;
+          .logoUploadWrap {
+            border: 1px solid #cccc;
+            border-radius: 50%;
+            padding: 0.2rem;
+          }
+          .logoUpload {
+            cursor: pointer;
+            img {
+              border-radius: 50%;
+              width: 7em;
+              height: 7em;
+              object-fit: cover;
+              margin-bottom: -0.3rem;
+            }
+          }
+        }
+      }
+    }
+    .anthemEditor,
+    .visionEditor,
+    .historyEditor {
+      //style to hide tinyMCE logo on the editor
+      .tox-statusbar {
+        a,
+        .tox-statusbar__help-text {
+          display: none;
+        }
+        .tox-statusbar__text-container {
+          display: flex;
+          justify-content: space-between;
+        }
+      }
+      .tox-editor-header {
+        z-index: 0;
+      }
+      .tox-edit-area::before {
+        z-index: 0;
+      }
+      .preview {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        padding: 1.5rem 0 0.5rem;
+        h4 {
+        }
+        button {
+          padding: 0.3rem;
+          border-radius: 0.4rem;
+          background-color: #292929;
+          color: #fff;
+          cursor: pointer;
+        }
+        p {
+          font-size: 0.8em;
+          color: red;
+        }
+      }
+      .previewHistoryCont {
+        position: relative;
+        display: none;
+      }
+      .previewHistoryCont.open {
+        display: block;
+        position: "absolute";
+        justify-content: baseline;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 2;
+        align-items: center;
+        background-color: #292929;
+      }
+    }
+    .schDataBtn {
+      button {
+        height: 4rem;
+        padding: 1rem 0.5rem;
+        margin-top: 1rem;
+        width: 12rem;
+        background-color: green;
+        color: #fff;
+        font-size: 1.2rem;
+        border-radius: 0.4rem;
+        cursor: pointer;
+      }
+      button:disabled {
+        height: 4rem;
+        width: 12rem;
+        padding: 1rem 0.5rem;
+        margin-top: 1rem;
+        letter-spacing: 1px;
+        border-radius: 0.4rem;
+        background-color: #cccccc;
+        color: #fff;
+        transition: 0.4s ease;
+        cursor: not-allowed;
+      }
+    }
+  }
+}

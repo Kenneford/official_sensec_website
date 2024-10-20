@@ -291,30 +291,41 @@ export function NavigationBar({
     <AppBar position={navbar ? "relative" : ""} className="navbarWrap">
       <Stack
         direction="column"
-        //   spacing={2}
         sx={{
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
           backgroundColor: "#fff",
           padding: ".3rem 0",
-          cursor: "pointer",
           height: "4.5rem",
         }}
-        onClick={() => {
-          // Click handler
-          localStorage.removeItem("currentNavLink");
-          navigate("/sensec/homepage");
-        }}
       >
-        <Avatar src="/assets/sensec-logo1.png" sx={{ alignItems: "center" }} />
-        <Box sx={{ display: "flex", height: "1.5rem" }}>
-          <Typography variant="h6" color="green">
-            Sen
-          </Typography>
-          <Typography variant="h6" color="#aeae0d">
-            sec
-          </Typography>
+        <Box
+          onClick={() => {
+            // Click handler
+            localStorage.removeItem("currentNavLink");
+            navigate("/sensec/homepage");
+          }}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            cursor: "pointer",
+          }}
+        >
+          <Avatar
+            src="/assets/sensec-logo1.png"
+            sx={{ alignItems: "center" }}
+          />
+          <Box sx={{ display: "flex", height: "1.5rem" }}>
+            <Typography variant="h6" color="green">
+              Sen
+            </Typography>
+            <Typography variant="h6" color="#aeae0d">
+              sec
+            </Typography>
+          </Box>
         </Box>
       </Stack>
       <StyledNavbar.Navbar
@@ -510,7 +521,7 @@ export function NavigationBar({
                       {openSubNavLinks && (
                         <div
                           className={
-                            openUserLinks
+                            openSubNavLinks
                               ? "openSubNavLinks"
                               : "closeSubNavLinks"
                           }

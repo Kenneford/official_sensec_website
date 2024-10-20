@@ -22,7 +22,14 @@ import {
 import {
   AuthUserDashboard,
   UserDashboardLayout,
-} from "../lazyLoading/AuthLazyComponents";
+} from "../lazyLoading/auth/AuthLazyComponents";
+import {
+  ClassLevelLecturers,
+  CreateNewData,
+  NewDataContainer,
+  UserTypesContainer,
+} from "../lazyLoading/admin/AdminLazyLoadingComponents";
+import FakeDashboard from "../admin/contents/overview/FakeDashboard";
 
 export default function PageNavigation() {
   const userInfo = { isAdmin: true };
@@ -121,6 +128,28 @@ export default function PageNavigation() {
                 {
                   path: ":adminCurrentAction/:adminCurrentLink",
                   element: <AdminDashboard />,
+                  children: [
+                    // {
+                    //   element: <AdminDashboard />,
+                    //   index: true,
+                    // },
+                    {
+                      path: "employees/:employees_link",
+                      element: <UserTypesContainer />,
+                    },
+                    {
+                      path: ":data/new",
+                      element: <NewDataContainer />,
+                    },
+                    {
+                      path: "employees/:employees_link/:class_level",
+                      element: <ClassLevelLecturers />,
+                    },
+                    // {
+                    //   path: ":data/new",
+                    //   element: <FakeDashboard />,
+                    // },
+                  ],
                 },
               ],
             },
@@ -132,6 +161,10 @@ export default function PageNavigation() {
         },
         { path: "*", element: <PageNotFound /> },
       ],
+    },
+    {
+      path: "/fake/dashboard",
+      element: <FakeDashboard />,
     },
   ]);
 }
