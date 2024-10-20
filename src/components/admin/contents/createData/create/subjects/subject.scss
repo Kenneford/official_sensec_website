@@ -1,0 +1,13 @@
+.selectSubjectTypeWrap {
+  display: flex;
+  justify-content: center;
+  padding-top: 2rem;
+  align-items: center;
+  gap: 1%;
+  h1 {
+    font-size: 1.3em;
+    // font-weight: 500;
+    text-transform: uppercase;
+    color: #696969;
+  }
+}

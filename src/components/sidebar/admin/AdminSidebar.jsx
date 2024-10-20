@@ -34,9 +34,9 @@ import {
   ActionsLinks,
   AdminAttendanceLinks,
   AssessmentLinks,
-  DashboardLinks,
+  AdminDashboardLinks,
   UsersLinks,
-} from "../../lazyLoading/AuthLazyComponents";
+} from "../../lazyLoading/auth/AuthLazyComponents";
 
 export default function AdminSidebar({
   isSidebarOpen,
@@ -132,7 +132,7 @@ export default function AdminSidebar({
           <div className="sidebarContentLinksWrap">
             {/* Dashboard */}
             <>
-              <DashboardLinks
+              <AdminDashboardLinks
                 isSidebarOpen={isSidebarOpen}
                 setCurrentAction={setCurrentAction}
                 setCurrentLink={setCurrentLink}

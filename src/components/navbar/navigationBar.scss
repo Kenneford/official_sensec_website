@@ -2,32 +2,22 @@
 @use "../../utilities/sizes";
 
 .navbarWrap {
-  z-index: 2;
+  z-index: 3;
   .expandMoreIcon {
   }
   #navLinksWrap {
-    // display: flex;
-    // justify-content: center;
-    // align-items: center;
-    // gap: 0.1em;
     #navLinks {
-      // display: flex;
-      // justify-content: center;
-      // align-items: center;
-      // padding: 0.2em;
       cursor: pointer;
       &:hover {
         color: yellow;
       }
       text-transform: capitalize;
       margin: 0;
-      // padding: 0;
       font-size: 0.9em;
     }
     #otherLinks {
-      // font-size: calc(0.7rem + 1vmin);
       position: relative;
-      z-index: 2;
+      // z-index: 100;
       .otherLinksWrap {
         display: flex;
         align-items: center;
@@ -39,8 +29,8 @@
         transition: 0.4s ease-in;
         cursor: pointer;
         background-color: transparent;
-        position: absolute;
-        z-index: 100;
+        // position: absolute;
+        // z-index: 100;
         &:hover {
           color: yellow;
         }
@@ -50,16 +40,7 @@
         }
       }
       .otherLinksWrap.active {
-        display: flex;
-        align-items: center;
         color: yellow;
-        font-size: 0.8em;
-        font-weight: 400;
-        border: none;
-        outline: none;
-        transition: 0.4s ease-in;
-        cursor: pointer;
-        background-color: transparent;
         &:hover {
           color: yellow;
         }
@@ -74,7 +55,6 @@
         right: 10%;
         display: flex;
         flex-direction: column;
-        z-index: 2;
         .openSubNavLinks {
           display: flex;
           flex-direction: column;
@@ -222,54 +202,6 @@
       color: yellow;
       border-bottom: none;
     }
-    // li {
-    //   animation: animateNavMenuItems 800ms linear forwards;
-    //   transform-origin: top left;
-    //   padding: 0.5rem 1rem;
-    //   background-color: #323232;
-    //   border-top: 1px solid #ccc;
-    //   &:nth-child(1) {
-    //     border-top: transparent;
-    //     animation-delay: 200ms;
-    //   }
-    //   &:nth-child(2) {
-    //     animation-delay: 300ms;
-    //   }
-    //   &:nth-child(3) {
-    //     animation-delay: 400ms;
-    //   }
-    //   &:nth-child(4) {
-    //     animation-delay: 500ms;
-    //   }
-    //   &:nth-child(5) {
-    //     animation-delay: 600ms;
-    //   }
-    //   &:nth-child(6) {
-    //     animation-delay: 700ms;
-    //   }
-    //   &:nth-child(7) {
-    //     animation-delay: 800ms;
-    //   }
-    //   &:nth-child(8) {
-    //     animation-delay: 900ms;
-    //   }
-    //   &:nth-child(9) {
-    //     animation-delay: 1000ms;
-    //   }
-    //   &:nth-child(10) {
-    //     animation-delay: 1100ms;
-    //     border-radius: 0 0 0.4rem 0.4rem;
-    //     // border-top: 1px solid #ccc;
-    //   }
-    // }
-    // li a {
-    //   color: colors.$primaryTextColor;
-    //   font-size: 1rem;
-    //   font-weight: 300;
-    // }
-    // .active {
-    //   color: yellow;
-    // }
   }
   // For removing padding from current user image div on navbar
   .MuiToolbar-root {
@@ -478,6 +410,4 @@
       opacity: 1;
     }
   }
-}
-@media screen {
 }

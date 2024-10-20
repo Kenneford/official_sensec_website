@@ -81,7 +81,10 @@ export function AccountLinks({
           {quickLinks.map((Qlink) => (
             <NavHashLink
               key={Qlink.name}
-              to={`/sensec/admin/Actions/${Qlink.name.replace(/ /g, "_")}`}
+              to={`/sensec/users/admin/Account/${Qlink.name.replace(
+                / /g,
+                "_"
+              )}`}
               // className="links"
               className={
                 Qlink.name?.replace(/ /g, "_") === adminCurrentLink

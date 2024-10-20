@@ -53,7 +53,6 @@ export const ImageSliderBtn = styled(Toolbar)({
 });
 export const CenteredBox = styled(Box)({
   width: { xs: "100%", sm: "95%", md: "90%", lg: "90%", xl: "75%" },
-  // height: "70vh",
   display: "flex",
   flexDirection: "column",
   justifyContent: "center",
@@ -63,7 +62,7 @@ export const CenteredBox = styled(Box)({
 });
 export const ContainerBox = styled(Box)({
   width: { xs: "100%", sm: "95%", md: "90%", lg: "90%", xl: "75%" },
-  margin: "auto",
+  // margin: "auto",
   padding: "2rem 1rem",
   // paddingBottom: "2rem",
   display: "flex",
@@ -79,7 +78,7 @@ export const CustomTextField = styled(TextField)({
     // Border styles for hover
     "&:hover fieldset": {
       border: ".5px solid #454343ad", // Disable border on hover
-      boxShadow: "2px 2px 3px 0px #454343ad",
+      boxShadow: "2px 2px 3px 0px #1a0505ad",
     },
   },
   // Label color on focus
@@ -120,3 +119,31 @@ export const SidebarSubLinksContainer = styled("div")(
     transition: "max-height 0.5s ease-out",
   })
 );
+
+export const ExpandableTitleTextField = styled(TextField)(({ focused }) => ({
+  transition: "width 0.3s ease",
+  width: "100%",
+  // width: focused ? "100%" : "70%",
+  // Border styles for focused state
+  "& .MuiOutlinedInput-root": {
+    "&.Mui-focused fieldset": {
+      borderColor: "#454343ad", // Change focus border color
+      boxShadow: "2px 2px 3px 0px #454343ad",
+    },
+    // Border styles for hover
+    "&:hover fieldset": {
+      border: ".5px solid #454343ad", // Disable border on hover
+      boxShadow: "2px 2px 3px 0px #1a0505ad",
+    },
+  },
+  // Label color on focus
+  "& .MuiInputLabel-root.Mui-focused": {
+    fontSize: "1.05rem",
+    color: "#454343ad", // Custom focus label color
+    borderColor: "transparent",
+  },
+  // Target the required asterisk
+  "& .MuiInputLabel-asterisk": {
+    color: "red", // Change the asterisk color to red
+  },
+}));

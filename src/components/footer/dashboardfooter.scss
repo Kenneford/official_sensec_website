@@ -1,0 +1,29 @@
+@use "../../utilities/sizes";
+@use "../../utilities/colors";
+
+.dashBoardfooter {
+  position: fixed;
+  min-width: 80%;
+  bottom: 0;
+  z-index: 2;
+  .rights {
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+    color: #fff;
+    p {
+      margin: 0 5px;
+    }
+  }
+
+  @media screen and (max-width: 1024px) {
+    .footerWrap {
+      .footerCont {
+        width: sizes.$container_Width_md;
+        gap: 1rem;
+      }
+    }
+  }
+}

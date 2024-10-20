@@ -14,16 +14,17 @@ import { NavHashLink } from "react-router-hash-link";
 import { useParams } from "react-router-dom";
 import { SidebarSubLinksContainer } from "../../../../muiStyling/muiStyling";
 import { Box } from "@mui/material";
+import { AdminSidebarUserTypesLinks } from "../../../../linksFormat/LinksFormat";
 
-const quickLinks = [
-  { name: "Admins" },
-  { name: "Lecturers" },
-  { name: "Students" },
-  { name: "NT-Staffs" },
-  { name: "Team" },
-  { name: "Placement Students" },
-  { name: "Hanging Employments" },
-];
+// const quickLinks = [
+//   { name: "Admins" },
+//   { name: "Lecturers" },
+//   { name: "Students" },
+//   { name: "NT-Staffs" },
+//   { name: "Team" },
+//   { name: "Placement Students" },
+//   { name: "Hanging Employments" },
+// ];
 
 export function UsersLinks({
   isSidebarOpen,
@@ -31,6 +32,9 @@ export function UsersLinks({
   setCurrentLink,
 }) {
   const { adminCurrentLink } = useParams();
+
+  // Get Admin's sidebar user-types links
+  const quickLinks = AdminSidebarUserTypesLinks();
 
   // Set sub-link to expand on page render
   const [openDashBoardLinks, setOpenDashBoardLinks] = useState(false);
@@ -90,7 +94,36 @@ export function UsersLinks({
           {quickLinks.map((Qlink) => (
             <NavHashLink
               key={Qlink.name}
-              to={`/sensec/admin/Actions/${Qlink.name.replace(/ /g, "_")}`}
+              to={
+                Qlink.name === "Admins"
+                  ? `/sensec/users/admin/User_Types/${Qlink?.name?.replace(
+                      / /g,
+                      "_"
+                    )}/employees/All`
+                  : Qlink.name === "Lecturers"
+                  ? `/sensec/users/admin/User_Types/${Qlink?.name?.replace(
+                      / /g,
+                      "_"
+                    )}/employees/All`
+                  : Qlink.name === "Hanging Employments"
+                  ? `/sensec/users/admin/User_Types/${Qlink?.name?.replace(
+                      / /g,
+                      "_"
+                    )}/employees/All`
+                  : Qlink.name === "NT-Staffs"
+                  ? `/sensec/users/admin/User_Types/${Qlink?.name?.replace(
+                      / /g,
+                      "_"
+                    )}/employees/All`
+                  : `/sensec/users/admin/User_Types/${Qlink?.name?.replace(
+                      / /g,
+                      "_"
+                    )}`
+              }
+              // to={`/sensec/users/admin/User_Types/${Qlink.name.replace(
+              //   / /g,
+              //   "_"
+              // )}`}
               // className="links"
               className={
                 Qlink.name?.replace(/ /g, "_") === adminCurrentLink

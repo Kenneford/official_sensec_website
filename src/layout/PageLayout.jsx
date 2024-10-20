@@ -11,6 +11,7 @@ export function PageLayout() {
   const [openSubNavLinks, setOpenSubNavLinks] = useState(false);
   const [openMenuLinks, setOpenMenuLinks] = useState(false);
   const [openUserActions, setOpenUserActions] = useState(false);
+  const [postOptions, setPostOptions] = useState(false);
   const [currentAction, setCurrentAction] = useState("Dashboard");
   const [currentLink, setCurrentLink] = useState("Overview");
   console.log(currentAction);
@@ -28,6 +29,9 @@ export function PageLayout() {
     }
     if (openUserActions) {
       setOpenUserActions(false);
+    }
+    if (postOptions) {
+      setPostOptions(false);
     }
   };
 
@@ -51,6 +55,8 @@ export function PageLayout() {
           setCurrentAction,
           currentLink,
           setCurrentLink,
+          postOptions,
+          setPostOptions,
         }}
       />
     </Box>

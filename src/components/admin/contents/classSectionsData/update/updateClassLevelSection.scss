@@ -1,0 +1,262 @@
+#updateClassSectionWrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+  color: #696969;
+  margin: auto;
+  margin-top: 4rem;
+  min-height: 36rem;
+  width: 45rem;
+  -webkit-box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+  box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+  border-radius: 0.4rem;
+  form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    h1 {
+      padding-top: 1rem;
+      padding-bottom: 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #555;
+    }
+    h4 {
+      font-size: 1.2rem;
+      margin-top: -1.5rem;
+      padding-bottom: 1rem;
+    }
+    .indexInfoText {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.2rem;
+      color: #555;
+      width: 90%;
+    }
+    .adminImgIdRoleWrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem 0 2rem;
+      .file {
+        .profileImageUpload {
+          cursor: pointer;
+          img {
+            border: #292929cc 1px solid;
+            padding: 0.2rem;
+            width: 10rem;
+            height: 10rem;
+            object-fit: cover;
+            border-radius: 0.5rem;
+            // margin-top: 0.5rem;
+            -webkit-box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+            box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+          }
+        }
+      }
+    }
+    .formInputWrap {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+      padding: 2rem 0 1rem;
+      .selectBox {
+        padding-top: 1rem;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        // gap: 0.5rem;
+        transition: 0.5s ease;
+        .inputFieldInfo {
+          position: absolute;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1;
+          left: 0;
+          top: -0.6rem;
+          padding: 0.2rem 0.5rem;
+          border-bottom: 1px solid #48f48d;
+          border-radius: 0.4rem 0.4rem 0 0;
+          // text-decoration: underline;
+          color: #48f48d;
+          background-color: #2f3640;
+        }
+        .inputDisabled {
+          // margin: 0.5rem 0;
+          padding: 0.7rem;
+          width: 19.5rem;
+          border: 1px solid #cccc;
+          outline: none;
+          border-radius: 0.3rem;
+          background-color: #2f3640;
+          color: #fff;
+          font-size: 1.2rem;
+          &::placeholder {
+            font-size: 1.2rem;
+          }
+          &:focus {
+            // border-color: green;
+            outline: 1px solid green;
+          }
+        }
+        .selectedOption {
+          // margin-top: -1rem;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          width: 19.5rem;
+          padding: 0.1rem;
+          border-radius: 0 0.4rem 0.4rem 0.4rem;
+          background-color: #2f3640;
+          cursor: pointer;
+          .optionSelected {
+            font-size: 1.2rem;
+            padding-left: 0.5rem;
+            color: #fff;
+            .genderLabel span {
+              color: #f55e5e;
+              padding-left: 0.1rem;
+            }
+          }
+          .arrowDown,
+          .arrowUp {
+            color: #fff;
+            font-size: 2rem;
+            margin-top: 0.5rem;
+          }
+        }
+        .genderOptionCont {
+          display: none;
+          position: absolute;
+          top: 4rem;
+          background-color: #2f3640;
+          padding: 0.5rem 1rem;
+          margin-top: 0.5rem;
+          border-radius: 0.4rem;
+          overflow-y: scroll;
+          overflow-x: hidden;
+          z-index: 2;
+          &::-webkit-scrollbar {
+            width: 5px;
+          }
+          &::-webkit-scrollbar-track {
+            background-color: #292929;
+            border-radius: 0 0.4rem 0.4rem 0;
+          }
+          &::-webkit-scrollbar-thumb {
+            background-color: #cccc;
+          }
+          &::-webkit-scrollbar-track-piece {
+            width: 5px;
+          }
+          .option {
+            // padding: 0.5rem;
+            &:hover {
+              background-color: #696969;
+              color: #292929;
+              cursor: pointer;
+              .listOfTeachers {
+                font-size: 1.2rem;
+                color: #fff;
+              }
+            }
+            .radio {
+              display: none;
+            }
+            .listOfTeachers {
+              width: 100%;
+              padding: 0.5rem 0.5rem;
+              text-align: left;
+              // margin: 0.2rem;
+              font-size: 1.2rem;
+              background-color: transparent;
+              color: #fff;
+            }
+          }
+        }
+        .genderOptionCont.active {
+          display: block;
+          width: 19.5rem;
+          height: 12rem;
+        }
+      }
+      .inputCont {
+        position: relative;
+        label {
+          position: absolute;
+          top: -0.8rem;
+          left: 0.5rem;
+          background-color: #fff;
+          padding: 0 0.3rem;
+          font-size: 1.2rem;
+          span {
+            color: red;
+            padding-left: 0.1rem;
+          }
+        }
+        input {
+          // margin: 0.5rem 0;
+          padding: 0.7rem;
+          width: 19.5rem;
+          border: 1px solid #cccc;
+          outline: none;
+          border-radius: 0.3rem;
+          font-size: 1.2rem;
+          &::placeholder {
+            font-size: 1.2rem;
+          }
+          &:focus {
+            // border-color: green;
+            outline: 1px solid green;
+          }
+        }
+      }
+    }
+  }
+  button.removeLecturerBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 0.4rem 0.4rem 0.4rem 0.4rem;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    width: 90%;
+    margin-bottom: 0.5rem;
+    color: rgb(249, 152, 152);
+    background-color: #2f3640;
+    cursor: pointer;
+  }
+  .updateClassSectionBtn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-items: center;
+    padding: 1rem;
+    // margin-top: 2rem;
+    width: 90%;
+    height: 3.2rem;
+    border: 1px solid #cccc;
+    border-radius: 0.4rem;
+    font-size: 1.2rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    border-radius: 0.4rem;
+    background-color: green;
+    color: #fff;
+    cursor: pointer;
+  }
+}
