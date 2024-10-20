@@ -3,14 +3,15 @@
 
 .facilitiesWrap {
   // padding: 2rem 0;
-  background-color: #504f4f;
+  // background-color: #504f4f;
   font-size: calc(0.7rem + 1vmin);
+  border-top: 1px solid #ccc;
   .facilitiesContainer {
     // width: sizes.$container_Width_Center;
     // margin: auto;
     h1 {
       font-size: 1.5em;
-      color: #ccc;
+      color: #696969;
     }
     .facilitiesContent {
       .facilitiesLeft {
@@ -21,6 +22,7 @@
           color: #ccc;
           font-size: 1em;
           font-weight: 300;
+          color: #696969;
         }
         a {
           color: #fff;
