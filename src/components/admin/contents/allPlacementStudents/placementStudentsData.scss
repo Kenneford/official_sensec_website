@@ -1,0 +1,53 @@
+@use "../../../../utilities/sizes";
+@use "../../../../utilities/colors";
+.allPlacementStudentsData {
+  position: relative;
+  width: 100%;
+  background-color: #383838;
+  font-size: calc(0.7rem + 1vmin);
+  .searchDetails {
+    display: flex;
+    justify-content: flex-end;
+    background-color: #fff;
+    margin-bottom: 1rem;
+    .searchInfo {
+      padding: 0.3rem;
+      padding-left: 2rem;
+      font-size: 1.2rem;
+    }
+  }
+  // Update data-table title font
+  .bzRuyo {
+    font-size: 1.1em;
+    padding: 0.5rem;
+  }
+  .placementExcelFileUploadWrap {
+    h2 {
+      font-size: 1.2em;
+      color: #fff;
+    }
+    form {
+      margin-bottom: 1rem;
+      // background-color: #20ac25;
+      width: 100%;
+      padding: 0 0.5rem;
+      input {
+        padding: 0.7rem;
+        border-radius: 0.4rem;
+        background-color: #fff;
+        height: 100%;
+        text-transform: uppercase;
+        font-size: 0.8em;
+      }
+      button {
+        height: 3rem;
+        font-size: 0.8em;
+        p {
+          width: 96%;
+          margin: auto;
+          color: red;
+        }
+      }
+    }
+  }
+}

@@ -38,7 +38,7 @@ import {
   UsersLinks,
 } from "../../lazyLoading/auth/AuthLazyComponents";
 
-export default function AdminSidebar({
+export function AdminSidebar({
   isSidebarOpen,
   toggleSidebar,
   setCurrentAction,
@@ -53,18 +53,19 @@ export default function AdminSidebar({
         sx={{
           backgroundColor: "#292929",
           padding: ".5rem",
-          position: "fixed",
-          top: navbar ? "4.5rem" : "9rem",
-          width: "inherit",
-          left: "0",
-          zIndex: "1",
+          // position: "fixed",
+          // top: navbar ? "4.5rem" : "9rem",
+          // width: "inherit",
+          // height: "100vh",
+          // left: "0",
+          // zIndex: "1",
           borderBottom: "2px solid #02b202",
         }}
       >
         <IconButton
           sx={{
             position: "absolute",
-            top: "-.2rem",
+            top: ".5rem",
             right: "0",
             color: "#fff",
           }}

@@ -1,16 +1,20 @@
 import { Box } from "@mui/material";
 import "./sidebar.scss";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import AdminSidebar from "./admin/AdminSidebar";
+import { AdminSidebar } from "../lazyLoading/admin/AdminLazyLoadingComponents";
+// import { AdminSidebar } from "../lazyLoading/admin/AdminLazyLoadingComponents";
+// import AdminSidebar from "./admin/AdminSidebar";
 
 export default function SideBar({
   isSidebarOpen,
+  setSidebarOpen,
   toggleSidebar,
   setCurrentAction,
   setCurrentLink,
 }) {
   const authAdminInfo = true;
+  console.log(isSidebarOpen);
 
   // State to check if navbar is scrolling
   const [navbar, setNavbar] = useState(false);
@@ -36,6 +40,8 @@ export default function SideBar({
         flexShrink: 0,
         transition: "width 0.5s ease", // Smooth transition when toggling
         position: "fixed",
+        left: 0,
+        top: 0,
         // Apply only when the device is in landscape and has a max-height (smaller screens)
         "@media screen and (max-width: 1024px) and (orientation: landscape)": {
           backgroundColor: "lightgreen",

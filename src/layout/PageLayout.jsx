@@ -1,11 +1,6 @@
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
-// import NavigationBar from "../components/navbar/NavigationBar";
-import "./pageLayout.scss";
-import lazyWithSuspense from "../components/lazyLoading/LazyLoading";
-import PageLoading from "../components/pageLoading/PageLoading";
+import { Outlet } from "react-router-dom";
 import { Box } from "@mui/material";
-import { useEffect, useState } from "react";
-import { NavigationBar } from "../components/lazyLoading/LazyComponents";
+import { useState } from "react";
 
 export function PageLayout() {
   const [openSubNavLinks, setOpenSubNavLinks] = useState(false);
@@ -15,10 +10,6 @@ export function PageLayout() {
   const [currentAction, setCurrentAction] = useState("Dashboard");
   const [currentLink, setCurrentLink] = useState("Overview");
   console.log(currentAction);
-
-  const location = useLocation();
-  const navigate = useNavigate();
-  const userInfo = { adminStatusExtend: { isAdmin: true } };
 
   const clearLogOptions = () => {
     if (openSubNavLinks) {
@@ -37,18 +28,6 @@ export function PageLayout() {
 
   return (
     <Box onClick={clearLogOptions}>
-      <NavigationBar
-        setOpenSubNavLinks={setOpenSubNavLinks}
-        openSubNavLinks={openSubNavLinks}
-        setOpenUserActions={setOpenUserActions}
-        openUserActions={openUserActions}
-        setOpenMenuLinks={setOpenMenuLinks}
-        openMenuLinks={openMenuLinks}
-        currentAction={currentAction}
-        setCurrentAction={setCurrentAction}
-        currentLink={currentLink}
-        setCurrentLink={setCurrentLink}
-      />
       <Outlet
         context={{
           currentAction,
@@ -57,17 +36,14 @@ export function PageLayout() {
           setCurrentLink,
           postOptions,
           setPostOptions,
+          setOpenSubNavLinks,
+          openSubNavLinks,
+          setOpenUserActions,
+          openUserActions,
+          setOpenMenuLinks,
+          openMenuLinks,
         }}
       />
     </Box>
   );
 }
-
-// const NavigationBar = lazyWithSuspense(
-//   () =>
-//     import("../components/navbar/NavigationBar").then((module) => {
-//       return { default: module.NavigationBar };
-//     }),
-//   <PageLoading />,
-//   "NavigationBar"
-// );

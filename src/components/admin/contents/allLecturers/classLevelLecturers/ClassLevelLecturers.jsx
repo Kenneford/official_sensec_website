@@ -3,7 +3,7 @@ import "../lecturersData.scss";
 import DataTable from "react-data-table-component";
 import SearchIcon from "@mui/icons-material/Search";
 import { useNavigate, useParams } from "react-router-dom";
-import NewEmploymentModal from "../../../../NewEmploymentModal/NewEmploymentModal";
+import NewEmploymentModal from "../../../../actionModal/ActionModal";
 import { customUserTableStyle } from "../../../../../usersInfoDataFormat/usersInfoTableStyle";
 import { Box, Grid } from "@mui/material";
 import { AllEmployedLecturersPageQuickLinks } from "../../../../../linksFormat/LinksFormat";
@@ -64,7 +64,7 @@ export function ClassLevelLecturers() {
 
   const handleNewEmployment = () => {
     setRedirecting(true);
-    setUncompletedEmploymentTask("You're being redirected...");
+    setUncompletedEmploymentTask("You're being redirected");
     setTimeout(() => {
       navigate(
         `/sensec/admin/${adminCurrentAction}/${adminCurrentLink}/new_employment/personal_info`
@@ -172,7 +172,7 @@ export function ClassLevelLecturers() {
           // className="addNewAdminBtnsWrap"
           width={"100%"}
           m={"0 auto"}
-          className="pendingClassLevelLecturers"
+          className="classLevelLecturers"
         >
           {allClassLevels.map((cLevel) => (
             <Grid

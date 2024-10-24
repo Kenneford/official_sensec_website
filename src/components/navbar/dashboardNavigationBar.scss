@@ -1,0 +1,414 @@
+@use "../../utilities/colors";
+@use "../../utilities/sizes";
+
+.dashboardNavbarWrap {
+  z-index: 3;
+  width: inherit;
+  .expandMoreIcon {
+  }
+  #navLinksWrap {
+    #navLinks {
+      cursor: pointer;
+      &:hover {
+        color: yellow;
+      }
+      text-transform: capitalize;
+      margin: 0;
+      font-size: 0.9em;
+    }
+    #otherLinks {
+      position: relative;
+      // z-index: 100;
+      .otherLinksWrap {
+        display: flex;
+        align-items: center;
+        color: colors.$primaryTextColor;
+        font-size: 0.8rem;
+        font-weight: 400;
+        border: none;
+        outline: none;
+        transition: 0.4s ease-in;
+        cursor: pointer;
+        background-color: transparent;
+        // position: absolute;
+        // z-index: 100;
+        &:hover {
+          color: yellow;
+        }
+        #otherLinksBtn {
+          display: flex;
+          align-items: center;
+        }
+      }
+      .otherLinksWrap.active {
+        color: yellow;
+        &:hover {
+          color: yellow;
+        }
+        #otherLinksBtn {
+          display: flex;
+          align-items: center;
+        }
+      }
+      .subNav {
+        position: absolute;
+        top: 1em;
+        right: 10%;
+        display: flex;
+        flex-direction: column;
+        .openSubNavLinks {
+          display: flex;
+          flex-direction: column;
+          width: 12rem;
+          .otherLinkSelected {
+            min-width: inherit;
+            padding: 0.6rem 1rem;
+            font-size: 1rem;
+            animation: animateNavMenuItems 400ms linear forwards;
+            transform-origin: top right;
+            opacity: 0;
+            background-color: #292929;
+            color: #fff;
+            border-left: 3px solid transparent;
+            &:hover {
+              background-color: #323232;
+              border-left: 3px solid #fff;
+            }
+            &:nth-child(1) {
+              animation-delay: 200ms;
+              border-radius: 0.2rem 0.2rem 0 0;
+              // border-bottom: 1px solid #ccc;
+            }
+            &:nth-child(2) {
+              animation-delay: 300ms;
+              border-top: 1px solid #ccc;
+            }
+            &:nth-child(3) {
+              animation-delay: 400ms;
+              border-top: 1px solid #ccc;
+            }
+            &:nth-child(4) {
+              animation-delay: 500ms;
+              border-top: 1px solid #ccc;
+            }
+            &:nth-child(5) {
+              animation-delay: 600ms;
+              border-top: 1px solid #ccc;
+            }
+            &:nth-child(6) {
+              animation-delay: 700ms;
+              border-top: 1px solid #ccc;
+            }
+            &:nth-child(7) {
+              animation-delay: 800ms;
+              border-top: 1px solid #ccc;
+            }
+            &:nth-child(8) {
+              animation-delay: 900ms;
+              border-top: 1px solid #ccc;
+            }
+          }
+          .otherLinkSelected.active {
+            color: yellow;
+            border-bottom: none;
+          }
+        }
+        .closeSubNavLinks {
+          height: 0px;
+          max-height: 0px;
+          opacity: 1;
+          overflow: hidden;
+          transition: 0.5s ease-in-out;
+          //   position: absolute;
+          display: flex;
+          flex-direction: column;
+        }
+      }
+    }
+  }
+  #smallScreenMenu {
+    position: absolute;
+    // min-width: 10rem;
+    // min-height: 7rem;
+    top: 80%;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 1rem 0;
+    // margin-left: 1rem;
+    border-radius: 0.4rem;
+    transition: 0.4s ease;
+    z-index: 1;
+    // opacity: 0.9;
+    .menuListSelected {
+      display: flex;
+      flex-direction: column;
+      min-width: inherit;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      animation: animateNavMenuItems 400ms linear forwards;
+      transform-origin: top right;
+      opacity: 0;
+      background-color: #292929;
+      color: #fff;
+      border-left: 3px solid transparent;
+      &:hover {
+        background-color: #323232;
+        border-left: 3px solid #fff;
+      }
+      &:nth-child(1) {
+        animation-delay: 200ms;
+        border-radius: 0.2rem 0.2rem 0 0;
+        // border-bottom: 1px solid #ccc;
+      }
+      &:nth-child(2) {
+        animation-delay: 300ms;
+        border-top: 1px solid #ccc;
+      }
+      &:nth-child(3) {
+        animation-delay: 400ms;
+        border-top: 1px solid #ccc;
+      }
+      &:nth-child(4) {
+        animation-delay: 500ms;
+        border-top: 1px solid #ccc;
+      }
+      &:nth-child(5) {
+        animation-delay: 600ms;
+        border-top: 1px solid #ccc;
+      }
+      &:nth-child(6) {
+        animation-delay: 700ms;
+        border-top: 1px solid #ccc;
+      }
+      &:nth-child(7) {
+        animation-delay: 800ms;
+        border-top: 1px solid #ccc;
+      }
+      &:nth-child(8) {
+        animation-delay: 1000ms;
+        border-top: 1px solid #ccc;
+      }
+      &:nth-child(9) {
+        animation-delay: 1100ms;
+        border-top: 1px solid #ccc;
+      }
+      &:nth-child(10) {
+        animation-delay: 1200ms;
+        border-top: 1px solid #ccc;
+      }
+    }
+    .menuListSelected.active {
+      color: yellow;
+      border-bottom: none;
+    }
+  }
+  // For removing padding from current user image div on navbar
+  .MuiToolbar-root {
+    .css-18c8km3-MuiToolbar-root {
+      padding: 0;
+    }
+  }
+  #navLogout {
+    position: absolute;
+    // background-color: #fc5656;
+    width: 12rem;
+    // min-height: 7rem;
+    top: 80%;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 1rem 0.3rem;
+    border-radius: 0.4rem;
+    transition: 0.4s ease;
+    z-index: 1;
+    :nth-child(3) {
+    }
+    span {
+      cursor: pointer;
+      color: #fff;
+      // margin: 0.5rem 0;
+      padding: 0.5rem 1rem;
+      font-size: 0.9em;
+      animation: animateNavItems 400ms linear forwards;
+      transform-origin: top right;
+      opacity: 0;
+      background-color: #323232;
+      &:hover {
+        background-color: #555;
+      }
+      &:nth-child(1) {
+        animation-delay: 200ms;
+        // border-radius: 0.2rem 0.2rem 0 0;
+        border-bottom: 1px solid #ccc;
+      }
+      &:nth-child(2) {
+        animation-delay: 300ms;
+        // border-bottom: 1px solid #ccc;
+      }
+      &:nth-child(3) {
+        animation-delay: 400ms;
+        border-top: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+      }
+      &:nth-child(4) {
+        animation-delay: 500ms;
+        border-radius: 0 0 0.4rem 0.4rem;
+        &:hover {
+          border: 0 1px 1px solid #292929;
+          background-color: #fc5656;
+          .logUserOut {
+            color: #fff;
+          }
+          .logoutIcon {
+            color: #fff;
+          }
+        }
+      }
+    }
+    .logUserOutWrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      // background-color: #fff;
+      // border-right: 1px solid #292929;
+      // border-left: 1px solid #292929;
+      transition: 0.4s ease;
+      .logUserOut {
+        color: #fc5656;
+      }
+      .logoutIcon {
+        font-size: 1em;
+        color: #fc5656;
+      }
+    }
+    @keyframes animateNavItems {
+      0% {
+        transform: rotateY(-90deg) rotateX(90deg) scale(0.1);
+      }
+      100% {
+        transform: rotateY(0) rotateX(0) scale(1);
+        opacity: 1;
+      }
+    }
+  }
+  .login {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.3rem;
+    // font-size: calc(0.7rem + 1vmin);
+    button {
+      font-size: 0.9em;
+      background-color: transparent;
+      cursor: pointer;
+      font-weight: 500;
+      padding: 0 0.3rem;
+      // border-radius: 0.5rem;
+      transition: 0.5s ease;
+      &:nth-child(1) {
+        color: #fff;
+        border-right: 1px solid #fff;
+        &:hover {
+          color: yellow;
+        }
+      }
+      &:nth-child(2) {
+        color: yellow;
+        border-left: 1px solid #fff;
+        // border: 2px solid red;
+        &:hover {
+        }
+      }
+    }
+    .loginOptions {
+      position: absolute;
+      top: 265%;
+      right: 0;
+      width: fit-content;
+      flex-direction: column;
+      gap: 0;
+      display: block;
+      border-radius: 0.4rem;
+      // position: absolute;
+      // width: 12rem;
+      // margin-top: 2rem;
+      // z-index: 1;
+      // background-color: #292929;
+      z-index: 1;
+      .loginWrap {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.8em;
+        background-color: #292929;
+        color: #fff;
+        transition: 0.4s ease;
+        cursor: pointer;
+        animation: animateNavItems 400ms linear forwards;
+        transform-origin: top right;
+        opacity: 0;
+        padding: 0.7em;
+        border-top: 1px solid #ccc;
+        .loginIcon {
+          color: #0aca0a;
+          margin-left: 1em;
+        }
+        &:hover {
+          background-color: #323232;
+        }
+        &:nth-child(1) {
+          animation-delay: 200ms;
+          // border-radius: 0.4rem 0.4rem 0 0;
+          border-top: unset;
+        }
+        &:nth-child(2) {
+          animation-delay: 300ms;
+          // border-bottom: 1px solid #ccc;
+        }
+        &:nth-child(3) {
+          animation-delay: 400ms;
+          // border-bottom: 1px solid #ccc;
+        }
+        &:nth-child(4) {
+          animation-delay: 500ms;
+          border-radius: 0 0 0.4rem 0.4rem;
+        }
+        p {
+          // padding: 1rem;
+        }
+      }
+    }
+    @keyframes animateNavItems {
+      0% {
+        transform: rotateY(-90deg) rotateX(90deg) scale(0.1);
+      }
+      100% {
+        transform: rotateY(0) rotateX(0) scale(1);
+        opacity: 1;
+      }
+    }
+  }
+  @keyframes animateNavItems {
+    0% {
+      transform: rotateY(-90deg) rotateX(90deg) scale(0.1);
+    }
+    100% {
+      transform: rotateY(0) rotateX(0) scale(1);
+      opacity: 1;
+    }
+  }
+  @keyframes animateNavMenuItems {
+    0% {
+      transform: rotateZ(0deg) rotateX(-90deg) scale(1);
+    }
+    100% {
+      transform: rotateZ(1) rotateX(0) scale(1.1);
+      opacity: 1;
+    }
+  }
+}

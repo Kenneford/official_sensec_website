@@ -1,6 +1,6 @@
 @use "../../../../utilities/sizes";
 @use "../../../../utilities/colors";
-.allAdminsData {
+.allStudentsData {
   position: relative;
   width: 100%;
   background-color: #383838;
@@ -15,10 +15,10 @@
       font-size: 1.2rem;
     }
   }
-  .addNewAdminBtnsWrap {
+  .addNewStudentBtnsWrap {
     padding: 1rem 0;
     gap: 1%;
-    .adminDashAddBtn {
+    .studentDashAddBtn {
       display: flex;
       justify-content: center;
       align-items: center;
@@ -35,7 +35,7 @@
         background-color: #16a216;
       }
     }
-    .adminDashBtn {
+    .studentDashBtn {
       display: flex;
       justify-content: center;
       align-items: center;
@@ -47,15 +47,15 @@
       background-color: #fff;
       text-align: center;
     }
-    .adminDashBtn.isActive {
+    .studentDashBtn.isActive {
       background-color: #05a605;
       color: #fff;
     }
   }
-  .classLevelLecturers {
+  .classLevelStudents {
     padding: 0 0 1rem;
     gap: 1%;
-    .classLevelLecturersBtn {
+    .classLevelStudentsBtn {
       display: flex;
       justify-content: center;
       align-items: center;
@@ -68,7 +68,7 @@
       background-color: #fff;
       text-align: center;
     }
-    .classLevelLecturersBtn.isActive {
+    .classLevelStudentsBtn.isActive {
       background-color: #05a605;
       color: #fff;
     }
