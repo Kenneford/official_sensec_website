@@ -5,10 +5,8 @@ import PageLoading from "../pageLoading/PageLoading";
 import {
   About,
   AdminDashboard,
-  AllStudents,
   Contact,
   Courses,
-  CurrentUser,
   EnrollmentPage,
   FrequentlyAskedQuestions,
   Home,
@@ -17,16 +15,17 @@ import {
   StudentEnrollment,
   StudentPlacementCheck,
   StudentPlacementVerification,
-  StudentsData,
 } from "../lazyLoading/LazyComponents";
 import {
   AuthUserDashboard,
   UserDashboardLayout,
 } from "../lazyLoading/auth/AuthLazyComponents";
 import {
+  AdminAttendance,
   ClassLevelLecturers,
-  CreateNewData,
+  ClassLevelStudentsContainer,
   NewDataContainer,
+  StudentsCategories,
   UserTypesContainer,
 } from "../lazyLoading/admin/AdminLazyLoadingComponents";
 import FakeDashboard from "../admin/contents/overview/FakeDashboard";
@@ -51,24 +50,19 @@ export default function PageNavigation() {
       children: [
         { element: <Navigate to={DEFAULT_PATH} replace />, index: true },
         {
-          path: "sensec/homepage",
-          element: <Home />,
-        },
-        {
-          path: "sensec/about",
-          element: <About />,
-        },
-        {
-          path: "sensec/courses",
-          element: <Courses />,
-        },
-        {
-          path: "sensec/contact",
-          element: <Contact />,
-        },
-        {
-          path: "sensec/students/placement_check",
-          element: <StudentPlacementCheck />,
+          path: "sensec",
+          element: <GuestPageLayout />,
+          children: [
+            {
+              path: ":currentGuestPage",
+              element: <GuestPageLayout />,
+              // index: true,
+            },
+            {
+              path: "sensec/frequently_asked_questions",
+              element: <FrequentlyAskedQuestions />,
+            },
+          ],
         },
         {
           path: "sensec/students/enrollment",
@@ -83,30 +77,15 @@ export default function PageNavigation() {
               element: <StudentPlacementVerification />,
             },
             {
+              path: "placement_check",
+              element: <StudentPlacementCheck />,
+            },
+            {
               path: "online",
               element: <StudentEnrollment />,
             },
             { path: "*", element: <PageNotFound /> },
           ],
-        },
-        {
-          path: "sensec/students",
-          element: <StudentsData />,
-          children: [
-            { element: <Navigate to={"all"} />, index: true },
-            {
-              path: "all",
-              element: <AllStudents />,
-            },
-          ],
-        },
-        {
-          path: "sensec/frequently_asked_questions",
-          element: <FrequentlyAskedQuestions />,
-        },
-        {
-          path: "sensec/users/dashboard",
-          element: <CurrentUser />,
         },
         // For Authenticated Users
         {
@@ -129,10 +108,6 @@ export default function PageNavigation() {
                   path: ":adminCurrentAction/:adminCurrentLink",
                   element: <AdminDashboard />,
                   children: [
-                    // {
-                    //   element: <AdminDashboard />,
-                    //   index: true,
-                    // },
                     {
                       path: "employees/:employees_link",
                       element: <UserTypesContainer />,
@@ -145,10 +120,14 @@ export default function PageNavigation() {
                       path: "employees/:employees_link/:class_level",
                       element: <ClassLevelLecturers />,
                     },
-                    // {
-                    //   path: ":data/new",
-                    //   element: <FakeDashboard />,
-                    // },
+                    {
+                      path: ":student_category",
+                      element: <StudentsCategories />,
+                    },
+                    {
+                      path: ":student_category/:class_level",
+                      element: <ClassLevelStudentsContainer />,
+                    },
                   ],
                 },
               ],
@@ -176,4 +155,12 @@ export const PageLayout = lazyWithSuspense(
     }),
   <PageLoading />,
   "PageLayout"
+);
+export const GuestPageLayout = lazyWithSuspense(
+  () =>
+    import("../../pages/auth/forGuests/GuestPageLayout").then((module) => {
+      return { default: module.GuestPageLayout };
+    }),
+  <PageLoading />,
+  "GuestPageLayout"
 );

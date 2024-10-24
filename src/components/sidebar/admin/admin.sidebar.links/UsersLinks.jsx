@@ -115,6 +115,11 @@ export function UsersLinks({
                       / /g,
                       "_"
                     )}/employees/All`
+                  : Qlink.name === "Students"
+                  ? `/sensec/users/admin/User_Types/${Qlink?.name?.replace(
+                      / /g,
+                      "_"
+                    )}/Enrolled`
                   : `/sensec/users/admin/User_Types/${Qlink?.name?.replace(
                       / /g,
                       "_"

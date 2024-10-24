@@ -8,6 +8,7 @@ import DataTable from "react-data-table-component";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import { Box } from "@mui/material";
 // import DeleteProgramDataModal from "./deleteProgramData/DeleteProgramDataModal";
 
 export function SchoolProgrammesData() {
@@ -502,54 +503,82 @@ export function SchoolProgrammesData() {
   // ]);
 
   return (
-    <div className="programDataWrap">
-      <h2>{allPrograms}</h2>
-      <div className="programDataCont">
-        <DataTable
-          // title={allCLevels}
-          columns={programmesColumn}
-          // data={allProgrammes}
-          customStyles={customStyle}
-          pagination
-          // selectableRows
-          fixedHeader
-          // selectableRowsHighlight
-          highlightOnHover
-          responsive
-        />
-      </div>
-      <h2 className="allSubjectsh2">{allSubjects}</h2>
-      <h4>{allCSubjects}</h4>
-      <div className="programDataCont">
-        <DataTable
-          // title={allCLevels}
-          columns={coreSubColumn}
-          // data={allCoreSubjects}
-          customStyles={customStyle}
-          pagination
-          // selectableRows
-          fixedHeader
-          // selectableRowsHighlight
-          highlightOnHover
-          responsive
-        />
-      </div>
-      <h4 className="electiveSubJHead">{allESubjects}</h4>
-      <div className="programDataCont">
-        <DataTable
-          // title={allCLevels}
-          columns={electiveSubColumn}
-          // data={allElectiveSubjects}
-          customStyles={customStyle}
-          pagination
-          // selectableRows
-          fixedHeader
-          // selectableRowsHighlight
-          highlightOnHover
-          responsive
-        />
-      </div>
-      {/* <DeleteProgramDataModal
+    <>
+      {/* Current dashboard title */}
+      <Box
+        component={"div"}
+        id="adminDashboardHeaderWrap"
+        sx={{
+          position: "sticky",
+          top: 0,
+          backgroundColor: "#fff",
+          padding: 0,
+          // zIndex: 1,
+        }}
+        minHeight={"4rem"}
+      >
+        <h1 className="dashAction">
+          {adminCurrentAction?.replace(/_/g, "-")} /{" "}
+          <span>{adminCurrentLink?.replace(/_/g, " ")}</span>
+        </h1>
+        {/* Main search bar */}
+        {/* <Box sx={{ display: { xs: "none", sm: "block" } }}>
+          <SearchForm
+            value={searchedBlog}
+            onChange={handleOnChange}
+            placeholder={"Search"}
+          />
+        </Box> */}
+      </Box>
+      {/* Dashboard content */}
+      <Box className="programDataWrap">
+        <h2>{allPrograms}</h2>
+        <Box className="programDataCont">
+          <DataTable
+            // title={allCLevels}
+            columns={programmesColumn}
+            // data={allProgrammes}
+            customStyles={customStyle}
+            pagination
+            // selectableRows
+            fixedHeader
+            // selectableRowsHighlight
+            highlightOnHover
+            responsive
+          />
+        </Box>
+        <h2 className="allSubjectsh2">{allSubjects}</h2>
+        <h4>{allCSubjects}</h4>
+        <Box className="programDataCont">
+          <DataTable
+            // title={allCLevels}
+            columns={coreSubColumn}
+            // data={allCoreSubjects}
+            customStyles={customStyle}
+            pagination
+            // selectableRows
+            fixedHeader
+            // selectableRowsHighlight
+            highlightOnHover
+            responsive
+          />
+        </Box>
+        <h4 className="electiveSubJHead">{allESubjects}</h4>
+        <Box className="programDataCont">
+          <DataTable
+            // title={allCLevels}
+            columns={electiveSubColumn}
+            // data={allElectiveSubjects}
+            customStyles={customStyle}
+            pagination
+            // selectableRows
+            fixedHeader
+            // selectableRowsHighlight
+            highlightOnHover
+            responsive
+          />
+        </Box>
+        {/* <DeleteProgramDataModal
         open={openModal}
         onClose={() => setOpenModal(false)}
         handleProgramDeletion={handleProgramDeletion}
@@ -558,6 +587,7 @@ export function SchoolProgrammesData() {
         // coreSub={coreSub}
         // itemToDelete={itemToDelete}
       /> */}
-    </div>
+      </Box>
+    </>
   );
 }

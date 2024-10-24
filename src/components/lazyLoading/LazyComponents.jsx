@@ -9,6 +9,14 @@ export const NavigationBar = lazyWithSuspense(
   <PageLoading />,
   "NavigationBar"
 );
+export const DashboardNavigationBar = lazyWithSuspense(
+  () =>
+    import("../navbar/DashboardNavigationBar").then((module) => {
+      return { default: module.DashboardNavigationBar };
+    }),
+  <PageLoading />,
+  "DashboardNavigationBar"
+);
 export const Home = lazyWithSuspense(
   () =>
     import("../../pages/home/Home").then((module) => {
@@ -50,14 +58,6 @@ export const QuestionsSection = lazyWithSuspense(
     ),
   <PageLoading />,
   "QuestionsSectionPage"
-);
-export const CurrentUser = lazyWithSuspense(
-  () =>
-    import("../currentUser/CurrentUser").then((module) => {
-      return { default: module.CurrentUser };
-    }),
-  <PageLoading />,
-  "CurrentUserPage"
 );
 export const PageNotFound = lazyWithSuspense(
   () =>
@@ -120,14 +120,6 @@ export const StudentsData = lazyWithSuspense(
     }),
   <PageLoading />,
   "StudentsData"
-);
-export const AllStudents = lazyWithSuspense(
-  () =>
-    import("../sensecStudentsData/allStudents/AllStudents").then((module) => {
-      return { default: module.AllStudents };
-    }),
-  <PageLoading />,
-  "AllStudents"
 );
 export const FrequentlyAskedQuestions = lazyWithSuspense(
   () =>

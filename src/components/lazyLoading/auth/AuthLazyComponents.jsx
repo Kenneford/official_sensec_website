@@ -18,6 +18,22 @@ export const UserDashboardLayout = lazyWithSuspense(
   <PageLoading />,
   "UserDashboardLayout"
 );
+export const SignUp = lazyWithSuspense(
+  () =>
+    import("../../../pages/auth/user.signUp/SignUp").then((module) => {
+      return { default: module.SignUp };
+    }),
+  <PageLoading />,
+  "SignUpPage"
+);
+export const Login = lazyWithSuspense(
+  () =>
+    import("../../../pages/auth/user.login/Login").then((module) => {
+      return { default: module.Login };
+    }),
+  <PageLoading />,
+  "LoginPage"
+);
 
 // Admins Dashboard ==> Dashboard-Links
 export const AdminDashboardLinks = lazyWithSuspense(

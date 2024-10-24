@@ -1,0 +1,67 @@
+.searchBar {
+  .searchForm {
+    #search {
+      padding: 0.5rem;
+      padding-right: 3rem;
+      width: 17rem;
+      border-radius: 0.3rem;
+      background-color: #696969;
+      color: #fff;
+      transition: 0.4s ease;
+      font-size: 1.1rem;
+      border: 1px transparent;
+      &::placeholder {
+        color: #fff;
+        font-size: 1rem;
+      }
+      &:focus {
+        width: 25rem;
+      }
+    }
+    .searchIcon {
+      position: absolute;
+      right: 1rem;
+      top: 0.5rem;
+      color: #fff;
+      cursor: pointer;
+    }
+  }
+  .searchList {
+    margin-top: 0.5rem;
+    border-radius: 0.5rem;
+    -webkit-box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+    box-shadow: 2px 2px 3px 0px #454343ad;
+    overflow-y: scroll;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    white-space: normal; /* Allow the text to wrap onto the next line */
+    word-wrap: break-word; /* Optional: break long words if needed */
+    padding: 0.5rem 0;
+    &::-webkit-scrollbar {
+      width: 5px;
+      height: 7px; /* height for horizontal scrollbar */
+    }
+    &::-webkit-scrollbar-track {
+      background-color: #fff;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: #ccc;
+      border-radius: 0.4rem;
+    }
+    &::-webkit-scrollbar-track-piece {
+      width: 5px;
+    }
+    p {
+      width: 100%;
+      padding: 0.5rem 1rem;
+      overflow-x: wrap;
+      // background-color: #434343;
+      color: #696969;
+      cursor: pointer;
+      transition: 0.5s ease;
+      &:hover {
+        background-color: #545454;
+        color: #fff;
+      }
+    }
+  }
+}
