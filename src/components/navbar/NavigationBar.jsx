@@ -6,19 +6,25 @@ import CloseIcon from "@mui/icons-material/Close";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import LogoutIcon from "@mui/icons-material/Logout";
-import LoginIcon from "@mui/icons-material/Login";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { HashLink, NavHashLink } from "react-router-hash-link";
 import { AppBar, Avatar, Box, Button, Stack, Typography } from "@mui/material";
 import { StyledNavbar } from "../../muiStyling/muiStyling";
+import { Login, PersonAddAlt } from "@mui/icons-material";
 
+const signUpOptions = [
+  {
+    name: "Students Sign-up",
+    path: "/sensec/sign_up/students",
+  },
+  {
+    name: "Others",
+    path: "/sensec/sign_up/partners",
+  },
+];
 const loginOptions = [
   {
     name: "Admins Login",
-    path: "/sensec/login",
-  },
-  {
-    name: "NT Staffs Login",
     path: "/sensec/login",
   },
   {
@@ -27,6 +33,10 @@ const loginOptions = [
   },
   {
     name: "Students Login",
+    path: "/sensec/login",
+  },
+  {
+    name: "NT-Staffs Login",
     path: "/sensec/login",
   },
 ];
@@ -125,11 +135,11 @@ const menuLinks = [
   },
   {
     name: "Blog",
-    path: "/sensec/users/dashboard",
+    path: "/sensec/blogs",
   },
   {
     name: "Check Placement",
-    path: "/sensec/students/placement_check",
+    path: "/sensec/students/enrollment/placement_check",
   },
   {
     name: "Apply",
@@ -142,7 +152,7 @@ const menuLinks = [
   {
     name: "Dashboard",
     path: {
-      admin: "/sensec/admin#admin",
+      admin: "/sensec/users/admin/Dashboard/Overview",
       teacher: "/sensec/teacher#teacher",
       nt_Staff: "/sensec/nt_staff#staff",
       student: "/sensec/student#student",
@@ -159,6 +169,8 @@ export function NavigationBar({
   openSubNavLinks,
   setOpenUserActions,
   openUserActions,
+  setOpenSignUpActions,
+  openSignUpActions,
   setOpenMenuLinks,
   openMenuLinks,
   setCurrentAction,
@@ -291,73 +303,9 @@ export function NavigationBar({
   ]);
 
   return (
-    <AppBar position={"relative"} className="navbarWrap">
-      {/* <Stack
-        direction="column"
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#fff",
-          padding: ".3rem 0",
-          height: "4.5rem",
-        }}
-      >
-        <Box
-          onClick={() => {
-            // Click handler
-            localStorage.removeItem("currentNavLink");
-            navigate("/sensec/homepage");
-          }}
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            cursor: "pointer",
-          }}
-        >
-          <Avatar
-            src="/assets/sensec-logo1.png"
-            sx={{ alignItems: "center" }}
-          />
-          <Box sx={{ display: "flex", height: "1.5rem" }}>
-            <Typography variant="h6" color="green">
-              Sen
-            </Typography>
-            <Typography variant="h6" color="#aeae0d">
-              sec
-            </Typography>
-          </Box>
-        </Box>
-      </Stack> */}
-      <Box
-        sx={{
-          position: "sticky",
-          top: 0,
-          backgroundColor: "#fff",
-          padding: 0,
-          zIndex: 1,
-        }}
-      >
-        <StyledNavbar.Navbar
-        // sx={{
-        //   bgcolor: navbar ? "#292929" : "green",
-        //   borderBottom: navbar ? "3px solid yellow" : "3px solid #fff",
-        //   height: "4.5rem",
-        //   position: "sticky",
-        //   top: 0,
-        //   left: 0,
-        //   zIndex: 1,
-        //   width:
-        //     isSidebarOpen && !navbar
-        //       ? "100%"
-        //       : isSidebarOpen && navbar
-        //       ? "80%"
-        //       : "100%",
-        //   marginLeft: isSidebarOpen && navbar ? "20%" : "0",
-        // }}
-        >
+    <Box width={"100%"} className="navbarWrap">
+      <Box>
+        <StyledNavbar.Navbar>
           {/* Menu Icons */}
           <Box
             sx={{
@@ -367,6 +315,7 @@ export function NavigationBar({
                 md: "block",
                 lg: "block",
               },
+              color: "#fff",
             }}
           >
             {!openMenuLinks ? (
@@ -537,7 +486,7 @@ export function NavigationBar({
                             <ExpandLessIcon className="expandMoreIcon" />
                           )} */}
                       </button>
-                      <div className="subNav">
+                      <div className="subNav" style={{ zIndex: 3 }}>
                         {openSubNavLinks && (
                           <div
                             className={
@@ -698,19 +647,44 @@ export function NavigationBar({
                 <button onClick={() => setOpenUserActions(!openUserActions)}>
                   Login
                 </button>
-                <button onClick={() => navigate("/sensec/sign_up")}>
+                <button
+                  // onClick={() => navigate("/sensec/sign_up")}
+                  onClick={() => setOpenSignUpActions(!openSignUpActions)}
+                >
                   Sign-Up
                 </button>
                 {openUserActions && (
-                  <div className="loginOptions">
+                  <div className="loginOptions" style={{ zIndex: 3 }}>
                     {loginOptions?.map((option) => (
                       <div
                         key={option?.name}
                         className="loginWrap"
-                        onClick={() => navigate(option?.path)}
+                        onClick={() => {
+                          localStorage.setItem("loginAction", option?.name),
+                            localStorage.removeItem("currentOtherNavLink"),
+                            navigate(option?.path);
+                        }}
                       >
                         <p>{option?.name}</p>
-                        <LoginIcon className="loginIcon" />
+                        <Login className="loginIcon" />
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {openSignUpActions && (
+                  <div className="signUpOptions" style={{ zIndex: 3 }}>
+                    {signUpOptions?.map((option) => (
+                      <div
+                        key={option?.name}
+                        className="signUpWrap"
+                        onClick={() => {
+                          localStorage.setItem("signUpAction", option?.name),
+                            localStorage.removeItem("currentOtherNavLink"),
+                            navigate(option?.path);
+                        }}
+                      >
+                        <p>{option?.name}</p>
+                        <PersonAddAlt className="signUpIcon" />
                       </div>
                     ))}
                   </div>
@@ -721,7 +695,7 @@ export function NavigationBar({
           </Box>
         </StyledNavbar.Navbar>
       </Box>
-    </AppBar>
+    </Box>
   );
 }
 
@@ -734,5 +708,7 @@ NavigationBar.propTypes = {
   setCurrentAction: PropTypes.func,
   setCurrentLink: PropTypes.func,
   openUserActions: PropTypes.bool,
+  setOpenSignUpActions: PropTypes.func,
+  openSignUpActions: PropTypes.bool,
   isSidebarOpen: PropTypes.bool,
 };

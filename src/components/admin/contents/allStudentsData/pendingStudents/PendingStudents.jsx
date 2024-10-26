@@ -39,7 +39,7 @@ export function PendingStudents() {
   const [currentStudent, setCurrentStudent] = useState("");
   const [rejectStudent, setRejectStudent] = useState("");
   const [openModal, setOpenModal] = useState(false);
-  const [redirecting, setRedirecting] = useState("");
+  const [redirecting, setRedirecting] = useState(false);
   const [uncompletedEmploymentTask, setUncompletedEmploymentTask] =
     useState("");
   // const dispatch = useDispatch();
@@ -336,7 +336,7 @@ export function PendingStudents() {
                 item
                 xs={2.9}
                 sm={2}
-                key={cLevel._id}
+                key={cLevel.name}
                 onClick={() =>
                   navigate(
                     `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/${student_category}/${cLevel.name.replace(

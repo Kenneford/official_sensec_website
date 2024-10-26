@@ -1,9 +1,8 @@
 import { Box } from "@mui/material";
 import { useParams } from "react-router-dom";
-import { AllEnrolledStudents } from "../enrolledStudents/AllEnrolledStudents";
 import {
+  AllEnrolledStudents,
   ClassLevelStudents,
-  HangingStudents,
   PendingClassLevelStudents,
   PendingStudents,
 } from "../../../../lazyLoading/admin/AdminLazyLoadingComponents";
@@ -20,8 +19,6 @@ export function StudentsCategories() {
       )}
       {adminCurrentLink === "Students" &&
         student_category === "Pending_Students" && <PendingStudents />}
-      {adminCurrentLink === "Students" &&
-        student_category === "Hanging_Students" && <HangingStudents />}
       {adminCurrentLink === "Students" && student_category === "Graduates" && (
         <AllGraduatedStudents />
       )}

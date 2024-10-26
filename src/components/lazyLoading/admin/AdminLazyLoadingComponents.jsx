@@ -361,16 +361,6 @@ export const PendingStudents = lazyWithSuspense(
   <PageLoading />,
   "PendingStudentsComponent"
 );
-export const HangingStudents = lazyWithSuspense(
-  () =>
-    import(
-      "../../admin/contents/allStudentsData/hangingStudents/HangingStudents"
-    ).then((module) => {
-      return { default: module.HangingStudents };
-    }),
-  <PageLoading />,
-  "HangingStudentsComponent"
-);
 export const ClassLevelStudents = lazyWithSuspense(
   () =>
     import(

@@ -16,7 +16,8 @@ import {
 import { Blogs } from "../../../components/lazyLoading/admin/AdminLazyLoadingComponents";
 import {
   Login,
-  SignUp,
+  SignUpContainer,
+  UserSignUp,
 } from "../../../components/lazyLoading/auth/AuthLazyComponents";
 
 export function GuestPageLayout() {
@@ -31,6 +32,8 @@ export function GuestPageLayout() {
     openSubNavLinks,
     setOpenUserActions,
     openUserActions,
+    setOpenSignUpActions,
+    openSignUpActions,
     setOpenMenuLinks,
     openMenuLinks,
   } = useOutletContext();
@@ -45,11 +48,11 @@ export function GuestPageLayout() {
     }
   };
   window.addEventListener("scroll", detectPageScroll);
-  console.log(window.scrollY);
 
   return (
     <Box>
-      <Stack
+      {/* School Logo */}
+      <Box
         direction="column"
         sx={{
           display: "flex",
@@ -87,14 +90,15 @@ export function GuestPageLayout() {
             </Typography>
           </Box>
         </Box>
-      </Stack>
+      </Box>
+      {/* Main navbar links */}
       <Box
         sx={{
           position: "sticky",
           top: 0,
           backgroundColor: "#fff",
           padding: 0,
-          zIndex: 10000,
+          zIndex: 1,
         }}
       >
         <NavigationBar
@@ -102,6 +106,8 @@ export function GuestPageLayout() {
           openSubNavLinks={openSubNavLinks}
           setOpenUserActions={setOpenUserActions}
           openUserActions={openUserActions}
+          setOpenSignUpActions={setOpenSignUpActions}
+          openSignUpActions={openSignUpActions}
           setOpenMenuLinks={setOpenMenuLinks}
           openMenuLinks={openMenuLinks}
           currentAction={currentAction}
@@ -114,7 +120,7 @@ export function GuestPageLayout() {
       {currentGuestPage === "about" && <About />}
       {currentGuestPage === "courses" && <Courses />}
       {currentGuestPage === "contact" && <Contact />}
-      {currentGuestPage === "sign_up" && <SignUp />}
+      {currentGuestPage === "sign_up" && <SignUpContainer />}
       {currentGuestPage === "login" && <Login />}
     </Box>
   );

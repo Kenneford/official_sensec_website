@@ -2,7 +2,7 @@
 @use "../../utilities/sizes";
 
 .navbarWrap {
-  z-index: 3;
+  // z-index: 3;
   .expandMoreIcon {
   }
   #navLinksWrap {
@@ -129,7 +129,7 @@
     position: absolute;
     // min-width: 10rem;
     // min-height: 7rem;
-    top: 80%;
+    top: 7rem;
     left: 0;
     display: flex;
     flex-direction: column;
@@ -138,7 +138,7 @@
     // margin-left: 1rem;
     border-radius: 0.4rem;
     transition: 0.4s ease;
-    z-index: 1;
+    z-index: 3;
     // opacity: 0.9;
     .menuListSelected {
       display: flex;
@@ -326,7 +326,7 @@
     }
     .loginOptions {
       position: absolute;
-      top: 265%;
+      top: 2.2rem;
       right: 0;
       width: fit-content;
       flex-direction: column;
@@ -382,6 +382,53 @@
         }
       }
     }
+    .signUpOptions {
+      position: absolute;
+      top: 2.2rem;
+      right: 0;
+      width: fit-content;
+      flex-direction: column;
+      gap: 0;
+      display: block;
+      border-radius: 0.4rem;
+      // position: absolute;
+      // width: 12rem;
+      // margin-top: 2rem;
+      // z-index: 1;
+      // background-color: #292929;
+      z-index: 1;
+      .signUpWrap {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.8em;
+        background-color: #292929;
+        color: #fff;
+        transition: 0.4s ease;
+        cursor: pointer;
+        animation: animateNavItems 400ms linear forwards;
+        transform-origin: top right;
+        opacity: 0;
+        padding: 0.7em;
+        border-top: 1px solid #ccc;
+        .signUpIcon {
+          color: #0aca0a;
+          margin-left: 1em;
+        }
+        &:hover {
+          background-color: #323232;
+        }
+        &:nth-child(1) {
+          animation-delay: 200ms;
+          // border-radius: 0.4rem 0.4rem 0 0;
+          border-top: unset;
+        }
+        &:nth-child(2) {
+          animation-delay: 300ms;
+          border-radius: 0 0 0.4rem 0.4rem;
+        }
+      }
+    }
     @keyframes animateNavItems {
       0% {
         transform: rotateY(-90deg) rotateX(90deg) scale(0.1);
@@ -390,15 +437,6 @@
         transform: rotateY(0) rotateX(0) scale(1);
         opacity: 1;
       }
-    }
-  }
-  @keyframes animateNavItems {
-    0% {
-      transform: rotateY(-90deg) rotateX(90deg) scale(0.1);
-    }
-    100% {
-      transform: rotateY(0) rotateX(0) scale(1);
-      opacity: 1;
     }
   }
   @keyframes animateNavMenuItems {

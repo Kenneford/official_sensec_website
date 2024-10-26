@@ -34,6 +34,8 @@ export function AdminDashboard() {
     openSubNavLinks,
     setOpenUserActions,
     openUserActions,
+    setOpenSignUpActions,
+    openSignUpActions,
     setOpenMenuLinks,
     openMenuLinks,
     isSidebarOpen,
@@ -141,6 +143,8 @@ export function AdminDashboard() {
           openSubNavLinks={openSubNavLinks}
           setOpenUserActions={setOpenUserActions}
           openUserActions={openUserActions}
+          setOpenSignUpActions={setOpenSignUpActions}
+          openSignUpActions={openSignUpActions}
           setOpenMenuLinks={setOpenMenuLinks}
           openMenuLinks={openMenuLinks}
           currentAction={currentAction}

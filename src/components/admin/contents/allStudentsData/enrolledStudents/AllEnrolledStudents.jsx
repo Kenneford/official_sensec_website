@@ -69,7 +69,7 @@ export function AllEnrolledStudents() {
   const [searchStudent, setSearchStudent] = useState("");
   const [multiStudents, setMultiStudents] = useState([]);
   const [openModal, setOpenModal] = useState(false);
-  const [redirecting, setRedirecting] = useState("");
+  const [redirecting, setRedirecting] = useState(false);
   const [uncompletedEmploymentTask, setUncompletedEmploymentTask] =
     useState("");
 
@@ -425,7 +425,7 @@ export function AllEnrolledStudents() {
                   item
                   xs={2.9}
                   sm={2}
-                  key={cLevel._id}
+                  key={cLevel.name}
                   onClick={() =>
                     navigate(
                       `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/${student_category}/${cLevel.name.replace(

@@ -18,6 +18,7 @@ import {
 } from "../lazyLoading/LazyComponents";
 import {
   AuthUserDashboard,
+  SignUpContainer,
   UserDashboardLayout,
 } from "../lazyLoading/auth/AuthLazyComponents";
 import {
@@ -56,12 +57,19 @@ export default function PageNavigation() {
             {
               path: ":currentGuestPage",
               element: <GuestPageLayout />,
-              // index: true,
+              children: [
+                {
+                  path: ":signUpAction",
+                  element: <SignUpContainer />,
+                },
+                { path: "*", element: <PageNotFound /> },
+              ],
             },
             {
               path: "sensec/frequently_asked_questions",
               element: <FrequentlyAskedQuestions />,
             },
+            { path: "*", element: <PageNotFound /> },
           ],
         },
         {
@@ -128,12 +136,14 @@ export default function PageNavigation() {
                       path: ":student_category/:class_level",
                       element: <ClassLevelStudentsContainer />,
                     },
+                    { path: "*", element: <PageNotFound /> },
                   ],
                 },
+                { path: "*", element: <PageNotFound /> },
               ],
             },
             {
-              path: "page_not_found/404_ERROR",
+              path: "*",
               element: <PageNotFoundError />,
             },
           ],

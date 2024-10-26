@@ -13,6 +13,8 @@ export function AuthUserDashboard() {
     openSubNavLinks,
     setOpenUserActions,
     openUserActions,
+    setOpenSignUpActions,
+    openSignUpActions,
     setOpenMenuLinks,
     openMenuLinks,
   } = useOutletContext();
@@ -29,6 +31,8 @@ export function AuthUserDashboard() {
         openSubNavLinks,
         setOpenUserActions,
         openUserActions,
+        setOpenSignUpActions,
+        openSignUpActions,
         setOpenMenuLinks,
         openMenuLinks,
       }}

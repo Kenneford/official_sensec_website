@@ -11,6 +11,8 @@ export function UserDashboardLayout() {
     openSubNavLinks,
     setOpenUserActions,
     openUserActions,
+    setOpenSignUpActions,
+    openSignUpActions,
     setOpenMenuLinks,
     openMenuLinks,
   } = useOutletContext();
@@ -61,6 +63,8 @@ export function UserDashboardLayout() {
           openSubNavLinks,
           setOpenUserActions,
           openUserActions,
+          setOpenSignUpActions,
+          openSignUpActions,
           setOpenMenuLinks,
           openMenuLinks,
         }}

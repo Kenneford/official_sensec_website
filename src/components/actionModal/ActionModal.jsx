@@ -128,7 +128,7 @@ export default function ActionModal({
   );
 }
 ActionModal.propTypes = {
-  open: PropTypes.func,
+  open: PropTypes.bool,
   onClose: PropTypes.func,
   handleNewEmployment: PropTypes.func,
   redirecting: PropTypes.bool,

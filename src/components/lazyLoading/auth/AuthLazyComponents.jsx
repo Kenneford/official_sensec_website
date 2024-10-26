@@ -18,13 +18,29 @@ export const UserDashboardLayout = lazyWithSuspense(
   <PageLoading />,
   "UserDashboardLayout"
 );
-export const SignUp = lazyWithSuspense(
+export const SignUpContainer = lazyWithSuspense(
   () =>
-    import("../../../pages/auth/user.signUp/SignUp").then((module) => {
-      return { default: module.SignUp };
+    import("../../../pages/auth/user.signUp/SignUpContainer").then((module) => {
+      return { default: module.SignUpContainer };
     }),
   <PageLoading />,
-  "SignUpPage"
+  "SignUpContainerComponent"
+);
+export const UserSignUp = lazyWithSuspense(
+  () =>
+    import("../../../pages/auth/user.signUp/UserSignUp").then((module) => {
+      return { default: module.UserSignUp };
+    }),
+  <PageLoading />,
+  "UserSignUpPage"
+);
+export const StudentsSignUp = lazyWithSuspense(
+  () =>
+    import("../../../pages/auth/user.signUp/StudentsSignUp").then((module) => {
+      return { default: module.StudentsSignUp };
+    }),
+  <PageLoading />,
+  "StudentsSignUpPage"
 );
 export const Login = lazyWithSuspense(
   () =>

@@ -200,7 +200,7 @@ export function AdminDashboardOverview() {
               <div className="card">
                 <h3>Total Students</h3>
                 <HashLink
-                  to={`/sensec/users/admin/Users/Students/Enrolled`}
+                  to={`/sensec/users/admin/User_Types/Students/Enrolled`}
                   className="cardInfo"
                 >
                   <div className="cardInfoIcons">
@@ -214,7 +214,7 @@ export function AdminDashboardOverview() {
                   <div className="cardTotal">13</div>
                 </HashLink>
                 <HashLink
-                  to={`/sensec/users/admin/Users/Students/Pending_Students`}
+                  to={`/sensec/users/admin/User_Types/Students/Pending_Students`}
                   className="pending"
                 >
                   <h4>Pending Student(s)</h4>
