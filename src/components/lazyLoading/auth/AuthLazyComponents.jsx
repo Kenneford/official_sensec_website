@@ -42,6 +42,30 @@ export const StudentsSignUp = lazyWithSuspense(
   <PageLoading />,
   "StudentsSignUpPage"
 );
+export const Verification = lazyWithSuspense(
+  () =>
+    import("../../emails/Verification").then((module) => {
+      return { default: module.Verification };
+    }),
+  <PageLoading />,
+  "VerificationPage"
+);
+export const ConfirmVerification = lazyWithSuspense(
+  () =>
+    import("../../emails/pages/ConfirmVerification").then((module) => {
+      return { default: module.ConfirmVerification };
+    }),
+  <PageLoading />,
+  "ConfirmVerificationComponent"
+);
+export const VerificationTimeOut = lazyWithSuspense(
+  () =>
+    import("../../emails/pages/VerificationTimeOut").then((module) => {
+      return { default: module.VerificationTimeOut };
+    }),
+  <PageLoading />,
+  "VerificationTimeOutComponent"
+);
 export const Login = lazyWithSuspense(
   () =>
     import("../../../pages/auth/user.login/Login").then((module) => {

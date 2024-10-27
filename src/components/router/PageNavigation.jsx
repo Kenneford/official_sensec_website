@@ -20,6 +20,7 @@ import {
   AuthUserDashboard,
   SignUpContainer,
   UserDashboardLayout,
+  Verification,
 } from "../lazyLoading/auth/AuthLazyComponents";
 import {
   AdminAttendance,
@@ -40,7 +41,7 @@ export default function PageNavigation() {
     if (userInfo?.isLecturer) return "lecturer";
     if (userInfo?.isStudent) return "student";
     if (userInfo?.isNTStaff) return "nt_staff";
-    return "page_not_found/404_ERROR";
+    return "*";
   };
   const userRolePath = getUserRolePath();
 
@@ -65,12 +66,12 @@ export default function PageNavigation() {
                 { path: "*", element: <PageNotFound /> },
               ],
             },
-            {
-              path: "sensec/frequently_asked_questions",
-              element: <FrequentlyAskedQuestions />,
-            },
-            { path: "*", element: <PageNotFound /> },
+            // { path: "*", element: <PageNotFound /> },
           ],
+        },
+        {
+          path: "sensec/email/:uniqueId/:emailToken/verify",
+          element: <Verification />,
         },
         {
           path: "sensec/students/enrollment",
