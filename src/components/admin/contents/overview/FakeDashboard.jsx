@@ -1,243 +1,73 @@
-import React from "react";
-
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
-  Box,
-  CssBaseline,
-  AppBar,
-  Toolbar,
-  Typography,
-  Drawer,
-  List,
-  ListItem,
-  ListItemText,
+  TextField,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Select,
 } from "@mui/material";
-import { BarChart } from "@mui/x-charts";
+import { fetchAllProgrammes } from "../../../../features/academics/programmeSlice";
 
-const drawerWidth = 240;
+export default function AttendancePage() {
+  // const dispatch = useDispatch();
+  // const { allProgrammes, loading } = useSelector((state) => state.programme);
+  // const [selectedUserId, setSelectedUserId] = React.useState("");
 
-const data = [
-  { category: "Jan", sales: 400 },
-  { category: "Feb", sales: 300 },
-  { category: "Mar", sales: 500 },
-  { category: "Apr", sales: 700 },
-  { category: "May", sales: 600 },
-];
+  // useEffect(() => {
+  //   dispatch(fetchAllProgrammes());
+  // }, [dispatch]);
 
-export default function FakeDashboard() {
+  // return (
+  //   <TextField
+  //     select
+  //     label="Select User"
+  //     value={selectedUserId}
+  //     onChange={(e) => setSelectedUserId(e.target.value)}
+  //     fullWidth
+  //     disabled={loading}
+  //   >
+  //     {loading ? (
+  //       <MenuItem disabled>Loading...</MenuItem>
+  //     ) : (
+  //       allProgrammes.map((user) => (
+  //         <MenuItem key={user._id} value={user.id}>
+  //           {user.name}
+  //         </MenuItem>
+  //       ))
+  //     )}
+  //   </TextField>
+  // );
+
+  const getAcademicYears = () => {
+    const startYear = 2023;
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth();
+
+    // If the current month is September or later, increment the end year for the academic range
+    const endYear = currentMonth >= 8 ? currentYear : currentYear - 1;
+    const academicYears = [];
+
+    // Generate academic years from 2020 up to the calculated end year
+    for (let year = startYear; year <= endYear; year++) {
+      academicYears.push(`${year}/${year + 1}`);
+    }
+
+    return academicYears;
+  };
+
+  const academicYears = getAcademicYears();
+
   return (
-    <Box sx={{ display: "flex" }}>
-      <CssBaseline />
-      {/* Header */}
-      <AppBar
-        position="fixed"
-        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
-      >
-        <Toolbar>
-          <Typography variant="h6" noWrap component="div">
-            Admin Dashboard
-          </Typography>
-        </Toolbar>
-      </AppBar>
-
-      {/* Sidebar */}
-      <Drawer
-        variant="permanent"
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          [`& .MuiDrawer-paper`]: {
-            width: drawerWidth,
-            boxSizing: "border-box",
-          },
-        }}
-      >
-        <Toolbar />
-        <Box sx={{ overflow: "auto" }}>
-          <List>
-            {["Home", "Reports", "Analytics", "Users"].map((text, index) => (
-              <ListItem button key={text}>
-                <ListItemText primary={text} />
-              </ListItem>
-            ))}
-          </List>
-        </Box>
-      </Drawer>
-
-      {/* Main Content */}
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          bgcolor: "background.default",
-          p: 3,
-          marginLeft: `${drawerWidth}px`,
-        }}
-      >
-        <Toolbar />
-        <Typography variant="h4" gutterBottom>
-          Sales Data
-        </Typography>
-
-        {/* Bar Chart */}
-        <BarChart
-          width={600}
-          height={400}
-          data={data} // Use the entire data array
-          xField="category" // Use the category as x-axis field
-          yField="sales" // Use the sales as y-axis field
-          series={[{ name: "Sales", data: data.map((item) => item.sales) }]} // Remove explicit xAxis and yAxis props
-          label={{
-            formatter: (item) => `${item}`,
-            position: "top",
-          }}
-        />
-      </Box>
-    </Box>
-    // <Box sx={{ display: "flex" }}>
-    //   <CssBaseline />
-    //   {/* Header */}
-    //   <AppBar
-    //     position="fixed"
-    //     sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
-    //   >
-    //     <Toolbar>
-    //       <Typography variant="h6" noWrap component="div">
-    //         Admin Dashboard
-    //       </Typography>
-    //     </Toolbar>
-    //   </AppBar>
-
-    //   {/* Sidebar */}
-    //   <Drawer
-    //     variant="permanent"
-    //     sx={{
-    //       width: drawerWidth,
-    //       flexShrink: 0,
-    //       [`& .MuiDrawer-paper`]: {
-    //         width: drawerWidth,
-    //         boxSizing: "border-box",
-    //       },
-    //     }}
-    //   >
-    //     <Toolbar />
-    //     <Box sx={{ overflow: "auto" }}>
-    //       <List>
-    //         {["Home", "Reports", "Analytics", "Users"].map((text, index) => (
-    //           <ListItem button key={text}>
-    //             <ListItemText primary={text} />
-    //           </ListItem>
-    //         ))}
-    //       </List>
-    //     </Box>
-    //   </Drawer>
-
-    //   {/* Main Content */}
-    //   <Box
-    //     component="main"
-    //     sx={{
-    //       flexGrow: 1,
-    //       bgcolor: "background.default",
-    //       p: 3,
-    //       marginLeft: `${drawerWidth}px`,
-    //     }}
-    //   >
-    //     <Toolbar />
-    //     <Typography variant="h4" gutterBottom>
-    //       Sales Data
-    //     </Typography>
-
-    //     {/* Bar Chart */}
-    //     <BarChart
-    //       width={600}
-    //       height={400}
-    //       series={[
-    //         {
-    //           data: data.map((item) => item.sales),
-    //           label: "Sales",
-    //         },
-    //       ]}
-    //       xAxis={[
-    //         {
-    //           data: data.map((item) => item.category),
-    //           label: "Month",
-    //           // type: 'band', // Removed to see if default config works
-    //         },
-    //       ]}
-    //     />
-    //   </Box>
-    // </Box>
-    // <Box sx={{ display: "flex" }}>
-    //   <CssBaseline />
-    //   {/* Header */}
-    //   <AppBar
-    //     position="fixed"
-    //     sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
-    //   >
-    //     <Toolbar>
-    //       <Typography variant="h6" noWrap component="div">
-    //         Admin Dashboard
-    //       </Typography>
-    //     </Toolbar>
-    //   </AppBar>
-
-    //   {/* Sidebar */}
-    //   <Drawer
-    //     variant="permanent"
-    //     sx={{
-    //       width: drawerWidth,
-    //       flexShrink: 0,
-    //       [`& .MuiDrawer-paper`]: {
-    //         width: drawerWidth,
-    //         boxSizing: "border-box",
-    //       },
-    //     }}
-    //   >
-    //     <Toolbar />
-    //     <Box sx={{ overflow: "auto" }}>
-    //       <List>
-    //         {["Home", "Reports", "Analytics", "Users"].map((text, index) => (
-    //           <ListItem button key={text}>
-    //             <ListItemText primary={text} />
-    //           </ListItem>
-    //         ))}
-    //       </List>
-    //     </Box>
-    //   </Drawer>
-
-    //   {/* Main Content */}
-    //   <Box
-    //     component="main"
-    //     sx={{
-    //       flexGrow: 1,
-    //       bgcolor: "background.default",
-    //       p: 3,
-    //       marginLeft: `${drawerWidth}px`,
-    //     }}
-    //   >
-    //     <Toolbar />
-    //     <Typography variant="h4" gutterBottom>
-    //       Sales Data
-    //     </Typography>
-
-    //     {/* Bar Chart */}
-    //     <BarChart
-    //       width={600}
-    //       height={400}
-    //       series={[
-    //         {
-    //           data: data.map((item) => item.sales),
-    //           label: "Sales",
-    //         },
-    //       ]}
-    //       //   xAxis={[
-    //       //     {
-    //       //       data: data.map((item) => item.category),
-    //       //       label: "Month",
-    //       //       type: "band",
-    //       //     },
-    //       //   ]}
-    //     />
-    //   </Box>
-    // </Box>
+    <FormControl fullWidth>
+      <InputLabel>Academic Year</InputLabel>
+      <Select label="Academic Year">
+        {academicYears.map((year) => (
+          <MenuItem key={year} value={year}>
+            {year}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
   );
 }
