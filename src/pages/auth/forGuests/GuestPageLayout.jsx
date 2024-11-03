@@ -16,6 +16,7 @@ import {
 import { Blogs } from "../../../components/lazyLoading/admin/AdminLazyLoadingComponents";
 import {
   Login,
+  LoginOptions,
   SignUpContainer,
   UserSignUp,
 } from "../../../components/lazyLoading/auth/AuthLazyComponents";
@@ -122,6 +123,7 @@ export function GuestPageLayout() {
       {currentGuestPage === "contact" && <Contact />}
       {currentGuestPage === "sign_up" && <SignUpContainer />}
       {currentGuestPage === "login" && <Login />}
+      {currentGuestPage === "login_options" && <LoginOptions />}
     </Box>
   );
 }
