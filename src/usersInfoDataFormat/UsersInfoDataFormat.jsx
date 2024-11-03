@@ -1,18 +1,16 @@
-// import React from "react";
-// import { Link } from "react-router-dom";
-// import { HashLink } from "react-router-hash-link";
-// import EditIcon from "@mui/icons-material/Edit";
-// import Redirection from "../pageLoading/Redirection";
-// import TaskAltIcon from "@mui/icons-material/TaskAlt";
-// import HowToRegIcon from "@mui/icons-material/HowToReg";
-// import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
-// import SchoolOutlinedIcon from "@mui/icons-material/SchoolOutlined";
-// import DirectionsIcon from "@mui/icons-material/Directions";
-// import AssistantDirectionIcon from "@mui/icons-material/AssistantDirection";
+import React from "react";
+import { Link } from "react-router-dom";
+import { HashLink } from "react-router-hash-link";
+import EditIcon from "@mui/icons-material/Edit";
+import TaskAltIcon from "@mui/icons-material/TaskAlt";
+import HowToRegIcon from "@mui/icons-material/HowToReg";
+import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
+import SchoolOutlinedIcon from "@mui/icons-material/SchoolOutlined";
+import DirectionsIcon from "@mui/icons-material/Directions";
+import AssistantDirectionIcon from "@mui/icons-material/AssistantDirection";
 // import { approveAdminEmployment } from "../../features/admin/adminsSlice";
-// import axios from "axios";
+import axios from "axios";
 // import { API_ENDPOINT } from "../../apiEndPoint/api";
-// import { dateFormatter } from "../../dateFormatter/DateFormatter";
 // import {
 //   approvedStudentEnrollment,
 //   graduateStudent,
@@ -28,6 +26,7 @@
 // import ApproveEmploymentModal from "../approvalModal/ApproveEmploymentModal";
 // import ApproveEnrollmentModal from "../approvalModal/ApproveEnrollmentModal";
 // import RejectionModal from "../approvalModal/RejectionModal";
+import { dateFormatter } from "../dateFormatter/DateFormatter";
 
 // const adminsColumn = (
 //   setCurrentStudentId,
@@ -877,277 +876,284 @@
 //   ];
 //   return studentColumn;
 // };
-// const studentsColumn = (
-//   userInfo,
-//   foundStudent,
-//   adminCurrentAction,
-//   adminCurrentLink,
-//   setCurrentStudentId,
-//   setLevel100LoadingComplete,
-//   setLevel200LoadingComplete,
-//   setLevel300LoadingComplete,
-//   level100loadingComplete,
-//   level200loadingComplete,
-//   level300loadingComplete,
-//   level100PromotionStatus,
-//   level200PromotionStatus,
-//   level300PromotionStatus,
-//   dispatch
-// ) => {
-//   const studentColumn = [
-//     {
-//       name: "Image",
-//       selector: (row) =>
-//         row?.personalInfo?.profilePicture ? (
-//           <HashLink
-//             to={`/sensec/admin/${adminCurrentAction}/${adminCurrentLink}/${row?.personalInfo?.firstName?.replace(
-//               / /g,
-//               "_"
-//             )}_${row?.personalInfo?.lastName}/${
-//               row?.uniqueId
-//             }/student_info#studentInfo`}
-//             title="View Student Info"
-//           >
-//             <img
-//               className="studentImg"
-//               src={
-//                 row?.personalInfo?.profilePicture?.url
-//                   ? row?.personalInfo?.profilePicture?.url
-//                   : row?.personalInfo?.profilePicture
-//               }
-//               alt=""
-//             />
-//           </HashLink>
-//         ) : (
-//           <HashLink
-//             className="noImgLink"
-//             to={`/sensec/admin/${adminCurrentAction}/${adminCurrentLink}/${row?.personalInfo?.firstName?.replace(
-//               / /g,
-//               "_"
-//             )}_${row?.personalInfo?.lastName}/${
-//               row?.personalInfo?.uniqueId
-//             }/student_info#studentInfo`}
-//             title="View Student Info"
-//           >
-//             {row?.personalInfo?.gender === "Male" && (
-//               <img
-//                 className="studentImg"
-//                 src={"/assets/maleAvatar.png"}
-//                 alt=""
-//               />
-//             )}
-//             {row?.personalInfo?.gender === "Female" && (
-//               <img
-//                 className="studentImg"
-//                 src={"/assets/femaleAvatar.png"}
-//                 alt=""
-//               />
-//             )}
-//             {row?.personalInfo?.gender === "" && (
-//               <div className="noImg">
-//                 <p>No</p>
-//                 <p>Image</p>
-//               </div>
-//             )}
-//           </HashLink>
-//         ),
-//     },
-//     {
-//       name: "First Name",
-//       selector: (row) => row?.personalInfo?.firstName,
-//       sortable: true,
-//     },
-//     { name: "Surname", selector: (row) => row?.personalInfo?.lastName },
-//     {
-//       name: "Date Of Birth",
-//       selector: (row) =>
-//         row?.personalInfo?.dateOfBirth
-//           ? dateFormatter.format(new Date(row?.personalInfo?.dateOfBirth))
-//           : "---",
-//     },
-//     // {
-//     //   name: "Program",
-//     //   selector: (row) =>
-//     //     row?.studentSchoolData ? row.studentSchoolData?.program?.name : "---",
-//     // },
-//     // {
-//     //   name: "Student-ID",
-//     //   selector: (row) => row?.uniqueId,
-//     //   sortable: true,
-//     // },
-//     // {
-//     //   name: "Email",
-//     //   selector: (row) =>
-//     //     row?.contactAddress?.email ? row?.contactAddress?.email : "---",
-//     // },
-//     // {
-//     //   name: "Enrolled Date",
-//     //   selector: (row) =>
-//     //     dateFormatter.format(new Date(row?.studentStatusExtend?.dateEnrolled)),
-//     // },
-//     // {
-//     //   name: "Batch",
-//     //   selector: (row) =>
-//     //     row.studentSchoolData?.batch?.yearRange
-//     //       ? `${row?.studentSchoolData?.batch?.yearRange.replace(/-/g, "/")}`
-//     //       : "---",
-//     // },
-//     // {
-//     //   name: "Level",
-//     //   selector: (row) =>
-//     //     row.studentSchoolData?.currentClassLevel && (
-//     //       <div className="tableClassLevel">
-//     //         {row.studentSchoolData?.currentClassLevel?.name === "Level 100" && (
-//     //           <div className="firstYearTag" title="1st Year">
-//     //             1
-//     //           </div>
-//     //         )}
-//     //         {row.studentSchoolData?.currentClassLevel?.name === "Level 200" && (
-//     //           <div className="secondYearTag" title="2nd Year">
-//     //             2
-//     //           </div>
-//     //         )}
-//     //         {row.studentSchoolData?.currentClassLevel?.name === "Level 300" &&
-//     //           !row.isGraduated && (
-//     //             <div className="thirdYearTag" title="3rd Year">
-//     //               3
-//     //             </div>
-//     //           )}
-//     //         {row.isGraduated && (
-//     //           <div className="isGraduated" title="Graduated">
-//     //             <SchoolOutlinedIcon />
-//     //           </div>
-//     //         )}
-//     //       </div>
-//     //     ),
-//     // },
-//     // {
-//     //   name: "Promote",
-//     //   selector: (row) =>
-//     //     row?.studentSchoolData?.currentClassLevel && (
-//     //       <>
-//     //         {row?.studentSchoolData?.currentClassLevel?.name ===
-//     //           "Level 100" && (
-//     //           <Link
-//     //             className="editLink"
-//     //             onClick={async () => {
-//     //               setLevel100LoadingComplete(false);
-//     //               setCurrentStudentId(row._id);
-//     //               dispatch(
-//     //                 promotingToLevel200({
-//     //                   uniqueId: row.uniqueId,
-//     //                   lastPromotedBy: `${userInfo.id}`,
-//     //                 })
-//     //               );
-//     //             }}
-//     //           >
-//     //             {foundStudent && foundStudent._id === row._id && (
-//     //               <>
-//     //                 {level100loadingComplete === false && "Processing..."}
-//     //                 {level100loadingComplete &&
-//     //                   level100PromotionStatus === "success" && (
-//     //                     <>
-//     //                       <span style={{ color: "green" }}>Promoted</span>{" "}
-//     //                       <TaskAltIcon style={{ color: "green" }} />
-//     //                     </>
-//     //                   )}
-//     //               </>
-//     //             )}
-//     //             <>
-//     //               {level100loadingComplete === null && "P-L200"}
-//     //               {row._id !== foundStudent?._id &&
-//     //                 level100loadingComplete !== null &&
-//     //                 "P-L200"}
-//     //             </>
-//     //           </Link>
-//     //         )}
-//     //         {row?.studentSchoolData?.currentClassLevel?.name ===
-//     //           "Level 200" && (
-//     //           <Link
-//     //             className="editLink"
-//     //             onClick={async () => {
-//     //               setLevel200LoadingComplete(false);
-//     //               setCurrentStudentId(row._id);
-//     //               dispatch(
-//     //                 promotingToLevel300({
-//     //                   uniqueId: row.uniqueId,
-//     //                   lastPromotedBy: `${userInfo.id}`,
-//     //                 })
-//     //               );
-//     //             }}
-//     //           >
-//     //             {foundStudent && foundStudent._id === row._id && (
-//     //               <>
-//     //                 {level200loadingComplete === false && "Processing..."}
-//     //                 {level200loadingComplete &&
-//     //                   level200PromotionStatus === "success" && (
-//     //                     <>
-//     //                       <span style={{ color: "green" }}>Promoted</span>{" "}
-//     //                       <TaskAltIcon style={{ color: "green" }} />
-//     //                     </>
-//     //                   )}
-//     //               </>
-//     //             )}
-//     //             <>
-//     //               {level200loadingComplete === null && "P-L300"}
-//     //               {row._id !== foundStudent?._id &&
-//     //                 level200loadingComplete !== null &&
-//     //                 "P-L300"}
-//     //             </>
-//     //           </Link>
-//     //         )}
-//     //         {row?.studentSchoolData?.currentClassLevel?.name ===
-//     //           "Level 300" && (
-//     //           <Link
-//     //             className="editLink"
-//     //             onClick={async () => {
-//     //               setLevel300LoadingComplete(false);
-//     //               setCurrentStudentId(row._id);
-//     //               dispatch(
-//     //                 graduateStudent({
-//     //                   uniqueId: row.uniqueId,
-//     //                   lastPromotedBy: `${userInfo.id}`,
-//     //                 })
-//     //               );
-//     //             }}
-//     //           >
-//     //             {foundStudent && foundStudent._id === row._id && (
-//     //               <>
-//     //                 {level300loadingComplete === false && "Processing..."}
-//     //                 {level300loadingComplete &&
-//     //                   level300PromotionStatus === "success" && (
-//     //                     <>
-//     //                       <span style={{ color: "green" }}>Graduated</span>{" "}
-//     //                       <TaskAltIcon style={{ color: "green" }} />
-//     //                     </>
-//     //                   )}
-//     //               </>
-//     //             )}
-//     //             <>
-//     //               {level300loadingComplete === null && "Graduate"}
-//     //               {row._id !== foundStudent?._id &&
-//     //                 level300loadingComplete !== null &&
-//     //                 "Graduate"}
-//     //             </>
-//     //           </Link>
-//     //         )}
-//     //       </>
-//     //     ),
-//     // },
-//     // {
-//     //   name: "Edit",
-//     //   selector: (row) => (
-//     //     <Link
-//     //       className="editLink"
-//     //       to={`/sensec/admin/${adminCurrentAction}/${adminCurrentLink}/${row.personalInfo?.firstName}_${row.personalInfo?.lastName}/${row.uniqueId}/update`}
-//     //     >
-//     //       <EditIcon />
-//     //     </Link>
-//     //   ),
-//     // },
-//   ];
-//   return studentColumn;
-// };
+const studentsColumn = (
+  userInfo,
+  foundStudent,
+  adminCurrentAction,
+  adminCurrentLink,
+  setCurrentStudentId,
+  setLevel100LoadingComplete,
+  setLevel200LoadingComplete,
+  setLevel300LoadingComplete,
+  level100loadingComplete,
+  level200loadingComplete,
+  level300loadingComplete,
+  level100PromotionStatus,
+  level200PromotionStatus,
+  level300PromotionStatus,
+  dispatch
+) => {
+  const studentColumn = [
+    {
+      name: "Image",
+      selector: (row) =>
+        row?.personalInfo?.profilePicture ? (
+          <HashLink
+            to={`/sensec/admin/${adminCurrentAction}/${adminCurrentLink}/${row?.personalInfo?.firstName?.replace(
+              / /g,
+              "_"
+            )}_${row?.personalInfo?.lastName}/${
+              row?.uniqueId
+            }/student_info#studentInfo`}
+            title="View Student Info"
+          >
+            <img
+              className="studentImg"
+              src={
+                row?.personalInfo?.profilePicture?.url
+                  ? row?.personalInfo?.profilePicture?.url
+                  : row?.personalInfo?.profilePicture
+              }
+              alt=""
+            />
+          </HashLink>
+        ) : (
+          <HashLink
+            className="noImgLink"
+            to={`/sensec/admin/${adminCurrentAction}/${adminCurrentLink}/${row?.personalInfo?.firstName?.replace(
+              / /g,
+              "_"
+            )}_${row?.personalInfo?.lastName}/${
+              row?.personalInfo?.uniqueId
+            }/student_info#studentInfo`}
+            title="View Student Info"
+          >
+            {row?.personalInfo?.gender === "Male" && (
+              <img
+                className="studentImg"
+                src={"/assets/maleAvatar.png"}
+                alt=""
+              />
+            )}
+            {row?.personalInfo?.gender === "Female" && (
+              <img
+                className="studentImg"
+                src={"/assets/femaleAvatar.png"}
+                alt=""
+              />
+            )}
+            {row?.personalInfo?.gender === "" && (
+              <div className="noImg">
+                <p>No</p>
+                <p>Image</p>
+              </div>
+            )}
+          </HashLink>
+        ),
+    },
+    {
+      name: "First Name",
+      selector: (row) => row?.personalInfo?.firstName,
+      sortable: true,
+    },
+    { name: "Surname", selector: (row) => row?.personalInfo?.lastName },
+    {
+      name: "Date Of Birth",
+      selector: (row) => (
+        <p
+          title={dateFormatter?.format(
+            new Date(row?.personalInfo?.dateOfBirth)
+          )}
+        >
+          {row?.personalInfo?.dateOfBirth
+            ? dateFormatter.format(new Date(row?.personalInfo?.dateOfBirth))
+            : "---"}
+        </p>
+      ),
+    },
+    {
+      name: "Program",
+      selector: (row) =>
+        row?.studentSchoolData ? row.studentSchoolData?.program?.name : "---",
+    },
+    {
+      name: "Student-ID",
+      selector: (row) => row?.uniqueId,
+      sortable: true,
+    },
+    {
+      name: "Email",
+      selector: (row) =>
+        row?.contactAddress?.email ? row?.contactAddress?.email : "---",
+    },
+    {
+      name: "Enrolled Date",
+      selector: (row) =>
+        dateFormatter.format(new Date(row?.studentStatusExtend?.dateEnrolled)),
+    },
+    {
+      name: "Batch",
+      selector: (row) =>
+        row.studentSchoolData?.batch?.yearRange
+          ? `${row?.studentSchoolData?.batch?.yearRange.replace(/-/g, "/")}`
+          : "---",
+    },
+    {
+      name: "Level",
+      selector: (row) =>
+        row.studentSchoolData?.currentClassLevel && (
+          <div className="tableClassLevel">
+            {row.studentSchoolData?.currentClassLevel?.name === "Level 100" && (
+              <div className="firstYearTag" title="1st Year">
+                1
+              </div>
+            )}
+            {row.studentSchoolData?.currentClassLevel?.name === "Level 200" && (
+              <div className="secondYearTag" title="2nd Year">
+                2
+              </div>
+            )}
+            {row.studentSchoolData?.currentClassLevel?.name === "Level 300" &&
+              !row.isGraduated && (
+                <div className="thirdYearTag" title="3rd Year">
+                  3
+                </div>
+              )}
+            {row.isGraduated && (
+              <div className="isGraduated" title="Graduated">
+                <SchoolOutlinedIcon />
+              </div>
+            )}
+          </div>
+        ),
+    },
+    {
+      name: "Promote",
+      selector: (row) =>
+        row?.studentSchoolData?.currentClassLevel && (
+          <>
+            {row?.studentSchoolData?.currentClassLevel?.name ===
+              "Level 100" && (
+              <Link
+                className="editLink"
+                onClick={async () => {
+                  setLevel100LoadingComplete(false);
+                  setCurrentStudentId(row._id);
+                  //   dispatch(
+                  //     promotingToLevel200({
+                  //       uniqueId: row.uniqueId,
+                  //       lastPromotedBy: `${userInfo.id}`,
+                  //     })
+                  //   );
+                }}
+              >
+                {foundStudent && foundStudent._id === row._id && (
+                  <>
+                    {level100loadingComplete === false && "Processing..."}
+                    {level100loadingComplete &&
+                      level100PromotionStatus === "success" && (
+                        <>
+                          <span style={{ color: "green" }}>Promoted</span>{" "}
+                          <TaskAltIcon style={{ color: "green" }} />
+                        </>
+                      )}
+                  </>
+                )}
+                <>
+                  {level100loadingComplete === null && "P-L200"}
+                  {row._id !== foundStudent?._id &&
+                    level100loadingComplete !== null &&
+                    "P-L200"}
+                </>
+              </Link>
+            )}
+            {row?.studentSchoolData?.currentClassLevel?.name ===
+              "Level 200" && (
+              <Link
+                className="editLink"
+                onClick={async () => {
+                  setLevel200LoadingComplete(false);
+                  setCurrentStudentId(row._id);
+                  //   dispatch(
+                  //     promotingToLevel300({
+                  //       uniqueId: row.uniqueId,
+                  //       lastPromotedBy: `${userInfo.id}`,
+                  //     })
+                  //   );
+                }}
+              >
+                {foundStudent && foundStudent._id === row._id && (
+                  <>
+                    {level200loadingComplete === false && "Processing..."}
+                    {level200loadingComplete &&
+                      level200PromotionStatus === "success" && (
+                        <>
+                          <span style={{ color: "green" }}>Promoted</span>{" "}
+                          <TaskAltIcon style={{ color: "green" }} />
+                        </>
+                      )}
+                  </>
+                )}
+                <>
+                  {level200loadingComplete === null && "P-L300"}
+                  {row._id !== foundStudent?._id &&
+                    level200loadingComplete !== null &&
+                    "P-L300"}
+                </>
+              </Link>
+            )}
+            {row?.studentSchoolData?.currentClassLevel?.name ===
+              "Level 300" && (
+              <Link
+                className="editLink"
+                onClick={async () => {
+                  setLevel300LoadingComplete(false);
+                  setCurrentStudentId(row._id);
+                  //   dispatch(
+                  //     graduateStudent({
+                  //       uniqueId: row.uniqueId,
+                  //       lastPromotedBy: `${userInfo.id}`,
+                  //     })
+                  //   );
+                }}
+              >
+                {foundStudent && foundStudent._id === row._id && (
+                  <>
+                    {level300loadingComplete === false && "Processing..."}
+                    {level300loadingComplete &&
+                      level300PromotionStatus === "success" && (
+                        <>
+                          <span style={{ color: "green" }}>Graduated</span>{" "}
+                          <TaskAltIcon style={{ color: "green" }} />
+                        </>
+                      )}
+                  </>
+                )}
+                <>
+                  {level300loadingComplete === null && "Graduate"}
+                  {row._id !== foundStudent?._id &&
+                    level300loadingComplete !== null &&
+                    "Graduate"}
+                </>
+              </Link>
+            )}
+          </>
+        ),
+    },
+    {
+      name: "Edit",
+      selector: (row) => (
+        <Link
+          className="editLink"
+          to={`/sensec/admin/${adminCurrentAction}/${adminCurrentLink}/${row.personalInfo?.firstName}_${row.personalInfo?.lastName}/${row.uniqueId}/update`}
+        >
+          <EditIcon />
+        </Link>
+      ),
+    },
+  ];
+  return studentColumn;
+};
 // const teachersColumn = (
 //   setCurrentStudentId,
 //   currentStudentId,
@@ -1689,7 +1695,6 @@
 //   ];
 //   return teachersDataFormat;
 // };
-
 // const nTStaffsColumn = (adminCurrentLink) => {
 //   const nTStaffsDataFormat = [
 //     {
@@ -1815,7 +1820,6 @@
 //   ];
 //   return nTStaffsDataFormat;
 // };
-
 // const pendingNTStaffsColumn = (
 //   setCurrentNTStaff,
 //   loadingComplete,
@@ -2055,7 +2059,6 @@
 //   ];
 //   return nTStaffsDataFormat;
 // };
-
 // const hangingNTStaffsColumn = (
 //   setCurrentStudentId,
 //   currentStudentId,
@@ -2388,7 +2391,6 @@
 //   ];
 //   return hangingEmploymentsColumn;
 // };
-
 // const graduatesColumn = () => {
 //   const graduatesColumn = [
 //     {
@@ -2500,19 +2502,19 @@
 //   return graduatesColumn;
 // };
 
-// export {
-//   adminsColumn,
-//   hangingAdminsColumn,
-//   pendingAdminsColumn,
-//   teachersColumn,
-//   pendingTeachersColumn,
-//   hangingTeachersColumn,
-//   studentsColumn,
-//   pendingStudentsColumn,
-//   courseMatesColumn,
-//   hangingEmploymentsColumn,
-//   graduatesColumn,
-//   nTStaffsColumn,
-//   pendingNTStaffsColumn,
-//   hangingNTStaffsColumn,
-// };
+export {
+  //   adminsColumn,
+  //   hangingAdminsColumn,
+  //   pendingAdminsColumn,
+  //   teachersColumn,
+  //   pendingTeachersColumn,
+  //   hangingTeachersColumn,
+  studentsColumn,
+  //   pendingStudentsColumn,
+  //   courseMatesColumn,
+  //   hangingEmploymentsColumn,
+  //   graduatesColumn,
+  //   nTStaffsColumn,
+  //   pendingNTStaffsColumn,
+  //   hangingNTStaffsColumn,
+};
