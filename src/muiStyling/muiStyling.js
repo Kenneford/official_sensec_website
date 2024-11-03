@@ -1,11 +1,14 @@
 import { styled, Toolbar, TextField, Box, Button } from "@mui/material";
-import { color } from "framer-motion";
 
 // Navbar Styling
 export const StyledNavbar = {
-  Navbar: styled(Toolbar)({
+  Navbar: styled(Box)({
+    minHeight: "3.5rem",
     display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: "green",
+    padding: "0 .5rem",
   }),
   CurrentUser: styled(Toolbar)({
     position: "relative",
@@ -69,6 +72,27 @@ export const ContainerBox = styled(Box)({
   flexDirection: "column",
 });
 export const CustomTextField = styled(TextField)({
+  "& .css-wq8qsl-MuiFormHelperText-root": {
+    // marginLeft: 0,
+    // position: "absolute",
+    // bottom: "-1.3rem",
+  },
+  // Select field
+  // "& .css-15k6ek6-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.css-15k6ek6-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.css-15k6ek6-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
+  //   {
+  //     padding: ".8rem",
+  //     marginTop: ".5rem",
+  //   },
+  // // Text field
+  // "& .css-1jk99ih-MuiInputBase-input-MuiOutlinedInput-input": {
+  //   padding: ".8rem",
+  //   marginTop: ".5rem",
+  // },
+  // // Password Input
+  // "& .css-lc42l8-MuiInputBase-input-MuiOutlinedInput-input": {
+  //   padding: ".8rem",
+  //   marginTop: ".5rem",
+  // },
   // Border styles for focused state
   "& .MuiOutlinedInput-root": {
     "&.Mui-focused fieldset": {
@@ -92,7 +116,31 @@ export const CustomTextField = styled(TextField)({
     color: "red", // Change the asterisk color to red
   },
 });
-
+export const CustomSearchField = styled(TextField)({
+  // width: "100%",
+  // Border styles for focused state
+  "& .MuiOutlinedInput-root": {
+    "&.Mui-focused fieldset": {
+      borderColor: "#454343ad", // Change focus border color
+      boxShadow: "2px 2px 3px 0px #454343ad",
+    },
+    // Border styles for hover
+    "&:hover fieldset": {
+      border: ".5px solid #454343ad", // Disable border on hover
+      boxShadow: "2px 2px 3px 0px #1a0505ad",
+    },
+  },
+  // Label color on focus
+  "& .MuiInputLabel-root.Mui-focused": {
+    fontSize: "1.05rem",
+    color: "#454343ad", // Custom focus label color
+    borderColor: "transparent",
+  },
+  // Target the required asterisk
+  "& .MuiInputLabel-asterisk": {
+    color: "red", // Change the asterisk color to red
+  },
+});
 export const PageNotFoundWrapBox = styled(Box)({
   width: "23em",
   padding: "0 1rem 3rem",
@@ -111,7 +159,6 @@ export const CustomizedButton = styled(Button)({
   fontSize: ".8em",
   letterSpacing: "1px",
 });
-
 export const SidebarSubLinksContainer = styled("div")(
   ({ theme, isExpanded, contentHeight }) => ({
     maxHeight: isExpanded ? `${contentHeight}px` : "0",
@@ -119,7 +166,6 @@ export const SidebarSubLinksContainer = styled("div")(
     transition: "max-height 0.5s ease-out",
   })
 );
-
 export const ExpandableTitleTextField = styled(TextField)(({ focused }) => ({
   transition: "width 0.3s ease",
   width: "100%",
@@ -146,4 +192,13 @@ export const ExpandableTitleTextField = styled(TextField)(({ focused }) => ({
   "& .MuiInputLabel-asterisk": {
     color: "red", // Change the asterisk color to red
   },
+}));
+export const FileInput = styled("input")({
+  display: "none",
+});
+export const StickyBox = styled(Box)(({ theme }) => ({
+  position: "sticky",
+  top: 0,
+  backgroundColor: "lightblue",
+  padding: theme.spacing(2),
 }));

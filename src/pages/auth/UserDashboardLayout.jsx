@@ -1,16 +1,21 @@
-import "./userDashboardLayout.scss";
 import SideBar from "../../components/sidebar/SideBar";
-import { Outlet } from "react-router-dom";
-import {
-  Box,
-  Button,
-  IconButton,
-  useMediaQuery,
-  useTheme,
-} from "@mui/material";
-import { useState } from "react";
+import { Outlet, useOutletContext } from "react-router-dom";
+import { Box, useMediaQuery, useTheme } from "@mui/material";
+import { useEffect, useState } from "react";
 
 export function UserDashboardLayout() {
+  const {
+    postOptions,
+    setPostOptions,
+    setOpenSubNavLinks,
+    openSubNavLinks,
+    setOpenUserActions,
+    openUserActions,
+    setOpenSignUpActions,
+    openSignUpActions,
+    setOpenMenuLinks,
+    openMenuLinks,
+  } = useOutletContext();
   // State to control sidebar open/close
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [currentAction, setCurrentAction] = useState("");
@@ -25,8 +30,16 @@ export function UserDashboardLayout() {
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
   };
+
+  useEffect(() => {
+    if (window.innerWidth <= 1024) {
+      setSidebarOpen(false);
+    }
+  }, [setSidebarOpen]);
+  console.log(isSidebarOpen);
+
   return (
-    <Box id="userDashboardWrap">
+    <Box id="userDashboardWrap" display={"flex"}>
       {!isMobile && (
         <SideBar
           isSidebarOpen={isSidebarOpen}
@@ -39,7 +52,22 @@ export function UserDashboardLayout() {
         />
       )}
       <Outlet
-        context={{ isSidebarOpen, isMobile, currentAction, setCurrentAction }}
+        context={{
+          isSidebarOpen,
+          isMobile,
+          currentAction,
+          setCurrentAction,
+          postOptions,
+          setPostOptions,
+          setOpenSubNavLinks,
+          openSubNavLinks,
+          setOpenUserActions,
+          openUserActions,
+          setOpenSignUpActions,
+          openSignUpActions,
+          setOpenMenuLinks,
+          openMenuLinks,
+        }}
       />
     </Box>
   );

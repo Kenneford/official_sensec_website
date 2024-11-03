@@ -1,0 +1,473 @@
+.adminAttendanceWrap {
+  font-size: calc(0.7rem + 1vmin);
+  overflow: unset;
+  .attendanceTogglingWrap {
+    background-color: #555;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    .attendanceTogglingBtn {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #fff;
+      .attendanceTogglingText,
+      .attendanceTogglingAction {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.3rem;
+      }
+      .attendanceTogglingAction {
+        min-width: 12rem;
+        border: 1px solid #fff;
+        padding: 0.2rem 0.5rem;
+        padding-right: 0.8rem;
+        border-radius: 0.4rem;
+        cursor: pointer;
+      }
+    }
+  }
+  .middleAttendance {
+    // display: flex;
+    // justify-content: center;
+    margin: 0 auto;
+    .attendanceForm {
+      width: 100%;
+      border: 1px solid #ccc;
+      margin: 2rem 0 1rem;
+      .attendanceSearch {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        // padding: 1rem 2rem 0;
+        .attTitle {
+          padding: unset;
+          font-size: 1.1em;
+          color: #555;
+        }
+        .openSearch {
+          background-color: transparent;
+          font-size: 0.8em;
+          letter-spacing: 1px;
+          font-weight: 600;
+          color: #555;
+          cursor: pointer;
+        }
+        .closeSearch {
+          background-color: transparent;
+          font-size: 0.8em;
+          letter-spacing: 1px;
+          font-weight: 600;
+          color: #da1b1b;
+          cursor: pointer;
+        }
+      }
+      .flex4 {
+        // display: flex;
+        // justify-content: space-between;
+        // padding: 2rem;
+        color: #696969;
+        .classlevelInfo,
+        .attendanceDate {
+          position: relative;
+          // display: flex;
+          // flex-direction: column;
+          // align-items: center;
+          font-size: 0.8em;
+          .attendanceDateInputBox {
+            max-width: 8rem;
+            padding: 0 0.5rem;
+            letter-spacing: 1.5px;
+            border-bottom: 1px solid #cccc;
+          }
+          .attCalendar {
+            // position: absolute;
+            // right: 0%;
+            // top: 4rem;
+            // background-color: #fff;
+            // border: 1px solid #555;
+            // border-radius: 0.4rem;
+            // z-index: 1;
+            // opacity: 0.9;
+            // .rdrMonths {
+            //   .rdrMonth {
+            //     .rdrWeekDays {
+            //       color: #1d3fe6;
+            //     }
+            //     .rdrDays {
+            //       button {
+            //         span {
+            //           // color: #ccc;
+            //           color: #06ab06;
+            //           .rdrDayNumber {
+            //             color: #06ab06;
+            //           }
+            //         }
+            //       }
+            //     }
+            //   }
+            // }
+            // span.rdrDayNumber {
+            // }
+          }
+        }
+        h4 {
+          padding-bottom: 0.5rem;
+        }
+      }
+      .searchAttBtn {
+        padding: 0.5rem;
+        background-color: #06ab06;
+        color: #fff;
+        font-size: 0.8em;
+        letter-spacing: 1px;
+        font-weight: 600;
+        cursor: pointer;
+        text-transform: capitalize;
+      }
+    }
+  }
+  .statusValueWrap {
+    // display: flex;
+  }
+  .noAttendanceRecord {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #da1b1b;
+    margin: 1rem 0;
+  }
+  // .studentSearch {
+  //   #search {
+  //     padding: 0.5rem;
+  //     width: 17rem;
+  //     border-radius: 0.3rem;
+  //     background-color: #696969;
+  //     color: #fff;
+  //     transition: 0.4s ease;
+  //     font-size: 1.1rem;
+  //     border: 1px transparent;
+  //     &::placeholder {
+  //       color: #fff;
+  //       font-size: 1rem;
+  //     }
+  //     &:focus {
+  //       width: 25rem;
+  //     }
+  //   }
+  //   .pendingSearch {
+  //     //   padding: 1rem 0;
+  //   }
+  //   .searchIcon {
+  //     position: absolute;
+  //     right: 2rem;
+  //     top: 1.5rem;
+  //     color: #fff;
+  //     cursor: pointer;
+  //   }
+  // }
+}
+// .attendanceWrap {
+//   .topAttendance {
+//     display: flex;
+//     justify-content: flex-end;
+//     padding: 0.3rem 2rem;
+//     background-color: #555;
+//     .takeViewAttendance {
+//       width: 60%;
+//       display: flex;
+//       justify-content: space-between;
+//       align-items: center;
+//       color: #fff;
+//       .attIcons {
+//         font-size: 1rem;
+//         margin-right: 0.2rem;
+//       }
+//       .textView {
+//         display: flex;
+//         align-items: center;
+//       }
+//       .actionWrap {
+//         display: flex;
+//         align-items: center;
+//         border: 1px solid #fff;
+//         padding: 0.2rem;
+//         border-radius: 0.4rem;
+//         cursor: pointer;
+//         .actionBtnView {
+//         }
+//       }
+//     }
+//   }
+//   .middleAttendance {
+//     display: flex;
+//     justify-content: center;
+//     .manageAttendance {
+//       width: 70%;
+//       border: 1px solid #ccc;
+//       margin: 2rem 0 1rem;
+//       .attendanceSearch {
+//         display: flex;
+//         justify-content: space-between;
+//         align-items: center;
+//         padding: 1rem 2rem 0;
+//         .attTitle {
+//           padding: unset;
+//         }
+//         .openSearch {
+//           background-color: transparent;
+//           font-size: 1.1rem;
+//           letter-spacing: 1px;
+//           font-weight: 600;
+//           color: #555;
+//           cursor: pointer;
+//         }
+//         .closeSearch {
+//           background-color: transparent;
+//           font-size: 1.1rem;
+//           letter-spacing: 1px;
+//           font-weight: 600;
+//           color: #da1b1b;
+//           cursor: pointer;
+//         }
+//       }
+//       .flex4 {
+//         display: flex;
+//         justify-content: space-between;
+//         padding: 2rem;
+//         .classlevelInfo,
+//         .attendanceDate {
+//           position: relative;
+//           display: flex;
+//           flex-direction: column;
+//           align-items: center;
+//           .attendanceDateInputBox {
+//             width: 7rem;
+//             padding: 0 0.5rem;
+//             font-size: 1rem;
+//             letter-spacing: 1.5px;
+//             border-bottom: 1px solid #cccc;
+//           }
+//           .attCalendar {
+//             position: absolute;
+//             right: 0%;
+//             top: 4rem;
+//             background-color: #fff;
+//             border: 1px solid #555;
+//             border-radius: 0.4rem;
+//             // opacity: 0.9;
+//             // .rdrMonths {
+//             //   .rdrMonth {
+//             //     .rdrWeekDays {
+//             //       color: #1d3fe6;
+//             //     }
+//             //     .rdrDays {
+//             //       button {
+//             //         span {
+//             //           // color: #ccc;
+//             //           color: #06ab06;
+//             //           .rdrDayNumber {
+//             //             color: #06ab06;
+//             //           }
+//             //         }
+//             //       }
+//             //     }
+//             //   }
+//             // }
+//             // span.rdrDayNumber {
+//             // }
+//           }
+//         }
+//         h4 {
+//           padding-bottom: 0.5rem;
+//         }
+//       }
+//       .searchAttBtn {
+//         padding: 0.5rem;
+//         background-color: #06ab06;
+//         color: #fff;
+//         font-size: 1.1rem;
+//         letter-spacing: 1px;
+//         font-weight: 600;
+//         cursor: pointer;
+//       }
+//     }
+//   }
+//   .manageActionWrap {
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+//     padding-bottom: 1rem;
+//     .manageActionBtn {
+//       padding: 0.5rem;
+//       border-radius: 0.4rem;
+//       background-color: #555;
+//       color: #fff;
+//       font-size: 1.2rem;
+//       cursor: pointer;
+//     }
+//   }
+//   .loader {
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+//     padding-bottom: 1rem;
+//     p {
+//       font-size: 1.2rem;
+//     }
+//   }
+//   .searchResult {
+//     width: 70%;
+//     margin: auto;
+//     display: flex;
+//     padding: 0.5rem;
+//     font-size: 1.2rem;
+//     // align-items: center;
+//     // justify-content: center;
+//   }
+//   .noSearchFound {
+//     width: 70%;
+//     margin: auto;
+//     display: flex;
+//     padding: 0.5rem;
+//     font-size: 1.2rem;
+//     color: #da1b1b;
+//   }
+//   .attendanceTable {
+//     display: flex;
+//     flex-direction: column;
+//     justify-content: center;
+//     align-items: center;
+//     padding: unset;
+//     table {
+//       border: 2px solid #ccc;
+//       width: 70%;
+//       margin-bottom: 3rem;
+//       //   height: 200px;
+//     }
+//     th {
+//       border: none;
+//       background-color: #555;
+//       color: #fff;
+//       padding: 1rem 0;
+//     }
+//     td {
+//       text-align: center;
+//       border-bottom: 1px solid #ccc;
+//       img {
+//         width: 3rem;
+//         height: 3rem;
+//         margin: 0.3rem 0.3rem 0;
+//         border-radius: 50%;
+//         object-fit: cover;
+//       }
+//     }
+//     .alignHeaderLeft {
+//       text-align: center;
+//       // padding: 1rem ;
+//       border: #555 1px solid;
+//     }
+//     .alignTextLeft {
+//       text-align: center;
+//       padding: 0 1rem;
+//       border: #555 1px solid;
+//     }
+//     .statusFlex {
+//       display: flex;
+//       text-align: left;
+//       padding: 1.15rem;
+//       border: #555 1px solid;
+//       height: inherit;
+//       gap: 1rem;
+//     }
+//     .statusWrap {
+//       display: flex;
+//       align-items: center;
+//       .status {
+//         display: flex;
+//         align-items: center;
+//         .statusActionBtn {
+//           display: flex;
+//           align-items: center;
+//           margin: 0 0.5rem;
+//           cursor: pointer;
+//           button {
+//             background-color: transparent;
+//             cursor: pointer;
+//           }
+//           &:nth-child(1) {
+//             background-color: #06ab06;
+//             padding: 0.3rem 0.5rem;
+//             border-radius: 0.4rem;
+//             button {
+//               color: #fff;
+//             }
+//           }
+//           &:nth-child(2) {
+//             background-color: rgb(249, 56, 56);
+//             padding: 0.3rem 0.5rem;
+//             border-radius: 0.4rem;
+//             button {
+//               color: #fff;
+//             }
+//           }
+//           &:nth-child(3) {
+//             background-color: rgb(4, 160, 238);
+//             padding: 0.3rem 0.5rem;
+//             border-radius: 0.4rem;
+//             button {
+//               color: #fff;
+//             }
+//           }
+//           &:nth-child(4) {
+//             background-color: rgb(90, 95, 98);
+//             padding: 0.3rem 0.5rem;
+//             border-radius: 0.4rem;
+//             button {
+//               color: #fff;
+//             }
+//           }
+//           .statusIcons {
+//             font-size: 1rem;
+//             margin-right: 0.3rem;
+//           }
+//         }
+//       }
+//     }
+//     .statusValueWrap {
+//       display: flex;
+//       gap: 1rem;
+//       .statusValue {
+//         display: flex;
+//         gap: 0.3rem;
+//       }
+//     }
+//     .saveAttendance {
+//       display: flex;
+//       flex-direction: column;
+//       justify-content: center;
+//       align-items: center;
+//       padding-bottom: 3rem;
+//       gap: 0.5rem;
+//       .date {
+//         display: flex;
+//         gap: 1rem;
+//       }
+//       button {
+//         width: 17rem;
+//         height: 3rem;
+//         display: flex;
+//         justify-content: center;
+//         align-items: center;
+//         gap: 0.5rem;
+//         padding: 0.7rem;
+//         border-radius: 0.4rem;
+//         background-color: green;
+//         color: #fff;
+//         font-size: 1.2rem;
+//         cursor: pointer;
+//       }
+//     }
+//   }
+// }

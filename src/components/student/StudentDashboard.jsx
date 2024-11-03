@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./allStudents.scss";
+import "./studentDashboard.scss";
 import { DataGridPro } from "@mui/x-data-grid-pro";
 import { useDemoData } from "@mui/x-data-grid-generator";
 import { Avatar, Box } from "@mui/material";
@@ -20,7 +20,7 @@ const fakeStudents = [
   },
 ];
 
-export function AllStudents() {
+export function StudentDashboard() {
   const [multiStudents, setMultiStudents] = useState([]);
   const customUserTableStyle = {
     headRow: {

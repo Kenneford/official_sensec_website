@@ -1,5 +1,16 @@
 import PageLoading from "../../pageLoading/PageLoading";
+// import AdminSidebar from "../../sidebar/admin/AdminSidebar";
 import lazyWithSuspense from "../LazyLoading";
+
+// Admin Sidebar
+export const AdminSidebar = lazyWithSuspense(
+  () =>
+    import("../../sidebar/admin/AdminSidebar").then((module) => {
+      return { default: module.AdminSidebar };
+    }),
+  <PageLoading />,
+  "AdminSidebarComponent"
+);
 
 // Admins Dashboard Links
 export const AdminDashboardOverview = lazyWithSuspense(
@@ -320,7 +331,108 @@ export const ClassLevelLecturers = lazyWithSuspense(
   <PageLoading />,
   "ClassLevelLecturersComponent"
 );
+export const AllEnrolledStudents = lazyWithSuspense(
+  () =>
+    import(
+      "../../admin/contents/allStudentsData/enrolledStudents/AllEnrolledStudents"
+    ).then((module) => {
+      return { default: module.AllEnrolledStudents };
+    }),
+  <PageLoading />,
+  "AllEnrolledStudentsComponent"
+);
+export const StudentsCategories = lazyWithSuspense(
+  () =>
+    import(
+      "../../admin/contents/allStudentsData/studentsCategoriesContainer/StudentsCategories"
+    ).then((module) => {
+      return { default: module.StudentsCategories };
+    }),
+  <PageLoading />,
+  "StudentsCategoriesComponent"
+);
+export const PendingStudents = lazyWithSuspense(
+  () =>
+    import(
+      "../../admin/contents/allStudentsData/pendingStudents/PendingStudents"
+    ).then((module) => {
+      return { default: module.PendingStudents };
+    }),
+  <PageLoading />,
+  "PendingStudentsComponent"
+);
+export const ClassLevelStudents = lazyWithSuspense(
+  () =>
+    import(
+      "../../admin/contents/allStudentsData/classLevelStudents/ClassLevelStudents"
+    ).then((module) => {
+      return { default: module.ClassLevelStudents };
+    }),
+  <PageLoading />,
+  "ClassLevelStudentsComponent"
+);
+export const PendingClassLevelStudents = lazyWithSuspense(
+  () =>
+    import(
+      "../../admin/contents/allStudentsData/pendingStudents/PendingClassLevelStudents"
+    ).then((module) => {
+      return { default: module.PendingClassLevelStudents };
+    }),
+  <PageLoading />,
+  "PendingClassLevelStudentsComponent"
+);
+export const ClassLevelStudentsContainer = lazyWithSuspense(
+  () =>
+    import(
+      "../../admin/contents/allStudentsData/classLevelStudents/ClassLevelStudentsContainer"
+    ).then((module) => {
+      return { default: module.ClassLevelStudentsContainer };
+    }),
+  <PageLoading />,
+  "ClassLevelStudentsContainerComponent"
+);
+export const PlacementStudents = lazyWithSuspense(
+  () =>
+    import("../../admin/contents/allPlacementStudents/PlacementStudents").then(
+      (module) => {
+        return { default: module.PlacementStudents };
+      }
+    ),
+  <PageLoading />,
+  "PlacementStudentsComponent"
+);
 
 // Admins Attendance Links
+export const AdminAttendance = lazyWithSuspense(
+  () =>
+    import("../../admin/contents/attendance.admin/AdminAttendance").then(
+      (module) => {
+        return { default: module.AdminAttendance };
+      }
+    ),
+  <PageLoading />,
+  "AdminAttendanceComponent"
+);
+export const ViewAttendance = lazyWithSuspense(
+  () =>
+    import(
+      "../../admin/contents/attendance.admin/viewAttendance/ViewAttendance"
+    ).then((module) => {
+      return { default: module.ViewAttendance };
+    }),
+  <PageLoading />,
+  "ViewAttendanceComponent"
+);
+export const SearchAttendance = lazyWithSuspense(
+  () =>
+    import("../../admin/contents/attendance.admin/SearchAttendance").then(
+      (module) => {
+        return { default: module.SearchAttendance };
+      }
+    ),
+  <PageLoading />,
+  "SearchAttendanceComponent"
+);
+
 // Admins Assessment Links
 // Admins Account Links

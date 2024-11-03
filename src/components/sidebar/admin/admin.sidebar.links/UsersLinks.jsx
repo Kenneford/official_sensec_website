@@ -15,6 +15,8 @@ import { useParams } from "react-router-dom";
 import { SidebarSubLinksContainer } from "../../../../muiStyling/muiStyling";
 import { Box } from "@mui/material";
 import { AdminSidebarUserTypesLinks } from "../../../../linksFormat/LinksFormat";
+import { useSelector } from "react-redux";
+import { getAuthUser } from "../../../../features/auth/authSlice";
 
 // const quickLinks = [
 //   { name: "Admins" },
@@ -31,6 +33,7 @@ export function UsersLinks({
   setCurrentAction,
   setCurrentLink,
 }) {
+  const authAdmin = useSelector(getAuthUser);
   const { adminCurrentLink } = useParams();
 
   // Get Admin's sidebar user-types links
@@ -96,29 +99,43 @@ export function UsersLinks({
               key={Qlink.name}
               to={
                 Qlink.name === "Admins"
-                  ? `/sensec/users/admin/User_Types/${Qlink?.name?.replace(
+                  ? `/sensec/users/${
+                      authAdmin?.uniqueId
+                    }/admin/User_Types/${Qlink?.name?.replace(
                       / /g,
                       "_"
                     )}/employees/All`
                   : Qlink.name === "Lecturers"
-                  ? `/sensec/users/admin/User_Types/${Qlink?.name?.replace(
+                  ? `/sensec/users/${
+                      authAdmin?.uniqueId
+                    }/admin/User_Types/${Qlink?.name?.replace(
                       / /g,
                       "_"
                     )}/employees/All`
                   : Qlink.name === "Hanging Employments"
-                  ? `/sensec/users/admin/User_Types/${Qlink?.name?.replace(
+                  ? `/sensec/users/${
+                      authAdmin?.uniqueId
+                    }/admin/User_Types/${Qlink?.name?.replace(
                       / /g,
                       "_"
                     )}/employees/All`
                   : Qlink.name === "NT-Staffs"
-                  ? `/sensec/users/admin/User_Types/${Qlink?.name?.replace(
+                  ? `/sensec/users/${
+                      authAdmin?.uniqueId
+                    }/admin/User_Types/${Qlink?.name?.replace(
                       / /g,
                       "_"
                     )}/employees/All`
-                  : `/sensec/users/admin/User_Types/${Qlink?.name?.replace(
+                  : Qlink.name === "Students"
+                  ? `/sensec/users/${
+                      authAdmin?.uniqueId
+                    }/admin/User_Types/${Qlink?.name?.replace(
                       / /g,
                       "_"
-                    )}`
+                    )}/Enrolled`
+                  : `/sensec/users/${
+                      authAdmin?.uniqueId
+                    }/admin/User_Types/${Qlink?.name?.replace(/ /g, "_")}`
               }
               // to={`/sensec/users/admin/User_Types/${Qlink.name.replace(
               //   / /g,

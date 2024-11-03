@@ -1,6 +1,41 @@
 import React, { useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useOutletContext } from "react-router-dom";
 
 export function AuthUserDashboard() {
-  return <Outlet />;
+  const {
+    currentAction,
+    setCurrentAction,
+    currentLink,
+    setCurrentLink,
+    postOptions,
+    setPostOptions,
+    setOpenSubNavLinks,
+    openSubNavLinks,
+    setOpenUserActions,
+    openUserActions,
+    setOpenSignUpActions,
+    openSignUpActions,
+    setOpenMenuLinks,
+    openMenuLinks,
+  } = useOutletContext();
+  return (
+    <Outlet
+      context={{
+        currentAction,
+        setCurrentAction,
+        currentLink,
+        setCurrentLink,
+        postOptions,
+        setPostOptions,
+        setOpenSubNavLinks,
+        openSubNavLinks,
+        setOpenUserActions,
+        openUserActions,
+        setOpenSignUpActions,
+        openSignUpActions,
+        setOpenMenuLinks,
+        openMenuLinks,
+      }}
+    />
+  );
 }

@@ -6,18 +6,24 @@ import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { CustomTextField } from "../../../../../../muiStyling/muiStyling";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  createProgramme,
+  resetCreateProgrammeState,
+} from "../../../../../../features/academics/programmeSlice";
+import LoadingProgress from "../../../../../pageLoading/LoadingProgress";
 
 export function CreateProgram() {
   const authAdminInfo = {};
-  // const { createStatus, successMessage, error } = useSelector(
-  //   (state) => state.program
-  // );
-  // const dispatch = useDispatch();
+  const { createStatus, successMessage, error } = useSelector(
+    (state) => state.programme
+  );
+  const dispatch = useDispatch();
 
   const [loadingComplete, setLoadingComplete] = useState(null);
   const [program, setProgram] = useState({
     name: "",
-    createdBy: authAdminInfo.id,
+    createdBy: "662a791d6a2ae49988b350c0",
   });
   console.log(program);
 
@@ -34,50 +40,50 @@ export function CreateProgram() {
 
   const handleProgram = (e) => {
     e.preventDefault();
-    setLoadingComplete(false);
-    // dispatch(createProgram(program));
-    setTimeout(() => {
-      setLoadingComplete(true);
-    }, 3000);
-    setTimeout(() => {
-      setLoadingComplete(null);
-      setProgram({
-        name: "",
-      });
-    }, 6000);
+    dispatch(createProgramme(program));
   };
 
-  // useEffect(() => {
-  //   if (createStatus === "rejected") {
-  //     setTimeout(() => {
-  //       setLoadingComplete(null);
-  //       error?.errorMessage?.message?.map((err) =>
-  //         toast.error(err, {
-  //           position: "top-right",
-  //           theme: "dark",
-  //           // toastId: successId,
-  //         })
-  //       );
-  //     }, 2000);
-  //     return;
-  //   }
-  //   if (createStatus === "success") {
-  //     setTimeout(() => {
-  //       toast.success(successMessage, {
-  //         position: "top-right",
-  //         theme: "dark",
-  //         // toastId: successId,
-  //       });
-  //     }, 1000);
-  //     setTimeout(() => {
-  //       resetCreateProgramState();
-  //       setProgram({
-  //         name: "",
-  //         createdBy: authAdminInfo.id,
-  //       });
-  //     }, 6000);
-  //   }
-  // }, [error, successMessage, createStatus, navigate, authAdminInfo]);
+  useEffect(() => {
+    if (createStatus === "pending") {
+      setLoadingComplete(false);
+    }
+    if (createStatus === "rejected") {
+      setTimeout(() => {
+        setLoadingComplete(null);
+      }, 3000);
+      setTimeout(() => {
+        error?.errorMessage?.message?.map((err) =>
+          toast.error(err, {
+            position: "top-right",
+            theme: "dark",
+            toastId: "programmeRejected",
+          })
+        );
+        resetCreateProgrammeState();
+      }, 2000);
+      return;
+    }
+    if (createStatus === "success") {
+      setTimeout(() => {
+        setLoadingComplete(true);
+      }, 3000);
+      setTimeout(() => {
+        toast.success(successMessage, {
+          position: "top-right",
+          theme: "dark",
+          toastId: successMessage,
+        });
+      }, 1000);
+      setTimeout(() => {
+        setProgram({
+          name: "",
+          createdBy: "662a791d6a2ae49988b350c0",
+        });
+        resetCreateProgrammeState();
+        setLoadingComplete(null);
+      }, 6000);
+    }
+  }, [error, successMessage, createStatus, navigate]);
 
   return (
     <Box
@@ -111,17 +117,15 @@ export function CreateProgram() {
           </Grid>
         </Grid>
         <Button type="submit" disabled={!canSave}>
-          Create Academic Batch
-          {/* {loadingComplete === false && (
+          {loadingComplete === false && (
             <LoadingProgress color={"#fff"} size={"1.3rem"} />
           )}
-          {loadingComplete === true && createTermStatus === "success" && (
+          {loadingComplete === true && createStatus === "success" && (
             <>
-              <span> Academic Term Created Successfully...</span>{" "}
-              <TaskAltIcon />
+              <span>Success</span> <TaskAltIcon />
             </>
           )}
-          {loadingComplete === null && "Create Academic Term"} */}
+          {loadingComplete === null && "Create Programme"}
         </Button>
       </Box>
     </Box>

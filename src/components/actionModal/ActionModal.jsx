@@ -1,5 +1,5 @@
 import React from "react";
-import "./newEmploymentModal.scss";
+import "./actionModal.scss";
 import CloseIcon from "@mui/icons-material/Close";
 import {
   Box,
@@ -9,8 +9,9 @@ import {
   Stack,
   CircularProgress,
 } from "@mui/material";
+import PropTypes from "prop-types";
 
-export default function NewEmploymentModal({
+export default function ActionModal({
   open,
   onClose,
   handleNewEmployment,
@@ -56,7 +57,12 @@ export default function NewEmploymentModal({
             }}
           >
             {/* Modal Content */}
-            <Typography id="responsive-modal-title" variant="h6" component="h2">
+            <Typography
+              id="responsive-modal-title"
+              variant="h6"
+              component="h2"
+              textAlign={{ xs: "center", sm: "left" }}
+            >
               Confirm Action
             </Typography>
             <Typography id="responsive-modal-description" sx={{ mt: 2 }}>
@@ -121,3 +127,11 @@ export default function NewEmploymentModal({
     </Modal>
   );
 }
+ActionModal.propTypes = {
+  open: PropTypes.bool,
+  onClose: PropTypes.func,
+  handleNewEmployment: PropTypes.func,
+  redirecting: PropTypes.bool,
+  uncompletedEmploymentTask: PropTypes.string,
+  question: PropTypes.string,
+};

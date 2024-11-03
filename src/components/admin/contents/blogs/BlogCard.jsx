@@ -5,7 +5,6 @@ import {
   ThumbUpAlt,
   ThumbUpOffAlt,
 } from "@mui/icons-material";
-import "./blogCard.scss";
 import {
   Card,
   CardMedia,

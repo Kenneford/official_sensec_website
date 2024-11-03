@@ -12,6 +12,8 @@ import {
   Construction,
   PersonRemoveAlt1,
 } from "@mui/icons-material";
+import { useSelector } from "react-redux";
+import { getAuthUser } from "../../../../features/auth/authSlice";
 
 const quickLinks = [
   { name: "Register" },
@@ -24,6 +26,7 @@ export function ActionsLinks({
   setCurrentAction,
   setCurrentLink,
 }) {
+  const authAdmin = useSelector(getAuthUser);
   const { adminCurrentLink } = useParams();
 
   // Set sub-link to expand on page render
@@ -84,10 +87,9 @@ export function ActionsLinks({
           {quickLinks.map((Qlink) => (
             <NavHashLink
               key={Qlink.name}
-              to={`/sensec/users/admin/Actions/${Qlink.name.replace(
-                / /g,
-                "_"
-              )}`}
+              to={`/sensec/users/${
+                authAdmin?.uniqueId
+              }/admin/Actions/${Qlink.name.replace(/ /g, "_")}`}
               // className="links"
               className={
                 Qlink.name?.replace(/ /g, "_") === adminCurrentLink

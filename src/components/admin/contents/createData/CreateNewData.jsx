@@ -22,110 +22,137 @@ export function CreateNewData({ setCurrentAction, setCurrentLink }) {
   };
 
   return (
-    <Box
-      sx={{
-        borderBottom: "1px solid #cccc",
-      }}
-    >
-      {/* Buttons to create new data */}
+    <>
+      {/* Current dashboard title */}
+      <Box
+        component={"div"}
+        id="adminDashboardHeaderWrap"
+        sx={{
+          position: "sticky",
+          top: 0,
+          backgroundColor: "#fff",
+          padding: 0,
+          // zIndex: 1,
+        }}
+        minHeight={"4rem"}
+      >
+        <h1 className="dashAction">
+          {adminCurrentAction?.replace(/_/g, "-")} /{" "}
+          <span>{adminCurrentLink?.replace(/_/g, " ")}</span>
+        </h1>
+        {/* Main search bar */}
+        {/* <Box sx={{ display: { xs: "none", sm: "block" } }}>
+          <SearchForm
+            value={searchedBlog}
+            onChange={handleOnChange}
+            placeholder={"Search"}
+          />
+        </Box> */}
+      </Box>
       <Box
         sx={{
-          width: { xs: "100%", sm: "95%", md: "90%", lg: "90%", xl: "75%" },
-          padding: "1rem .5rem",
+          borderBottom: "1px solid #cccc",
         }}
-        className="createNewDataWrap"
       >
-        <button
-          className="createBtn"
-          onClick={() => {
-            navigate(
-              `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/school_batch/new`
-            );
+        {/* Buttons to create new data */}
+        <Box
+          sx={{
+            width: { xs: "100%", sm: "95%", md: "90%", lg: "90%", xl: "75%" },
+            padding: "1rem .5rem",
           }}
+          className="createNewDataWrap"
         >
-          School Batch
-        </button>
-        <button
-          className="createBtn"
-          onClick={() => {
-            navigate(
-              `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/placement_batch/new`
-            );
-          }}
-        >
-          Placement Batch
-        </button>
-        <button
-          className="createBtn"
-          onClick={() =>
-            navigate(
-              `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/academic_year/new`
-            )
-          }
-        >
-          Academic Year
-        </button>
-        <button
-          className="createBtn"
-          onClick={() =>
-            navigate(
-              `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/academic_term/new`
-            )
-          }
-        >
-          Academic Term
-        </button>
-        <button
-          className="createBtn"
-          onClick={() =>
-            navigate(
-              `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/class_level/new`
-            )
-          }
-        >
-          Class Level
-        </button>
-        <button
-          className="createBtn"
-          onClick={() =>
-            navigate(
-              `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/program/new`
-            )
-          }
-        >
-          Program
-        </button>
-        <button
-          className="createBtn"
-          onClick={() =>
-            navigate(
-              `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/class_section/new`
-            )
-          }
-        >
-          Class Section
-        </button>
-        <button
-          className="createBtn"
-          onClick={() =>
-            navigate(
-              `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/house/new`
-            )
-          }
-        >
-          House
-        </button>
-        <button
-          className={"createBtn"}
-          onClick={() =>
-            navigate(
-              `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/subject/new`
-            )
-          }
-        >
-          Subject
-        </button>
-        {/* <button
+          <button
+            className="createBtn"
+            onClick={() => {
+              navigate(
+                `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/school_batch/new`
+              );
+            }}
+          >
+            School Batch
+          </button>
+          <button
+            className="createBtn"
+            onClick={() => {
+              navigate(
+                `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/placement_batch/new`
+              );
+            }}
+          >
+            Placement Batch
+          </button>
+          <button
+            className="createBtn"
+            onClick={() =>
+              navigate(
+                `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/academic_year/new`
+              )
+            }
+          >
+            Academic Year
+          </button>
+          <button
+            className="createBtn"
+            onClick={() =>
+              navigate(
+                `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/academic_term/new`
+              )
+            }
+          >
+            Academic Term
+          </button>
+          <button
+            className="createBtn"
+            onClick={() =>
+              navigate(
+                `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/class_level/new`
+              )
+            }
+          >
+            Class Level
+          </button>
+          <button
+            className="createBtn"
+            onClick={() =>
+              navigate(
+                `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/program/new`
+              )
+            }
+          >
+            Program
+          </button>
+          <button
+            className="createBtn"
+            onClick={() =>
+              navigate(
+                `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/class_section/new`
+              )
+            }
+          >
+            Class Section
+          </button>
+          <button
+            className="createBtn"
+            onClick={() =>
+              navigate(
+                `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/house/new`
+              )
+            }
+          >
+            House
+          </button>
+          <button
+            className={"createBtn"}
+            onClick={() =>
+              navigate(
+                `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/subject/new`
+              )
+            }
+          >
+            Subject
+          </button>
+          {/* <button
           className="createBtn"
           onClick={() =>
             navigate(
@@ -145,37 +172,38 @@ export function CreateNewData({ setCurrentAction, setCurrentLink }) {
         >
           C-Subject
         </button> */}
-        <button
-          className="createBtn"
-          onClick={() =>
-            navigate(
-              `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/old_students_group/new`
-            )
-          }
-        >
-          Graduates Group
-        </button>
-        <button
-          className="createBtn"
-          onClick={() => {
-            navigate(
-              `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/school_data/new`
-            );
-          }}
-        >
-          School Data
-        </button>
-        <button
-          className="createBtn"
-          onClick={() => {
-            navigate(
-              `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/time_table/new`
-            );
-          }}
-        >
-          Time Table
-        </button>
+          <button
+            className="createBtn"
+            onClick={() =>
+              navigate(
+                `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/old_students_group/new`
+              )
+            }
+          >
+            Graduates Group
+          </button>
+          <button
+            className="createBtn"
+            onClick={() => {
+              navigate(
+                `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/school_data/new`
+              );
+            }}
+          >
+            School Data
+          </button>
+          <button
+            className="createBtn"
+            onClick={() => {
+              navigate(
+                `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/time_table/new`
+              );
+            }}
+          >
+            Time Table
+          </button>
+        </Box>
       </Box>
-    </Box>
+    </>
   );
 }

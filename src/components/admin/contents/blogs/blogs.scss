@@ -1,0 +1,129 @@
+.blogs {
+  .blogSearch {
+    .blogSearchList {
+      margin-top: 0.5rem;
+      border-radius: 0.5rem;
+      -webkit-box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+      box-shadow: 2px 2px 3px 0px #454343ad;
+      overflow-y: auto;
+      padding: 0.5rem 0;
+      &::-webkit-scrollbar {
+        width: 5px;
+      }
+      &::-webkit-scrollbar-track {
+        background-color: #fff;
+      }
+      &::-webkit-scrollbar-thumb {
+        background-color: #ccc;
+        border-radius: 0.4rem;
+      }
+      &::-webkit-scrollbar-track-piece {
+        width: 5px;
+      }
+      p {
+        padding: 0.5rem 1rem;
+        // background-color: #434343;
+        color: #696969;
+        cursor: pointer;
+        transition: 0.5s ease;
+        &:hover {
+          background-color: #545454;
+          color: #fff;
+        }
+      }
+    }
+  }
+  .blogWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    font-size: calc(0.7rem + 1vmin);
+    //   background-color: #292929;
+    color: #696969;
+    .blogTopLeft {
+      display: flex;
+      align-items: center;
+      p {
+        font-size: 0.8em;
+        color: #696969;
+      }
+      .blogBy {
+        display: flex;
+        align-items: center;
+        //   .userProfileImg {
+        //     width: 32px;
+        //     height: 32px;
+        //     border-radius: 50%;
+        //     object-fit: cover;
+        //   }
+      }
+      .blogUsername {
+        font-size: 0.8em;
+        font-weight: 500;
+        margin: 0 10px;
+        color: #696969;
+      }
+      .blogDate {
+        font-size: 12px;
+        padding-left: 1rem;
+        color: #696969;
+      }
+    }
+    .blogOptionsBtn {
+      background-color: transparent;
+      cursor: pointer;
+      .moreVert {
+        color: #696969;
+      }
+    }
+  }
+  .blogBottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem 1rem;
+    .blogBottomLeft {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      .likeBtn {
+        position: relative;
+        background-color: transparent;
+        cursor: pointer;
+        .isLiked {
+          color: #008000;
+        }
+        span {
+          color: #696969;
+        }
+      }
+      .loveBtn {
+        position: relative;
+        background-color: transparent;
+        margin-left: -0.6rem;
+        cursor: pointer;
+        .isLoved {
+          color: #ff0000;
+          &:hover {
+            flood-color: aqua;
+          }
+        }
+        span {
+          color: #696969;
+        }
+      }
+      .blogLikeCounter {
+        font-size: 1rem;
+        // padding-left: 1rem;
+      }
+    }
+    .blogBottomRight {
+      .blogCommentText {
+        cursor: pointer;
+        border-bottom: 1px dashed gray;
+        font-size: 1rem;
+      }
+    }
+  }
+}

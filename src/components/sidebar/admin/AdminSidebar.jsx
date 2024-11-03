@@ -1,4 +1,4 @@
-import { Box, Collapse, IconButton } from "@mui/material";
+import { Box, Collapse, IconButton, Typography } from "@mui/material";
 import PropTypes from "prop-types";
 import {
   AdminPanelSettings,
@@ -37,15 +37,33 @@ import {
   AdminDashboardLinks,
   UsersLinks,
 } from "../../lazyLoading/auth/AuthLazyComponents";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchAllUsers,
+  getAllUsers,
+  getAuthUser,
+} from "../../../features/auth/authSlice";
+import { useEffect } from "react";
 
-export default function AdminSidebar({
+export function AdminSidebar({
   isSidebarOpen,
   toggleSidebar,
   setCurrentAction,
   setCurrentLink,
   navbar,
 }) {
-  const authAdminInfo = false;
+  const dispatch = useDispatch();
+  const authUser = useSelector(getAuthUser);
+  const allUsers = useSelector(getAllUsers);
+  // Find logged in admin
+  const authAdminInfo = allUsers?.find(
+    (user) => user?.uniqueId === authUser?.uniqueId
+  );
+
+  useEffect(() => {
+    dispatch(fetchAllUsers());
+  }, [dispatch]);
+
   return (
     <>
       {/* Button to toggle sidebar */}
@@ -53,18 +71,19 @@ export default function AdminSidebar({
         sx={{
           backgroundColor: "#292929",
           padding: ".5rem",
-          position: "fixed",
-          top: navbar ? "4.5rem" : "9rem",
-          width: "inherit",
-          left: "0",
-          zIndex: "1",
+          // position: "fixed",
+          // top: navbar ? "4.5rem" : "9rem",
+          // width: "inherit",
+          // height: "100vh",
+          // left: "0",
+          // zIndex: "1",
           borderBottom: "2px solid #02b202",
         }}
       >
         <IconButton
           sx={{
             position: "absolute",
-            top: "-.2rem",
+            top: ".5rem",
             right: "0",
             color: "#fff",
           }}
@@ -86,12 +105,7 @@ export default function AdminSidebar({
         </IconButton>
         {/* User Info */}
         <Box className="userInfo">
-          <img
-            src={
-              "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            }
-            alt=""
-          />
+          <img src={authAdminInfo?.personalInfo?.profilePicture?.url} alt="" />
           {isSidebarOpen && (
             <Collapse
               in={isSidebarOpen}
@@ -104,11 +118,12 @@ export default function AdminSidebar({
                 {authAdminInfo?.personalInfo?.gender === "Male"
                   ? "Mr."
                   : "Mrs."}{" "}
-                {/* {authAdminInfo?.personalInfo?.lastName} */}
-                Joseline Andrews
+                {authAdminInfo?.personalInfo?.lastName}
               </span>
               {authAdminInfo?.status && (
-                <p>({authAdminInfo?.status.positionHolding})</p>
+                <Typography>
+                  ({authAdminInfo?.status.positionHolding})
+                </Typography>
               )}
             </Collapse>
           )}

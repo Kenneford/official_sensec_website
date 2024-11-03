@@ -28,3 +28,12 @@ export const AllEmployedLecturersPageQuickLinks = () => {
   ];
   return linkButtons;
 };
+export const AllStudentsPageQuickLinks = () => {
+  const linkButtons = [
+    { label: "Enrolled" },
+    { label: "Pending Students" },
+    // { label: "Hanging Students" },
+    { label: "Add New Student +" },
+  ];
+  return linkButtons;
+};

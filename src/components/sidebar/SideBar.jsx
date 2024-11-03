@@ -1,16 +1,27 @@
-import { Box } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import "./sidebar.scss";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import AdminSidebar from "./admin/AdminSidebar";
+import { AdminSidebar } from "../lazyLoading/admin/AdminLazyLoadingComponents";
+import { StudentSideBar } from "./student/StudentSideBar";
+import { useDispatch, useSelector } from "react-redux";
+import { getAuthUser, userLogout } from "../../features/auth/authSlice";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+// import { AdminSidebar } from "../lazyLoading/admin/AdminLazyLoadingComponents";
+// import AdminSidebar from "./admin/AdminSidebar";
 
 export default function SideBar({
   isSidebarOpen,
+  setSidebarOpen,
   toggleSidebar,
   setCurrentAction,
   setCurrentLink,
 }) {
-  const authAdminInfo = true;
+  const authUser = useSelector(getAuthUser);
+  console.log(isSidebarOpen);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // State to check if navbar is scrolling
   const [navbar, setNavbar] = useState(false);
@@ -25,6 +36,20 @@ export default function SideBar({
   };
   window.addEventListener("scroll", pageScrolling);
 
+  const handleLogout = (e) => {
+    e.preventDefault();
+    if (authUser) {
+      dispatch(userLogout());
+      navigate("/sensec/homepage");
+      toast.success("You logged out Successfully!", {
+        position: "top-right",
+        theme: "dark",
+        toastId: "loggedOut",
+      });
+      // localStorage.removeItem("currentNavLink");
+    }
+  };
+
   return (
     <Box
       component="div"
@@ -36,6 +61,8 @@ export default function SideBar({
         flexShrink: 0,
         transition: "width 0.5s ease", // Smooth transition when toggling
         position: "fixed",
+        left: 0,
+        top: 0,
         // Apply only when the device is in landscape and has a max-height (smaller screens)
         "@media screen and (max-width: 1024px) and (orientation: landscape)": {
           backgroundColor: "lightgreen",
@@ -43,8 +70,17 @@ export default function SideBar({
         },
       }}
     >
-      {authAdminInfo && (
+      {authUser?.roles?.includes("admin") && (
         <AdminSidebar
+          isSidebarOpen={isSidebarOpen}
+          toggleSidebar={toggleSidebar}
+          setCurrentAction={setCurrentAction}
+          setCurrentLink={setCurrentLink}
+          navbar={navbar}
+        />
+      )}
+      {authUser?.roles?.includes("student") && (
+        <StudentSideBar
           isSidebarOpen={isSidebarOpen}
           toggleSidebar={toggleSidebar}
           setCurrentAction={setCurrentAction}
@@ -58,7 +94,12 @@ export default function SideBar({
         }}
         className="sideBarLogoutBtn"
       >
-        <h5>Logout</h5>
+        <Button
+          sx={{ textTransform: "capitalize", color: "#fff", fontSize: "1rem" }}
+          onClick={handleLogout}
+        >
+          <Typography>Logout</Typography>
+        </Button>
         {/* <LogoutBtn isSidebarOpen={isSidebarOpen} /> */}
       </Box>
     </Box>

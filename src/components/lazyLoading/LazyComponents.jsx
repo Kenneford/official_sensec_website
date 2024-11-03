@@ -9,6 +9,14 @@ export const NavigationBar = lazyWithSuspense(
   <PageLoading />,
   "NavigationBar"
 );
+export const DashboardNavigationBar = lazyWithSuspense(
+  () =>
+    import("../navbar/DashboardNavigationBar").then((module) => {
+      return { default: module.DashboardNavigationBar };
+    }),
+  <PageLoading />,
+  "DashboardNavigationBar"
+);
 export const Home = lazyWithSuspense(
   () =>
     import("../../pages/home/Home").then((module) => {
@@ -51,14 +59,6 @@ export const QuestionsSection = lazyWithSuspense(
   <PageLoading />,
   "QuestionsSectionPage"
 );
-export const CurrentUser = lazyWithSuspense(
-  () =>
-    import("../currentUser/CurrentUser").then((module) => {
-      return { default: module.CurrentUser };
-    }),
-  <PageLoading />,
-  "CurrentUserPage"
-);
 export const PageNotFound = lazyWithSuspense(
   () =>
     import("../pageNotFound/PageNotFound").then((module) => {
@@ -85,13 +85,23 @@ export const EnrollmentPage = lazyWithSuspense(
 );
 export const StudentPlacementCheck = lazyWithSuspense(
   () =>
-    import(
-      "../../pages/enrollment/studentPlacementVerification/StudentPlacementCheck"
-    ).then((module) => {
-      return { default: module.StudentPlacementCheck };
-    }),
+    import("../../pages/enrollment/placementCheck/StudentPlacementCheck").then(
+      (module) => {
+        return { default: module.StudentPlacementCheck };
+      }
+    ),
   <PageLoading />,
-  "StudentEnrollment"
+  "StudentPlacementCheckPage"
+);
+export const PlacementCheckOverview = lazyWithSuspense(
+  () =>
+    import("../../pages/enrollment/placementCheck/PlacementCheckOverview").then(
+      (module) => {
+        return { default: module.PlacementCheckOverview };
+      }
+    ),
+  <PageLoading />,
+  "PlacementCheckOverviewPage"
 );
 export const StudentEnrollment = lazyWithSuspense(
   () =>
@@ -120,14 +130,6 @@ export const StudentsData = lazyWithSuspense(
     }),
   <PageLoading />,
   "StudentsData"
-);
-export const AllStudents = lazyWithSuspense(
-  () =>
-    import("../sensecStudentsData/allStudents/AllStudents").then((module) => {
-      return { default: module.AllStudents };
-    }),
-  <PageLoading />,
-  "AllStudents"
 );
 export const FrequentlyAskedQuestions = lazyWithSuspense(
   () =>

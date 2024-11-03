@@ -42,6 +42,32 @@ export function NewDataContainer({
   console.log(data);
   return (
     <>
+      {/* Current dashboard title */}
+      <Box
+        component={"div"}
+        id="adminDashboardHeaderWrap"
+        sx={{
+          position: "sticky",
+          top: 0,
+          backgroundColor: "#fff",
+          padding: 0,
+          // zIndex: 1,
+        }}
+        minHeight={"4rem"}
+      >
+        <h1 className="dashAction">
+          {adminCurrentAction?.replace(/_/g, "-")} /{" "}
+          <span>{adminCurrentLink?.replace(/_/g, " ")}</span>
+        </h1>
+        {/* Main search bar */}
+        {/* <Box sx={{ display: { xs: "none", sm: "block" } }}>
+          <SearchForm
+            value={searchedBlog}
+            onChange={handleOnChange}
+            placeholder={"Search"}
+          />
+        </Box> */}
+      </Box>
       {/* Buttons to create new data */}
       <Box
         sx={{

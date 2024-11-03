@@ -1,0 +1,260 @@
+.checkWrap {
+  .checkContWrap {
+    .checkCont {
+      h2 {
+        text-align: center;
+      }
+      .studentDataCont {
+        .studentData {
+          border-radius: 0 0 0.4rem 0.4rem;
+          -webkit-box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+          box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+          .studentDataWrap {
+            display: flex;
+            margin-top: 1rem;
+            height: 10rem;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: green;
+            color: yellow;
+            border-radius: 0.4rem 0.4rem 0 0;
+            -webkit-box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+            box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+            .student {
+              position: relative;
+              top: 2.5rem;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              padding-bottom: 1rem;
+              .studentName {
+                text-transform: uppercase;
+                font-size: 1.2rem;
+                letter-spacing: 1px;
+                font-size: 0.9rem;
+              }
+              .studentId {
+                font-size: 1.2rem;
+                letter-spacing: 1px;
+                font-size: 0.9rem;
+              }
+            }
+            .studentImg {
+              position: relative;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              top: 2rem;
+              background-color: #fff;
+              border-radius: 50%;
+              object-fit: cover;
+              -webkit-box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+              box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+              img {
+                width: 6rem;
+                height: 6rem;
+                padding: 0.1rem;
+                border-radius: 50%;
+                object-fit: cover;
+              }
+            }
+          }
+          .enrollmentInfoWrap {
+            border-radius: 0 0 0.4rem 0.4rem;
+            margin-bottom: 1rem;
+            .enrolledDate {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              color: #555;
+              h3 {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background-color: #292929;
+                padding: 0.3rem 0.5rem;
+                color: #fff;
+                border-radius: 0.4rem;
+                letter-spacing: 1.5px;
+                font-size: 0.9rem;
+                min-height: 2.5rem;
+                span {
+                  font-style: italic;
+                  // text-decoration: underline;
+                  color: #fff;
+                  font-weight: 500;
+                  letter-spacing: 1.5px;
+                }
+              }
+            }
+            .studentEnrolmentInfo {
+              width: 90%;
+              display: flex;
+              // justify-content: center;
+              align-items: center;
+              padding: 1rem 0 0;
+              border-radius: 0 0 0.4rem 0.4rem;
+              min-height: 17rem;
+              margin: auto;
+              .placementInfoBox {
+                // font-size: calc(0.7rem + 1vmin);
+                // width: 50%;
+                height: 4rem;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                letter-spacing: 1px;
+                border-bottom: 1px solid #ccc;
+                padding: unset;
+                margin: 0.5rem 0;
+                border-radius: 0.4rem;
+                -webkit-box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+                box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+                h3 {
+                  color: #292929;
+                  font-size: 0.9rem;
+                }
+                span {
+                  letter-spacing: 1px;
+                  color: #696969;
+                  font-size: 0.9rem;
+                }
+              }
+            }
+          }
+          .updatePlacementData {
+            min-height: 17rem;
+            margin: 2rem;
+            .placementUpdateBackBtn {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              background-color: #292929;
+              color: #fff;
+              margin-bottom: 2rem;
+              padding: 0.5rem;
+              border-radius: 0.4rem;
+              transition: 0.5s;
+              cursor: pointer;
+              .placementPrev {
+                font-size: 1rem;
+              }
+              &:hover {
+                background-color: #4e4e4e;
+              }
+            }
+            .formInputWrap {
+              .changeDOBWrap {
+                position: relative;
+                .dOBBtn {
+                  position: absolute;
+                  top: 2rem;
+                  right: 0.4rem;
+                  cursor: pointer;
+                  z-index: 4;
+                }
+                .closeDOBBtn {
+                  position: absolute;
+                  top: 1.1rem;
+                  right: 0.7rem;
+                  font-size: 0.7rem;
+                  color: red;
+                  cursor: pointer;
+                  z-index: 4;
+                }
+              }
+            }
+          }
+          .updateBtnWrap {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 4rem;
+            gap: 0.5rem;
+            .updateBtn {
+              min-height: 2.5rem;
+              letter-spacing: 1px;
+            }
+          }
+          .saveUpdateBtnWrap {
+            display: flex;
+            justify-content: center;
+            padding-bottom: 1rem;
+            margin: 0 2rem 0.5rem;
+            .saveUpdateBtn {
+              width: 100%;
+              height: 2.7rem;
+              letter-spacing: 1px;
+            }
+          }
+        }
+      }
+      .note {
+        display: flex;
+        flex-direction: column;
+        color: #696969;
+        padding: 2rem;
+        border-radius: 0.4rem;
+        -webkit-box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+        box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+        h4 {
+          font-size: 0.9rem;
+          color: red;
+          text-decoration: underline;
+          letter-spacing: 1px;
+        }
+        p {
+          padding: 0.5rem 0;
+          font-size: 0.9rem;
+          span {
+            color: red;
+          }
+        }
+        ul {
+          padding: 1rem 2rem;
+          li {
+            font-size: 0.9rem;
+            list-style: circle;
+            color: red;
+            p {
+              padding: 0.2rem;
+              color: #696969;
+              .firstStepInfo {
+                color: #292929;
+                font-style: italic;
+              }
+            }
+          }
+        }
+        span {
+          color: red;
+          font-size: 0.9rem;
+          padding-bottom: 1.5rem;
+        }
+      }
+    }
+  }
+  .footer {
+    width: 100%;
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+    color: #fff;
+    p {
+      margin: 0 5px;
+    }
+  }
+}
+.checkPageLoading {
+  height: calc(100vh - 13.4rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 2rem;
+  background-color: #fff;
+  color: #696969;
+}

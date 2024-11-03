@@ -5,42 +5,52 @@ import PageLoading from "../pageLoading/PageLoading";
 import {
   About,
   AdminDashboard,
-  AllStudents,
   Contact,
   Courses,
-  CurrentUser,
   EnrollmentPage,
   FrequentlyAskedQuestions,
   Home,
   PageNotFound,
   PageNotFoundError,
+  PlacementCheckOverview,
   StudentEnrollment,
   StudentPlacementCheck,
   StudentPlacementVerification,
-  StudentsData,
 } from "../lazyLoading/LazyComponents";
 import {
   AuthUserDashboard,
+  SignUpContainer,
   UserDashboardLayout,
+  Verification,
 } from "../lazyLoading/auth/AuthLazyComponents";
 import {
+  AdminAttendance,
   ClassLevelLecturers,
-  CreateNewData,
+  ClassLevelStudentsContainer,
   NewDataContainer,
+  StudentsCategories,
   UserTypesContainer,
 } from "../lazyLoading/admin/AdminLazyLoadingComponents";
 import FakeDashboard from "../admin/contents/overview/FakeDashboard";
+import {
+  GuardianForm,
+  ParentForm,
+  StudentDashboard,
+} from "../lazyLoading/student/StudentsLazyLoadingComponents";
+import { useSelector } from "react-redux";
+import { getAuthUser } from "../../features/auth/authSlice";
 
 export default function PageNavigation() {
+  const authUser = useSelector(getAuthUser);
   const userInfo = { isAdmin: true };
 
   // Function to redirect users to their dashboard
   const getUserRolePath = () => {
-    if (userInfo?.isAdmin) return "admin";
-    if (userInfo?.isLecturer) return "lecturer";
-    if (userInfo?.isStudent) return "student";
-    if (userInfo?.isNTStaff) return "nt_staff";
-    return "page_not_found/404_ERROR";
+    if (userInfo?.isAdmin) return "admin/Dashboard/Overview";
+    if (userInfo?.isLecturer) return "lecturer/Dashboard/Overview";
+    if (userInfo?.isStudent) return "student/Dashboard/Overview";
+    if (userInfo?.isNTStaff) return "nt_staff/Dashboard/Overview";
+    return "*";
   };
   const userRolePath = getUserRolePath();
 
@@ -51,25 +61,29 @@ export default function PageNavigation() {
       children: [
         { element: <Navigate to={DEFAULT_PATH} replace />, index: true },
         {
-          path: "sensec/homepage",
-          element: <Home />,
+          path: "sensec",
+          element: <GuestPageLayout />,
+          children: [
+            {
+              path: ":currentGuestPage",
+              element: <GuestPageLayout />,
+              children: [
+                {
+                  path: ":signUpAction",
+                  element: <SignUpContainer />,
+                },
+                { path: "*", element: <PageNotFound /> },
+              ],
+            },
+            // { path: "*", element: <PageNotFound /> },
+          ],
         },
+        // Email Verification
         {
-          path: "sensec/about",
-          element: <About />,
+          path: "sensec/email/:uniqueId/:emailToken/verify",
+          element: <Verification />,
         },
-        {
-          path: "sensec/courses",
-          element: <Courses />,
-        },
-        {
-          path: "sensec/contact",
-          element: <Contact />,
-        },
-        {
-          path: "sensec/students/placement_check",
-          element: <StudentPlacementCheck />,
-        },
+        // Student Enrollment
         {
           path: "sensec/students/enrollment",
           element: <EnrollmentPage />,
@@ -83,56 +97,56 @@ export default function PageNavigation() {
               element: <StudentPlacementVerification />,
             },
             {
-              path: "online",
+              path: "placement_check",
+              element: <StudentPlacementCheck />,
+            },
+            {
+              path: "placement_check/:studentName/:studentIndexNo",
+              element: <PlacementCheckOverview />,
+            },
+            {
+              path: "online/:studentIndexNo",
               element: <StudentEnrollment />,
+            },
+            {
+              path: "online/:studentId/parent/add",
+              element: <ParentForm />,
+            },
+            {
+              path: "online/:studentId/guardian/add",
+              element: <GuardianForm />,
             },
             { path: "*", element: <PageNotFound /> },
           ],
         },
-        {
-          path: "sensec/students",
-          element: <StudentsData />,
-          children: [
-            { element: <Navigate to={"all"} />, index: true },
-            {
-              path: "all",
-              element: <AllStudents />,
-            },
-          ],
-        },
-        {
-          path: "sensec/frequently_asked_questions",
-          element: <FrequentlyAskedQuestions />,
-        },
-        {
-          path: "sensec/users/dashboard",
-          element: <CurrentUser />,
-        },
         // For Authenticated Users
         {
           path: "sensec/users",
-          element: <AuthUserDashboard />,
+          element: authUser ? (
+            <AuthUserDashboard />
+          ) : (
+            <Navigate to={"/sensec/login_options"} />
+          ),
           children: [
             {
               element: <Navigate to={userRolePath} />,
               index: true,
             },
             {
-              path: "admin",
+              path: ":userId",
               element: <UserDashboardLayout />,
               children: [
                 {
-                  element: <Navigate to={"Dashboard/Overview"} />,
+                  element: <Navigate to={":currentUser/Dashboard/Overview"} />,
                   index: true,
                 },
+                // Admin Dashboard
                 {
-                  path: ":adminCurrentAction/:adminCurrentLink",
-                  element: <AdminDashboard />,
+                  path: "admin/:adminCurrentAction/:adminCurrentLink",
+                  element: authUser?.roles?.includes("admin") && (
+                    <AdminDashboard />
+                  ),
                   children: [
-                    // {
-                    //   element: <AdminDashboard />,
-                    //   index: true,
-                    // },
                     {
                       path: "employees/:employees_link",
                       element: <UserTypesContainer />,
@@ -145,16 +159,29 @@ export default function PageNavigation() {
                       path: "employees/:employees_link/:class_level",
                       element: <ClassLevelLecturers />,
                     },
-                    // {
-                    //   path: ":data/new",
-                    //   element: <FakeDashboard />,
-                    // },
+                    {
+                      path: ":student_category",
+                      element: <StudentsCategories />,
+                    },
+                    {
+                      path: ":student_category/:class_level",
+                      element: <ClassLevelStudentsContainer />,
+                    },
+                    { path: "*", element: <PageNotFound /> },
                   ],
                 },
+                // Student Dashboard
+                {
+                  path: "student/:studentCurrentAction/:studentCurrentLink",
+                  element: authUser?.roles?.includes("student") && (
+                    <StudentDashboard />
+                  ),
+                },
+                { path: "*", element: <PageNotFound /> },
               ],
             },
             {
-              path: "page_not_found/404_ERROR",
+              path: "*",
               element: <PageNotFoundError />,
             },
           ],
@@ -176,4 +203,12 @@ export const PageLayout = lazyWithSuspense(
     }),
   <PageLoading />,
   "PageLayout"
+);
+export const GuestPageLayout = lazyWithSuspense(
+  () =>
+    import("../../pages/auth/forGuests/GuestPageLayout").then((module) => {
+      return { default: module.GuestPageLayout };
+    }),
+  <PageLoading />,
+  "GuestPageLayout"
 );

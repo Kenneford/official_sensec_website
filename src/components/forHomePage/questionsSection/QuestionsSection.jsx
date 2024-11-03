@@ -61,7 +61,7 @@ export function QuestionsSection() {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          // margin: "auto",
+          margin: "auto",
         }}
       >
         <Box>
