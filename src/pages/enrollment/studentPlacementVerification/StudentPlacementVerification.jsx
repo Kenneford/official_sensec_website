@@ -1,34 +1,63 @@
 import { ContainerBox, CustomTextField } from "../../../muiStyling/muiStyling";
 import "./studentPlacementVerification.scss";
 import { useNavigate } from "react-router-dom";
+import { Button, Grid, Box, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
 import {
-  TextField,
-  Radio,
-  RadioGroup,
-  FormControlLabel,
-  FormControl,
-  FormLabel,
-  Select,
-  MenuItem,
-  Button,
-  Grid,
-  Box,
-  Typography,
-} from "@mui/material";
-import { useState } from "react";
+  fetchAllPlacementStudents,
+  getAllPlacementStudents,
+  resetPlacementState,
+  verifyPlacementStudent,
+} from "../../../features/academics/placementSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { FetchAllStudents } from "../../../data/students/FetchAllStudents";
+import { TaskAlt } from "@mui/icons-material";
+import Redirection from "../../../components/pageLoading/Redirection";
+import LoadingProgress from "../../../components/pageLoading/LoadingProgress";
 
 export function StudentPlacementVerification() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const allPlacementStudents = useSelector(getAllPlacementStudents);
+  const allStudents = FetchAllStudents();
+  // Placement status check
+  const { verifyStatus, error, successMessage } = useSelector(
+    (state) => state.placement
+  );
+
+  // Input values error state handling
+  const [jhsIndexNoError, setJhsIndexNoError] = useState(false);
+  const [yearGraduatedError, setYearGraduatedError] = useState(false);
+
+  const [loadingComplete, setLoadingComplete] = useState(null);
+  const [redirecting, setRedirecting] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
+  const [hasEnrolled, setHasEnrolled] = useState(false);
+
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
     yearGraduated: "",
     jhsIndexNo: "",
-    age: "",
-    gender: "",
-    course: "",
-    otherCourse: "",
   });
+
+  // Find the specific student who wants to verify his/her placement
+  const foundPlacementStudent = allPlacementStudents?.find(
+    (std) => std?.jhsIndexNo === formData?.jhsIndexNo
+  );
+  // Check if student has verified but not done enrolling
+  const verifiedButNotDoneEnrolling = allStudents?.find(
+    (std) =>
+      std?.uniqueId === foundPlacementStudent?.enrollmentId &&
+      std?.studentStatusExtend?.enrollmentStatus === "in progress"
+  );
+  // Check if student has enrolled already
+  const enrolledStudent = allStudents?.find(
+    (std) =>
+      std?.uniqueId === foundPlacementStudent?.enrollmentId &&
+      std?.studentStatusExtend?.enrollmentStatus === "approved"
+  );
+  console.log(foundPlacementStudent);
+  console.log(enrolledStudent);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -38,24 +67,202 @@ export function StudentPlacementVerification() {
     });
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // handle form submission logic here (e.g., send to API, validation, etc.)
-    console.log(formData);
-    navigate("/sensec/students/enrollment/online");
+  // Handle verification
+  const handleVerification = (e) => {
+    e.preventDefault();
+    setLoadingComplete(false);
+    if (!foundPlacementStudent?.yearGraduated) {
+      return setTimeout(() => {
+        toast.error("Placement data not yet updated!", {
+          position: "top-right",
+          theme: "light",
+          toastId: "placementDataError",
+        });
+        setLoadingComplete(null);
+      }, 3000);
+    }
+    //If placement verified but enrollment is in progress, navigate to add parent page
+    else if (
+      foundPlacementStudent?.placementVerified &&
+      !foundPlacementStudent?.enrolled &&
+      verifiedButNotDoneEnrolling
+    ) {
+      localStorage.setItem("indexNumber", formData?.jhsIndexNo);
+      setTimeout(() => {
+        setLoadingComplete(true);
+        setIsVerified(true);
+      }, 3000);
+      setTimeout(() => {
+        setRedirecting(true);
+        setIsVerified(false);
+      }, 5000);
+      setTimeout(() => {
+        navigate(
+          `/sensec/students/enrollment/online/${foundPlacementStudent?.enrollmentId}/parent/add`
+        );
+      }, 7000);
+    }
+    //If placement verified but enrollment not yet started, navigate to enrollment page
+    else if (
+      foundPlacementStudent?.placementVerified &&
+      !foundPlacementStudent?.enrolled &&
+      enrolledStudent?.studentStatusExtend?.enrollmentStatus !==
+        "in progress" &&
+      !enrolledStudent?.parent
+    ) {
+      localStorage.setItem("indexNumber", formData?.jhsIndexNo);
+      setTimeout(() => {
+        setLoadingComplete(true);
+        setIsVerified(true);
+      }, 3000);
+      setTimeout(() => {
+        setRedirecting(true);
+        setIsVerified(false);
+      }, 5000);
+      setTimeout(() => {
+        navigate(
+          `/sensec/students/enrollment/online/${foundPlacementStudent?.jhsIndexNo}`
+        );
+      }, 7000);
+    }
+    //If placement verified and not enrolled, then verify student and begin the enrolment process
+    // else if (
+    //   foundPlacementStudent?.placementVerified &&
+    //   !foundPlacementStudent?.enrolled &&
+    //   enrolledStudent?.studentStatusExtend?.enrollmentStatus === null
+    // ) {
+    //   localStorage.setItem("indexNumber", formData?.jhsIndexNo);
+    //   setTimeout(() => {
+    //     setLoadingComplete(true);
+    //     setIsVerified(true);
+    //   }, 3000);
+    //   setTimeout(() => {
+    //     setRedirecting(true);
+    //     setIsVerified(false);
+    //   }, 5000);
+    //   setTimeout(() => {
+    //     navigate(
+    //       `/sensec/students/enrollment/online`
+    //     );
+    //   }, 7000);
+    // }
+    //If placement verified and enrolled, navigate student to enrolment success page
+    else if (foundPlacementStudent?.placementVerified && enrolledStudent) {
+      localStorage.setItem("indexNumber", formData?.jhsIndexNo);
+      setTimeout(() => {
+        setLoadingComplete(true);
+        setIsVerified(true);
+        setHasEnrolled(true);
+      }, 3000);
+      setTimeout(() => {
+        setRedirecting(true);
+        setIsVerified(false);
+        setHasEnrolled(false);
+      }, 5000);
+      // setCurrentEnrolmentSuccessLink("DASHBOARD");
+      setTimeout(() => {
+        navigate(
+          `sensec/students/${enrolledStudent?.uniqueId}/enrollment/online/success`
+        );
+      }, 7000);
+    }
+    //If placement not verified and not enrolled, then verify student and begin the enrolment process
+    else if (
+      foundPlacementStudent &&
+      !foundPlacementStudent?.placementVerified
+    ) {
+      dispatch(verifyPlacementStudent(formData));
+    }
+    // navigate("/sensec/students/enrollment/online");
   };
+
+  // Validate input data✅
+  useEffect(() => {
+    // Jhs Index No
+    if (formData?.jhsIndexNo && !foundPlacementStudent) {
+      setJhsIndexNoError(true);
+      return;
+    } else {
+      setJhsIndexNoError(false);
+    }
+    // Jhs Index No
+    if (
+      formData?.yearGraduated &&
+      foundPlacementStudent &&
+      foundPlacementStudent?.yearGraduated !== formData?.yearGraduated
+    ) {
+      setYearGraduatedError(true);
+      return;
+    } else {
+      setYearGraduatedError(false);
+    }
+  }, [formData, foundPlacementStudent]);
+
+  //Verification status check
+  useEffect(() => {
+    if (verifyStatus === "pending") {
+      setLoadingComplete(false);
+    }
+    if (verifyStatus === "rejected") {
+      setTimeout(() => {
+        setLoadingComplete(null);
+        dispatch(resetPlacementState()); // Reset Verification State
+      }, 3000);
+      setTimeout(() => {
+        error?.errorMessage?.message?.map((err) =>
+          toast.error(err, {
+            position: "top-right",
+            theme: "light",
+            toastId: err,
+          })
+        );
+      }, 2000);
+      return;
+    }
+    if (verifyStatus === "success") {
+      setTimeout(() => {
+        setLoadingComplete(true);
+      }, 3000);
+      setTimeout(() => {
+        setRedirecting(true);
+      }, 6000);
+      setTimeout(() => {
+        localStorage.setItem("indexNumber", formData?.jhsIndexNo);
+        dispatch(resetPlacementState()); // Reset Verification State
+        navigate(
+          `/sensec/students/enrollment/online/${foundPlacementStudent?.jhsIndexNo}`
+        );
+      }, 9000);
+    }
+  }, [
+    dispatch,
+    navigate,
+    formData,
+    verifyStatus,
+    error,
+    successMessage,
+    loadingComplete,
+    foundPlacementStudent,
+  ]);
+
+  // Fetch data
+  useEffect(() => {
+    dispatch(fetchAllPlacementStudents());
+  }, [formData, dispatch]);
 
   return (
     <ContainerBox component="div" id="placementVerificationWrap">
-      <h1>Student Placement Verification</h1>
+      <h1 style={{ textAlign: "center", color: "#696969", fontSize: "1.5rem" }}>
+        Student Placement Verification
+      </h1>
       <Box
         component="div"
         id="placementFormWrap"
         sx={{
           maxWidth: 600,
           mx: "auto",
-          mt: 5,
-          p: 3,
+          mt: 3,
+          p: { xs: 1, sm: 2 },
           border: "1px solid #ccc",
           borderRadius: "8px",
           backgroundColor: "#f9f9f9",
@@ -63,9 +270,8 @@ export function StudentPlacementVerification() {
       >
         <Box
           component="form"
-          validate
           autoComplete="off"
-          onSubmit={handleSubmit}
+          onSubmit={handleVerification}
           style={{
             // backgroundColor: "red",
             padding: ".5rem ",
@@ -76,7 +282,7 @@ export function StudentPlacementVerification() {
             component={"h3"}
             mb={3}
             color="#696969"
-            fontSize={"1em"}
+            fontSize={"1.1rem"}
             lineHeight={"1.2em"}
             letterSpacing={"1px"}
             textAlign={"center"}
@@ -84,32 +290,26 @@ export function StudentPlacementVerification() {
             Kindly verify your placement to begin your enrollment.
           </Typography>
           <Grid container spacing={3}>
-            {/* Student Name */}
             <Grid item xs={12} sm={6}>
               <CustomTextField
                 fullWidth
-                label="First Name"
-                name="firstName"
-                value={formData?.firstName}
+                label="JHS Index No."
+                name="jhsIndexNo"
+                value={formData?.jhsIndexNo}
                 onChange={handleChange}
                 required
-                className="textField"
+                error={jhsIndexNoError}
+                helperText={
+                  jhsIndexNoError ? "Invalid student index number!" : ""
+                }
                 sx={{
-                  "&:hover": {
-                    borderColor: "none",
+                  "& .MuiInputLabel-asterisk": {
+                    color:
+                      formData?.jhsIndexNo && !jhsIndexNoError
+                        ? "green"
+                        : "red", // Change the asterisk color to red
                   },
                 }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <CustomTextField
-                fullWidth
-                label="Surname"
-                name="lastName"
-                value={formData?.lastName}
-                onChange={handleChange}
-                required
-                variant="outlined"
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -120,19 +320,18 @@ export function StudentPlacementVerification() {
                 value={formData?.yearGraduated}
                 onChange={handleChange}
                 required
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <CustomTextField
-                fullWidth
-                label="JHS Index No."
-                name="jhsIndexNo"
-                value={formData?.jhsIndexNo}
-                onChange={handleChange}
-                required
-                // error={!formData?.jhsIndexNo}
-                // helperText="Incorrect entry."
-                // id="filled-error"
+                error={yearGraduatedError}
+                helperText={
+                  yearGraduatedError ? "Year graduated not correct!" : ""
+                }
+                sx={{
+                  "& .MuiInputLabel-asterisk": {
+                    color:
+                      formData?.yearGraduated && !yearGraduatedError
+                        ? "green"
+                        : "red", // Change the asterisk color to red
+                  },
+                }}
               />
             </Grid>
             {/* Submit Button */}
@@ -149,7 +348,28 @@ export function StudentPlacementVerification() {
                   fontSize: "1em",
                 }}
               >
-                Verify Placement
+                {loadingComplete === false && (
+                  <LoadingProgress color={"#fff"} size={"1.5rem"} />
+                )}
+                {loadingComplete &&
+                  isVerified &&
+                  !hasEnrolled &&
+                  "Placement Already Verified"}
+                {loadingComplete &&
+                  isVerified &&
+                  hasEnrolled &&
+                  "Enrolled Already"}
+                {loadingComplete &&
+                  !isVerified &&
+                  !hasEnrolled &&
+                  !redirecting &&
+                  verifyStatus === "success" && (
+                    <>
+                      <span>Successful</span> <TaskAlt />
+                    </>
+                  )}
+                {loadingComplete === null && "Verify Placement"}
+                {redirecting && <Redirection color={"#fff"} size={"1.5rem"} />}
               </Button>
             </Grid>
           </Grid>

@@ -68,7 +68,7 @@ export function EnrollmentPage() {
           top: 0,
           backgroundColor: "#fff",
           padding: 0,
-          zIndex: 1,
+          zIndex: 5,
         }}
       >
         <NavigationBar

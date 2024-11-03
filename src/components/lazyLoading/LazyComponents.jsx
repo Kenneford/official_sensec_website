@@ -85,13 +85,23 @@ export const EnrollmentPage = lazyWithSuspense(
 );
 export const StudentPlacementCheck = lazyWithSuspense(
   () =>
-    import(
-      "../../pages/enrollment/studentPlacementVerification/StudentPlacementCheck"
-    ).then((module) => {
-      return { default: module.StudentPlacementCheck };
-    }),
+    import("../../pages/enrollment/placementCheck/StudentPlacementCheck").then(
+      (module) => {
+        return { default: module.StudentPlacementCheck };
+      }
+    ),
   <PageLoading />,
-  "StudentEnrollment"
+  "StudentPlacementCheckPage"
+);
+export const PlacementCheckOverview = lazyWithSuspense(
+  () =>
+    import("../../pages/enrollment/placementCheck/PlacementCheckOverview").then(
+      (module) => {
+        return { default: module.PlacementCheckOverview };
+      }
+    ),
+  <PageLoading />,
+  "PlacementCheckOverviewPage"
 );
 export const StudentEnrollment = lazyWithSuspense(
   () =>

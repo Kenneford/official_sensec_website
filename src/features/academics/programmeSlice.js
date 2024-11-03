@@ -44,11 +44,11 @@ export const fetchAllProgrammes = createAsyncThunk(
 );
 
 export const fetchAllDivisionProgrammes = createAsyncThunk(
-  "Program/fetchAllDivisionProgrammes",
+  "Programme/fetchAllDivisionProgrammes",
   async ({ programId }, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        `${SENSEC_API_ENDPOINT}/admin/academics/programs/${programId}/divisions/fetch_all`
+        `${SENSEC_API_ENDPOINT}/academics/programs/${programId}/divisions/fetch_all`
       );
       console.log(response.data);
       return response.data;
@@ -175,7 +175,7 @@ const programmeSlice = createSlice({
     });
 
     builder.addCase(fetchAllDivisionProgrammes.pending, (state, action) => {
-      return { ...state, fetchingDivisionProgrammesStatus: "pending" };
+      return { ...state, fetchStatus: "pending" };
     });
     builder.addCase(fetchAllDivisionProgrammes.fulfilled, (state, action) => {
       if (action.payload) {
@@ -183,14 +183,14 @@ const programmeSlice = createSlice({
           ...state,
           allDivisionProgrammes: action.payload.programs,
           successMessage: action.payload.successMessage,
-          fetchingDivisionProgrammesStatus: "success",
+          fetchStatus: "success",
         };
       } else return state;
     });
     builder.addCase(fetchAllDivisionProgrammes.rejected, (state, action) => {
       return {
         ...state,
-        fetchingDivisionProgrammesStatus: "rejected",
+        fetchStatus: "rejected",
         error: action.payload,
       };
     });
