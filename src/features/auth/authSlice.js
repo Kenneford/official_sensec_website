@@ -91,6 +91,25 @@ const authSlice = createSlice({
         successMessage: "",
       };
     },
+    resetLoginState(state) {
+      return {
+        ...state,
+        loginStatus: "",
+        error: "",
+        successMessage: "",
+      };
+    },
+    userLogout(state) {
+      localStorage.removeItem("userToken");
+      localStorage.removeItem("emailVerificationToken");
+      return {
+        ...state,
+        authUser: "",
+        error: "",
+        successMessage: "",
+        authenticated: false,
+      };
+    },
   },
   extraReducers: (builder) => {
     //   Sign Up
@@ -160,7 +179,8 @@ const authSlice = createSlice({
   },
 });
 
-export const { resetSignUpState } = authSlice.actions;
+export const { resetSignUpState, resetLoginState, userLogout } =
+  authSlice.actions;
 export const getAuthUser = (state) => state.authUser.authUser;
 export const getAllUsers = (state) => state.authUser.allUsers;
 export default authSlice.reducer;
