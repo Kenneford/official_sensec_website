@@ -3,7 +3,7 @@ import "../allStudentsData.scss";
 // import SearchIcon from "@mui/icons-material/Search";
 import DataTable from "react-data-table-component";
 import { useNavigate, useParams } from "react-router-dom";
-// import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 // import {
 //   promotingMultipleStudentsToLevel200,
@@ -16,9 +16,14 @@ import { Box, Grid } from "@mui/material";
 import NewEmploymentModal from "../../../../actionModal/ActionModal";
 import { AllStudentsPageQuickLinks } from "../../../../../linksFormat/LinksFormat";
 import ActionModal from "../../../../actionModal/ActionModal";
+import { getAuthUser } from "../../../../../features/auth/authSlice";
+import { FetchAllApprovedStudents } from "../../../../../data/students/FetchAllStudents";
+import { studentsColumn } from "../../../../../usersInfoDataFormat/UsersInfoDataFormat";
 
 export function AllEnrolledStudents() {
+  const authAdmin = useSelector(getAuthUser);
   const actionBtns = AllStudentsPageQuickLinks();
+  const approvedStudents = FetchAllApprovedStudents();
   //Get state data
   const userInfo = {};
   const allStudents = [];
@@ -36,7 +41,7 @@ export function AllEnrolledStudents() {
   ];
   console.log(allClassLevels);
 
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const {
     adminCurrentLink,
@@ -79,7 +84,7 @@ export function AllEnrolledStudents() {
   );
 
   //Filter students during search
-  const filteredStudents = allStudents?.filter(
+  const filteredStudents = approvedStudents?.filter(
     (std) =>
       std?.personalInfo?.firstName?.toLowerCase()?.includes(searchStudent) ||
       std?.personalInfo?.firstName?.includes(searchStudent) ||
@@ -91,23 +96,23 @@ export function AllEnrolledStudents() {
   console.log(allStudents);
   console.log(allClassLevels);
 
-  // const studentDataFormat = studentsColumn(
-  //   userInfo,
-  //   foundStudent,
-  //   adminCurrentAction,
-  //   adminCurrentLink,
-  //   setCurrentStudentId,
-  //   setLevel100LoadingComplete,
-  //   setLevel200LoadingComplete,
-  //   setLevel300LoadingComplete,
-  //   level100loadingComplete,
-  //   level200loadingComplete,
-  //   level300loadingComplete,
-  //   level100PromotionStatus,
-  //   level200PromotionStatus,
-  //   level300PromotionStatus,
-  //   dispatch
-  // );
+  const studentDataFormat = studentsColumn(
+    userInfo,
+    foundStudent,
+    adminCurrentAction,
+    adminCurrentLink,
+    setCurrentStudentId,
+    setLevel100LoadingComplete,
+    setLevel200LoadingComplete,
+    setLevel300LoadingComplete,
+    level100loadingComplete,
+    level200loadingComplete,
+    level300loadingComplete,
+    // level100PromotionStatus,
+    // level200PromotionStatus,
+    // level300PromotionStatus,
+    dispatch
+  );
 
   const handleMultiSelect = (state) => {
     setMultiStudents(state.selectedRows);
@@ -377,7 +382,9 @@ export function AllEnrolledStudents() {
                     setOpenModal(true);
                   } else {
                     navigate(
-                      `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/${action.label.replace(
+                      `/sensec/users/${
+                        authAdmin?.uniqueId
+                      }/admin/${adminCurrentAction}/${adminCurrentLink}/${action.label.replace(
                         / /g,
                         "_"
                       )}`
@@ -428,7 +435,9 @@ export function AllEnrolledStudents() {
                   key={cLevel.name}
                   onClick={() =>
                     navigate(
-                      `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/${student_category}/${cLevel.name.replace(
+                      `/sensec/users/${
+                        authAdmin?.uniqueId
+                      }/admin/${adminCurrentAction}/${adminCurrentLink}/${student_category}/${cLevel.name.replace(
                         / /g,
                         "_"
                       )}`
@@ -450,7 +459,7 @@ export function AllEnrolledStudents() {
                 sm={2}
                 onClick={() =>
                   navigate(
-                    `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/Graduates`
+                    `/sensec/users/${authAdmin?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/Graduates`
                   )
                 }
                 // to={`/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/old_students/graduates`}
@@ -461,10 +470,10 @@ export function AllEnrolledStudents() {
             </>
           </Grid>
         </Box>
-        <Box>
+        <Box className="studentDataTable">
           <DataTable
             title={allStd}
-            // columns={studentDataFormat}
+            columns={studentDataFormat}
             data={filteredStudents}
             customStyles={customUserTableStyle}
             pagination

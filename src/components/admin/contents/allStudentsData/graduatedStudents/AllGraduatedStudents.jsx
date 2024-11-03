@@ -3,7 +3,7 @@ import "../allStudentsData.scss";
 // import SearchIcon from "@mui/icons-material/Search";
 import DataTable from "react-data-table-component";
 import { useNavigate, useParams } from "react-router-dom";
-// import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 // import {
 //   promotingMultipleStudentsToLevel200,
@@ -16,8 +16,10 @@ import { Box, Grid } from "@mui/material";
 import NewEmploymentModal from "../../../../actionModal/ActionModal";
 import { AllStudentsPageQuickLinks } from "../../../../../linksFormat/LinksFormat";
 import ActionModal from "../../../../actionModal/ActionModal";
+import { getAuthUser } from "../../../../../features/auth/authSlice";
 
 export function AllGraduatedStudents() {
+  const authAdmin = useSelector(getAuthUser);
   const actionBtns = AllStudentsPageQuickLinks();
   //Get state data
   const userInfo = {};
@@ -36,7 +38,7 @@ export function AllGraduatedStudents() {
   ];
   console.log(allClassLevels);
 
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const {
     adminCurrentLink,
@@ -118,7 +120,7 @@ export function AllGraduatedStudents() {
     setUncompletedEmploymentTask("You're being redirected");
     setTimeout(() => {
       navigate(
-        `/sensec/admin/${adminCurrentAction}/${adminCurrentLink}/new_employment/personal_info`
+        `/sensec/users/${authAdmin?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/new_employment/personal_info`
       );
     }, 3000);
   };
@@ -377,7 +379,9 @@ export function AllGraduatedStudents() {
                     setOpenModal(true);
                   } else {
                     navigate(
-                      `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/${action.label.replace(
+                      `/sensec/users/${
+                        authAdmin?.uniqueId
+                      }/admin/${adminCurrentAction}/${adminCurrentLink}/${action.label.replace(
                         / /g,
                         "_"
                       )}`
@@ -428,7 +432,9 @@ export function AllGraduatedStudents() {
                   key={cLevel._id}
                   onClick={() =>
                     navigate(
-                      `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/Enrolled/${cLevel.name.replace(
+                      `/sensec/users/${
+                        authAdmin?.uniqueId
+                      }/admin/${adminCurrentAction}/${adminCurrentLink}/Enrolled/${cLevel.name.replace(
                         / /g,
                         "_"
                       )}`
@@ -450,7 +456,7 @@ export function AllGraduatedStudents() {
                 sm={2}
                 onClick={() =>
                   navigate(
-                    `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/Graduates`
+                    `/sensec/users/${authAdmin?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/Graduates`
                   )
                 }
                 className={

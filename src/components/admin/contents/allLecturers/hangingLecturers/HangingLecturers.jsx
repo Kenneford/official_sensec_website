@@ -3,17 +3,19 @@ import "../lecturersData.scss";
 import SearchIcon from "@mui/icons-material/Search";
 import DataTable from "react-data-table-component";
 import { useNavigate, useParams } from "react-router-dom";
-// import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import NewEmploymentModal from "../../../../actionModal/ActionModal";
 import { customUserTableStyle } from "../../../../../usersInfoDataFormat/usersInfoTableStyle";
 import { Box, Grid } from "@mui/material";
 import { AllEmployedLecturersPageQuickLinks } from "../../../../../linksFormat/LinksFormat";
+import { getAuthUser } from "../../../../../features/auth/authSlice";
 
 export function HangingLecturers() {
+  const authAdmin = useSelector(getAuthUser);
   const navigate = useNavigate();
   const actionBtns = AllEmployedLecturersPageQuickLinks();
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   // const userInfo = useSelector(getUser);
   const allUsers = [];
   const allHangingEmployments = [];
@@ -201,7 +203,9 @@ export function HangingLecturers() {
                     setOpenModal(true);
                   } else {
                     navigate(
-                      `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/employees/${action.label.replace(
+                      `/sensec/users/${
+                        authAdmin?.uniqueId
+                      }/admin/${adminCurrentAction}/${adminCurrentLink}/employees/${action.label.replace(
                         / /g,
                         "_"
                       )}`

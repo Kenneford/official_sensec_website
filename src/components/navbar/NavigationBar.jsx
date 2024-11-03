@@ -11,6 +11,14 @@ import { HashLink, NavHashLink } from "react-router-hash-link";
 import { AppBar, Avatar, Box, Button, Stack, Typography } from "@mui/material";
 import { StyledNavbar } from "../../muiStyling/muiStyling";
 import { Login, PersonAddAlt } from "@mui/icons-material";
+import {
+  fetchAllUsers,
+  getAllUsers,
+  getAuthUser,
+  userLogout,
+} from "../../features/auth/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 const signUpOptions = [
   {
@@ -87,83 +95,6 @@ const navbarLinks = [
   },
 ];
 
-const otherLinks = [
-  {
-    name: "Check Placement",
-    path: "/sensec/students/enrollment/placement_check",
-  },
-  {
-    name: "Apply",
-    path: "/sensec/students/application",
-  },
-  {
-    name: "Enrollment",
-    path: "/sensec/students/enrollment",
-  },
-  {
-    name: "Dashboard",
-    path: {
-      admin: "/sensec/users/admin/Dashboard/Overview",
-      teacher: "/sensec/users/teacher#teacher",
-      nt_Staff: "/sensec/users/nt_staff#staff",
-      student: "/sensec/users/student#student",
-    },
-  },
-  {
-    name: "Join Sensosa",
-    path: "/sensec/users/Dashboard",
-    // path: "/sensec/sensosa/application_process",
-  },
-];
-
-const menuLinks = [
-  {
-    name: "Home",
-    path: "/sensec/homepage",
-  },
-  {
-    name: "About",
-    path: "/sensec/about",
-  },
-  {
-    name: "Courses",
-    path: "/sensec/courses",
-  },
-  {
-    name: "Contact",
-    path: "/sensec/contact",
-  },
-  {
-    name: "Blog",
-    path: "/sensec/blogs",
-  },
-  {
-    name: "Check Placement",
-    path: "/sensec/students/enrollment/placement_check",
-  },
-  {
-    name: "Apply",
-    path: "/sensec/students/application",
-  },
-  {
-    name: "Enrolment",
-    path: "/sensec/students/enrollment",
-  },
-  {
-    name: "Dashboard",
-    path: {
-      admin: "/sensec/users/admin/Dashboard/Overview",
-      teacher: "/sensec/teacher#teacher",
-      nt_Staff: "/sensec/nt_staff#staff",
-      student: "/sensec/student#student",
-    },
-  },
-  {
-    name: "Join Sensosa",
-    path: "/sensec/sensosa/application_process",
-  },
-];
-
 export function NavigationBar({
   setOpenSubNavLinks,
   openSubNavLinks,
@@ -181,12 +112,94 @@ export function NavigationBar({
   const currentOtherNavLink = localStorage.getItem("currentOtherNavLink");
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
+  const authUser = useSelector(getAuthUser);
+  const allUsers = useSelector(getAllUsers);
   const { currentGuestPage } = useParams();
 
+  const otherLinks = [
+    {
+      name: "Check Placement",
+      path: "/sensec/students/enrollment/placement_check",
+    },
+    {
+      name: "Apply",
+      path: "/sensec/students/application",
+    },
+    {
+      name: "Enrollment",
+      path: "/sensec/students/enrollment",
+    },
+    {
+      name: "Dashboard",
+      path: {
+        admin: `/sensec/users/${authUser?.uniqueId}/admin/Dashboard/Overview`,
+        teacher: `/sensec/users/${authUser?.uniqueId}/teacher#teacher`,
+        nt_Staff: `/sensec/users/${authUser?.uniqueId}/nt_staff#staff`,
+        student: `/sensec/users/${authUser?.uniqueId}/student#student`,
+      },
+    },
+    {
+      name: "Join Sensosa",
+      path: "/sensec/users/Dashboard",
+      // path: "/sensec/sensosa/application_process",
+    },
+  ];
+  const menuLinks = [
+    {
+      name: "Home",
+      path: "/sensec/homepage",
+    },
+    {
+      name: "About",
+      path: "/sensec/about",
+    },
+    {
+      name: "Courses",
+      path: "/sensec/courses",
+    },
+    {
+      name: "Contact",
+      path: "/sensec/contact",
+    },
+    {
+      name: "Blog",
+      path: "/sensec/blogs",
+    },
+    {
+      name: "Check Placement",
+      path: "/sensec/students/enrollment/placement_check",
+    },
+    {
+      name: "Apply",
+      path: "/sensec/students/application",
+    },
+    {
+      name: "Enrolment",
+      path: "/sensec/students/enrollment",
+    },
+    {
+      name: "Dashboard",
+      path: {
+        admin: `/sensec/users/${authUser?.uniqueId}/admin/Dashboard/Overview`,
+        teacher: `/sensec/users/${authUser?.uniqueId}/teacher#teacher`,
+        nt_Staff: `/sensec/users/${authUser?.uniqueId}/nt_staff#staff`,
+        student: `/sensec/users/${authUser?.uniqueId}/student#student`,
+      },
+    },
+    {
+      name: "Join Sensosa",
+      path: "/sensec/sensosa/application_process",
+    },
+  ];
+  // Find logged in user
+  const userInfo = allUsers?.find(
+    (user) => user?.uniqueId === authUser?.uniqueId
+  );
   const { pathname } = location;
   // const userInfo = true;
-  const userInfo = { adminStatusExtend: { isAdmin: true } };
-  // console.log(pathname);
+  // const userInfo = { adminStatusExtend: { isAdmin: true } };
+  console.log(authUser);
 
   const [navbar, setNavbar] = useState(false);
   const [openUserLinks, setOpenUserLinks] = useState(false);
@@ -272,15 +285,16 @@ export function NavigationBar({
 
   const handleLogout = (e) => {
     e.preventDefault();
-    // if (userInfo) {
-    //   dispatch(userLogout());
-    //   navigate("/sensec/homepage");
-    //   toast.success("You logged out Successfully...", {
-    //     position: "top-right",
-    //     theme: "dark",
-    //   });
-    //   localStorage.removeItem("currentNavLink");
-    // }
+    if (authUser) {
+      dispatch(userLogout());
+      navigate("/sensec/homepage");
+      toast.success("You logged out Successfully!", {
+        position: "top-right",
+        theme: "dark",
+        toastId: "loggedOut",
+      });
+      // localStorage.removeItem("currentNavLink");
+    }
   };
 
   // Clear popup links
@@ -301,6 +315,10 @@ export function NavigationBar({
     setOpenUserActions,
     openUserActions,
   ]);
+
+  useEffect(() => {
+    dispatch(fetchAllUsers());
+  }, [dispatch]);
 
   return (
     <Box width={"100%"} className="navbarWrap">
@@ -588,10 +606,12 @@ export function NavigationBar({
               xs: { paddingLeft: "0", paddingRight: "0" },
             }}
           >
-            {!userInfo && (
+            {authUser && (
               <StyledNavbar.CurrentUser>
-                <Typography sx={{ display: { xs: "none", md: "block" } }}>
-                  Welcome, @{userInfo?.personalInfo?.firstName}
+                <Typography
+                  sx={{ display: { xs: "none", md: "block", color: "#fff" } }}
+                >
+                  @{userInfo?.userSignUpDetails?.userName}
                 </Typography>
                 <Box>
                   {userInfo?.personalInfo?.profilePicture ? (
@@ -641,7 +661,7 @@ export function NavigationBar({
                 )}
               </StyledNavbar.CurrentUser>
             )}
-            {userInfo && (
+            {!authUser && (
               // <StyledNavbar.CurrentUser>
               <div className="login">
                 <button onClick={() => setOpenUserActions(!openUserActions)}>

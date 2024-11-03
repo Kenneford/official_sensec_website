@@ -3,14 +3,16 @@ import "../lecturersData.scss";
 import SearchIcon from "@mui/icons-material/Search";
 import DataTable from "react-data-table-component";
 import { useNavigate, useParams } from "react-router-dom";
-// import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import NewEmploymentModal from "../../../../actionModal/ActionModal";
 import { customUserTableStyle } from "../../../../../usersInfoDataFormat/usersInfoTableStyle";
 import { AllEmployedLecturersPageQuickLinks } from "../../../../../linksFormat/LinksFormat";
 import { Box, Grid } from "@mui/material";
+import { getAuthUser } from "../../../../../features/auth/authSlice";
 
 export function PendingLecturers() {
+  const authAdmin = useSelector(getAuthUser);
   const currentEmployeeLink = localStorage.getItem("currentEmployeeLink");
   const navigate = useNavigate();
   const actionBtns = AllEmployedLecturersPageQuickLinks();
@@ -145,14 +147,6 @@ export function PendingLecturers() {
           {adminCurrentAction?.replace(/_/g, "-")} /{" "}
           <span>{adminCurrentLink?.replace(/_/g, " ")}</span>
         </h1>
-        {/* Main search bar */}
-        {/* <Box sx={{ display: { xs: "none", sm: "block" } }}>
-          <SearchForm
-            value={searchedBlog}
-            onChange={handleOnChange}
-            placeholder={"Search"}
-          />
-        </Box> */}
       </Box>
       <Box
         className="allAdminsData"
@@ -214,7 +208,9 @@ export function PendingLecturers() {
                     setOpenModal(true);
                   } else {
                     navigate(
-                      `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/employees/${action.label.replace(
+                      `/sensec/users/${
+                        authAdmin?.uniqueId
+                      }/admin/${adminCurrentAction}/${adminCurrentLink}/employees/${action.label.replace(
                         / /g,
                         "_"
                       )}`
@@ -262,7 +258,9 @@ export function PendingLecturers() {
                 key={cLevel._id}
                 onClick={() =>
                   navigate(
-                    `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/employees/${employees_link}/${cLevel.name.replace(
+                    `/sensec/users/${
+                      authAdmin?.uniqueId
+                    }/admin/${adminCurrentAction}/${adminCurrentLink}/employees/${employees_link}/${cLevel.name.replace(
                       / /g,
                       "_"
                     )}`

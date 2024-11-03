@@ -11,6 +11,8 @@ import {
 } from "@mui/icons-material";
 import { SidebarSubLinksContainer } from "../../../../muiStyling/muiStyling";
 import { Box } from "@mui/material";
+import { useSelector } from "react-redux";
+import { getAuthUser } from "../../../../features/auth/authSlice";
 
 const quickLinks = [
   { name: "Students Assessment" },
@@ -22,6 +24,7 @@ export function AssessmentLinks({
   setCurrentAction,
   setCurrentLink,
 }) {
+  const authAdmin = useSelector(getAuthUser);
   const { adminCurrentLink } = useParams();
 
   // Set sub-link to expand on page render
@@ -82,10 +85,9 @@ export function AssessmentLinks({
           {quickLinks.map((Qlink) => (
             <NavHashLink
               key={Qlink.name}
-              to={`/sensec/users/admin/Assessment/${Qlink.name.replace(
-                / /g,
-                "_"
-              )}`}
+              to={`/sensec/users/${
+                authAdmin?.uniqueId
+              }/admin/Assessment/${Qlink.name.replace(/ /g, "_")}`}
               // className="links"
               className={
                 Qlink.name?.replace(/ /g, "_") === adminCurrentLink

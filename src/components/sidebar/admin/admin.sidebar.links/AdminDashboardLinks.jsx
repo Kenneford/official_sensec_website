@@ -15,6 +15,8 @@ import { useParams } from "react-router-dom";
 import { Box } from "@mui/material";
 import { SidebarSubLinksContainer } from "../../../../muiStyling/muiStyling";
 import { Link } from "react-router-dom";
+import { getAuthUser } from "../../../../features/auth/authSlice";
+import { useSelector } from "react-redux";
 
 const quickLinks = [
   { name: "Overview" },
@@ -29,6 +31,7 @@ export function AdminDashboardLinks({
   setCurrentAction,
   setCurrentLink,
 }) {
+  const authAdmin = useSelector(getAuthUser);
   const { adminCurrentLink } = useParams();
 
   // Set sub-link to expand on page render
@@ -90,10 +93,9 @@ export function AdminDashboardLinks({
           {quickLinks?.map((qLink) => (
             <HashLink
               key={qLink?.name}
-              to={`/sensec/users/admin/Dashboard/${qLink?.name?.replace(
-                / /g,
-                "_"
-              )}`}
+              to={`/sensec/users/${
+                authAdmin?.uniqueId
+              }/admin/Dashboard/${qLink?.name?.replace(/ /g, "_")}`}
               smooth
               title={!isSidebarOpen ? qLink.name : ""}
               className={

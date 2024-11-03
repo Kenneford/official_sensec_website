@@ -13,8 +13,11 @@ import NewEmploymentModal from "../../../../actionModal/ActionModal";
 // import { adminsColumn } from "../../../../usersInfoDataFormat/UsersInfoDataFormat";
 import { customUserTableStyle } from "../../../../../usersInfoDataFormat/usersInfoTableStyle";
 import { Box, Grid } from "@mui/material";
+import { useSelector } from "react-redux";
+import { getAuthUser } from "../../../../../features/auth/authSlice";
 
 export function AllAdmins() {
+  const authAdmin = useSelector(getAuthUser);
   const navigate = useNavigate();
   //   const dispatch = useDispatch();
   const { adminCurrentAction, adminCurrentLink, employees_link } = useParams();
@@ -158,7 +161,9 @@ export function AllAdmins() {
                     setOpenModal(true);
                   } else {
                     navigate(
-                      `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/employees/${action.label.replace(
+                      `/sensec/users/${
+                        authAdmin?.uniqueId
+                      }/admin/${adminCurrentAction}/${adminCurrentLink}/employees/${action.label.replace(
                         / /g,
                         "_"
                       )}`

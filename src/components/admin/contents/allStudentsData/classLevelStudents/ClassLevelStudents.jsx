@@ -2,7 +2,7 @@ import "../allStudentsData.scss";
 import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { useNavigate, useParams } from "react-router-dom";
-// import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
@@ -10,8 +10,10 @@ import { customUserTableStyle } from "../../../../../usersInfoDataFormat/usersIn
 import { Box, Grid } from "@mui/material";
 import ActionModal from "../../../../actionModal/ActionModal";
 import { AllStudentsPageQuickLinks } from "../../../../../linksFormat/LinksFormat";
+import { getAuthUser } from "../../../../../features/auth/authSlice";
 
 export function ClassLevelStudents() {
+  const authAdmin = useSelector(getAuthUser);
   const actionBtns = AllStudentsPageQuickLinks();
   // console.log(userInfo);
   // const {
@@ -38,7 +40,7 @@ export function ClassLevelStudents() {
   //   (state) => state.classLevel
   // );
 
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const {
     program,
@@ -96,7 +98,7 @@ export function ClassLevelStudents() {
     setUncompletedEmploymentTask("You're being redirected");
     setTimeout(() => {
       navigate(
-        `/sensec/admin/${adminCurrentAction}/${adminCurrentLink}/new_employment/personal_info`
+        `/sensec/users/${authAdmin?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/new_employment/personal_info`
       );
     }, 3000);
   };
@@ -339,7 +341,9 @@ export function ClassLevelStudents() {
                     setOpenModal(true);
                   } else {
                     navigate(
-                      `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/${action.label.replace(
+                      `/sensec/users/${
+                        authAdmin?.uniqueId
+                      }/admin/${adminCurrentAction}/${adminCurrentLink}/${action.label.replace(
                         / /g,
                         "_"
                       )}`
@@ -389,7 +393,9 @@ export function ClassLevelStudents() {
                 key={cLevel._id}
                 onClick={() =>
                   navigate(
-                    `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/${student_category}/${cLevel.name.replace(
+                    `/sensec/users/${
+                      authAdmin?.uniqueId
+                    }/admin/${adminCurrentAction}/${adminCurrentLink}/${student_category}/${cLevel.name.replace(
                       / /g,
                       "_"
                     )}`

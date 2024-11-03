@@ -19,6 +19,8 @@ import {
   ExpandableTitleTextField,
 } from "../../../../muiStyling/muiStyling";
 import SearchForm from "../../../searchForm/SearchForm";
+import { getAuthUser } from "../../../../features/auth/authSlice";
+import { useSelector } from "react-redux";
 
 const cardsData = [
   {
@@ -50,6 +52,7 @@ const cardsData = [
 ];
 
 export function AdminDashboardOverview() {
+  const authAdmin = useSelector(getAuthUser);
   const tinyMCEKey = import.meta.env.VITE_APP_TINYMCE_KEY;
   const { adminCurrentAction, adminCurrentLink } = useParams();
   const [loadBlogImage, setLoadBlogImage] = useState("");
@@ -147,7 +150,7 @@ export function AdminDashboardOverview() {
               <div className="card">
                 <h3>Total Admins</h3>
                 <HashLink
-                  to={"/sensec/users/admin/Users/Admins/employees/All"}
+                  to={`/sensec/users/${authAdmin?.uniqueId}/admin/Users/Admins/employees/All`}
                   className="cardInfo"
                 >
                   <div className="cardInfoIcons">
@@ -161,9 +164,7 @@ export function AdminDashboardOverview() {
                   <div className="cardTotal">{7}</div>
                 </HashLink>
                 <HashLink
-                  to={
-                    "/sensec/users/admin/Users/Admins/employees/Pending_Admins"
-                  }
+                  to={`/sensec/users/${authAdmin?.uniqueId}/admin/Users/Admins/employees/Pending_Admins`}
                   className="pending"
                 >
                   <h4>Pending Admin(s)</h4>
@@ -173,11 +174,11 @@ export function AdminDashboardOverview() {
               <div className="card">
                 <h3>Total Lecturers</h3>
                 <HashLink
-                  to={`/sensec/users/admin/Users/Lecturers/employees/All`}
+                  to={`/sensec/users/${authAdmin?.uniqueId}/admin/Users/Lecturers/employees/All`}
                   className="cardInfo"
                 >
                   <div
-                    to={`/sensec/users/admin/Users/Lecturers`}
+                    to={`/sensec/users/${authAdmin?.uniqueId}/admin/Users/Lecturers`}
                     className="cardInfoIcons"
                   >
                     <SupervisedUserCircle
@@ -190,7 +191,7 @@ export function AdminDashboardOverview() {
                   <div className="cardTotal">6</div>
                 </HashLink>
                 <HashLink
-                  to={`/sensec/users/admin/Users/Lecturers/employees/Pending_Lecturers`}
+                  to={`/sensec/users/${authAdmin?.uniqueId}/admin/Users/Lecturers/employees/Pending_Lecturers`}
                   className="pending"
                 >
                   <h4>Pending Lecturer(s)</h4>
@@ -200,7 +201,7 @@ export function AdminDashboardOverview() {
               <div className="card">
                 <h3>Total Students</h3>
                 <HashLink
-                  to={`/sensec/users/admin/User_Types/Students/Enrolled`}
+                  to={`/sensec/users/${authAdmin?.uniqueId}/admin/User_Types/Students/Enrolled`}
                   className="cardInfo"
                 >
                   <div className="cardInfoIcons">
@@ -214,7 +215,7 @@ export function AdminDashboardOverview() {
                   <div className="cardTotal">13</div>
                 </HashLink>
                 <HashLink
-                  to={`/sensec/users/admin/User_Types/Students/Pending_Students`}
+                  to={`/sensec/users/${authAdmin?.uniqueId}/admin/User_Types/Students/Pending_Students`}
                   className="pending"
                 >
                   <h4>Pending Student(s)</h4>
@@ -224,7 +225,7 @@ export function AdminDashboardOverview() {
               <div className="card">
                 <h3>Total NT-Staffs</h3>
                 <HashLink
-                  to={"/sensec/users/admin/Users/NT-Staffs/employees/All"}
+                  to={`/sensec/users/${authAdmin?.uniqueId}/admin/Users/NT-Staffs/employees/All`}
                   className="cardInfo"
                 >
                   <div className="cardInfoIcons">
@@ -238,9 +239,7 @@ export function AdminDashboardOverview() {
                   <div className="cardTotal">{17}</div>
                 </HashLink>
                 <HashLink
-                  to={
-                    "/sensec/users/admin/Users/NT-Staffs/employees/Pending_NT-Staffs"
-                  }
+                  to={`/sensec/users/${authAdmin?.uniqueId}/admin/Users/NT-Staffs/employees/Pending_NT-Staffs`}
                   className="pending"
                 >
                   <h4>Pending Staff(s)</h4>
@@ -248,7 +247,9 @@ export function AdminDashboardOverview() {
                 </HashLink>
               </div>
               <div className="card">
-                <HashLink to={"/sensec/users/admin/Users/Blogs"}>
+                <HashLink
+                  to={`/sensec/users/${authAdmin?.uniqueId}/admin/Users/Blogs`}
+                >
                   <div className="titleFlex">
                     <h3>Blogs</h3>
                   </div>

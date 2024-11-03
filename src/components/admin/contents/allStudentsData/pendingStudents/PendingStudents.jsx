@@ -7,10 +7,12 @@ import { customUserTableStyle } from "../../../../../usersInfoDataFormat/usersIn
 import { Box, Grid } from "@mui/material";
 import ActionModal from "../../../../actionModal/ActionModal";
 import { AllStudentsPageQuickLinks } from "../../../../../linksFormat/LinksFormat";
-// import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getAuthUser } from "../../../../../features/auth/authSlice";
 // import { toast } from "react-toastify";
 
 export function PendingStudents() {
+  const authAdmin = useSelector(getAuthUser);
   const actionBtns = AllStudentsPageQuickLinks();
   const navigate = useNavigate();
   const {
@@ -106,7 +108,7 @@ export function PendingStudents() {
     setUncompletedEmploymentTask("You're being redirected");
     setTimeout(() => {
       navigate(
-        `/sensec/admin/${adminCurrentAction}/${adminCurrentLink}/new_employment/personal_info`
+        `/sensec/users/${authAdmin?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/new_employment/personal_info`
       );
     }, 3000);
   };
@@ -289,7 +291,9 @@ export function PendingStudents() {
                     setOpenModal(true);
                   } else {
                     navigate(
-                      `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/${action.label.replace(
+                      `/sensec/users/${
+                        authAdmin?.uniqueId
+                      }/admin/${adminCurrentAction}/${adminCurrentLink}/${action.label.replace(
                         / /g,
                         "_"
                       )}`
@@ -339,7 +343,9 @@ export function PendingStudents() {
                 key={cLevel.name}
                 onClick={() =>
                   navigate(
-                    `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/${student_category}/${cLevel.name.replace(
+                    `/sensec/users/${
+                      authAdmin?.uniqueId
+                    }/admin/${adminCurrentAction}/${adminCurrentLink}/${student_category}/${cLevel.name.replace(
                       / /g,
                       "_"
                     )}`

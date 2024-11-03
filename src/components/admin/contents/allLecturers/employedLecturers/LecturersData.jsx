@@ -7,13 +7,15 @@ import NewEmploymentModal from "../../../../actionModal/ActionModal";
 import { customUserTableStyle } from "../../../../../usersInfoDataFormat/usersInfoTableStyle";
 import { Box, Grid } from "@mui/material";
 import { AllEmployedLecturersPageQuickLinks } from "../../../../../linksFormat/LinksFormat";
-// import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getAuthUser } from "../../../../../features/auth/authSlice";
 
 export function LecturersData() {
+  const authAdmin = useSelector(getAuthUser);
   const currentEmployeeLink = localStorage.getItem("currentEmployeeLink");
   const navigate = useNavigate();
   const actionBtns = AllEmployedLecturersPageQuickLinks();
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const allApprovedLecturers = [];
   console.log(allApprovedLecturers);
   const allClassLevels = [
@@ -155,7 +157,9 @@ export function LecturersData() {
                     setOpenModal(true);
                   } else {
                     navigate(
-                      `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/employees/${action.label.replace(
+                      `/sensec/users/${
+                        authAdmin?.uniqueId
+                      }/admin/${adminCurrentAction}/${adminCurrentLink}/employees/${action.label.replace(
                         / /g,
                         "_"
                       )}`
@@ -204,7 +208,9 @@ export function LecturersData() {
               key={cLevel._id}
               onClick={() =>
                 navigate(
-                  `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/employees/${employees_link}/${cLevel.name.replace(
+                  `/sensec/users/${
+                    authAdmin?.uniqueId
+                  }/admin/${adminCurrentAction}/${adminCurrentLink}/employees/${employees_link}/${cLevel.name.replace(
                     / /g,
                     "_"
                   )}`
