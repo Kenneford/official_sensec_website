@@ -15,8 +15,11 @@ import NewEmploymentModal from "../../../../actionModal/ActionModal";
 import { customUserTableStyle } from "../../../../../usersInfoDataFormat/usersInfoTableStyle";
 import { AllEmployedAdminsPageQuickLinks } from "../../../../../linksFormat/LinksFormat";
 import { Box, Grid } from "@mui/material";
+import { getAuthUser } from "../../../../../features/auth/authSlice";
+import { useSelector } from "react-redux";
 
 export function PendingAdmins() {
+  const authAdmin = useSelector(getAuthUser);
   const navigate = useNavigate();
   const actionBtns = AllEmployedAdminsPageQuickLinks();
   // const dispatch = useDispatch();
@@ -217,7 +220,9 @@ export function PendingAdmins() {
                     setOpenModal(true);
                   } else {
                     navigate(
-                      `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/employees/${action.label.replace(
+                      `/sensec/users/${
+                        authAdmin?.uniqueId
+                      }/admin/${adminCurrentAction}/${adminCurrentLink}/employees/${action.label.replace(
                         / /g,
                         "_"
                       )}`

@@ -28,7 +28,7 @@ import {
   SupervisedUserCircle,
   Tv,
 } from "@mui/icons-material";
-import "./adminSidebar.scss";
+// import "./adminSidebar.scss";
 import {
   AccountLinks,
   ActionsLinks,
@@ -44,8 +44,9 @@ import {
   getAuthUser,
 } from "../../../features/auth/authSlice";
 import { useEffect } from "react";
+import { FetchAllProgrammes } from "../../../data/programme/FetchProgrammeData";
 
-export function AdminSidebar({
+export function StudentSideBar({
   isSidebarOpen,
   toggleSidebar,
   setCurrentAction,
@@ -55,10 +56,17 @@ export function AdminSidebar({
   const dispatch = useDispatch();
   const authUser = useSelector(getAuthUser);
   const allUsers = useSelector(getAllUsers);
-  // Find logged in admin
-  const authAdminInfo = allUsers?.find(
+  const allProgrammes = FetchAllProgrammes();
+  // Find logged in student
+  const studentInfo = allUsers?.find(
     (user) => user?.uniqueId === authUser?.uniqueId
   );
+  // Find student's programme
+  const studentProgrammeInfo = allProgrammes?.find(
+    (programme) => programme?._id === studentInfo?.studentSchoolData?.program
+  );
+  console.log(allProgrammes);
+  console.log(studentProgrammeInfo);
 
   useEffect(() => {
     dispatch(fetchAllUsers());
@@ -105,7 +113,7 @@ export function AdminSidebar({
         </IconButton>
         {/* User Info */}
         <Box className="userInfo">
-          <img src={authAdminInfo?.personalInfo?.profilePicture?.url} alt="" />
+          <img src={studentInfo?.personalInfo?.profilePicture?.url} alt="" />
           {isSidebarOpen && (
             <Collapse
               in={isSidebarOpen}
@@ -114,16 +122,9 @@ export function AdminSidebar({
               //     transition: "0.5s ease", // Smooth transition when toggling
               //   }}
             >
-              <span>
-                {authAdminInfo?.personalInfo?.gender === "Male"
-                  ? "Mr."
-                  : "Mrs."}{" "}
-                {authAdminInfo?.personalInfo?.lastName}
-              </span>
-              {authAdminInfo?.status && (
-                <Typography>
-                  ({authAdminInfo?.status.positionHolding})
-                </Typography>
+              <span>{studentInfo?.personalInfo?.fullName}</span>
+              {studentProgrammeInfo && (
+                <Typography>({studentProgrammeInfo?.name})</Typography>
               )}
             </Collapse>
           )}
@@ -200,7 +201,7 @@ export function AdminSidebar({
   );
 }
 
-AdminSidebar.propTypes = {
+StudentSideBar.propTypes = {
   isSidebarOpen: PropTypes.bool,
   toggleSidebar: PropTypes.func,
   setCurrentAction: PropTypes.func,

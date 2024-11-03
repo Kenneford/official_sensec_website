@@ -12,6 +12,7 @@ import {
   Home,
   PageNotFound,
   PageNotFoundError,
+  PlacementCheckOverview,
   StudentEnrollment,
   StudentPlacementCheck,
   StudentPlacementVerification,
@@ -31,16 +32,24 @@ import {
   UserTypesContainer,
 } from "../lazyLoading/admin/AdminLazyLoadingComponents";
 import FakeDashboard from "../admin/contents/overview/FakeDashboard";
+import {
+  GuardianForm,
+  ParentForm,
+  StudentDashboard,
+} from "../lazyLoading/student/StudentsLazyLoadingComponents";
+import { useSelector } from "react-redux";
+import { getAuthUser } from "../../features/auth/authSlice";
 
 export default function PageNavigation() {
+  const authUser = useSelector(getAuthUser);
   const userInfo = { isAdmin: true };
 
   // Function to redirect users to their dashboard
   const getUserRolePath = () => {
-    if (userInfo?.isAdmin) return "admin";
-    if (userInfo?.isLecturer) return "lecturer";
-    if (userInfo?.isStudent) return "student";
-    if (userInfo?.isNTStaff) return "nt_staff";
+    if (userInfo?.isAdmin) return "admin/Dashboard/Overview";
+    if (userInfo?.isLecturer) return "lecturer/Dashboard/Overview";
+    if (userInfo?.isStudent) return "student/Dashboard/Overview";
+    if (userInfo?.isNTStaff) return "nt_staff/Dashboard/Overview";
     return "*";
   };
   const userRolePath = getUserRolePath();
@@ -69,10 +78,12 @@ export default function PageNavigation() {
             // { path: "*", element: <PageNotFound /> },
           ],
         },
+        // Email Verification
         {
           path: "sensec/email/:uniqueId/:emailToken/verify",
           element: <Verification />,
         },
+        // Student Enrollment
         {
           path: "sensec/students/enrollment",
           element: <EnrollmentPage />,
@@ -90,8 +101,20 @@ export default function PageNavigation() {
               element: <StudentPlacementCheck />,
             },
             {
-              path: "online",
+              path: "placement_check/:studentName/:studentIndexNo",
+              element: <PlacementCheckOverview />,
+            },
+            {
+              path: "online/:studentIndexNo",
               element: <StudentEnrollment />,
+            },
+            {
+              path: "online/:studentId/parent/add",
+              element: <ParentForm />,
+            },
+            {
+              path: "online/:studentId/guardian/add",
+              element: <GuardianForm />,
             },
             { path: "*", element: <PageNotFound /> },
           ],
@@ -99,23 +122,30 @@ export default function PageNavigation() {
         // For Authenticated Users
         {
           path: "sensec/users",
-          element: <AuthUserDashboard />,
+          element: authUser ? (
+            <AuthUserDashboard />
+          ) : (
+            <Navigate to={"/sensec/login_options"} />
+          ),
           children: [
             {
               element: <Navigate to={userRolePath} />,
               index: true,
             },
             {
-              path: "admin",
+              path: ":userId",
               element: <UserDashboardLayout />,
               children: [
                 {
-                  element: <Navigate to={"Dashboard/Overview"} />,
+                  element: <Navigate to={":currentUser/Dashboard/Overview"} />,
                   index: true,
                 },
+                // Admin Dashboard
                 {
-                  path: ":adminCurrentAction/:adminCurrentLink",
-                  element: <AdminDashboard />,
+                  path: "admin/:adminCurrentAction/:adminCurrentLink",
+                  element: authUser?.roles?.includes("admin") && (
+                    <AdminDashboard />
+                  ),
                   children: [
                     {
                       path: "employees/:employees_link",
@@ -139,6 +169,13 @@ export default function PageNavigation() {
                     },
                     { path: "*", element: <PageNotFound /> },
                   ],
+                },
+                // Student Dashboard
+                {
+                  path: "student/:studentCurrentAction/:studentCurrentLink",
+                  element: authUser?.roles?.includes("student") && (
+                    <StudentDashboard />
+                  ),
                 },
                 { path: "*", element: <PageNotFound /> },
               ],
