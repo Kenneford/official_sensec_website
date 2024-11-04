@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Drawer, Typography } from "@mui/material";
 import "./sidebar.scss";
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
@@ -22,6 +22,10 @@ export default function SideBar({
   console.log(isSidebarOpen);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [hovered, setHovered] = useState(false);
+
+  const drawerWidthCollapsed = 160; // Collapsed width
+  const drawerWidthExpanded = 300; // Expanded width
 
   // State to check if navbar is scrolling
   const [navbar, setNavbar] = useState(false);
@@ -51,23 +55,31 @@ export default function SideBar({
   };
 
   return (
-    <Box
+    <Drawer
+      variant="permanent"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       component="div"
       className="sidebar"
       sx={{
+        width: hovered ? drawerWidthExpanded : drawerWidthCollapsed,
+        transition: "width 0.5s ease",
+        flexShrink: 0,
         backgroundColor: "#292929",
         padding: "3rem 0 5rem",
-        width: isSidebarOpen ? "20%" : "8.5rem", // Change width when open/closed
-        flexShrink: 0,
-        transition: "width 0.5s ease", // Smooth transition when toggling
-        position: "fixed",
-        left: 0,
-        top: 0,
-        // Apply only when the device is in landscape and has a max-height (smaller screens)
-        "@media screen and (max-width: 1024px) and (orientation: landscape)": {
-          backgroundColor: "lightgreen",
-          display: "none",
+        position: "relative",
+        "& .MuiDrawer-paper": {
+          width: hovered ? drawerWidthExpanded : drawerWidthCollapsed,
+          overflowX: "hidden",
+          boxSizing: "border-box",
+          transition: "width 0.5s ease", // Smooth transition when toggling
+          backgroundColor: "#292929",
         },
+        // Apply only when the device is in landscape and has a max-height (smaller screens)
+        // "@media screen and (max-width: 1024px) and (orientation: landscape)": {
+        //   backgroundColor: "lightgreen",
+        //   display: "none",
+        // },
       }}
     >
       {authUser?.roles?.includes("admin") && (
@@ -77,6 +89,7 @@ export default function SideBar({
           setCurrentAction={setCurrentAction}
           setCurrentLink={setCurrentLink}
           navbar={navbar}
+          hovered={hovered}
         />
       )}
       {authUser?.roles?.includes("student") && (
@@ -89,20 +102,90 @@ export default function SideBar({
         />
       )}
       <Box
-        sx={{
-          width: isSidebarOpen ? "20%" : "8.5rem",
-        }}
-        className="sideBarLogoutBtn"
+        sx={
+          {
+            // width: isSidebarOpen ? "20%" : "8.5rem",
+          }
+        }
+        bgcolor={"red"}
+        position={"absolute"}
+        bottom={0}
+        left={0}
+        width={"inherit"}
+        display={"flex"}
+        justifyContent={"center"}
+        // alignItems={"center"}
+        // className="sideBarLogoutBtn"
       >
         <Button
-          sx={{ textTransform: "capitalize", color: "#fff", fontSize: "1rem" }}
+          sx={{
+            textTransform: "capitalize",
+            color: "#fff",
+            fontSize: "1rem",
+            textAlign: hovered && "center",
+            letterSpacing: "1px",
+          }}
           onClick={handleLogout}
         >
-          <Typography>Logout</Typography>
+          <Typography width={"100%"} textAlign={"center"}>
+            Logout
+          </Typography>
         </Button>
         {/* <LogoutBtn isSidebarOpen={isSidebarOpen} /> */}
       </Box>
-    </Box>
+    </Drawer>
+    // <Box
+    //   component="div"
+    //   className="sidebar"
+    //   sx={{
+    //     backgroundColor: "#292929",
+    //     padding: "3rem 0 5rem",
+    //     width: isSidebarOpen ? "20%" : "8.5rem", // Change width when open/closed
+    //     flexShrink: 0,
+    //     transition: "width 0.5s ease", // Smooth transition when toggling
+    //     position: "fixed",
+    //     left: 0,
+    //     top: 0,
+    //     // Apply only when the device is in landscape and has a max-height (smaller screens)
+    //     "@media screen and (max-width: 1024px) and (orientation: landscape)": {
+    //       backgroundColor: "lightgreen",
+    //       display: "none",
+    //     },
+    //   }}
+    // >
+    //   {authUser?.roles?.includes("admin") && (
+    //     <AdminSidebar
+    //       isSidebarOpen={isSidebarOpen}
+    //       toggleSidebar={toggleSidebar}
+    //       setCurrentAction={setCurrentAction}
+    //       setCurrentLink={setCurrentLink}
+    //       navbar={navbar}
+    //     />
+    //   )}
+    //   {authUser?.roles?.includes("student") && (
+    //     <StudentSideBar
+    //       isSidebarOpen={isSidebarOpen}
+    //       toggleSidebar={toggleSidebar}
+    //       setCurrentAction={setCurrentAction}
+    //       setCurrentLink={setCurrentLink}
+    //       navbar={navbar}
+    //     />
+    //   )}
+    //   <Box
+    //     sx={{
+    //       width: isSidebarOpen ? "20%" : "8.5rem",
+    //     }}
+    //     className="sideBarLogoutBtn"
+    //   >
+    //     <Button
+    //       sx={{ textTransform: "capitalize", color: "#fff", fontSize: "1rem" }}
+    //       onClick={handleLogout}
+    //     >
+    //       <Typography>Logout</Typography>
+    //     </Button>
+    //     {/* <LogoutBtn isSidebarOpen={isSidebarOpen} /> */}
+    //   </Box>
+    // </Box>
   );
 }
 {

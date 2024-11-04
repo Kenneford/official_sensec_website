@@ -51,6 +51,7 @@ export function AdminSidebar({
   setCurrentAction,
   setCurrentLink,
   navbar,
+  hovered,
 }) {
   const dispatch = useDispatch();
   const authUser = useSelector(getAuthUser);
@@ -80,7 +81,7 @@ export function AdminSidebar({
           borderBottom: "2px solid #02b202",
         }}
       >
-        <IconButton
+        {/* <IconButton
           sx={{
             position: "absolute",
             top: ".5rem",
@@ -102,11 +103,11 @@ export function AdminSidebar({
               }}
             />
           )}
-        </IconButton>
+        </IconButton> */}
         {/* User Info */}
         <Box className="userInfo">
-          <img src={authAdminInfo?.personalInfo?.profilePicture?.url} alt="" />
-          {isSidebarOpen && (
+          <img src={authUser?.personalInfo?.profilePicture?.url} alt="" />
+          {hovered && (
             <Collapse
               in={isSidebarOpen}
               className="infoText"
@@ -115,12 +116,10 @@ export function AdminSidebar({
               //   }}
             >
               <span>
-                {authAdminInfo?.personalInfo?.gender === "Male"
-                  ? "Mr."
-                  : "Mrs."}{" "}
-                {authAdminInfo?.personalInfo?.lastName}
+                {authUser?.personalInfo?.gender === "Male" ? "Mr." : "Mrs."}{" "}
+                {authUser?.personalInfo?.lastName}
               </span>
-              {authAdminInfo?.status && (
+              {authUser && authAdminInfo?.status.positionHolding && (
                 <Typography>
                   ({authAdminInfo?.status.positionHolding})
                 </Typography>
@@ -151,6 +150,7 @@ export function AdminSidebar({
                 isSidebarOpen={isSidebarOpen}
                 setCurrentAction={setCurrentAction}
                 setCurrentLink={setCurrentLink}
+                hovered={hovered}
               />
             </>
             {/* Actions */}
@@ -159,6 +159,7 @@ export function AdminSidebar({
                 isSidebarOpen={isSidebarOpen}
                 setCurrentAction={setCurrentAction}
                 setCurrentLink={setCurrentLink}
+                hovered={hovered}
               />
             </>
             {/* Users */}
@@ -167,6 +168,7 @@ export function AdminSidebar({
                 isSidebarOpen={isSidebarOpen}
                 setCurrentAction={setCurrentAction}
                 setCurrentLink={setCurrentLink}
+                hovered={hovered}
               />
             </>
             {/* Attendance */}
@@ -175,6 +177,7 @@ export function AdminSidebar({
                 isSidebarOpen={isSidebarOpen}
                 setCurrentAction={setCurrentAction}
                 setCurrentLink={setCurrentLink}
+                hovered={hovered}
               />
             </>
             {/* Assessment */}
@@ -183,6 +186,7 @@ export function AdminSidebar({
                 isSidebarOpen={isSidebarOpen}
                 setCurrentAction={setCurrentAction}
                 setCurrentLink={setCurrentLink}
+                hovered={hovered}
               />
             </>
             {/* Account */}
@@ -191,6 +195,7 @@ export function AdminSidebar({
                 isSidebarOpen={isSidebarOpen}
                 setCurrentAction={setCurrentAction}
                 setCurrentLink={setCurrentLink}
+                hovered={hovered}
               />
             </>
           </div>
