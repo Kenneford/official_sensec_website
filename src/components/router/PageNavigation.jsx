@@ -26,6 +26,7 @@ import {
 import {
   AdminAttendance,
   ClassLevelLecturers,
+  ClassLevelProgrammeStudents,
   ClassLevelStudentsContainer,
   NewDataContainer,
   StudentsCategories,
@@ -33,6 +34,7 @@ import {
 } from "../lazyLoading/admin/AdminLazyLoadingComponents";
 import FakeDashboard from "../admin/contents/overview/FakeDashboard";
 import {
+  EnrollmentForm,
   GuardianForm,
   ParentForm,
   StudentDashboard,
@@ -46,10 +48,13 @@ export default function PageNavigation() {
 
   // Function to redirect users to their dashboard
   const getUserRolePath = () => {
-    if (userInfo?.isAdmin) return "admin/Dashboard/Overview";
-    if (userInfo?.isLecturer) return "lecturer/Dashboard/Overview";
-    if (userInfo?.isStudent) return "student/Dashboard/Overview";
-    if (userInfo?.isNTStaff) return "nt_staff/Dashboard/Overview";
+    if (authUser?.roles?.includes("admin")) return "admin/Dashboard/Overview";
+    if (authUser?.roles?.includes("lecturer"))
+      return "lecturer/Dashboard/Overview";
+    if (authUser?.roles?.includes("student"))
+      return "student/Dashboard/Overview";
+    if (authUser?.roles?.includes("nt_Staff"))
+      return "nt_staff/Dashboard/Overview";
     return "*";
   };
   const userRolePath = getUserRolePath();
@@ -148,6 +153,18 @@ export default function PageNavigation() {
                   ),
                   children: [
                     {
+                      path: "new_enrollment/placement_verification",
+                      element: <StudentPlacementVerification />,
+                    },
+                    {
+                      path: "new_enrollment",
+                      element: <EnrollmentForm />,
+                    },
+                    {
+                      path: "new_enrollment/parent/add",
+                      element: <ParentForm />,
+                    },
+                    {
                       path: "employees/:employees_link",
                       element: <UserTypesContainer />,
                     },
@@ -166,6 +183,10 @@ export default function PageNavigation() {
                     {
                       path: ":student_category/:class_level",
                       element: <ClassLevelStudentsContainer />,
+                    },
+                    {
+                      path: ":student_category/:class_level/:programme",
+                      element: <ClassLevelProgrammeStudents />,
                     },
                     { path: "*", element: <PageNotFound /> },
                   ],

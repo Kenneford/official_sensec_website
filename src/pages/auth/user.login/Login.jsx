@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import "../user.signUp/signUp.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { toast } from "react-toastify";
 import {
   Lock,
@@ -234,6 +234,30 @@ export function Login() {
     authUser,
     userRolePath,
   ]);
+
+  // Function to redirect users to their dashboard
+  useLayoutEffect(() => {
+    if (authUser?.roles?.includes("admin")) {
+      return navigate(
+        `/sensec/users/${authUser?.uniqueId}/admin/Dashboard/Overview`
+      );
+    }
+    if (authUser?.roles?.includes("lecturer")) {
+      return navigate(
+        `/sensec/users/${authUser?.uniqueId}/lecturer/Dashboard/Overview`
+      );
+    }
+    if (authUser?.roles?.includes("student")) {
+      return navigate(
+        `/sensec/users/${authUser?.uniqueId}/student/Dashboard/Overview`
+      );
+    }
+    if (authUser?.roles?.includes("nt_Staff")) {
+      return navigate(
+        `/sensec/users/${authUser?.uniqueId}/nt_Staff/Dashboard/Overview`
+      );
+    }
+  }, [authUser, navigate]);
 
   return (
     <Box

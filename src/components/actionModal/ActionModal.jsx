@@ -14,7 +14,7 @@ import PropTypes from "prop-types";
 export default function ActionModal({
   open,
   onClose,
-  handleNewEmployment,
+  handleNewEnrollment,
   redirecting,
   uncompletedEmploymentTask,
   question,
@@ -91,7 +91,7 @@ export default function ActionModal({
               <Button
                 variant="outlined"
                 color="success"
-                onClick={() => handleNewEmployment()}
+                onClick={() => handleNewEnrollment()}
                 sx={{
                   transition: ".5s ease-out",
                   "&:hover": {
@@ -130,7 +130,7 @@ export default function ActionModal({
 ActionModal.propTypes = {
   open: PropTypes.bool,
   onClose: PropTypes.func,
-  handleNewEmployment: PropTypes.func,
+  handleNewEnrollment: PropTypes.func,
   redirecting: PropTypes.bool,
   uncompletedEmploymentTask: PropTypes.string,
   question: PropTypes.string,

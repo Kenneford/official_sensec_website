@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import "./studentEnrollment.scss";
 import { ContainerBox, CustomTextField } from "../../../muiStyling/muiStyling";
 import {
@@ -10,7 +10,10 @@ import {
   InputAdornment,
   Typography,
 } from "@mui/material";
-import { studentEnrollment } from "../../../features/students/studentsSlice";
+import {
+  resetEnrolmentState,
+  studentEnrollment,
+} from "../../../features/students/studentsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { FetchAllProgrammes } from "../../../data/programme/FetchProgrammeData";
 import {
@@ -27,17 +30,18 @@ import {
   dateFormatter,
   shortDateFormatter,
 } from "../../../dateFormatter/DateFormatter";
-import { resetEnrolmentState } from "../../../features/academics/studentSlice";
 import { toast } from "react-toastify";
 import LoadingProgress from "../../../components/pageLoading/LoadingProgress";
 import { TaskAlt } from "@mui/icons-material";
 import Redirection from "../../../components/pageLoading/Redirection";
 import { useNavigate, useParams } from "react-router-dom";
+import { getAuthUser } from "../../../features/auth/authSlice";
 
 export function EnrollmentForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { studentIndexNo } = useParams();
+  const authUser = useSelector(getAuthUser);
+  const { studentIndexNo, adminCurrentAction, adminCurrentLink } = useParams();
   const indexNumber = localStorage.getItem("indexNumber");
   const allProgrammes = FetchAllProgrammes();
   const allClassLevels = FetchAllClassLevels();
@@ -160,20 +164,20 @@ export function EnrollmentForm() {
     };
   };
 
-  // Generate new unique-Id for old student
-  useMemo(() => {
-    const studentUniqueId = `STD-${num}${newStudent.firstName.charAt(
-      0
-    )}${newStudent.lastName.charAt(0)}-${currentYear}`;
-    if (newStudent?.uniqueId === "") {
-      setNewStudent({
-        ...newStudent,
-        uniqueId: studentUniqueId,
-      });
-    }
-    // return studentUniqueId;
-  }, [newStudent, currentYear, num]);
   // console.log(memoizedStudentUniqueId);
+  // useLayoutEffect runs before the browser paints, allowing for DOM manipulations
+  // that need to happen before the user sees the update.
+  // useLayoutEffect(() => {
+  //   const studentUniqueId = `STD-${num}${newStudent?.firstName.charAt(
+  //     0
+  //   )}${newStudent?.lastName.charAt(0)}-${currentYear}`;
+  //   if (newStudent?.uniqueId === "") {
+  //     setNewStudent({
+  //       ...newStudent,
+  //       uniqueId: studentUniqueId,
+  //     });
+  //   }
+  // }, [currentYear, newStudent, num]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -182,6 +186,20 @@ export function EnrollmentForm() {
       [name]: value,
     });
   };
+
+  // Generate new unique-Id for old student
+  useMemo(() => {
+    const studentUniqueId = `STD-${num}${newStudent?.firstName.charAt(
+      0
+    )}${newStudent?.lastName.charAt(0)}-${currentYear}`;
+    if (newStudent?.uniqueId === "") {
+      setNewStudent({
+        ...newStudent,
+        uniqueId: studentUniqueId,
+      });
+    }
+    // return studentUniqueId;
+  }, [newStudent, currentYear, num]);
 
   // memoizedStudentUniqueId();
   // Update student unique ID
@@ -316,9 +334,15 @@ export function EnrollmentForm() {
         setRedirecting(true);
       }, 6000);
       setTimeout(() => {
-        navigate(
-          `/sensec/students/enrollment/online/${newStudent?.uniqueId}/parent/add`
-        );
+        if (authUser?.roles?.includes("admin")) {
+          navigate(
+            `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/new_enrollment/parent/add`
+          );
+        } else {
+          navigate(
+            `/sensec/students/enrollment/online/${newStudent?.uniqueId}/parent/add`
+          );
+        }
       }, 9000);
     }
   }, [
@@ -329,43 +353,67 @@ export function EnrollmentForm() {
     successMessage,
     loadingComplete,
     newStudent,
+    adminCurrentAction,
+    adminCurrentLink,
+    authUser,
   ]);
 
   return (
-    <ContainerBox
-      component="div"
-      id="studentEnrollmentWrap"
-      sx={{
-        width: { xs: "100%", sm: "95%", md: "90%", lg: "90%", xl: "75%" },
-        margin: "auto",
-        paddingTop: "2rem",
-        display: "flex",
-        flexDirection: "column",
-        position: "relative",
-      }}
-    >
-      <h1>Student Online Enrollment</h1>
-      <Typography textAlign={"center"} color="#696969">
-        ({" "}
-        <span style={{ fontWeight: "500" }}>
-          {currentYear}/{currentYear + 1}
-        </span>{" "}
-        Academic Year )
-      </Typography>
-      <Box
+    <>
+      {/* Current dashboard title */}
+      {adminCurrentAction && adminCurrentLink && (
+        <Box
+          component={"div"}
+          id="adminDashboardHeaderWrap"
+          sx={{
+            position: "sticky",
+            top: 0,
+            backgroundColor: "#fff",
+            padding: 0,
+            // zIndex: 1,
+          }}
+          minHeight={"4rem"}
+        >
+          <h1 className="dashAction">
+            {adminCurrentAction?.replace(/_/g, "-")} /{" "}
+            <span>{adminCurrentLink?.replace(/_/g, " ")}</span>
+          </h1>
+        </Box>
+      )}
+      <ContainerBox
         component="div"
-        id="enrollmentFormWrap"
+        id="studentEnrollmentWrap"
         sx={{
-          maxWidth: 1000,
-          mx: "auto",
-          mt: 5,
-          p: 3,
-          border: "1px solid #ccc",
-          borderRadius: "8px",
-          backgroundColor: "#f9f9f9",
+          width: { xs: "100%", sm: "95%", md: "90%", lg: "90%", xl: "75%" },
+          margin: "auto",
+          paddingTop: "2rem",
+          display: "flex",
+          flexDirection: "column",
+          position: "relative",
         }}
       >
-        {/* <Typography
+        <h1>Student Online Enrollment</h1>
+        <Typography textAlign={"center"} color="#696969">
+          ({" "}
+          <span style={{ fontWeight: "500" }}>
+            {currentYear}/{currentYear + 1}
+          </span>{" "}
+          Academic Year )
+        </Typography>
+        <Box
+          component="div"
+          id="enrollmentFormWrap"
+          sx={{
+            maxWidth: 1000,
+            mx: "auto",
+            mt: 5,
+            p: 3,
+            border: "1px solid #ccc",
+            borderRadius: "8px",
+            backgroundColor: "#f9f9f9",
+          }}
+        >
+          {/* <Typography
           variant="h6"
           component={"p"}
           fontWeight={300}
@@ -384,18 +432,18 @@ export function EnrollmentForm() {
         //   sure to fill all required fields in order to ensure a successful
           enrollment.
         </Typography> */}
-        <form
-          onSubmit={handleSubmit}
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: "2rem",
-            padding: ".5rem 0",
-          }}
-        >
-          {/* <Avatar
+          <form
+            onSubmit={handleSubmit}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: "2rem",
+              padding: ".5rem 0",
+            }}
+          >
+            {/* <Avatar
             src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             sx={{
               width: "7rem",
@@ -403,629 +451,628 @@ export function EnrollmentForm() {
               "&:hover": { cursor: "pointer" },
             }}
           /> */}
-          {/* <Avatar {...stringAvatar("Kent Dodds")} /> */}
-          <Grid container spacing={3}>
-            {/* Student First Name */}
-            <Grid item xs={12} sm={6} md={4} lg={4}>
-              <CustomTextField
-                fullWidth
-                label="First Name"
-                name="firstName"
-                value={newStudent?.firstName}
-                onChange={handleChange}
-                required
-                className="textField"
-                error={firstNameError}
-                helperText={firstNameError ? "First name is not correct!" : ""}
-                sx={{
-                  "& .MuiInputLabel-asterisk": {
-                    color:
-                      newStudent?.firstName && !firstNameError
-                        ? "green"
-                        : "red", // Change the asterisk color to red
-                  },
-                }}
-              />
-            </Grid>
-            {/* Student Surname */}
-            <Grid item xs={12} sm={6} md={4} lg={4}>
-              <CustomTextField
-                fullWidth
-                label="Surname"
-                name="lastName"
-                value={newStudent?.lastName}
-                onChange={handleChange}
-                required
-                error={lastNameError}
-                helperText={lastNameError ? "Surname is not correct!" : ""}
-                sx={{
-                  "& .MuiInputLabel-asterisk": {
-                    color:
-                      newStudent?.lastName && !lastNameError ? "green" : "red", // Change the asterisk color to red
-                  },
-                }}
-              />
-            </Grid>
-            {/* Student Other Name */}
-            <Grid item xs={12} sm={6} md={4} lg={4}>
-              <CustomTextField
-                fullWidth
-                label="Other Name"
-                name="otherName"
-                value={newStudent?.otherName}
-                onChange={handleChange}
-              />
-            </Grid>
-            {/* Place Of Birth */}
-            <Grid item xs={12} sm={6} md={4} lg={4}>
-              <CustomTextField
-                fullWidth
-                label="Place Of Birth"
-                name="placeOfBirth"
-                value={newStudent?.placeOfBirth}
-                onChange={handleChange}
-                required
-              />
-            </Grid>
-            {/* Date Of Birth */}
-            <Grid item xs={12} sm={6} md={4} lg={4}>
-              <CustomTextField
-                fullWidth
-                // label="DD/MM/YYYY"
-                name="dateOfBirth"
-                type="date"
-                value={newStudent?.dateOfBirth || ""}
-                onChange={handleChange}
-                required
-                // error={dateOfBirthError}
-                // helperText={
-                //   dateOfBirthError ? "Date of birth is not correct!" : ""
-                // }
-                // sx={{
-                //   "& .MuiInputLabel-asterisk": {
-                //     color:
-                //       newStudent?.dateOfBirth && !dateOfBirthError
-                //         ? "green"
-                //         : "red", // Change the asterisk color to red
-                //   },
-                // }}
-              />
-            </Grid>
-            {/* Nationality */}
-            <Grid item xs={12} sm={6} md={4} lg={4}>
-              <CustomTextField
-                fullWidth
-                label="Nationality"
-                name="nationality"
-                value={newStudent?.nationality}
-                onChange={handleChange}
-                required
-              />
-            </Grid>
-            {/* Gender Selection */}
-            <Grid item xs={12} sm={6} md={4} lg={4}>
-              <CustomTextField
-                select
-                fullWidth
-                label="Gender"
-                name="gender"
-                value={newStudent?.gender}
-                onChange={handleChange}
-                required
-              >
-                <MenuItem value="Male">Male</MenuItem>
-                <MenuItem value="Female">Female</MenuItem>
-              </CustomTextField>
-            </Grid>
-            {/* Mother Tongue */}
-            <Grid item xs={12} sm={6} md={4} lg={4}>
-              <CustomTextField
-                select
-                fullWidth
-                label="Mother Tongue"
-                name="motherTongue"
-                value={newStudent?.motherTongue}
-                onChange={handleChange}
-                required
-              >
-                <MenuItem value="Twi">Twi</MenuItem>
-                <MenuItem value="Fante">Fante</MenuItem>
-                <MenuItem value="Ga">Ga</MenuItem>
-                <MenuItem value="Ewe">Ewe</MenuItem>
-                <MenuItem value="Nzema">Nzema</MenuItem>
-                <MenuItem value="Hausa">Hausa</MenuItem>
-                <MenuItem value="Gonja">Gonja</MenuItem>
-                <MenuItem value="Kwa">Kwa</MenuItem>
-                <MenuItem value="Dagbani">Dagbani</MenuItem>
-                <MenuItem value="Dagaare">Dagaare</MenuItem>
-                <MenuItem value="Kulango">Kulango</MenuItem>
-                <MenuItem value="Senufo">Senufo</MenuItem>
-                <MenuItem value="Mande">Mande</MenuItem>
-                <MenuItem value="Dangme">Dangme</MenuItem>
-                <MenuItem value="other">Other</MenuItem>
-              </CustomTextField>
-            </Grid>
-            {/* Other Tongue */}
-            <Grid item xs={12} sm={6} md={4} lg={4}>
-              <CustomTextField
-                select
-                fullWidth
-                label="Other Tongue"
-                name="otherTongue"
-                value={newStudent?.otherTongue}
-                onChange={handleChange}
-              >
-                <MenuItem value="English">English</MenuItem>
-                <MenuItem value="Spanish">Spanish</MenuItem>
-                <MenuItem value="Deutsch">Deutsch</MenuItem>
-                <MenuItem value="Italian">Italian</MenuItem>
-                <MenuItem value="Arabic">Arabic</MenuItem>
-                <MenuItem value="other">Other</MenuItem>
-              </CustomTextField>
-            </Grid>
-            {/* Complexion */}
-            <Grid item xs={12} sm={6} md={4} lg={4}>
-              <CustomTextField
-                select
-                fullWidth
-                label="Complexion"
-                name="complexion"
-                value={newStudent?.complexion}
-                onChange={handleChange}
-                required
-              >
-                <MenuItem value="Very Fair">Very Fair</MenuItem>
-                <MenuItem value="Fair">Fair</MenuItem>
-                <MenuItem value="Medium">Medium</MenuItem>
-                <MenuItem value="Olive">Olive</MenuItem>
-                <MenuItem value="Brown">Brown</MenuItem>
-                <MenuItem value="Black">Black</MenuItem>
-              </CustomTextField>
-            </Grid>
-            {/* Height */}
-            <Grid item xs={12} sm={6} md={4} lg={4}>
-              <CustomTextField
-                fullWidth
-                label="Height"
-                name="height"
-                value={newStudent?.height}
-                onChange={handleChange}
-                required
-                slotProps={{
-                  input: {
-                    endAdornment: (
-                      <InputAdornment position="end">ft</InputAdornment>
-                    ),
-                  },
-                }}
-              />
-            </Grid>
-            {/* Weight */}
-            <Grid item xs={12} sm={6} md={4} lg={4}>
-              <CustomTextField
-                fullWidth
-                label="Weight"
-                name="weight"
-                value={newStudent?.weight}
-                onChange={handleChange}
-                required
-                slotProps={{
-                  input: {
-                    endAdornment: (
-                      <InputAdornment position="end">kg</InputAdornment>
-                    ),
-                  },
-                }}
-              />
-            </Grid>
-            {/* Region */}
-            <Grid item xs={12} sm={6} md={4} lg={4}>
-              <CustomTextField
-                fullWidth
-                select
-                label="Region"
-                name="region"
-                value={newStudent?.region}
-                onChange={handleChange}
-                required
-              >
-                <MenuItem value="Greater Accra">Greater Accra</MenuItem>
-                <MenuItem value="Ashanti">Ashanti</MenuItem>
-                <MenuItem value="Volta">Volta</MenuItem>
-                <MenuItem value="Central">Central</MenuItem>
-                <MenuItem value="Eastern">Eastern</MenuItem>
-                <MenuItem value="Western">Western</MenuItem>
-                <MenuItem value="Oti">Oti</MenuItem>
-                <MenuItem value="Bono">Bono</MenuItem>
-                <MenuItem value="Bono East">Bono East</MenuItem>
-                <MenuItem value="Ahafo">Ahafo</MenuItem>
-                <MenuItem value="Brong Ahafo">Brong Ahafo</MenuItem>
-                <MenuItem value="Northern">Northern</MenuItem>
-                <MenuItem value="Western North">Western North</MenuItem>
-                <MenuItem value="Upper West">Upper West</MenuItem>
-                <MenuItem value="Upper East">Upper East</MenuItem>
-                <MenuItem value="North East">North East</MenuItem>
-              </CustomTextField>
-            </Grid>
-            {/* HomeTown */}
-            <Grid item xs={12} sm={6} md={4} lg={4}>
-              <CustomTextField
-                fullWidth
-                label="HomeTown"
-                name="homeTown"
-                value={newStudent?.homeTown}
-                onChange={handleChange}
-                required
-              />
-            </Grid>
-            {/* District */}
-            <Grid item xs={12} sm={6} md={4} lg={4}>
-              <CustomTextField
-                fullWidth
-                label="District"
-                name="district"
-                value={newStudent?.district}
-                onChange={handleChange}
-                required
-              />
-            </Grid>
-            {/* Current City */}
-            <Grid item xs={12} sm={6} md={4} lg={4}>
-              <CustomTextField
-                fullWidth
-                label="Current City"
-                name="currentCity"
-                value={newStudent?.currentCity}
-                onChange={handleChange}
-                required
-              />
-            </Grid>
-            {/* GPS Address */}
-            <Grid item xs={12} sm={6} md={4} lg={4}>
-              <CustomTextField
-                fullWidth
-                label="GPS Address"
-                name="gpsAddress"
-                value={newStudent?.gpsAddress}
-                onChange={handleChange}
-                required
-              />
-            </Grid>
-            {/* Email */}
-            <Grid item xs={12} sm={6} md={4} lg={4}>
-              <CustomTextField
-                fullWidth
-                label="Email"
-                name="email"
-                value={newStudent?.email}
-                onChange={handleChange}
-                required
-              />
-            </Grid>
-            {/* Mobile */}
-            <Grid item xs={12} sm={6} md={4} lg={4}>
-              <CustomTextField
-                fullWidth
-                label="Mobile"
-                name="mobile"
-                value={newStudent?.mobile}
-                onChange={handleChange}
-                required
-              />
-            </Grid>
-            {/* JHS Attended */}
-            <Grid item xs={12} sm={6} md={4} lg={4}>
-              <CustomTextField
-                fullWidth
-                label="JHS Attended"
-                name="jhsAttended"
-                value={newStudent?.jhsAttended}
-                onChange={handleChange}
-                required
-                error={jhsAttendedError}
-                helperText={
-                  jhsAttendedError ? "JHS attended is not correct!" : ""
-                }
-                sx={{
-                  "& .MuiInputLabel-asterisk": {
-                    color:
-                      newStudent?.jhsAttended && !jhsAttendedError
-                        ? "green"
-                        : "red", // Change the asterisk color to red
-                  },
-                }}
-              />
-            </Grid>
-            {/* JHS Graduated Year */}
-            <Grid item xs={12} sm={6} md={4} lg={4}>
-              <CustomTextField
-                fullWidth
-                label="Year Graduated [ JHS ]"
-                name="completedJhs"
-                value={newStudent?.completedJhs}
-                onChange={handleChange}
-                required
-                error={graduatedJhsError}
-                helperText={
-                  graduatedJhsError ? "Graduated year is not correct!" : ""
-                }
-                sx={{
-                  "& .MuiInputLabel-asterisk": {
-                    color:
-                      newStudent?.completedJhs && !graduatedJhsError
-                        ? "green"
-                        : "red", // Change the asterisk color to red
-                  },
-                }}
-              />
-            </Grid>
-            {/* JHS Index No. */}
-            <Grid item xs={12} sm={6} md={4} lg={4}>
-              <CustomTextField
-                fullWidth
-                label="JHS Index No."
-                name="jhsIndexNo"
-                value={newStudent?.jhsIndexNo}
-                onChange={handleChange}
-                // required
-                // error={jhsIndexNoError}
-                disabled
-                // helperText={jhsIndexNoError ? "Invalid index number!" : ""}
-                // sx={{
-                //   "& .MuiInputLabel-asterisk": {
-                //     color:
-                //       newStudent?.jhsIndexNo && !jhsIndexNoError
-                //         ? "green"
-                //         : "red", // Change the asterisk color to red
-                //   },
-                // }}
-              />
-            </Grid>
-            {/* Programme Selection */}
-            <Grid item xs={12} sm={6} md={4} lg={4}>
-              <CustomTextField
-                select
-                fullWidth
-                label="Select Programme"
-                name="program"
-                value={newStudent?.program}
-                onChange={handleChange}
-                required
-              >
-                {allProgrammes?.map((programme) => (
-                  <MenuItem key={programme?._id} value={programme?._id}>
-                    {programme?.name}
-                  </MenuItem>
-                ))}
-              </CustomTextField>
-            </Grid>
-            {/* Division Program (conditional) */}
-            {allDivisionProgrammes && allDivisionProgrammes?.length > 0 && (
+            {/* <Avatar {...stringAvatar("Kent Dodds")} /> */}
+            <Grid container spacing={3}>
+              {/* Student First Name */}
+              <Grid item xs={12} sm={6} md={4} lg={4}>
+                <CustomTextField
+                  fullWidth
+                  label="First Name"
+                  name="firstName"
+                  value={newStudent?.firstName}
+                  onChange={handleChange}
+                  required
+                  className="textField"
+                  error={firstNameError}
+                  helperText={
+                    firstNameError ? "First name is not correct!" : ""
+                  }
+                  sx={{
+                    "& .MuiInputLabel-asterisk": {
+                      color:
+                        newStudent?.firstName && !firstNameError
+                          ? "green"
+                          : "red", // Change the asterisk color to red
+                    },
+                  }}
+                />
+              </Grid>
+              {/* Student Surname */}
+              <Grid item xs={12} sm={6} md={4} lg={4}>
+                <CustomTextField
+                  fullWidth
+                  label="Surname"
+                  name="lastName"
+                  value={newStudent?.lastName}
+                  onChange={handleChange}
+                  required
+                  error={lastNameError}
+                  helperText={lastNameError ? "Surname is not correct!" : ""}
+                  sx={{
+                    "& .MuiInputLabel-asterisk": {
+                      color:
+                        newStudent?.lastName && !lastNameError
+                          ? "green"
+                          : "red", // Change the asterisk color to red
+                    },
+                  }}
+                />
+              </Grid>
+              {/* Student Other Name */}
+              <Grid item xs={12} sm={6} md={4} lg={4}>
+                <CustomTextField
+                  fullWidth
+                  label="Other Name"
+                  name="otherName"
+                  value={newStudent?.otherName}
+                  onChange={handleChange}
+                />
+              </Grid>
+              {/* Place Of Birth */}
+              <Grid item xs={12} sm={6} md={4} lg={4}>
+                <CustomTextField
+                  fullWidth
+                  label="Place Of Birth"
+                  name="placeOfBirth"
+                  value={newStudent?.placeOfBirth}
+                  onChange={handleChange}
+                  required
+                />
+              </Grid>
+              {/* Date Of Birth */}
+              <Grid item xs={12} sm={6} md={4} lg={4}>
+                <CustomTextField
+                  fullWidth
+                  // label="DD/MM/YYYY"
+                  name="dateOfBirth"
+                  type="date"
+                  value={newStudent?.dateOfBirth || ""}
+                  onChange={handleChange}
+                  required
+                  // error={dateOfBirthError}
+                  // helperText={
+                  //   dateOfBirthError ? "Date of birth is not correct!" : ""
+                  // }
+                  // sx={{
+                  //   "& .MuiInputLabel-asterisk": {
+                  //     color:
+                  //       newStudent?.dateOfBirth && !dateOfBirthError
+                  //         ? "green"
+                  //         : "red", // Change the asterisk color to red
+                  //   },
+                  // }}
+                />
+              </Grid>
+              {/* Nationality */}
+              <Grid item xs={12} sm={6} md={4} lg={4}>
+                <CustomTextField
+                  fullWidth
+                  label="Nationality"
+                  name="nationality"
+                  value={newStudent?.nationality}
+                  onChange={handleChange}
+                  required
+                />
+              </Grid>
+              {/* Gender Selection */}
               <Grid item xs={12} sm={6} md={4} lg={4}>
                 <CustomTextField
                   select
                   fullWidth
-                  label="Division Program"
-                  name="divisionProgram"
-                  value={newStudent?.divisionProgram}
+                  label="Gender"
+                  name="gender"
+                  value={newStudent?.gender}
                   onChange={handleChange}
-                  //   required
+                  required
                 >
-                  {allDivisionProgrammes?.map((programme) => (
+                  <MenuItem value="Male">Male</MenuItem>
+                  <MenuItem value="Female">Female</MenuItem>
+                </CustomTextField>
+              </Grid>
+              {/* Mother Tongue */}
+              <Grid item xs={12} sm={6} md={4} lg={4}>
+                <CustomTextField
+                  select
+                  fullWidth
+                  label="Mother Tongue"
+                  name="motherTongue"
+                  value={newStudent?.motherTongue}
+                  onChange={handleChange}
+                  required
+                >
+                  <MenuItem value="Twi">Twi</MenuItem>
+                  <MenuItem value="Fante">Fante</MenuItem>
+                  <MenuItem value="Ga">Ga</MenuItem>
+                  <MenuItem value="Ewe">Ewe</MenuItem>
+                  <MenuItem value="Nzema">Nzema</MenuItem>
+                  <MenuItem value="Hausa">Hausa</MenuItem>
+                  <MenuItem value="Gonja">Gonja</MenuItem>
+                  <MenuItem value="Kwa">Kwa</MenuItem>
+                  <MenuItem value="Dagbani">Dagbani</MenuItem>
+                  <MenuItem value="Dagaare">Dagaare</MenuItem>
+                  <MenuItem value="Kulango">Kulango</MenuItem>
+                  <MenuItem value="Senufo">Senufo</MenuItem>
+                  <MenuItem value="Mande">Mande</MenuItem>
+                  <MenuItem value="Dangme">Dangme</MenuItem>
+                  <MenuItem value="other">Other</MenuItem>
+                </CustomTextField>
+              </Grid>
+              {/* Other Tongue */}
+              <Grid item xs={12} sm={6} md={4} lg={4}>
+                <CustomTextField
+                  select
+                  fullWidth
+                  label="Other Tongue"
+                  name="otherTongue"
+                  value={newStudent?.otherTongue}
+                  onChange={handleChange}
+                >
+                  <MenuItem value="English">English</MenuItem>
+                  <MenuItem value="Spanish">Spanish</MenuItem>
+                  <MenuItem value="Deutsch">Deutsch</MenuItem>
+                  <MenuItem value="Italian">Italian</MenuItem>
+                  <MenuItem value="Arabic">Arabic</MenuItem>
+                  <MenuItem value="other">Other</MenuItem>
+                </CustomTextField>
+              </Grid>
+              {/* Complexion */}
+              <Grid item xs={12} sm={6} md={4} lg={4}>
+                <CustomTextField
+                  select
+                  fullWidth
+                  label="Complexion"
+                  name="complexion"
+                  value={newStudent?.complexion}
+                  onChange={handleChange}
+                  required
+                >
+                  <MenuItem value="Very Fair">Very Fair</MenuItem>
+                  <MenuItem value="Fair">Fair</MenuItem>
+                  <MenuItem value="Medium">Medium</MenuItem>
+                  <MenuItem value="Olive">Olive</MenuItem>
+                  <MenuItem value="Brown">Brown</MenuItem>
+                  <MenuItem value="Black">Black</MenuItem>
+                </CustomTextField>
+              </Grid>
+              {/* Height */}
+              <Grid item xs={12} sm={6} md={4} lg={4}>
+                <CustomTextField
+                  fullWidth
+                  label="Height"
+                  name="height"
+                  value={newStudent?.height}
+                  onChange={handleChange}
+                  required
+                  slotProps={{
+                    input: {
+                      endAdornment: (
+                        <InputAdornment position="end">ft</InputAdornment>
+                      ),
+                    },
+                  }}
+                />
+              </Grid>
+              {/* Weight */}
+              <Grid item xs={12} sm={6} md={4} lg={4}>
+                <CustomTextField
+                  fullWidth
+                  label="Weight"
+                  name="weight"
+                  value={newStudent?.weight}
+                  onChange={handleChange}
+                  required
+                  slotProps={{
+                    input: {
+                      endAdornment: (
+                        <InputAdornment position="end">kg</InputAdornment>
+                      ),
+                    },
+                  }}
+                />
+              </Grid>
+              {/* Region */}
+              <Grid item xs={12} sm={6} md={4} lg={4}>
+                <CustomTextField
+                  fullWidth
+                  select
+                  label="Region"
+                  name="region"
+                  value={newStudent?.region}
+                  onChange={handleChange}
+                  required
+                >
+                  <MenuItem value="Greater Accra">Greater Accra</MenuItem>
+                  <MenuItem value="Ashanti">Ashanti</MenuItem>
+                  <MenuItem value="Volta">Volta</MenuItem>
+                  <MenuItem value="Central">Central</MenuItem>
+                  <MenuItem value="Eastern">Eastern</MenuItem>
+                  <MenuItem value="Western">Western</MenuItem>
+                  <MenuItem value="Oti">Oti</MenuItem>
+                  <MenuItem value="Bono">Bono</MenuItem>
+                  <MenuItem value="Bono East">Bono East</MenuItem>
+                  <MenuItem value="Ahafo">Ahafo</MenuItem>
+                  <MenuItem value="Brong Ahafo">Brong Ahafo</MenuItem>
+                  <MenuItem value="Northern">Northern</MenuItem>
+                  <MenuItem value="Western North">Western North</MenuItem>
+                  <MenuItem value="Upper West">Upper West</MenuItem>
+                  <MenuItem value="Upper East">Upper East</MenuItem>
+                  <MenuItem value="North East">North East</MenuItem>
+                </CustomTextField>
+              </Grid>
+              {/* HomeTown */}
+              <Grid item xs={12} sm={6} md={4} lg={4}>
+                <CustomTextField
+                  fullWidth
+                  label="HomeTown"
+                  name="homeTown"
+                  value={newStudent?.homeTown}
+                  onChange={handleChange}
+                  required
+                />
+              </Grid>
+              {/* District */}
+              <Grid item xs={12} sm={6} md={4} lg={4}>
+                <CustomTextField
+                  fullWidth
+                  label="District"
+                  name="district"
+                  value={newStudent?.district}
+                  onChange={handleChange}
+                  required
+                />
+              </Grid>
+              {/* Current City */}
+              <Grid item xs={12} sm={6} md={4} lg={4}>
+                <CustomTextField
+                  fullWidth
+                  label="Current City"
+                  name="currentCity"
+                  value={newStudent?.currentCity}
+                  onChange={handleChange}
+                  required
+                />
+              </Grid>
+              {/* GPS Address */}
+              <Grid item xs={12} sm={6} md={4} lg={4}>
+                <CustomTextField
+                  fullWidth
+                  label="GPS Address"
+                  name="gpsAddress"
+                  value={newStudent?.gpsAddress}
+                  onChange={handleChange}
+                  required
+                />
+              </Grid>
+              {/* Email */}
+              <Grid item xs={12} sm={6} md={4} lg={4}>
+                <CustomTextField
+                  fullWidth
+                  label="Email"
+                  name="email"
+                  value={newStudent?.email}
+                  onChange={handleChange}
+                  required
+                />
+              </Grid>
+              {/* Mobile */}
+              <Grid item xs={12} sm={6} md={4} lg={4}>
+                <CustomTextField
+                  fullWidth
+                  label="Mobile"
+                  name="mobile"
+                  value={newStudent?.mobile}
+                  onChange={handleChange}
+                  required
+                />
+              </Grid>
+              {/* JHS Attended */}
+              <Grid item xs={12} sm={6} md={4} lg={4}>
+                <CustomTextField
+                  fullWidth
+                  label="JHS Attended"
+                  name="jhsAttended"
+                  value={newStudent?.jhsAttended}
+                  onChange={handleChange}
+                  required
+                  error={jhsAttendedError}
+                  helperText={
+                    jhsAttendedError ? "JHS attended is not correct!" : ""
+                  }
+                  sx={{
+                    "& .MuiInputLabel-asterisk": {
+                      color:
+                        newStudent?.jhsAttended && !jhsAttendedError
+                          ? "green"
+                          : "red", // Change the asterisk color to red
+                    },
+                  }}
+                />
+              </Grid>
+              {/* JHS Graduated Year */}
+              <Grid item xs={12} sm={6} md={4} lg={4}>
+                <CustomTextField
+                  fullWidth
+                  label="Year Graduated [ JHS ]"
+                  name="completedJhs"
+                  value={newStudent?.completedJhs}
+                  onChange={handleChange}
+                  required
+                  error={graduatedJhsError}
+                  helperText={
+                    graduatedJhsError ? "Graduated year is not correct!" : ""
+                  }
+                  sx={{
+                    "& .MuiInputLabel-asterisk": {
+                      color:
+                        newStudent?.completedJhs && !graduatedJhsError
+                          ? "green"
+                          : "red", // Change the asterisk color to red
+                    },
+                  }}
+                />
+              </Grid>
+              {/* JHS Index No. */}
+              <Grid item xs={12} sm={6} md={4} lg={4}>
+                <CustomTextField
+                  fullWidth
+                  label="JHS Index No."
+                  name="jhsIndexNo"
+                  value={newStudent?.jhsIndexNo}
+                  onChange={handleChange}
+                  disabled={
+                    !authUser ||
+                    (authUser && authUser?.roles?.includes("admin"))
+                  }
+                />
+              </Grid>
+              {/* Programme Selection */}
+              <Grid item xs={12} sm={6} md={4} lg={4}>
+                <CustomTextField
+                  select
+                  fullWidth
+                  label="Select Programme"
+                  name="program"
+                  value={newStudent?.program}
+                  onChange={handleChange}
+                  required
+                >
+                  {allProgrammes?.map((programme) => (
                     <MenuItem key={programme?._id} value={programme?._id}>
-                      {programme?.divisionName}
+                      {programme?.name}
                     </MenuItem>
                   ))}
                 </CustomTextField>
               </Grid>
-            )}
-            {/* Optional Elective Subject (conditional) */}
-            {selectedDivisionProgramme &&
-              selectedDivisionProgramme?.optionalElectiveSubjects?.length >
-                0 && (
+              {/* Division Program (conditional) */}
+              {allDivisionProgrammes && allDivisionProgrammes?.length > 0 && (
                 <Grid item xs={12} sm={6} md={4} lg={4}>
                   <CustomTextField
                     select
                     fullWidth
-                    label="Optional Elective Subject"
-                    name="optionalElectiveSubject"
-                    value={newStudent?.optionalElectiveSubject}
+                    label="Division Program"
+                    name="divisionProgram"
+                    value={newStudent?.divisionProgram}
                     onChange={handleChange}
-                    required
+                    //   required
                   >
-                    {selectedDivisionProgramme?.optionalElectiveSubjects?.map(
-                      (subject) => (
-                        <MenuItem key={subject?._id} value={subject?._id}>
-                          {subject?.subjectName}
-                        </MenuItem>
-                      )
-                    )}
+                    {allDivisionProgrammes?.map((programme) => (
+                      <MenuItem key={programme?._id} value={programme?._id}>
+                        {programme?.divisionName}
+                      </MenuItem>
+                    ))}
                   </CustomTextField>
                 </Grid>
               )}
-            {allDivisionProgrammes &&
-              !allDivisionProgrammes?.length > 0 &&
-              studentProgramme?.optionalElectiveSubjects?.length > 0 && (
-                <Grid item xs={12} sm={6} md={4} lg={4}>
-                  <CustomTextField
-                    select
-                    fullWidth
-                    label="Optional Elective Subject"
-                    name="optionalElectiveSubject"
-                    value={newStudent?.optionalElectiveSubject}
-                    onChange={handleChange}
-                    required
-                  >
-                    {studentProgramme?.optionalElectiveSubjects?.map(
-                      (subject) => (
-                        <MenuItem key={subject?._id} value={subject?._id}>
-                          {subject?.subjectName}
-                        </MenuItem>
-                      )
-                    )}
-                  </CustomTextField>
-                </Grid>
-              )}
-            {/* Class Level Selection */}
-            <Grid item xs={12} sm={6} md={4} lg={4}>
-              <CustomTextField
-                select
-                fullWidth
-                label="Class Level"
-                name="currentClassLevel"
-                value={newStudent?.currentClassLevel}
-                onChange={handleChange}
-                required
-              >
-                {allClassLevels?.map((cLevel) => (
-                  <MenuItem key={cLevel?._id} value={cLevel?._id}>
-                    {cLevel?.name}
-                  </MenuItem>
-                ))}
-              </CustomTextField>
-            </Grid>
-            {/* Batch Selection */}
-            <Grid item xs={12} sm={6} md={4} lg={4}>
-              <CustomTextField
-                select
-                fullWidth
-                label="Batch"
-                name="batch"
-                value={newStudent?.batch}
-                onChange={handleChange}
-                required
-              >
-                {allBatches?.map((batch) => (
-                  <MenuItem key={batch?._id} value={batch?._id}>
-                    {batch?.yearRange}
-                  </MenuItem>
-                ))}
-              </CustomTextField>
-            </Grid>
-            {/* Academic Year Selection */}
-            <Grid item xs={12} sm={6} md={4} lg={4}>
-              <CustomTextField
-                select
-                fullWidth
-                label="Academic Year"
-                name="currentAcademicYear"
-                value={newStudent?.currentAcademicYear}
-                onChange={handleChange}
-                required
-                // disabled
-              >
-                {academicYears.map((year) => (
-                  <MenuItem key={year} value={year}>
-                    {year}
-                  </MenuItem>
-                ))}
-              </CustomTextField>
-            </Grid>
-            {/* Residential Status Selection */}
-            <Grid item xs={12} sm={6} md={4} lg={4}>
-              <CustomTextField
-                select
-                fullWidth
-                label="Residential Status"
-                name="residentialStatus"
-                value={newStudent?.residentialStatus}
-                onChange={handleChange}
-                required
-              >
-                <MenuItem value="Day">Day</MenuItem>
-                <MenuItem value="Boarding">Boarding</MenuItem>
-                <MenuItem value="Hostel">Hostel</MenuItem>
-                <MenuItem value="Private">Private</MenuItem>
-                <MenuItem value="Lecturers Bangalow">
-                  Lecturers Bangalow
-                </MenuItem>
-              </CustomTextField>
-            </Grid>
-
-            {/* Submit Button */}
-            <Grid item xs={12}>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Grid item xs={12} sm={4}>
-                  <Button
-                    variant="contained"
-                    component="label"
-                    fullWidth
-                    sx={{
-                      textTransform: "capitalize",
-                      backgroundColor: "#292929",
-                      padding: "1rem",
-                    }}
-                  >
-                    Upload Image
-                    <input
-                      type="file"
-                      hidden
-                      accept="image/*"
-                      onChange={handleImageFileUpload}
-                    />
-                  </Button>
-                </Grid>
-                <Grid item xs={12} sm={4}>
-                  {imagePreview && (
-                    <Box
-                      display="flex"
-                      justifyContent="center"
-                      alignItems="center"
-                      height="100%"
+              {/* Optional Elective Subject (conditional) */}
+              {selectedDivisionProgramme &&
+                selectedDivisionProgramme?.optionalElectiveSubjects?.length >
+                  0 && (
+                  <Grid item xs={12} sm={6} md={4} lg={4}>
+                    <CustomTextField
+                      select
+                      fullWidth
+                      label="Optional Elective Subject"
+                      name="optionalElectiveSubject"
+                      value={newStudent?.optionalElectiveSubject}
+                      onChange={handleChange}
+                      required
                     >
-                      <Avatar
-                        src={imagePreview}
-                        alt="Profile Preview"
-                        sx={{
-                          width: "6rem",
-                          height: "6rem",
-                          borderRadius: ".4rem",
-                          border: "1px solid #696969",
-                          padding: ".2rem",
-                        }}
-                      />
-                    </Box>
-                  )}
-                </Grid>
-              </Box>
-            </Grid>
-            {/* Submit Button */}
-            <Grid item xs={12}>
-              <Button
-                variant="contained"
-                color="success"
-                type="submit"
-                fullWidth
-                sx={{
-                  height: "3.5rem",
-                  letterSpacing: "1px",
-                  textTransform: "capitalize",
-                  fontSize: "1.2rem",
-                }}
-              >
-                {loadingComplete === false && (
-                  <LoadingProgress color={"#fff"} size={"1.5rem"} />
+                      {selectedDivisionProgramme?.optionalElectiveSubjects?.map(
+                        (subject) => (
+                          <MenuItem key={subject?._id} value={subject?._id}>
+                            {subject?.subjectName}
+                          </MenuItem>
+                        )
+                      )}
+                    </CustomTextField>
+                  </Grid>
                 )}
-                {loadingComplete === true &&
-                  enrollmentStatus === "success" &&
-                  !redirecting && (
-                    <>
-                      <span>Successful</span> <TaskAlt />
-                    </>
+              {allDivisionProgrammes &&
+                !allDivisionProgrammes?.length > 0 &&
+                studentProgramme?.optionalElectiveSubjects?.length > 0 && (
+                  <Grid item xs={12} sm={6} md={4} lg={4}>
+                    <CustomTextField
+                      select
+                      fullWidth
+                      label="Optional Elective Subject"
+                      name="optionalElectiveSubject"
+                      value={newStudent?.optionalElectiveSubject}
+                      onChange={handleChange}
+                      required
+                    >
+                      {studentProgramme?.optionalElectiveSubjects?.map(
+                        (subject) => (
+                          <MenuItem key={subject?._id} value={subject?._id}>
+                            {subject?.subjectName}
+                          </MenuItem>
+                        )
+                      )}
+                    </CustomTextField>
+                  </Grid>
+                )}
+              {/* Class Level Selection */}
+              <Grid item xs={12} sm={6} md={4} lg={4}>
+                <CustomTextField
+                  select
+                  fullWidth
+                  label="Class Level"
+                  name="currentClassLevel"
+                  value={newStudent?.currentClassLevel}
+                  onChange={handleChange}
+                  required
+                >
+                  {allClassLevels?.map((cLevel) => (
+                    <MenuItem key={cLevel?._id} value={cLevel?._id}>
+                      {cLevel?.name}
+                    </MenuItem>
+                  ))}
+                </CustomTextField>
+              </Grid>
+              {/* Batch Selection */}
+              <Grid item xs={12} sm={6} md={4} lg={4}>
+                <CustomTextField
+                  select
+                  fullWidth
+                  label="Batch"
+                  name="batch"
+                  value={newStudent?.batch}
+                  onChange={handleChange}
+                  required
+                >
+                  {allBatches?.map((batch) => (
+                    <MenuItem key={batch?._id} value={batch?._id}>
+                      {batch?.yearRange}
+                    </MenuItem>
+                  ))}
+                </CustomTextField>
+              </Grid>
+              {/* Academic Year Selection */}
+              <Grid item xs={12} sm={6} md={4} lg={4}>
+                <CustomTextField
+                  select
+                  fullWidth
+                  label="Academic Year"
+                  name="currentAcademicYear"
+                  value={newStudent?.currentAcademicYear}
+                  onChange={handleChange}
+                  required
+                  // disabled
+                >
+                  {academicYears.map((year) => (
+                    <MenuItem key={year} value={year}>
+                      {year}
+                    </MenuItem>
+                  ))}
+                </CustomTextField>
+              </Grid>
+              {/* Residential Status Selection */}
+              <Grid item xs={12} sm={6} md={4} lg={4}>
+                <CustomTextField
+                  select
+                  fullWidth
+                  label="Residential Status"
+                  name="residentialStatus"
+                  value={newStudent?.residentialStatus}
+                  onChange={handleChange}
+                  required
+                >
+                  <MenuItem value="Day">Day</MenuItem>
+                  <MenuItem value="Boarding">Boarding</MenuItem>
+                  <MenuItem value="Hostel">Hostel</MenuItem>
+                  <MenuItem value="Private">Private</MenuItem>
+                  <MenuItem value="Lecturers Bangalow">
+                    Lecturers Bangalow
+                  </MenuItem>
+                </CustomTextField>
+              </Grid>
+
+              {/* Submit Button */}
+              <Grid item xs={12}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Grid item xs={12} sm={4}>
+                    <Button
+                      variant="contained"
+                      component="label"
+                      fullWidth
+                      sx={{
+                        textTransform: "capitalize",
+                        backgroundColor: "#292929",
+                        padding: "1rem",
+                      }}
+                    >
+                      Upload Image
+                      <input
+                        type="file"
+                        hidden
+                        accept="image/*"
+                        onChange={handleImageFileUpload}
+                      />
+                    </Button>
+                  </Grid>
+                  <Grid item xs={12} sm={4}>
+                    {imagePreview && (
+                      <Box
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
+                        height="100%"
+                      >
+                        <Avatar
+                          src={imagePreview}
+                          alt="Profile Preview"
+                          sx={{
+                            width: "6rem",
+                            height: "6rem",
+                            borderRadius: ".4rem",
+                            border: "1px solid #696969",
+                            padding: ".2rem",
+                          }}
+                        />
+                      </Box>
+                    )}
+                  </Grid>
+                </Box>
+              </Grid>
+              {/* Submit Button */}
+              <Grid item xs={12}>
+                <Button
+                  variant="contained"
+                  color="success"
+                  type="submit"
+                  fullWidth
+                  sx={{
+                    height: "3.5rem",
+                    letterSpacing: "1px",
+                    textTransform: "capitalize",
+                    fontSize: "1.2rem",
+                  }}
+                >
+                  {loadingComplete === false && (
+                    <LoadingProgress color={"#fff"} size={"1.5rem"} />
                   )}
-                {loadingComplete === null && "Submit Enrollment"}
-                {redirecting && <Redirection color={"#fff"} size={"1.5rem"} />}
-              </Button>
+                  {loadingComplete === true &&
+                    enrollmentStatus === "success" &&
+                    !redirecting && (
+                      <>
+                        <span>Successful</span> <TaskAlt />
+                      </>
+                    )}
+                  {loadingComplete === null && "Submit Enrollment"}
+                  {redirecting && (
+                    <Redirection color={"#fff"} size={"1.5rem"} />
+                  )}
+                </Button>
+              </Grid>
             </Grid>
-          </Grid>
-        </form>
-      </Box>
-    </ContainerBox>
+          </form>
+        </Box>
+      </ContainerBox>
+    </>
   );
 }

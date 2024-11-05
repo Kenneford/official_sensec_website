@@ -11,12 +11,17 @@ import { toast } from "react-toastify";
 import UploadPlacementExcelData from "./placementExcelDataUpload/PlacementDataUpload";
 import { Box, Grid } from "@mui/material";
 import ActionModal from "../../../actionModal/ActionModal";
+import { FetchAllPlacementStudents } from "../../../../data/students/FetchPlacementStudents";
+import { customUserTableStyle } from "../../../../usersInfoDataFormat/usersInfoTableStyle";
+import { FetchAllStudents } from "../../../../data/students/FetchAllStudents";
+import SearchFilter from "../../../searchForm/SearchFilter";
 
 export function PlacementStudents() {
   const navigate = useNavigate();
   // const dispatch = useDispatch();
   const userInfo = {};
-  const allPlacementStudents = [];
+  const allPlacementStudents = FetchAllPlacementStudents();
+  const allStudents = FetchAllStudents();
   const placementStudents = [];
   // const { uploadExcelFileStatus, uploadExcelFileError } = useSelector(
   //   (state) => state.placement
@@ -144,31 +149,17 @@ export function PlacementStudents() {
               )}/${row?.jhsIndexNo}/overview`}
               title="View Student Info"
             >
-              {row?.gender && row?.gender === "MALE" && (
-                <img
-                  className="studentImg"
-                  src={"/assets/noAvatar.png"}
-                  alt=""
-                />
-              )}
               {row?.gender && row?.gender === "Male" && (
                 <img
                   className="studentImg"
-                  src={"/assets/noAvatar.png"}
+                  src={"/assets/maleAvatar.png"}
                   alt=""
                 />
               )}
               {row?.gender === "Female" && (
                 <img
                   className="studentImg"
-                  src={"/assets/noAvatar.png"}
-                  alt=""
-                />
-              )}
-              {row?.gender === "FEMALE" && (
-                <img
-                  className="studentImg"
-                  src={"/assets/noAvatar.png"}
+                  src={"/assets/femaleAvatar.png"}
                   alt=""
                 />
               )}
@@ -195,7 +186,8 @@ export function PlacementStudents() {
       {
         name: "Full Name",
         selector: (row) => <p title={row?.fullName}>{row?.fullName}</p>,
-        omit: data.some((user) => user.firstName || user.lastName),
+        // omit: data.some((user) => user.firstName || user.lastName),
+        sortable: true,
       },
       {
         name: "Gender",
@@ -286,13 +278,13 @@ export function PlacementStudents() {
           <span>{adminCurrentLink?.replace(/_/g, " ")}</span>
         </h1>
         {/* Main search bar */}
-        {/* <Box sx={{ display: { xs: "none", sm: "block" } }}>
-          <SearchForm
-            value={searchedBlog}
-            onChange={handleOnChange}
+        <Box sx={{ display: { xs: "none", sm: "block" } }}>
+          <SearchFilter
+            value={searchStudent}
+            onChange={setSearchStudent}
             placeholder={"Search"}
           />
-        </Box> */}
+        </Box>
       </Box>
       <Box
         className="allPlacementStudentsData"
@@ -329,12 +321,12 @@ export function PlacementStudents() {
             </p>
           )}
         </Box>
-        <Box>
+        <Box className="studentDataTable">
           <DataTable
             title={allStd}
             columns={studentColumn(allPlacementStudents)}
             data={filteredStudents}
-            customStyles={customStyle}
+            customStyles={customUserTableStyle}
             pagination
             selectableRows
             fixedHeader

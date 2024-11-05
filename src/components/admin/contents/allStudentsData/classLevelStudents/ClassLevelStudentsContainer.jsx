@@ -3,6 +3,7 @@ import {
   PendingClassLevelStudents,
 } from "../../../../lazyLoading/admin/AdminLazyLoadingComponents";
 import { useParams } from "react-router-dom";
+import { ClassLevelProgrammeStudents } from "../programmeStudents/ClassLevelProgrammeStudents";
 
 export function ClassLevelStudentsContainer() {
   const { class_level, student_category } = useParams();

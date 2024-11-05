@@ -20,6 +20,7 @@ export function AdminAttendanceLinks({
   isSidebarOpen,
   setCurrentAction,
   setCurrentLink,
+  hovered,
 }) {
   const authAdmin = useSelector(getAuthUser);
   const { adminCurrentLink } = useParams();
@@ -52,9 +53,7 @@ export function AdminAttendanceLinks({
     <>
       <Box
         component={"button"}
-        className={
-          isSidebarOpen ? "sidebarLinksTitle" : "sidebarLinksTitle closed"
-        }
+        className={hovered ? "sidebarLinksTitle" : "sidebarLinksTitle closed"}
         onClick={toggleExpandDashBoardLinks}
       >
         <h5 className="dashboardSidebarLinksTitle">Attendance</h5>
@@ -75,7 +74,7 @@ export function AdminAttendanceLinks({
         contentHeight={contentHeight}
         className={
           // Hide text on closed sidebar
-          isSidebarOpen ? "sidebarContentLinks" : "sidebarContentLinks closed"
+          hovered ? "sidebarContentLinks" : "sidebarContentLinks closed"
         }
       >
         <div ref={contentRef} className="allSidebarLinksWrap">
@@ -92,7 +91,7 @@ export function AdminAttendanceLinks({
                   : "notCurrentAdminSidebarLink"
               }
               smooth
-              title={!isSidebarOpen ? Qlink.name : ""}
+              title={!hovered ? Qlink.name : ""}
               onClick={() => {
                 setCurrentAction("Dashboard");
                 setCurrentLink(Qlink.name);
@@ -104,7 +103,7 @@ export function AdminAttendanceLinks({
               {Qlink.name === "Search Attendance" && (
                 <Search className="icon" />
               )}
-              {isSidebarOpen && <h4>{Qlink.name}</h4>}
+              {hovered && <h4>{Qlink.name}</h4>}
             </NavHashLink>
           ))}
         </div>

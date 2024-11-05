@@ -32,6 +32,7 @@ export function UsersLinks({
   isSidebarOpen,
   setCurrentAction,
   setCurrentLink,
+  hovered,
 }) {
   const authAdmin = useSelector(getAuthUser);
   const { adminCurrentLink } = useParams();
@@ -67,9 +68,7 @@ export function UsersLinks({
     <>
       <Box
         component={"button"}
-        className={
-          isSidebarOpen ? "sidebarLinksTitle" : "sidebarLinksTitle closed"
-        }
+        className={hovered ? "sidebarLinksTitle" : "sidebarLinksTitle closed"}
         onClick={toggleExpandDashBoardLinks}
       >
         <h5 className="dashboardSidebarLinksTitle">User Types</h5>
@@ -90,7 +89,7 @@ export function UsersLinks({
         contentHeight={contentHeight}
         className={
           // Hide text on closed sidebar
-          isSidebarOpen ? "sidebarContentLinks" : "sidebarContentLinks closed"
+          hovered ? "sidebarContentLinks" : "sidebarContentLinks closed"
         }
       >
         <div ref={contentRef} className="allSidebarLinksWrap">
@@ -148,7 +147,7 @@ export function UsersLinks({
                   : "notCurrentAdminSidebarLink"
               }
               smooth
-              title={!isSidebarOpen ? Qlink.name : ""}
+              title={!hovered ? Qlink.name : ""}
               onClick={() => {
                 setCurrentAction("Dashboard");
                 setCurrentLink(Qlink.name);
@@ -173,7 +172,7 @@ export function UsersLinks({
                 <EmojiPeopleIcon className="icon" />
               )}
               {Qlink.name === "Team" && <Diversity2Icon className="icon" />}
-              {isSidebarOpen && <h4>{Qlink.name}</h4>}
+              {hovered && <h4>{Qlink.name}</h4>}
             </NavHashLink>
           ))}
         </div>
@@ -184,6 +183,7 @@ export function UsersLinks({
 
 UsersLinks.propTypes = {
   isSidebarOpen: PropTypes.bool,
+  hovered: PropTypes.bool,
   setCurrentAction: PropTypes.func,
   setCurrentLink: PropTypes.func,
 };

@@ -22,6 +22,7 @@ export function AccountLinks({
   isSidebarOpen,
   setCurrentAction,
   setCurrentLink,
+  hovered,
 }) {
   const authAdmin = useSelector(getAuthUser);
   const { adminCurrentLink } = useParams();
@@ -54,9 +55,7 @@ export function AccountLinks({
     <>
       <Box
         component={"button"}
-        className={
-          isSidebarOpen ? "sidebarLinksTitle" : "sidebarLinksTitle closed"
-        }
+        className={hovered ? "sidebarLinksTitle" : "sidebarLinksTitle closed"}
         onClick={toggleExpandDashBoardLinks}
       >
         <h5 className="dashboardSidebarLinksTitle">Account</h5>
@@ -77,7 +76,7 @@ export function AccountLinks({
         contentHeight={contentHeight}
         className={
           // Hide text on closed sidebar
-          isSidebarOpen ? "sidebarContentLinks" : "sidebarContentLinks closed"
+          hovered ? "sidebarContentLinks" : "sidebarContentLinks closed"
         }
       >
         <div ref={contentRef} className="allSidebarLinksWrap">
@@ -94,7 +93,7 @@ export function AccountLinks({
                   : "notCurrentAdminSidebarLink"
               }
               smooth
-              title={!isSidebarOpen ? Qlink.name : ""}
+              title={!hovered ? Qlink.name : ""}
               onClick={() => {
                 setCurrentAction("Dashboard");
                 setCurrentLink(Qlink.name);
@@ -104,7 +103,7 @@ export function AccountLinks({
               {Qlink.name === "Edit" && <Edit className="icon" />}
               {Qlink.name === "Settings" && <Settings className="icon" />}
               {Qlink.name === "Help" && <Help className="icon" />}
-              {isSidebarOpen && <h4>{Qlink.name}</h4>}
+              {hovered && <h4>{Qlink.name}</h4>}
             </NavHashLink>
           ))}
         </div>

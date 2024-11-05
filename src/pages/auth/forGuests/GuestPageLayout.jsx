@@ -1,5 +1,5 @@
 import { Avatar, Box, Stack, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import {
   Outlet,
   useNavigate,
@@ -20,8 +20,11 @@ import {
   SignUpContainer,
   UserSignUp,
 } from "../../../components/lazyLoading/auth/AuthLazyComponents";
+import { getAuthUser } from "../../../features/auth/authSlice";
+import { useSelector } from "react-redux";
 
 export function GuestPageLayout() {
+  const authUser = useSelector(getAuthUser);
   const { currentGuestPage } = useParams();
   const navigate = useNavigate();
   const {

@@ -1,4 +1,3 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
 import EditIcon from "@mui/icons-material/Edit";
@@ -27,6 +26,10 @@ import axios from "axios";
 // import ApproveEnrollmentModal from "../approvalModal/ApproveEnrollmentModal";
 // import RejectionModal from "../approvalModal/RejectionModal";
 import { dateFormatter } from "../dateFormatter/DateFormatter";
+import { Box } from "@mui/material";
+import { approvedStudentEnrollment } from "../features/students/studentsSlice";
+import ApproveEnrollmentModal from "../components/approvalModal/ApproveEnrollmentModal";
+import RejectEnrollmentModal from "../components/approvalModal/RejectionModal";
 
 // const adminsColumn = (
 //   setCurrentStudentId,
@@ -537,240 +540,288 @@ import { dateFormatter } from "../dateFormatter/DateFormatter";
 //   ];
 //   return pendingAdminsColumn;
 // };
-// const pendingStudentsColumn = (
-//   setCurrentStudent,
-//   loadingComplete,
-//   setLoadingComplete,
-//   toast,
-//   dispatch,
-//   userInfo,
-//   foundStudent,
-//   approveEnrollmentStatus,
-//   openApproveEnrollmentModal,
-//   setOpenApproveEnrollmentModal,
-//   setRejectStudent,
-//   studentToReject,
-//   openRejectModal,
-//   setOpenRejectModal,
-//   rejectEnrollmentStatus,
-//   adminCurrentAction,
-//   adminCurrentLink
-// ) => {
-//   const pendingStudentsColumn = [
-//     {
-//       name: "Image",
-//       selector: (row) =>
-//         row?.personalInfo?.profilePicture ? (
-//           <HashLink
-//             to={`/sensec/admin/${adminCurrentAction}/${adminCurrentLink}/${row?.personalInfo?.firstName?.replace(
-//               / /g,
-//               "_"
-//             )}_${row?.personalInfo?.lastName}/${
-//               row?.uniqueId
-//             }/student_info#studentInfo`}
-//             title="View Student Info"
-//           >
-//             <img
-//               className="studentImg"
-//               src={
-//                 row?.personalInfo
-//                   ? row?.personalInfo?.profilePicture?.url
-//                   : row?.personalInfo?.profilePicture
-//               }
-//               alt=""
-//             />
-//           </HashLink>
-//         ) : (
-//           <HashLink
-//             className="noImgLink"
-//             to={`/sensec/admin/Students/student_info/${row?.personalInfo?.firstName}_${row?.personalInfo?.lastName}/${row?.personalInfo?.uniqueId}#studentInfo`}
-//             title="View Student Info"
-//           >
-//             {row?.personalInfo?.gender === "Male" && (
-//               <img
-//                 className="studentImg"
-//                 src={"/assets/maleAvatar.png"}
-//                 alt=""
-//               />
-//             )}
-//             {row?.personalInfo?.gender === "Female" && (
-//               <img
-//                 className="studentImg"
-//                 src={"/assets/femaleAvatar.png"}
-//                 alt=""
-//               />
-//             )}
-//             {row?.personalInfo?.gender === "" && (
-//               <div className="noImg">
-//                 <p>No</p>
-//                 <p>Image</p>
-//               </div>
-//             )}
-//           </HashLink>
-//         ),
-//     },
-//     {
-//       name: "First Name",
-//       selector: (row) => row?.personalInfo?.firstName,
-//       sortable: true,
-//     },
-//     { name: "Surname", selector: (row) => row?.personalInfo?.lastName },
-//     {
-//       name: "Date Of Birth",
-//       selector: (row) =>
-//         dateFormatter.format(
-//           new Date(
-//             row?.personalInfo?.dateOfBirth
-//               ? row?.personalInfo?.dateOfBirth
-//               : "---"
-//           )
-//         ),
-//     },
-//     {
-//       name: "Unique-ID",
-//       selector: (row) => (row?.uniqueId ? row?.uniqueId : "---"),
-//       sortable: true,
-//     },
-//     {
-//       name: "Email",
-//       selector: (row) =>
-//         row?.contactAddress?.email ? row?.contactAddress?.email : "---",
-//     },
-//     {
-//       name: "Date Enrolled",
-//       selector: (row) =>
-//         !row?.studentStatusExtend?.dateEnrolled
-//           ? "---"
-//           : dateFormatter?.format(
-//               new Date(row?.studentStatusExtend?.dateEnrolled)
-//             ),
-//     },
-//     {
-//       name: "Update",
-//       selector: (row) => (
-//         <Link
-//           className="editLink"
-//           to={`/sensec/admin/${adminCurrentAction}/${adminCurrentLink}/${row.personalInfo?.firstName}_${row.personalInfo?.lastName}/${row.uniqueId}/update`}
-//         >
-//           <EditIcon />
-//         </Link>
-//       ),
-//     },
-//     {
-//       name: "Approve",
-//       selector: (row) =>
-//         row?.studentStatusExtend?.enrollmentStatus === "pending" && (
-//           <>
-//             <HashLink
-//               className="approveLink"
-//               onClick={async () => {
-//                 setCurrentStudent(row._id);
-//                 setOpenApproveEnrollmentModal(true);
-//                 setOpenRejectModal(false);
-//               }}
-//             >
-//               {foundStudent && foundStudent._id === row._id && (
-//                 <>
-//                   {loadingComplete === false && "Processing..."}
-//                   {loadingComplete && approveEnrollmentStatus === "success" && (
-//                     <>
-//                       <span>Approved</span> <TaskAltIcon />
-//                     </>
-//                   )}
-//                 </>
-//               )}
-//               <>
-//                 {loadingComplete === null && (
-//                   <HowToRegIcon
-//                     titleAccess="Approve Enrollment"
-//                     style={{ fontSize: "2rem" }}
-//                   />
-//                 )}
-//                 {row?._id !== foundStudent?._id && loadingComplete !== null && (
-//                   <HowToRegIcon
-//                     titleAccess="Approve Enrollment"
-//                     style={{ fontSize: "2rem" }}
-//                   />
-//                 )}
-//               </>
-//             </HashLink>
-//             {foundStudent && foundStudent._id === row._id && (
-//               <ApproveEnrollmentModal
-//                 open={openApproveEnrollmentModal}
-//                 onClose={() => setOpenApproveEnrollmentModal(false)}
-//                 approveEnrollmentFunction={approvedStudentEnrollment({
-//                   studentId: row?.uniqueId,
-//                   enrolmentApprovedBy: `${userInfo?.id}`,
-//                 })}
-//                 setLoadingComplete={setLoadingComplete}
-//                 dispatch={dispatch}
-//                 setCurrentStudent={setCurrentStudent}
-//                 currentStudentId={row?._id}
-//               />
-//             )}
-//           </>
-//         ),
-//     },
-//     {
-//       name: "Reject",
-//       selector: (row) =>
-//         row?.studentStatusExtend?.enrollmentStatus === "pending" && (
-//           <>
-//             <HashLink
-//               className="rejectLink"
-//               onClick={async () => {
-//                 setRejectStudent(row._id);
-//                 setOpenRejectModal(true);
-//                 setOpenApproveEnrollmentModal(false);
-//               }}
-//             >
-//               {studentToReject && studentToReject._id === row._id && (
-//                 <>
-//                   {loadingComplete === false && "Processing..."}
-//                   {loadingComplete && rejectEnrollmentStatus === "success" && (
-//                     <>
-//                       <span>Rejected</span> <TaskAltIcon />
-//                     </>
-//                   )}
-//                 </>
-//               )}
-//               <>
-//                 {loadingComplete === null && (
-//                   <PersonRemoveIcon
-//                     titleAccess="Reject Enrollment"
-//                     style={{ fontSize: "2rem" }}
-//                   />
-//                 )}
-//                 {row?._id !== studentToReject?._id &&
-//                   loadingComplete !== null && (
-//                     <PersonRemoveIcon
-//                       titleAccess="Reject Enrollment"
-//                       style={{ fontSize: "2rem" }}
-//                     />
-//                   )}
-//               </>
-//             </HashLink>
-//             {studentToReject && studentToReject._id === row._id && (
-//               <RejectionModal
-//                 open={openRejectModal}
-//                 onClose={() => setOpenRejectModal(false)}
-//                 rejectionFunction={rejectStudentEnrollment({
-//                   studentId: row?.uniqueId,
-//                   adminId: userInfo?.uniqueId,
-//                 })}
-//                 setLoadingComplete={setLoadingComplete}
-//                 dispatch={dispatch}
-//                 setUserToReject={setRejectStudent}
-//                 currentStudentId={row?._id}
-//                 rejectAction={"Reject Enrollment"}
-//               />
-//             )}
-//           </>
-//         ),
-//     },
-//   ];
-//   return pendingStudentsColumn;
-// };
+const pendingStudentsColumn = (
+  authAdmin,
+  setCurrentStudent,
+  loadingComplete,
+  setLoadingComplete,
+  toast,
+  dispatch,
+  foundStudent,
+  enrollmentApprovalStatus,
+  openApproveEnrollmentModal,
+  setOpenApproveEnrollmentModal,
+  setRejectStudent,
+  studentToReject,
+  openRejectModal,
+  setOpenRejectModal,
+  rejectEnrollmentStatus,
+  adminCurrentAction,
+  adminCurrentLink
+) => {
+  const pendingStudentsColumn = [
+    {
+      name: "Image",
+      selector: (row) =>
+        row?.personalInfo?.profilePicture ? (
+          <HashLink
+            to={`/sensec/admin/${adminCurrentAction}/${adminCurrentLink}/${row?.personalInfo?.firstName?.replace(
+              / /g,
+              "_"
+            )}_${row?.personalInfo?.lastName}/${
+              row?.uniqueId
+            }/student_info#studentInfo`}
+            title="View Student Info"
+          >
+            <img
+              className="studentImg"
+              src={
+                row?.personalInfo
+                  ? row?.personalInfo?.profilePicture?.url
+                  : row?.personalInfo?.profilePicture
+              }
+              alt=""
+            />
+          </HashLink>
+        ) : (
+          <HashLink
+            className="noImgLink"
+            to={`/sensec/admin/Students/student_info/${row?.personalInfo?.firstName}_${row?.personalInfo?.lastName}/${row?.personalInfo?.uniqueId}#studentInfo`}
+            title="View Student Info"
+          >
+            {row?.personalInfo?.gender === "Male" && (
+              <img
+                className="studentImg"
+                src={"/assets/maleAvatar.png"}
+                alt=""
+              />
+            )}
+            {row?.personalInfo?.gender === "Female" && (
+              <img
+                className="studentImg"
+                src={"/assets/femaleAvatar.png"}
+                alt=""
+              />
+            )}
+            {row?.personalInfo?.gender === "" && (
+              <div className="noImg">
+                <p>No</p>
+                <p>Image</p>
+              </div>
+            )}
+          </HashLink>
+        ),
+    },
+    {
+      name: "First Name",
+      selector: (row) => row?.personalInfo?.firstName,
+      sortable: true,
+    },
+    { name: "Surname", selector: (row) => row?.personalInfo?.lastName },
+    {
+      name: "Date Of Birth",
+      selector: (row) =>
+        dateFormatter.format(
+          new Date(
+            row?.personalInfo?.dateOfBirth
+              ? row?.personalInfo?.dateOfBirth
+              : "---"
+          )
+        ),
+    },
+    {
+      name: "Unique-ID",
+      selector: (row) => (row?.uniqueId ? row?.uniqueId : "---"),
+      sortable: true,
+    },
+    {
+      name: "Email",
+      selector: (row) =>
+        row?.contactAddress?.email ? row?.contactAddress?.email : "---",
+    },
+    {
+      name: "Date Enrolled",
+      selector: (row) =>
+        !row?.studentStatusExtend?.dateEnrolled
+          ? "---"
+          : dateFormatter?.format(
+              new Date(row?.studentStatusExtend?.dateEnrolled)
+            ),
+    },
+    {
+      name: "Level",
+      selector: (row) =>
+        row.studentSchoolData?.currentClassLevel && (
+          <div className="tableClassLevel">
+            {row.studentSchoolData?.currentClassLevel?.name === "Level 100" && (
+              <div className="firstYearTag" title="1st Year">
+                1
+              </div>
+            )}
+            {row.studentSchoolData?.currentClassLevel?.name === "Level 200" && (
+              <div className="secondYearTag" title="2nd Year">
+                2
+              </div>
+            )}
+            {row.studentSchoolData?.currentClassLevel?.name === "Level 300" &&
+              !row.isGraduated && (
+                <div className="thirdYearTag" title="3rd Year">
+                  3
+                </div>
+              )}
+            {row.isGraduated && (
+              <div className="isGraduated" title="Graduated">
+                <SchoolOutlinedIcon />
+              </div>
+            )}
+          </div>
+        ),
+    },
+    {
+      name: "Update",
+      selector: (row) => (
+        <Link
+          className="editLink"
+          to={`/sensec/admin/${adminCurrentAction}/${adminCurrentLink}/${row.personalInfo?.firstName}_${row.personalInfo?.lastName}/${row.uniqueId}/update`}
+        >
+          <EditIcon />
+        </Link>
+      ),
+    },
+    {
+      name: "Approve",
+      selector: (row) =>
+        row?.studentStatusExtend?.enrollmentStatus === "pending" && (
+          <>
+            <HashLink
+              className="approveLink"
+              onClick={async () => {
+                setCurrentStudent(row._id);
+                setOpenApproveEnrollmentModal(true);
+                setOpenRejectModal(false);
+              }}
+            >
+              {foundStudent && foundStudent._id === row._id && (
+                <>
+                  {loadingComplete === false && (
+                    <Box className="promotionSpinner">
+                      <span>Processing</span>
+                      <span className="dot-ellipsis">
+                        <span className="dot">.</span>
+                        <span className="dot">.</span>
+                        <span className="dot">.</span>
+                      </span>
+                    </Box>
+                  )}
+                  {loadingComplete &&
+                    enrollmentApprovalStatus === "success" && (
+                      <>
+                        <span>Approved</span> <TaskAltIcon />
+                      </>
+                    )}
+                </>
+              )}
+              <>
+                {loadingComplete === null && (
+                  <HowToRegIcon
+                    titleAccess="Approve Enrollment"
+                    style={{ fontSize: "2rem" }}
+                  />
+                )}
+                {row?._id !== foundStudent?._id && loadingComplete !== null && (
+                  <HowToRegIcon
+                    titleAccess="Approve Enrollment"
+                    style={{ fontSize: "2rem" }}
+                  />
+                )}
+              </>
+            </HashLink>
+            {foundStudent && foundStudent._id === row._id && (
+              <ApproveEnrollmentModal
+                open={openApproveEnrollmentModal}
+                onClose={() => setOpenApproveEnrollmentModal(false)}
+                approveEnrollmentFunction={approvedStudentEnrollment({
+                  studentId: row?.uniqueId,
+                  enrolmentApprovedBy: `${authAdmin?.id}`,
+                })}
+                setLoadingComplete={setLoadingComplete}
+                dispatch={dispatch}
+                setCurrentStudent={setCurrentStudent}
+                currentStudentId={row?._id}
+              />
+            )}
+          </>
+        ),
+    },
+    {
+      name: "Reject",
+      selector: (row) =>
+        row?.studentStatusExtend?.enrollmentStatus === "pending" && (
+          <>
+            <HashLink
+              className="rejectLink"
+              onClick={async () => {
+                setRejectStudent(row._id);
+                setOpenRejectModal(true);
+                setOpenApproveEnrollmentModal(false);
+              }}
+            >
+              {studentToReject && studentToReject._id === row._id && (
+                <>
+                  {loadingComplete === false && (
+                    <Box className="promotionSpinner">
+                      <span>Processing</span>
+                      <span className="dot-ellipsis">
+                        <span className="dot">.</span>
+                        <span className="dot">.</span>
+                        <span className="dot">.</span>
+                      </span>
+                    </Box>
+                  )}
+                  {loadingComplete && rejectEnrollmentStatus === "success" && (
+                    <>
+                      <span>Rejected</span> <TaskAltIcon />
+                    </>
+                  )}
+                </>
+              )}
+              <>
+                {loadingComplete === null && (
+                  <PersonRemoveIcon
+                    titleAccess="Reject Enrollment"
+                    style={{ fontSize: "2rem" }}
+                  />
+                )}
+                {row?._id !== studentToReject?._id &&
+                  loadingComplete !== null && (
+                    <PersonRemoveIcon
+                      titleAccess="Reject Enrollment"
+                      style={{ fontSize: "2rem" }}
+                    />
+                  )}
+              </>
+            </HashLink>
+            {studentToReject && studentToReject._id === row._id && (
+              <RejectEnrollmentModal
+                open={openRejectModal}
+                onClose={() => setOpenRejectModal(false)}
+                // rejectionFunction={rejectStudentEnrollment({
+                //   studentId: row?.uniqueId,
+                //   adminId: authAdmin?.uniqueId,
+                // })}
+                setLoadingComplete={setLoadingComplete}
+                dispatch={dispatch}
+                setUserToReject={setRejectStudent}
+                currentStudent={row?._id}
+                rejectAction={"Reject Enrollment"}
+              />
+            )}
+          </>
+        ),
+    },
+  ];
+  return pendingStudentsColumn;
+};
 // const courseMatesColumn = () => {
 //   const studentColumn = [
 //     {
@@ -877,7 +928,7 @@ import { dateFormatter } from "../dateFormatter/DateFormatter";
 //   return studentColumn;
 // };
 const studentsColumn = (
-  userInfo,
+  authAdmin,
   foundStudent,
   adminCurrentAction,
   adminCurrentLink,
@@ -1042,14 +1093,23 @@ const studentsColumn = (
                   //   dispatch(
                   //     promotingToLevel200({
                   //       uniqueId: row.uniqueId,
-                  //       lastPromotedBy: `${userInfo.id}`,
+                  //       lastPromotedBy: `${authAdmin.id}`,
                   //     })
                   //   );
                 }}
               >
                 {foundStudent && foundStudent._id === row._id && (
                   <>
-                    {level100loadingComplete === false && "Processing..."}
+                    {level100loadingComplete === false && (
+                      <Box className="promotionSpinner">
+                        <p>Processing</p>
+                        <span className="dot-ellipsis">
+                          <span className="dot">.</span>
+                          <span className="dot">.</span>
+                          <span className="dot">.</span>
+                        </span>
+                      </Box>
+                    )}
                     {level100loadingComplete &&
                       level100PromotionStatus === "success" && (
                         <>
@@ -1077,14 +1137,23 @@ const studentsColumn = (
                   //   dispatch(
                   //     promotingToLevel300({
                   //       uniqueId: row.uniqueId,
-                  //       lastPromotedBy: `${userInfo.id}`,
+                  //       lastPromotedBy: `${authAdmin.id}`,
                   //     })
                   //   );
                 }}
               >
                 {foundStudent && foundStudent._id === row._id && (
                   <>
-                    {level200loadingComplete === false && "Processing..."}
+                    {level200loadingComplete === false && (
+                      <Box className="promotionSpinner">
+                        <p>Processing</p>
+                        <span className="dot-ellipsis">
+                          <span className="dot">.</span>
+                          <span className="dot">.</span>
+                          <span className="dot">.</span>
+                        </span>
+                      </Box>
+                    )}
                     {level200loadingComplete &&
                       level200PromotionStatus === "success" && (
                         <>
@@ -1112,14 +1181,23 @@ const studentsColumn = (
                   //   dispatch(
                   //     graduateStudent({
                   //       uniqueId: row.uniqueId,
-                  //       lastPromotedBy: `${userInfo.id}`,
+                  //       lastPromotedBy: `${authAdmin.id}`,
                   //     })
                   //   );
                 }}
               >
                 {foundStudent && foundStudent._id === row._id && (
                   <>
-                    {level300loadingComplete === false && "Processing..."}
+                    {level300loadingComplete === false && (
+                      <Box className="promotionSpinner">
+                        <span>Processing</span>
+                        <span className="dot-ellipsis">
+                          <span className="dot">.</span>
+                          <span className="dot">.</span>
+                          <span className="dot">.</span>
+                        </span>
+                      </Box>
+                    )}
                     {level300loadingComplete &&
                       level300PromotionStatus === "success" && (
                         <>
@@ -2510,7 +2588,7 @@ export {
   //   pendingTeachersColumn,
   //   hangingTeachersColumn,
   studentsColumn,
-  //   pendingStudentsColumn,
+  pendingStudentsColumn,
   //   courseMatesColumn,
   //   hangingEmploymentsColumn,
   //   graduatesColumn,

@@ -30,6 +30,7 @@ export function AdminDashboardLinks({
   isSidebarOpen,
   setCurrentAction,
   setCurrentLink,
+  hovered,
 }) {
   const authAdmin = useSelector(getAuthUser);
   const { adminCurrentLink } = useParams();
@@ -63,12 +64,17 @@ export function AdminDashboardLinks({
       <Box
         component={"button"}
         // Position sidebar action title (h5) in the middle
-        className={
-          isSidebarOpen ? "sidebarLinksTitle" : "sidebarLinksTitle closed"
-        }
+        className={hovered ? "sidebarLinksTitle" : "sidebarLinksTitle closed"}
         onClick={toggleExpandDashBoardLinks}
       >
-        <h5 className="dashboardSidebarLinksTitle">Dashboard</h5>
+        <h5
+          className="dashboardSidebarLinksTitle"
+          style={{
+            textTransform: hovered ? "uppercase" : "capitalize",
+          }}
+        >
+          Dashboard
+        </h5>
         {!openDashBoardLinks ? (
           <ExpandMore
             className="expandMoreIcon"
@@ -86,7 +92,7 @@ export function AdminDashboardLinks({
         contentHeight={contentHeight}
         className={
           // Hide text on closed sidebar
-          isSidebarOpen ? "sidebarContentLinks" : "sidebarContentLinks closed"
+          hovered ? "sidebarContentLinks" : "sidebarContentLinks closed"
         }
       >
         <div ref={contentRef} className="allSidebarLinksWrap">
@@ -97,7 +103,7 @@ export function AdminDashboardLinks({
                 authAdmin?.uniqueId
               }/admin/Dashboard/${qLink?.name?.replace(/ /g, "_")}`}
               smooth
-              title={!isSidebarOpen ? qLink.name : ""}
+              title={!hovered ? qLink.name : ""}
               className={
                 qLink.name === adminCurrentLink?.replace(/_/g, " ")
                   ? "currentAdminSidebarLink"
@@ -115,7 +121,7 @@ export function AdminDashboardLinks({
                 <AutoStories className="icon" />
               )}
               {qLink.name === "Blogs" && <RssFeed className="icon" />}
-              {isSidebarOpen && <h4>{qLink.name}</h4>}
+              {hovered && <h4>{qLink.name}</h4>}
             </HashLink>
           ))}
         </div>
@@ -126,6 +132,7 @@ export function AdminDashboardLinks({
 
 AdminDashboardLinks.propTypes = {
   isSidebarOpen: PropTypes.bool,
+  hovered: PropTypes.bool,
   setCurrentAction: PropTypes.func,
   setCurrentLink: PropTypes.func,
 };

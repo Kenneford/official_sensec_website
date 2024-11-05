@@ -211,7 +211,7 @@
   }
   #navLogout {
     position: absolute;
-    // background-color: #fc5656;
+    // background-color: #292929;
     width: 12rem;
     // min-height: 7rem;
     top: 80%;
@@ -225,10 +225,11 @@
     z-index: 5;
     :nth-child(3) {
     }
-    span {
+    .profileOptions {
       cursor: pointer;
       color: #fff;
       // margin: 0.5rem 0;
+      width: inherit;
       padding: 0.5rem 1rem;
       font-size: 0.9em;
       animation: animateNavItems 400ms linear forwards;
@@ -245,11 +246,10 @@
       }
       &:nth-child(2) {
         animation-delay: 300ms;
-        // border-bottom: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
       }
       &:nth-child(3) {
         animation-delay: 400ms;
-        border-top: 1px solid #ccc;
         border-bottom: 1px solid #ccc;
       }
       &:nth-child(4) {

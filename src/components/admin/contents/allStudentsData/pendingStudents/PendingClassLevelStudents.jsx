@@ -1,5 +1,5 @@
 import "../allStudentsData.scss";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,6 +11,9 @@ import { Box, Grid } from "@mui/material";
 import ActionModal from "../../../../actionModal/ActionModal";
 import { AllStudentsPageQuickLinks } from "../../../../../linksFormat/LinksFormat";
 import { getAuthUser } from "../../../../../features/auth/authSlice";
+import { FetchAllClassLevels } from "../../../../../data/class/FetchClassLevel";
+import { FetchPendingClassLevelStudents } from "../../../../../data/students/FetchAllStudents";
+import { pendingStudentsColumn } from "../../../../../usersInfoDataFormat/UsersInfoDataFormat";
 
 export function PendingClassLevelStudents() {
   const authAdmin = useSelector(getAuthUser);
@@ -40,33 +43,38 @@ export function PendingClassLevelStudents() {
   //   (state) => state.classLevel
   // );
 
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const {
-    program,
     class_level,
     adminCurrentLink,
     adminCurrentAction,
     student_category,
   } = useParams();
-  console.log(adminCurrentAction, adminCurrentLink);
-  console.log(class_level, program);
+  const {
+    enrollmentApprovalStatus,
+    successMessage,
+    error,
+    // approveMultiEnrollmentStatus,
+    rejectEnrollmentStatus,
+  } = useSelector((state) => state.student);
+  const [loadingComplete, setLoadingComplete] = useState(null);
+  const [openApproveEnrollmentModal, setOpenApproveEnrollmentModal] =
+    useState(false);
+  const [openRejectModal, setOpenRejectModal] = useState(false);
+  console.log(loadingComplete);
+  const [currentStudent, setCurrentStudent] = useState("");
+  const [rejectStudent, setRejectStudent] = useState("");
   const [openModal, setOpenModal] = useState(false);
-  const [redirecting, setRedirecting] = useState("");
+  const [redirecting, setRedirecting] = useState(false);
+  const [classLevel, setClassLevel] = useState(false);
   const [uncompletedEmploymentTask, setUncompletedEmploymentTask] =
     useState("");
   const userInfo = {};
-  const allClassLevels = [
-    {
-      name: "Level 100",
-    },
-    {
-      name: "Level 200",
-    },
-    {
-      name: "Level 300",
-    },
-  ];
+  const allClassLevels = FetchAllClassLevels();
+  const pendingClassLevelStudents = FetchPendingClassLevelStudents(
+    classLevel?._id
+  );
   const allClassLevelSections = [];
   const singleClassLevel = {
     students: [],
@@ -74,50 +82,54 @@ export function PendingClassLevelStudents() {
   console.log(singleClassLevel);
   console.log(allClassLevelSections);
 
-  const [currentStudentId, setCurrentStudentId] = useState("");
   const [level100loadingComplete, setLevel100LoadingComplete] = useState(null);
   const [level200loadingComplete, setLevel200LoadingComplete] = useState(null);
   const [level300loadingComplete, setLevel300LoadingComplete] = useState(null);
   const [searchStudent, setSearchStudent] = useState("");
 
-  const filteredStudents = singleClassLevel?.students?.filter(
+  const filteredStudents = pendingClassLevelStudents?.filter(
     (std) =>
       std?.personalInfo?.firstName?.toLowerCase()?.includes(searchStudent) ||
       std?.personalInfo?.firstName?.includes(searchStudent) ||
       std?.personalInfo?.lastName?.toLowerCase()?.includes(searchStudent) ||
       std?.personalInfo?.lastName?.includes(searchStudent)
   );
-  const foundStudent = singleClassLevel?.students?.find(
-    (std) => std._id === currentStudentId
+  const foundStudent = pendingClassLevelStudents?.find(
+    (std) => std._id === currentStudent
+  );
+  const studentToReject = pendingClassLevelStudents?.find(
+    (std) => std._id === rejectStudent
   );
   console.log(filteredStudents);
 
-  const handleNewEmployment = () => {
+  const handleNewEnrollment = () => {
     setRedirecting(true);
     setUncompletedEmploymentTask("You're being redirected");
     setTimeout(() => {
       navigate(
-        `/sensec/users/${authAdmin?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/new_employment/personal_info`
+        `/sensec/users/${authAdmin?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/new_enrollment/placement_verification`
       );
     }, 3000);
   };
-  // const studentDataFormat = studentsColumn(
-  //   userInfo,
-  //   foundStudent,
-  //   adminCurrentAction,
-  //   adminCurrentLink,
-  //   setCurrentStudentId,
-  //   setLevel100LoadingComplete,
-  //   setLevel200LoadingComplete,
-  //   setLevel300LoadingComplete,
-  //   level100loadingComplete,
-  //   level200loadingComplete,
-  //   level300loadingComplete,
-  //   level100PromotionStatus,
-  //   level200PromotionStatus,
-  //   level300PromotionStatus,
-  //   dispatch
-  // );
+  const pendingStudentsDataFormat = pendingStudentsColumn(
+    authAdmin,
+    setCurrentStudent,
+    loadingComplete,
+    setLoadingComplete,
+    toast,
+    dispatch,
+    foundStudent,
+    enrollmentApprovalStatus,
+    openApproveEnrollmentModal,
+    setOpenApproveEnrollmentModal,
+    setRejectStudent,
+    studentToReject,
+    openRejectModal,
+    setOpenRejectModal,
+    rejectEnrollmentStatus,
+    adminCurrentAction,
+    adminCurrentLink
+  );
 
   //Student Promotion Level 100 Status Check
   // useEffect(() => {
@@ -247,11 +259,21 @@ export function PendingClassLevelStudents() {
   //   dispatch,
   // ]);
 
+  useLayoutEffect(() => {
+    const classLevelFound = allClassLevels?.find(
+      (cLevel) => cLevel?.name === class_level?.replace(/_/g, " ")
+    );
+    // const studentProgramme = allProgrammes?.find(
+    //   (program) => program?.name === programme?.replace(/_/g, " ")
+    // );
+    setClassLevel(classLevelFound);
+  }, [allClassLevels, class_level]);
+
   const currentClassLevelStd = `${class_level?.replace(
     /_/g,
     " "
   )} Pending Students / Total = 
-              ${singleClassLevel?.students?.length}`;
+              ${pendingClassLevelStudents?.length}`;
   return (
     <>
       {/* Current dashboard title */}
@@ -361,7 +383,7 @@ export function PendingClassLevelStudents() {
             <ActionModal
               open={openModal}
               onClose={() => setOpenModal(false)}
-              handleNewEmployment={handleNewEmployment}
+              handleNewEnrollment={handleNewEnrollment}
               redirecting={redirecting}
               uncompletedEmploymentTask={uncompletedEmploymentTask}
               question={"Are you sure you would like to enroll a new student?"}
@@ -383,7 +405,7 @@ export function PendingClassLevelStudents() {
                 item
                 xs={2.9}
                 sm={2}
-                key={cLevel._id}
+                key={cLevel.name}
                 onClick={() =>
                   navigate(
                     `/sensec/users/${
@@ -405,10 +427,10 @@ export function PendingClassLevelStudents() {
             ))}
           </Grid>
         </Box>
-        <Box>
+        <Box className="studentDataTable">
           <DataTable
             title={currentClassLevelStd}
-            // columns={studentDataFormat}
+            columns={pendingStudentsDataFormat}
             data={filteredStudents}
             customStyles={customUserTableStyle}
             pagination

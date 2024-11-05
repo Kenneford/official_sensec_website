@@ -611,13 +611,13 @@ export function NavigationBar({
                 <Typography
                   sx={{ display: { xs: "none", md: "block", color: "#fff" } }}
                 >
-                  @{userInfo?.userSignUpDetails?.userName}
+                  @{authUser?.userSignUpDetails?.userName}
                 </Typography>
                 <Box>
-                  {userInfo?.personalInfo?.profilePicture ? (
+                  {authUser?.personalInfo?.profilePicture ? (
                     <Avatar
                       onClick={() => setOpenUserActions(!openUserActions)}
-                      src={userInfo?.personalInfo?.profilePicture?.url}
+                      src={authUser?.personalInfo?.profilePicture?.url}
                       alt=""
                       sx={{
                         cursor: "pointer",
@@ -627,7 +627,7 @@ export function NavigationBar({
                     <Avatar
                       onClick={() => setOpenUserActions(!openUserActions)}
                       src={
-                        userInfo?.personalInfo?.gender === "Male"
+                        authUser?.personalInfo?.gender === "Male"
                           ? "/assets/maleAvatar.png"
                           : "/assets/femaleAvatar.png"
                       }
@@ -641,21 +641,19 @@ export function NavigationBar({
                 {openUserActions && (
                   <div id="navLogout">
                     {userActions?.map((action) => (
-                      <>
+                      <Box key={action?.label} className="profileOptions">
                         {action?.value !== "Logout" && (
-                          <span key={action?.label} className="profileView">
-                            {action?.value}
-                          </span>
+                          <Box key={action?.label}>{action?.value}</Box>
                         )}
                         {action?.label === "Logout" && (
-                          <span className="logUserOutWrap">
+                          <Box className="logUserOutWrap">
                             <p className="logUserOut" onClick={handleLogout}>
                               Logout
                             </p>
                             <LogoutIcon className="logoutIcon" />
-                          </span>
+                          </Box>
                         )}
-                      </>
+                      </Box>
                     ))}
                   </div>
                 )}
