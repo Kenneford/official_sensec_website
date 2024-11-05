@@ -113,7 +113,7 @@ export function StudentSideBar({
         </IconButton>
         {/* User Info */}
         <Box className="userInfo">
-          <img src={studentInfo?.personalInfo?.profilePicture?.url} alt="" />
+          <img src={authUser?.personalInfo?.profilePicture?.url} alt="" />
           {isSidebarOpen && (
             <Collapse
               in={isSidebarOpen}
@@ -122,8 +122,8 @@ export function StudentSideBar({
               //     transition: "0.5s ease", // Smooth transition when toggling
               //   }}
             >
-              <span>{studentInfo?.personalInfo?.fullName}</span>
-              {studentProgrammeInfo && (
+              <span>{authUser?.personalInfo?.fullName}</span>
+              {authUser && (
                 <Typography>({studentProgrammeInfo?.name})</Typography>
               )}
             </Collapse>
