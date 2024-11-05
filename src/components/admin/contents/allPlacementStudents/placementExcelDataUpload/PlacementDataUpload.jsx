@@ -1,28 +1,36 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import * as XLSX from "xlsx";
-// import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 // import { processExcelFile } from "./handleExcelFileUploads/handleExcelFileUploads";
 import { Box, Button, Grid, Typography } from "@mui/material";
 import {
   CustomTextField,
   FileInput,
 } from "../../../../../muiStyling/muiStyling";
+import {
+  fetchAllPlacementStudents,
+  resetPlacementUploadErrorState,
+  resetPlacementUploadState,
+  uploadPlacementFile,
+} from "../../../../../features/academics/placementSlice";
+import { toast } from "react-toastify";
+import { processExcelFile } from "../handleExcelFileUploads/handleExcelFileUploads";
+import { getAuthUser } from "../../../../../features/auth/authSlice";
+import LoadingProgress from "../../../../pageLoading/LoadingProgress";
+import { TaskAlt } from "@mui/icons-material";
 
 export default function UploadPlacementExcelData() {
-  const authUser = {};
-  // const { uploadExcelFileStatus, uploadExcelFileError } = useSelector(
-  //   (state) => state.placement
-  // );
+  const authUser = useSelector(getAuthUser);
+  const { uploadExcelFileStatus, error, successMessage } = useSelector(
+    (state) => state.placement
+  );
   console.log(authUser);
 
   const [file, setFile] = useState(null);
   const [fileUploadErrorMsg, setFileUploadErrorMsg] = useState("");
-  const [datas, setDatas] = useState({
-    placementYear: "",
-    uploadedBy: authUser?.id,
-  });
-  // const dispatch = useDispatch();
+  const [loadingComplete, setLoadingComplete] = useState(null);
+  const dispatch = useDispatch();
 
   const [data, setData] = useState({
     placementYear: "",
@@ -34,43 +42,68 @@ export default function UploadPlacementExcelData() {
     const file = e.target.files[0];
     if (file) {
       setFile(file);
-      // processExcelFile(file, data, setData);
+      processExcelFile(file, data, setData);
     }
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // dispatch(uploadPlacementFile(data));
+    dispatch(uploadPlacementFile(data));
     console.log(data);
   };
 
-  // useEffect(() => {
-  //   if (uploadExcelFileStatus === "rejected") {
-  //     console.log(uploadExcelFileError);
-  //     setTimeout(() => {
-  //       setFileUploadErrorMsg(uploadExcelFileError?.errorMessage?.message);
-  //     }, 3000);
-  //     //   setTimeout(() => {
-  //     //     setFileUploadErrorMsg("");
-  //     //   }, 6000);
-  //   }
-  // }, [uploadExcelFileError, uploadExcelFileStatus]);
+  useEffect(() => {
+    if (uploadExcelFileStatus === "pending") {
+      setLoadingComplete(false);
+    }
+    if (uploadExcelFileStatus === "rejected") {
+      console.log(error);
+      setTimeout(() => {
+        setLoadingComplete(null);
+        setFileUploadErrorMsg(error?.errorMessage?.message);
+      }, 3000);
+    }
+    if (uploadExcelFileStatus === "success") {
+      setTimeout(() => {
+        toast.success(successMessage, {
+          position: "top-right",
+          theme: "dark",
+          toastId: successMessage,
+        });
+      }, 2000);
+      setTimeout(() => {
+        setLoadingComplete(true);
+        dispatch(fetchAllPlacementStudents());
+      }, 3000);
+      setTimeout(() => {
+        setLoadingComplete(null);
+        dispatch(resetPlacementUploadState());
+      }, 6000);
+    }
+  }, [error, uploadExcelFileStatus, successMessage, dispatch]);
 
   return (
     <Box className="placementExcelFileUploadWrap">
       <h2>Upload Placement File</h2>
       {fileUploadErrorMsg && (
-        <p
+        <Button
+          fullWidth
           style={{
-            backgroundColor: "#d50303",
+            backgroundColor: "#e12020",
             color: "#fff",
             textAlign: "center",
             padding: ".5rem",
-            fontSize: "1.2rem",
+            fontSize: "1rem",
             letterSpacing: "1px",
+            textTransform: "capitalize",
+            minHeight: "2rem",
+          }}
+          onClick={() => {
+            setFileUploadErrorMsg("");
+            dispatch(resetPlacementUploadErrorState());
           }}
         >
-          {fileUploadErrorMsg}
-        </p>
+          {fileUploadErrorMsg} Click on message to close!
+        </Button>
       )}
       <Box
         component={"form"}
@@ -164,7 +197,16 @@ export default function UploadPlacementExcelData() {
                 textTransform: "capitalize",
               }}
             >
-              Save File
+              {loadingComplete === false && (
+                <LoadingProgress color={"#fff"} size={"1.5rem"} />
+              )}
+              {loadingComplete === true &&
+                uploadExcelFileStatus === "success" && (
+                  <>
+                    <span>Successful</span> <TaskAlt />
+                  </>
+                )}
+              {loadingComplete === null && "Save File"}
             </Button>
           </Grid>
         </Grid>

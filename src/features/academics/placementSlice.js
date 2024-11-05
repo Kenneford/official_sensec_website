@@ -26,7 +26,7 @@ export const uploadPlacementFile = createAsyncThunk(
       // console.log(accessToken);
 
       const res = await axios.post(
-        `${SENSEC_API_ENDPOINT}/admin/placement/batches/upload`,
+        `${SENSEC_API_ENDPOINT}/students/placement/excel_file/upload`,
         {
           data,
         },
@@ -122,6 +122,19 @@ const placementSlice = createSlice({
   name: "Placement",
   initialState,
   reducers: {
+    resetPlacementUploadState(state) {
+      return {
+        ...state,
+        uploadExcelFileStatus: "",
+        successMessage: "",
+      };
+    },
+    resetPlacementUploadErrorState(state) {
+      return {
+        ...state,
+        error: "",
+      };
+    },
     resetPlacementState(state) {
       return {
         ...state,
@@ -270,7 +283,12 @@ const placementSlice = createSlice({
   },
 });
 
-export const { resetPlacementState, resetUpdateState } = placementSlice.actions;
+export const {
+  resetPlacementState,
+  resetUpdateState,
+  resetPlacementUploadState,
+  resetPlacementUploadErrorState,
+} = placementSlice.actions;
 export const getAllPlacementStudents = (state) =>
   state.placement.allPlacementStudents;
 

@@ -1,6 +1,6 @@
 import { ContainerBox, CustomTextField } from "../../../muiStyling/muiStyling";
 import "./studentPlacementVerification.scss";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button, Grid, Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import {
@@ -15,12 +15,15 @@ import { FetchAllStudents } from "../../../data/students/FetchAllStudents";
 import { TaskAlt } from "@mui/icons-material";
 import Redirection from "../../../components/pageLoading/Redirection";
 import LoadingProgress from "../../../components/pageLoading/LoadingProgress";
+import { getAuthUser } from "../../../features/auth/authSlice";
 
 export function StudentPlacementVerification() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { adminCurrentAction, adminCurrentLink } = useParams();
   const allPlacementStudents = useSelector(getAllPlacementStudents);
   const allStudents = FetchAllStudents();
+  const authUser = useSelector(getAuthUser);
   // Placement status check
   const { verifyStatus, error, successMessage } = useSelector(
     (state) => state.placement
@@ -81,6 +84,48 @@ export function StudentPlacementVerification() {
         setLoadingComplete(null);
       }, 3000);
     }
+    //If no enrolled student but placement student seems to be enrolled, navigate student to enrolment page
+    else if (
+      !enrolledStudent &&
+      // foundPlacementStudent?.placementVerified &&
+      foundPlacementStudent?.enrolled
+    ) {
+      setTimeout(() => {
+        setLoadingComplete(true);
+        setIsVerified(true);
+      }, 3000);
+      setTimeout(() => {
+        setRedirecting(true);
+        setIsVerified(false);
+      }, 5000);
+      setTimeout(() => {
+        navigate(
+          `/sensec/students/enrollment/online/${foundPlacementStudent?.jhsIndexNo}`
+        );
+      }, 7000);
+    }
+    //If placement verified and enrolled, navigate student to enrolment success page
+    else if (
+      foundPlacementStudent?.placementVerified &&
+      foundPlacementStudent?.enrolled
+    ) {
+      setTimeout(() => {
+        setLoadingComplete(true);
+        setIsVerified(true);
+        setHasEnrolled(true);
+      }, 3000);
+      setTimeout(() => {
+        setRedirecting(true);
+        setIsVerified(false);
+        setHasEnrolled(false);
+      }, 5000);
+      // setCurrentEnrolmentSuccessLink("DASHBOARD");
+      setTimeout(() => {
+        navigate(
+          `/sensec/students/${foundPlacementStudent?.enrollmentId}/enrollment/online/success`
+        );
+      }, 7000);
+    }
     //If placement verified but enrollment is in progress, navigate to add parent page
     else if (
       foundPlacementStudent?.placementVerified &&
@@ -97,9 +142,15 @@ export function StudentPlacementVerification() {
         setIsVerified(false);
       }, 5000);
       setTimeout(() => {
-        navigate(
-          `/sensec/students/enrollment/online/${foundPlacementStudent?.enrollmentId}/parent/add`
-        );
+        if (adminCurrentAction) {
+          navigate(
+            `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/new_enrollment/parent/add`
+          );
+        } else {
+          navigate(
+            `/sensec/students/enrollment/online/${foundPlacementStudent?.jhsIndexNo}/parent/add`
+          );
+        }
       }, 7000);
     }
     //If placement verified but enrollment not yet started, navigate to enrollment page
@@ -110,7 +161,7 @@ export function StudentPlacementVerification() {
         "in progress" &&
       !enrolledStudent?.parent
     ) {
-      localStorage.setItem("indexNumber", formData?.jhsIndexNo);
+      // localStorage.setItem("indexNumber", formData?.jhsIndexNo);
       setTimeout(() => {
         setLoadingComplete(true);
         setIsVerified(true);
@@ -120,35 +171,20 @@ export function StudentPlacementVerification() {
         setIsVerified(false);
       }, 5000);
       setTimeout(() => {
-        navigate(
-          `/sensec/students/enrollment/online/${foundPlacementStudent?.jhsIndexNo}`
-        );
+        if (adminCurrentAction) {
+          navigate(
+            `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/new_enrollment`
+          );
+        } else {
+          navigate(
+            `/sensec/students/enrollment/online/${foundPlacementStudent?.jhsIndexNo}`
+          );
+        }
       }, 7000);
     }
-    //If placement verified and not enrolled, then verify student and begin the enrolment process
-    // else if (
-    //   foundPlacementStudent?.placementVerified &&
-    //   !foundPlacementStudent?.enrolled &&
-    //   enrolledStudent?.studentStatusExtend?.enrollmentStatus === null
-    // ) {
-    //   localStorage.setItem("indexNumber", formData?.jhsIndexNo);
-    //   setTimeout(() => {
-    //     setLoadingComplete(true);
-    //     setIsVerified(true);
-    //   }, 3000);
-    //   setTimeout(() => {
-    //     setRedirecting(true);
-    //     setIsVerified(false);
-    //   }, 5000);
-    //   setTimeout(() => {
-    //     navigate(
-    //       `/sensec/students/enrollment/online`
-    //     );
-    //   }, 7000);
-    // }
     //If placement verified and enrolled, navigate student to enrolment success page
     else if (foundPlacementStudent?.placementVerified && enrolledStudent) {
-      localStorage.setItem("indexNumber", formData?.jhsIndexNo);
+      // localStorage.setItem("indexNumber", formData?.jhsIndexNo);
       setTimeout(() => {
         setLoadingComplete(true);
         setIsVerified(true);
@@ -159,10 +195,9 @@ export function StudentPlacementVerification() {
         setIsVerified(false);
         setHasEnrolled(false);
       }, 5000);
-      // setCurrentEnrolmentSuccessLink("DASHBOARD");
       setTimeout(() => {
         navigate(
-          `sensec/students/${enrolledStudent?.uniqueId}/enrollment/online/success`
+          `/sensec/students/${enrolledStudent?.uniqueId}/enrollment/online/success`
         );
       }, 7000);
     }
@@ -229,9 +264,15 @@ export function StudentPlacementVerification() {
       setTimeout(() => {
         localStorage.setItem("indexNumber", formData?.jhsIndexNo);
         dispatch(resetPlacementState()); // Reset Verification State
-        navigate(
-          `/sensec/students/enrollment/online/${foundPlacementStudent?.jhsIndexNo}`
-        );
+        if (adminCurrentAction) {
+          navigate(
+            `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/new_enrollment`
+          );
+        } else {
+          navigate(
+            `/sensec/students/enrollment/online/${foundPlacementStudent?.jhsIndexNo}`
+          );
+        }
       }, 9000);
     }
   }, [
@@ -243,6 +284,9 @@ export function StudentPlacementVerification() {
     successMessage,
     loadingComplete,
     foundPlacementStudent,
+    adminCurrentAction,
+    adminCurrentLink,
+    authUser,
   ]);
 
   // Fetch data
@@ -251,131 +295,156 @@ export function StudentPlacementVerification() {
   }, [formData, dispatch]);
 
   return (
-    <ContainerBox component="div" id="placementVerificationWrap">
-      <h1 style={{ textAlign: "center", color: "#696969", fontSize: "1.5rem" }}>
-        Student Placement Verification
-      </h1>
-      <Box
-        component="div"
-        id="placementFormWrap"
-        sx={{
-          maxWidth: 600,
-          mx: "auto",
-          mt: 3,
-          p: { xs: 1, sm: 2 },
-          border: "1px solid #ccc",
-          borderRadius: "8px",
-          backgroundColor: "#f9f9f9",
-        }}
-      >
+    <>
+      {/* Current dashboard title */}
+      {adminCurrentAction && adminCurrentLink && (
         <Box
-          component="form"
-          autoComplete="off"
-          onSubmit={handleVerification}
-          style={{
-            // backgroundColor: "red",
-            padding: ".5rem ",
+          component={"div"}
+          id="adminDashboardHeaderWrap"
+          sx={{
+            position: "sticky",
+            top: 0,
+            backgroundColor: "#fff",
+            padding: 0,
+            // zIndex: 1,
+          }}
+          minHeight={"4rem"}
+        >
+          <h1 className="dashAction">
+            {adminCurrentAction?.replace(/_/g, "-")} /{" "}
+            <span>{adminCurrentLink?.replace(/_/g, " ")}</span>
+          </h1>
+        </Box>
+      )}
+      <ContainerBox component="div" id="placementVerificationWrap">
+        <h1
+          style={{ textAlign: "center", color: "#696969", fontSize: "1.5rem" }}
+        >
+          Student Placement Verification
+        </h1>
+        <Box
+          component="div"
+          id="placementFormWrap"
+          sx={{
+            maxWidth: 600,
+            mx: "auto",
+            mt: 3,
+            p: { xs: 1, sm: 2 },
+            border: "1px solid #ccc",
+            borderRadius: "8px",
+            backgroundColor: "#f9f9f9",
           }}
         >
-          <Typography
-            variant="h6"
-            component={"h3"}
-            mb={3}
-            color="#696969"
-            fontSize={"1.1rem"}
-            lineHeight={"1.2em"}
-            letterSpacing={"1px"}
-            textAlign={"center"}
+          <Box
+            component="form"
+            autoComplete="off"
+            onSubmit={handleVerification}
+            style={{
+              // backgroundColor: "red",
+              padding: ".5rem ",
+            }}
           >
-            Kindly verify your placement to begin your enrollment.
-          </Typography>
-          <Grid container spacing={3}>
-            <Grid item xs={12} sm={6}>
-              <CustomTextField
-                fullWidth
-                label="JHS Index No."
-                name="jhsIndexNo"
-                value={formData?.jhsIndexNo}
-                onChange={handleChange}
-                required
-                error={jhsIndexNoError}
-                helperText={
-                  jhsIndexNoError ? "Invalid student index number!" : ""
-                }
-                sx={{
-                  "& .MuiInputLabel-asterisk": {
-                    color:
-                      formData?.jhsIndexNo && !jhsIndexNoError
-                        ? "green"
-                        : "red", // Change the asterisk color to red
-                  },
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <CustomTextField
-                fullWidth
-                label="Year Graduated [ JHS ]"
-                name="yearGraduated"
-                value={formData?.yearGraduated}
-                onChange={handleChange}
-                required
-                error={yearGraduatedError}
-                helperText={
-                  yearGraduatedError ? "Year graduated not correct!" : ""
-                }
-                sx={{
-                  "& .MuiInputLabel-asterisk": {
-                    color:
-                      formData?.yearGraduated && !yearGraduatedError
-                        ? "green"
-                        : "red", // Change the asterisk color to red
-                  },
-                }}
-              />
-            </Grid>
-            {/* Submit Button */}
-            <Grid item xs={12}>
-              <Button
-                variant="contained"
-                color="success"
-                type="submit"
-                fullWidth
-                sx={{
-                  height: "3.5rem",
-                  letterSpacing: "1px",
-                  textTransform: "capitalize",
-                  fontSize: "1em",
-                }}
-              >
-                {loadingComplete === false && (
-                  <LoadingProgress color={"#fff"} size={"1.5rem"} />
-                )}
-                {loadingComplete &&
-                  isVerified &&
-                  !hasEnrolled &&
-                  "Placement Already Verified"}
-                {loadingComplete &&
-                  isVerified &&
-                  hasEnrolled &&
-                  "Enrolled Already"}
-                {loadingComplete &&
-                  !isVerified &&
-                  !hasEnrolled &&
-                  !redirecting &&
-                  verifyStatus === "success" && (
-                    <>
-                      <span>Successful</span> <TaskAlt />
-                    </>
+            <Typography
+              variant="h6"
+              component={"h3"}
+              mb={3}
+              color="#696969"
+              fontSize={"1.1rem"}
+              lineHeight={"1.2em"}
+              letterSpacing={"1px"}
+              textAlign={"center"}
+            >
+              Kindly verify your placement to begin your enrollment.
+            </Typography>
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={6}>
+                <CustomTextField
+                  fullWidth
+                  label="JHS Index No."
+                  name="jhsIndexNo"
+                  value={formData?.jhsIndexNo}
+                  onChange={handleChange}
+                  required
+                  error={jhsIndexNoError}
+                  helperText={
+                    jhsIndexNoError ? "Invalid student index number!" : ""
+                  }
+                  sx={{
+                    "& .MuiInputLabel-asterisk": {
+                      color:
+                        formData?.jhsIndexNo && !jhsIndexNoError
+                          ? "green"
+                          : "red", // Change the asterisk color to red
+                    },
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <CustomTextField
+                  fullWidth
+                  label="Year Graduated [ JHS ]"
+                  name="yearGraduated"
+                  value={formData?.yearGraduated}
+                  onChange={handleChange}
+                  required
+                  error={yearGraduatedError}
+                  helperText={
+                    yearGraduatedError ? "Year graduated not correct!" : ""
+                  }
+                  sx={{
+                    "& .MuiInputLabel-asterisk": {
+                      color:
+                        formData?.yearGraduated && !yearGraduatedError
+                          ? "green"
+                          : "red", // Change the asterisk color to red
+                    },
+                  }}
+                />
+              </Grid>
+              {/* Submit Button */}
+              <Grid item xs={12}>
+                <Button
+                  variant="contained"
+                  color="success"
+                  type="submit"
+                  fullWidth
+                  sx={{
+                    height: "3.5rem",
+                    letterSpacing: "1px",
+                    textTransform: "capitalize",
+                    fontSize: "1em",
+                  }}
+                >
+                  {loadingComplete === false && (
+                    <LoadingProgress color={"#fff"} size={"1.5rem"} />
                   )}
-                {loadingComplete === null && "Verify Placement"}
-                {redirecting && <Redirection color={"#fff"} size={"1.5rem"} />}
-              </Button>
+                  {loadingComplete &&
+                    isVerified &&
+                    !hasEnrolled &&
+                    "Placement Already Verified"}
+                  {loadingComplete &&
+                    isVerified &&
+                    hasEnrolled &&
+                    "Enrolled Already"}
+                  {loadingComplete &&
+                    !isVerified &&
+                    !hasEnrolled &&
+                    !redirecting &&
+                    verifyStatus === "success" && (
+                      <>
+                        <span>Successful</span> <TaskAlt />
+                      </>
+                    )}
+                  {loadingComplete === null && "Verify Placement"}
+                  {redirecting && (
+                    <Redirection color={"#fff"} size={"1.5rem"} />
+                  )}
+                </Button>
+              </Grid>
             </Grid>
-          </Grid>
+          </Box>
         </Box>
-      </Box>
-      {/* <Button
+        {/* <Button
         variant="contained"
         size="sm"
         sx={{ bgcolor: "green" }}
@@ -383,6 +452,7 @@ export function StudentPlacementVerification() {
       >
         Enroll
       </Button> */}
-    </ContainerBox>
+      </ContainerBox>
+    </>
   );
 }
