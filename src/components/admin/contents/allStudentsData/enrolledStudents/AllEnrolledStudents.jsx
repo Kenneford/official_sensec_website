@@ -1,44 +1,30 @@
 import React, { useEffect, useState } from "react";
-import "../allStudentsData.scss";
+// import "../allStudentsData.scss";
 // import SearchIcon from "@mui/icons-material/Search";
 import DataTable from "react-data-table-component";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
 // import {
 //   promotingMultipleStudentsToLevel200,
 //   promotingToLevel200,
 //   promotingToLevel300,
 // } from "../../../../features/student/promotionSlice";
-import { HashLink } from "react-router-hash-link";
 import { customUserTableStyle } from "../../../../../usersInfoDataFormat/usersInfoTableStyle";
 import { Box, Grid } from "@mui/material";
-import NewEmploymentModal from "../../../../actionModal/ActionModal";
 import { AllStudentsPageQuickLinks } from "../../../../../linksFormat/LinksFormat";
 import ActionModal from "../../../../actionModal/ActionModal";
 import { getAuthUser } from "../../../../../features/auth/authSlice";
 import { FetchAllApprovedStudents } from "../../../../../data/students/FetchAllStudents";
 import { studentsColumn } from "../../../../../usersInfoDataFormat/UsersInfoDataFormat";
+import SearchFilter from "../../../../searchForm/SearchFilter";
+import { FetchAllClassLevels } from "../../../../../data/class/FetchClassLevel";
 
 export function AllEnrolledStudents() {
   const authAdmin = useSelector(getAuthUser);
   const actionBtns = AllStudentsPageQuickLinks();
   const approvedStudents = FetchAllApprovedStudents();
   //Get state data
-  const userInfo = {};
-  const allStudents = [];
-  console.log(allStudents);
-  const allClassLevels = [
-    {
-      name: "Level 100",
-    },
-    {
-      name: "Level 200",
-    },
-    {
-      name: "Level 300",
-    },
-  ];
+  const allClassLevels = FetchAllClassLevels();
   console.log(allClassLevels);
 
   const dispatch = useDispatch();
@@ -79,7 +65,7 @@ export function AllEnrolledStudents() {
     useState("");
 
   //Find selected student to approve/promote/reject
-  const foundStudent = allStudents?.find(
+  const foundStudent = approvedStudents?.find(
     (std) => std?._id === currentStudentId
   );
 
@@ -93,11 +79,10 @@ export function AllEnrolledStudents() {
   );
 
   console.log(multiStudents);
-  console.log(allStudents);
   console.log(allClassLevels);
 
   const studentDataFormat = studentsColumn(
-    userInfo,
+    authAdmin,
     foundStudent,
     adminCurrentAction,
     adminCurrentLink,
@@ -118,12 +103,13 @@ export function AllEnrolledStudents() {
     setMultiStudents(state.selectedRows);
   };
 
-  const handleNewEmployment = () => {
+  const handleNewEnrollment = () => {
     setRedirecting(true);
     setUncompletedEmploymentTask("You're being redirected");
     setTimeout(() => {
       navigate(
-        `/sensec/admin/${adminCurrentAction}/${adminCurrentLink}/new_employment/personal_info`
+        `/sensec/users/${authAdmin?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/new_enrollment/placement_verification`
+        // `/sensec/users/${authAdmin?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/new_enrollment`
       );
     }, 3000);
   };
@@ -295,7 +281,7 @@ export function AllEnrolledStudents() {
   //   dispatch,
   // ]);
 
-  const allStd = `All Enrolled Students / Total = ${allStudents?.length}`;
+  const allStd = `All Enrolled Students / Total = ${approvedStudents?.length}`;
   return (
     <>
       {/* Current dashboard title */}
@@ -316,20 +302,20 @@ export function AllEnrolledStudents() {
           <span>{adminCurrentLink?.replace(/_/g, " ")}</span>
         </h1>
         {/* Main search bar */}
-        {/* <Box sx={{ display: { xs: "none", sm: "block" } }}>
-          <SearchForm
-            value={searchedBlog}
-            onChange={handleOnChange}
+        <Box sx={{ display: { xs: "none", sm: "block" } }}>
+          <SearchFilter
+            value={searchStudent}
+            onChange={setSearchStudent}
             placeholder={"Search"}
           />
-        </Box> */}
+        </Box>
       </Box>
       <Box
         className="allStudentsData"
-        id="allStudents"
+        // id="allStudents"
         padding={{ xs: " 1rem .5rem", sm: " 1rem" }}
       >
-        <Box className="searchDetails">
+        <Box className="searchDetails" justifyItems={"flex-start"}>
           {filteredStudents?.length === 0 && searchStudent !== "" && (
             <p className="searchInfo">
               We couldn't find any matches for "{searchStudent}"
@@ -353,7 +339,9 @@ export function AllEnrolledStudents() {
             </p>
           )}
           {!searchStudent && (
-            <p className="searchInfo">Total Students = {allStudents?.length}</p>
+            <p className="searchInfo">
+              Total Students = {approvedStudents?.length}
+            </p>
           )}
         </Box>
         <Box>
@@ -409,7 +397,7 @@ export function AllEnrolledStudents() {
             <ActionModal
               open={openModal}
               onClose={() => setOpenModal(false)}
-              handleNewEmployment={handleNewEmployment}
+              handleNewEnrollment={handleNewEnrollment}
               redirecting={redirecting}
               uncompletedEmploymentTask={uncompletedEmploymentTask}
               question={"Are you sure you would like to enroll a new student?"}

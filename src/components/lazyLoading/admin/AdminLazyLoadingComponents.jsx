@@ -1,5 +1,4 @@
 import PageLoading from "../../pageLoading/PageLoading";
-// import AdminSidebar from "../../sidebar/admin/AdminSidebar";
 import lazyWithSuspense from "../LazyLoading";
 
 // Admin Sidebar
@@ -360,6 +359,16 @@ export const PendingStudents = lazyWithSuspense(
     }),
   <PageLoading />,
   "PendingStudentsComponent"
+);
+export const ClassLevelProgrammeStudents = lazyWithSuspense(
+  () =>
+    import(
+      "../../admin/contents/allStudentsData/programmeStudents/ClassLevelProgrammeStudents"
+    ).then((module) => {
+      return { default: module.ClassLevelProgrammeStudents };
+    }),
+  <PageLoading />,
+  "ClassLevelProgrammeStudentsComponent"
 );
 export const ClassLevelStudents = lazyWithSuspense(
   () =>

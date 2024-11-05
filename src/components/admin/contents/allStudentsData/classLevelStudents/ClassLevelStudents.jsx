@@ -1,5 +1,5 @@
 import "../allStudentsData.scss";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,6 +11,14 @@ import { Box, Grid } from "@mui/material";
 import ActionModal from "../../../../actionModal/ActionModal";
 import { AllStudentsPageQuickLinks } from "../../../../../linksFormat/LinksFormat";
 import { getAuthUser } from "../../../../../features/auth/authSlice";
+import {
+  FetchAllApprovedStudents,
+  FetchApprovedClassLevelStudents,
+} from "../../../../../data/students/FetchAllStudents";
+import { FetchAllClassLevels } from "../../../../../data/class/FetchClassLevel";
+import { studentsColumn } from "../../../../../usersInfoDataFormat/UsersInfoDataFormat";
+import SearchFilter from "../../../../searchForm/SearchFilter";
+import { FetchAllClassSections } from "../../../../../data/class/FetchClassSections";
 
 export function ClassLevelStudents() {
   const authAdmin = useSelector(getAuthUser);
@@ -52,27 +60,19 @@ export function ClassLevelStudents() {
   console.log(adminCurrentAction, adminCurrentLink);
   console.log(class_level, program);
   const [openModal, setOpenModal] = useState(false);
-  const [redirecting, setRedirecting] = useState("");
+  const [redirecting, setRedirecting] = useState(false);
+  const [classLevel, setClassLevel] = useState("");
   const [uncompletedEmploymentTask, setUncompletedEmploymentTask] =
     useState("");
-  const userInfo = {};
-  const allClassLevels = [
-    {
-      name: "Level 100",
-    },
-    {
-      name: "Level 200",
-    },
-    {
-      name: "Level 300",
-    },
-  ];
-  const allClassLevelSections = [];
+  const allClassLevels = FetchAllClassLevels();
+  const approvedStudents = FetchAllApprovedStudents();
+  const classLevelStudents = FetchApprovedClassLevelStudents(classLevel?._id);
+  const allClassLevelSections = FetchAllClassSections();
   const singleClassLevel = {
     students: [],
   };
 
-  console.log(singleClassLevel);
+  console.log(classLevelStudents);
   console.log(allClassLevelSections);
 
   const [currentStudentId, setCurrentStudentId] = useState("");
@@ -81,44 +81,44 @@ export function ClassLevelStudents() {
   const [level300loadingComplete, setLevel300LoadingComplete] = useState(null);
   const [searchStudent, setSearchStudent] = useState("");
 
-  const filteredStudents = singleClassLevel?.students?.filter(
+  const filteredStudents = classLevelStudents?.filter(
     (std) =>
       std?.personalInfo?.firstName?.toLowerCase()?.includes(searchStudent) ||
       std?.personalInfo?.firstName?.includes(searchStudent) ||
       std?.personalInfo?.lastName?.toLowerCase()?.includes(searchStudent) ||
       std?.personalInfo?.lastName?.includes(searchStudent)
   );
-  const foundStudent = singleClassLevel?.students?.find(
+  const foundStudent = classLevelStudents?.find(
     (std) => std._id === currentStudentId
   );
   console.log(filteredStudents);
 
-  const handleNewEmployment = () => {
+  const handleNewEnrollment = () => {
     setRedirecting(true);
     setUncompletedEmploymentTask("You're being redirected");
     setTimeout(() => {
       navigate(
-        `/sensec/users/${authAdmin?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/new_employment/personal_info`
+        `/sensec/users/${authAdmin?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/new_enrollment/placement_verification`
       );
     }, 3000);
   };
-  // const studentDataFormat = studentsColumn(
-  //   userInfo,
-  //   foundStudent,
-  //   adminCurrentAction,
-  //   adminCurrentLink,
-  //   setCurrentStudentId,
-  //   setLevel100LoadingComplete,
-  //   setLevel200LoadingComplete,
-  //   setLevel300LoadingComplete,
-  //   level100loadingComplete,
-  //   level200loadingComplete,
-  //   level300loadingComplete,
-  //   level100PromotionStatus,
-  //   level200PromotionStatus,
-  //   level300PromotionStatus,
-  //   dispatch
-  // );
+  const studentDataFormat = studentsColumn(
+    authAdmin,
+    foundStudent,
+    adminCurrentAction,
+    adminCurrentLink,
+    setCurrentStudentId,
+    setLevel100LoadingComplete,
+    setLevel200LoadingComplete,
+    setLevel300LoadingComplete,
+    level100loadingComplete,
+    level200loadingComplete,
+    level300loadingComplete,
+    // level100PromotionStatus,
+    // level200PromotionStatus,
+    // level300PromotionStatus,
+    dispatch
+  );
 
   //Student Promotion Level 100 Status Check
   // useEffect(() => {
@@ -248,11 +248,19 @@ export function ClassLevelStudents() {
   //   dispatch,
   // ]);
 
+  useLayoutEffect(() => {
+    const classLevelFound = allClassLevels?.find(
+      (cLevel) => cLevel?.name === class_level?.replace(/_/g, " ")
+    );
+    setClassLevel(classLevelFound);
+  }, [allClassLevels, class_level]);
+
   const currentClassLevelStd = `${class_level?.replace(
     /_/g,
     " "
   )} Enrolled Students / Total = 
-              ${singleClassLevel?.students?.length}`;
+              ${classLevelStudents?.length}`;
+
   return (
     <>
       {/* Current dashboard title */}
@@ -273,13 +281,13 @@ export function ClassLevelStudents() {
           <span>{adminCurrentLink?.replace(/_/g, " ")}</span>
         </h1>
         {/* Main search bar */}
-        {/* <Box sx={{ display: { xs: "none", sm: "block" } }}>
-          <SearchForm
-            value={searchedBlog}
-            onChange={handleOnChange}
+        <Box sx={{ display: { xs: "none", sm: "block" } }}>
+          <SearchFilter
+            value={searchStudent}
+            onChange={setSearchStudent}
             placeholder={"Search"}
           />
-        </Box> */}
+        </Box>
       </Box>
       <Box
         className="allStudentsData"
@@ -311,7 +319,7 @@ export function ClassLevelStudents() {
           )}
           {!searchStudent && (
             <p className="searchInfo">
-              Total Students = {singleClassLevel?.sortedStudents?.length}
+              Total Students = {approvedStudents?.length}
             </p>
           )}
         </Box>
@@ -329,12 +337,7 @@ export function ClassLevelStudents() {
                 item
                 xs={2.9}
                 sm={2}
-                // md={2}
-                // lg={2}
                 key={action.label}
-                // minWidth={{ xs: "8rem", sm: "10rem" }}
-                // maxWidth={{ xs: "10rem", sm: "15rem" }}
-                // minWidth={"15rem"}
                 onClick={() => {
                   // setCurrentActionBtn(action.label);
                   if (action.label === "Add New Student +") {
@@ -368,7 +371,7 @@ export function ClassLevelStudents() {
             <ActionModal
               open={openModal}
               onClose={() => setOpenModal(false)}
-              handleNewEmployment={handleNewEmployment}
+              handleNewEnrollment={handleNewEnrollment}
               redirecting={redirecting}
               uncompletedEmploymentTask={uncompletedEmploymentTask}
               question={"Are you sure you would like to enroll a new student?"}
@@ -384,7 +387,7 @@ export function ClassLevelStudents() {
             m={"0 auto"}
             className="classLevelStudents"
           >
-            {allClassLevels.map((cLevel) => (
+            {allClassLevels?.map((cLevel) => (
               <Grid
                 component={"span"}
                 item
@@ -412,10 +415,36 @@ export function ClassLevelStudents() {
             ))}
           </Grid>
         </Box>
-        <Box>
+        <div className="classLeveSections">
+          <div className="levelSections">
+            {allClassLevelSections?.map((cLevel) => (
+              <span key={cLevel?._id}>
+                {cLevel?.classLevelName?.replace(/ /g, "_") === class_level && (
+                  <HashLink
+                    className={
+                      cLevel?.classLevelName?.replace(/ /g, "_") ===
+                        class_level && cLevel?.sectionName === program
+                        ? "backgroundGreen"
+                        : "backgroundYellow"
+                    }
+                    to={`/sensec/users/${
+                      authAdmin?.uniqueId
+                    }/admin/${adminCurrentAction}/${adminCurrentLink}/${student_category}/${cLevel?.classLevelName?.replace(
+                      / /g,
+                      "_"
+                    )}/${cLevel.sectionName?.replace(/ /g, "_")}`}
+                  >
+                    {cLevel?.label}
+                  </HashLink>
+                )}
+              </span>
+            ))}
+          </div>
+        </div>
+        <Box className="studentDataTable">
           <DataTable
             title={currentClassLevelStd}
-            // columns={studentDataFormat}
+            columns={studentDataFormat}
             data={filteredStudents}
             customStyles={customUserTableStyle}
             pagination

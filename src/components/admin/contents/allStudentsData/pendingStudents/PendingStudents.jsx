@@ -8,12 +8,20 @@ import { Box, Grid } from "@mui/material";
 import ActionModal from "../../../../actionModal/ActionModal";
 import { AllStudentsPageQuickLinks } from "../../../../../linksFormat/LinksFormat";
 import { useDispatch, useSelector } from "react-redux";
-import { getAuthUser } from "../../../../../features/auth/authSlice";
+import {
+  fetchAllUsers,
+  getAuthUser,
+} from "../../../../../features/auth/authSlice";
+import { FetchAllPendingStudents } from "../../../../../data/students/FetchAllStudents";
+import { FetchAllClassLevels } from "../../../../../data/class/FetchClassLevel";
+import { pendingStudentsColumn } from "../../../../../usersInfoDataFormat/UsersInfoDataFormat";
+import { toast } from "react-toastify";
 // import { toast } from "react-toastify";
 
 export function PendingStudents() {
   const authAdmin = useSelector(getAuthUser);
   const actionBtns = AllStudentsPageQuickLinks();
+  const allPendingStudents = FetchAllPendingStudents();
   const navigate = useNavigate();
   const {
     class_level,
@@ -21,17 +29,13 @@ export function PendingStudents() {
     adminCurrentAction,
     student_category,
   } = useParams();
-  // const {
-  //   approveEnrollmentStatus,
-  //   approvedEnrollmentSuccessMessage,
-  //   approveEnrollmentError,
-  //   // approveMultiEnrollmentStatus,
-  //   // approveMultiEnrollmentError,
-  //   // approvedMultiEnrollmentSuccessMessage,
-  //   rejectEnrollmentStatus,
-  //   rejectedEnrollmentSuccessMessage,
-  //   rejectEnrollmentError,
-  // } = useSelector((state) => state.promotion);
+  const {
+    enrollmentApprovalStatus,
+    successMessage,
+    error,
+    // approveMultiEnrollmentStatus,
+    rejectEnrollmentStatus,
+  } = useSelector((state) => state.student);
   const [searchStudent, setSearchStudent] = useState("");
   const [loadingComplete, setLoadingComplete] = useState(null);
   const [openApproveEnrollmentModal, setOpenApproveEnrollmentModal] =
@@ -44,27 +48,15 @@ export function PendingStudents() {
   const [redirecting, setRedirecting] = useState(false);
   const [uncompletedEmploymentTask, setUncompletedEmploymentTask] =
     useState("");
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const userInfo = {};
 
-  const allPendingStudents = [];
-  const allClassLevels = [
-    {
-      name: "Level 100",
-    },
-    {
-      name: "Level 200",
-    },
-    {
-      name: "Level 300",
-    },
-  ];
+  const allClassLevels = FetchAllClassLevels();
 
   //Filter Students During Search
   const pendingStudents = allPendingStudents?.filter(
     (std) =>
-      (std &&
-        std?.personalInfo?.firstName?.toLowerCase()?.includes(searchStudent)) ||
+      std?.personalInfo?.firstName?.toLowerCase()?.includes(searchStudent) ||
       std?.personalInfo?.firstName?.includes(searchStudent) ||
       std?.personalInfo?.lastName?.toLowerCase()?.includes(searchStudent) ||
       (std?.personalInfo?.lastName?.includes(searchStudent) && std)
@@ -73,42 +65,44 @@ export function PendingStudents() {
   const foundStudent = allPendingStudents?.find(
     (std) => std._id === currentStudent
   );
+  console.log(foundStudent);
 
   const studentToReject = allPendingStudents?.find(
     (std) => std._id === rejectStudent
   );
+  console.log(studentToReject);
 
-  // const pendingStudentsDataFormat = pendingStudentsColumn(
-  //   setCurrentStudent,
-  //   loadingComplete,
-  //   setLoadingComplete,
-  //   toast,
-  //   dispatch,
-  //   userInfo,
-  //   foundStudent,
-  //   approveEnrollmentStatus,
-  //   openApproveEnrollmentModal,
-  //   setOpenApproveEnrollmentModal,
-  //   setRejectStudent,
-  //   studentToReject,
-  //   openRejectModal,
-  //   setOpenRejectModal,
-  //   rejectEnrollmentStatus,
-  //   adminCurrentAction,
-  //   adminCurrentLink
-  // );
+  const pendingStudentsDataFormat = pendingStudentsColumn(
+    authAdmin,
+    setCurrentStudent,
+    loadingComplete,
+    setLoadingComplete,
+    toast,
+    dispatch,
+    foundStudent,
+    enrollmentApprovalStatus,
+    openApproveEnrollmentModal,
+    setOpenApproveEnrollmentModal,
+    setRejectStudent,
+    studentToReject,
+    openRejectModal,
+    setOpenRejectModal,
+    rejectEnrollmentStatus,
+    adminCurrentAction,
+    adminCurrentLink
+  );
 
   //THIS REMOVES THE HASHLINK TAG FROM THE URL
   if (window.location.hash) {
     window.history.replaceState("", document.title, window.location.pathname);
   }
 
-  const handleNewEmployment = () => {
+  const handleNewEnrollment = () => {
     setRedirecting(true);
     setUncompletedEmploymentTask("You're being redirected");
     setTimeout(() => {
       navigate(
-        `/sensec/users/${authAdmin?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/new_employment/personal_info`
+        `/sensec/users/${authAdmin?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/new_enrollment/placement_verification`
       );
     }, 3000);
   };
@@ -117,89 +111,87 @@ export function PendingStudents() {
   };
 
   //Student Enrolment Approval Status Check
-  // useEffect(() => {
-  //   if (foundStudent) {
-  //     if (approveEnrollmentStatus === "pending") {
-  //       setLoadingComplete(false);
-  //       setTimeout(() => {
-  //         setLoadingComplete(true);
-  //       }, 3000);
-  //     }
-  //     if (approveEnrollmentStatus === "rejected") {
-  //       setTimeout(() => {
-  //         setLoadingComplete(null);
-  //       }, 3000);
-  //       setTimeout(() => {
-  //         approveEnrollmentError?.errorMessage?.message?.map((err) =>
-  //           toast.error(err, {
-  //             position: "top-right",
-  //             theme: "light",
-  //             // toastId: successId,
-  //           })
-  //         );
-  //       }, 2000);
-  //       return;
-  //     }
-  //     if (loadingComplete && approveEnrollmentStatus === "success") {
-  //       setTimeout(() => {
-  //         toast.success(approvedEnrollmentSuccessMessage, {
-  //           position: "top-right",
-  //           theme: "dark",
-  //         });
-  //       }, 1000);
-  //       setTimeout(() => {
-  //         //Fetch all users again when successfully approved
-  //         dispatch(fetchAllUsers());
-  //       }, 6000);
-  //     }
-  //   }
-  //   if (studentToReject) {
-  //     if (rejectEnrollmentStatus === "pending") {
-  //       setLoadingComplete(false);
-  //       setTimeout(() => {
-  //         setLoadingComplete(true);
-  //       }, 3000);
-  //     }
-  //     if (rejectEnrollmentStatus === "rejected") {
-  //       setTimeout(() => {
-  //         setLoadingComplete(null);
-  //       }, 3000);
-  //       setTimeout(() => {
-  //         rejectEnrollmentError?.errorMessage?.message?.map((err) =>
-  //           toast.error(err, {
-  //             position: "top-right",
-  //             theme: "light",
-  //             // toastId: successId,
-  //           })
-  //         );
-  //       }, 2000);
-  //       return;
-  //     }
-  //     if (loadingComplete && rejectEnrollmentStatus === "success") {
-  //       setTimeout(() => {
-  //         toast.success(rejectedEnrollmentSuccessMessage, {
-  //           position: "top-right",
-  //           theme: "dark",
-  //         });
-  //       }, 1000);
-  //       setTimeout(() => {
-  //         //Fetch all users again when successfully approved
-  //         dispatch(fetchAllUsers());
-  //       }, 6000);
-  //     }
-  //   }
-  // }, [
-  //   approveEnrollmentStatus,
-  //   approvedEnrollmentSuccessMessage,
-  //   approveEnrollmentError,
-  //   dispatch,
-  //   loadingComplete,
-  //   foundStudent,
-  //   rejectEnrollmentStatus,
-  //   rejectEnrollmentError,
-  //   rejectedEnrollmentSuccessMessage,
-  //   studentToReject,
-  // ]);
+  useEffect(() => {
+    if (foundStudent) {
+      if (enrollmentApprovalStatus === "pending") {
+        setLoadingComplete(false);
+        setTimeout(() => {
+          setLoadingComplete(true);
+        }, 3000);
+      }
+      if (enrollmentApprovalStatus === "rejected") {
+        setTimeout(() => {
+          setLoadingComplete(null);
+        }, 3000);
+        setTimeout(() => {
+          error?.errorMessage?.message?.map((err) =>
+            toast.error(err, {
+              position: "top-right",
+              theme: "light",
+              // toastId: successId,
+            })
+          );
+        }, 2000);
+        return;
+      }
+      if (loadingComplete && enrollmentApprovalStatus === "success") {
+        setTimeout(() => {
+          toast.success(successMessage, {
+            position: "top-right",
+            theme: "dark",
+          });
+        }, 1000);
+        setTimeout(() => {
+          //Fetch all users again when successfully approved
+          dispatch(fetchAllUsers());
+        }, 6000);
+      }
+    }
+    if (studentToReject) {
+      if (rejectEnrollmentStatus === "pending") {
+        setLoadingComplete(false);
+        setTimeout(() => {
+          setLoadingComplete(true);
+        }, 3000);
+      }
+      if (rejectEnrollmentStatus === "rejected") {
+        setTimeout(() => {
+          setLoadingComplete(null);
+        }, 3000);
+        setTimeout(() => {
+          error?.errorMessage?.message?.map((err) =>
+            toast.error(err, {
+              position: "top-right",
+              theme: "light",
+              // toastId: successId,
+            })
+          );
+        }, 2000);
+        return;
+      }
+      if (loadingComplete && rejectEnrollmentStatus === "success") {
+        setTimeout(() => {
+          toast.success(successMessage, {
+            position: "top-right",
+            theme: "dark",
+          });
+        }, 1000);
+        setTimeout(() => {
+          //Fetch all users again when successfully approved
+          dispatch(fetchAllUsers());
+        }, 6000);
+      }
+    }
+  }, [
+    enrollmentApprovalStatus,
+    successMessage,
+    error,
+    dispatch,
+    loadingComplete,
+    foundStudent,
+    rejectEnrollmentStatus,
+    studentToReject,
+  ]);
 
   const title = `All Pending Students / Total = ${allPendingStudents?.length}`;
 
@@ -318,7 +310,7 @@ export function PendingStudents() {
             <ActionModal
               open={openModal}
               onClose={() => setOpenModal(false)}
-              handleNewEmployment={handleNewEmployment}
+              handleNewEnrollment={handleNewEnrollment}
               redirecting={redirecting}
               uncompletedEmploymentTask={uncompletedEmploymentTask}
               question={"Are you sure you would like to enroll a new student?"}
@@ -362,10 +354,10 @@ export function PendingStudents() {
             ))}
           </Grid>
         </Box>
-        <Box>
+        <Box className="studentDataTable">
           <DataTable
             title={title}
-            // columns={pendingStudentsDataFormat}
+            columns={pendingStudentsDataFormat}
             data={pendingStudents}
             customStyles={customUserTableStyle}
             pagination
