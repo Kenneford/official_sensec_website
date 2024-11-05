@@ -35,6 +35,7 @@ export function ParentForm() {
   const [redirecting, setRedirecting] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { adminCurrentAction, adminCurrentLink } = useParams();
 
   const [newParent, setNewParent] = useState({
     studentId: studentId,
@@ -162,167 +163,192 @@ export function ParentForm() {
   //   }, [navigate, singleStudentFound, studentId]);
 
   return (
-    <ContainerBox
-      component="div"
-      id="parentWrap"
-      sx={{
-        px: { xs: ".5rem", sm: "auto" },
-      }}
-    >
-      <h1 style={{ textAlign: "center", color: "#696969", fontSize: "1.5rem" }}>
-        Student Parent Form
-      </h1>
-      <Box
+    <>
+      {/* Current dashboard title */}
+      {adminCurrentAction && adminCurrentLink && (
+        <Box
+          component={"div"}
+          id="adminDashboardHeaderWrap"
+          sx={{
+            position: "sticky",
+            top: 0,
+            backgroundColor: "#fff",
+            padding: 0,
+            // zIndex: 1,
+          }}
+          minHeight={"4rem"}
+        >
+          <h1 className="dashAction">
+            {adminCurrentAction?.replace(/_/g, "-")} /{" "}
+            <span>{adminCurrentLink?.replace(/_/g, " ")}</span>
+          </h1>
+        </Box>
+      )}
+      <ContainerBox
         component="div"
-        id="parentFormWrap"
+        id="parentWrap"
         sx={{
-          maxWidth: 600,
-          mx: { xs: "0", sm: "auto" },
-          mt: 3,
-          p: { xs: 1, sm: 2 },
-          border: "1px solid #ccc",
-          borderRadius: "8px",
-          backgroundColor: "#f9f9f9",
+          px: { xs: ".5rem", sm: "auto" },
         }}
       >
+        <h1
+          style={{ textAlign: "center", color: "#696969", fontSize: "1.5rem" }}
+        >
+          Student Parent Form
+        </h1>
         <Box
-          component="form"
-          autoComplete="off"
-          onSubmit={handleParent}
-          style={{
-            // backgroundColor: "red",
-            padding: ".5rem ",
+          component="div"
+          id="parentFormWrap"
+          sx={{
+            maxWidth: 600,
+            mx: { xs: "0", sm: "auto" },
+            mt: 3,
+            p: { xs: 1, sm: 2 },
+            border: "1px solid #ccc",
+            borderRadius: "8px",
+            backgroundColor: "#f9f9f9",
           }}
         >
-          <Typography
-            variant="h6"
-            component={"h3"}
-            mb={3}
-            color="#696969"
-            fontSize={"1.1rem"}
-            lineHeight={"1.2em"}
-            letterSpacing={"1px"}
-            // textAlign={"center"}
+          <Box
+            component="form"
+            autoComplete="off"
+            onSubmit={handleParent}
+            style={{
+              // backgroundColor: "red",
+              padding: ".5rem ",
+            }}
           >
-            Kindly fill all required fields in order to add your parent data.
-            Click{" "}
-            <a
-              href={`/sensec/students/enrollment/online/${studentId}/guardian/add`}
+            <Typography
+              variant="h6"
+              component={"h3"}
+              mb={3}
+              color="#696969"
+              fontSize={"1.1rem"}
+              lineHeight={"1.2em"}
+              letterSpacing={"1px"}
+              // textAlign={"center"}
             >
-              here
-            </a>{" "}
-            to add guardian instead!
-          </Typography>
-          <Grid container spacing={3}>
-            {/* Father */}
-            <Grid item xs={12} sm={6}>
-              <CustomTextField
-                fullWidth
-                label="Father's Name"
-                name="fatherName"
-                value={newParent?.fatherName}
-                onChange={handleInputValues}
-                required
-              />
-            </Grid>
-            {/* Mother */}
-            <Grid item xs={12} sm={6}>
-              <CustomTextField
-                fullWidth
-                label="Mother's Name"
-                name="motherName"
-                value={newParent?.motherName}
-                onChange={handleInputValues}
-                required
-              />
-            </Grid>
-            {/* Father Occupation */}
-            <Grid item xs={12} sm={6}>
-              <CustomTextField
-                fullWidth
-                label="Father's Occupation"
-                name="fathersOccupation"
-                value={newParent?.fathersOccupation}
-                onChange={handleInputValues}
-                required
-              />
-            </Grid>
-            {/* Mother's Occupation */}
-            <Grid item xs={12} sm={6}>
-              <CustomTextField
-                fullWidth
-                label="Mother's Occupation"
-                name="mothersOccupation"
-                value={newParent?.mothersOccupation}
-                onChange={handleInputValues}
-                required
-              />
-            </Grid>
-            {/* Address */}
-            <Grid item xs={12} sm={6}>
-              <CustomTextField
-                fullWidth
-                label="Address"
-                name="address"
-                value={newParent?.address}
-                onChange={handleInputValues}
-                required
-              />
-            </Grid>
-            {/* Mobile */}
-            <Grid item xs={12} sm={6}>
-              <CustomTextField
-                fullWidth
-                label="Mobile"
-                name="mobile"
-                value={newParent?.mobile}
-                onChange={handleInputValues}
-                required
-              />
-            </Grid>
-            {/* Email */}
-            <Grid item xs={12} sm={6}>
-              <CustomTextField
-                fullWidth
-                label="Email"
-                name="email"
-                value={newParent?.email}
-                onChange={handleInputValues}
-                // required
-              />
-            </Grid>
-            {/* Submit Button */}
-            <Grid item xs={12}>
-              <Button
-                variant="contained"
-                color="success"
-                type="submit"
-                fullWidth
-                sx={{
-                  height: "3.5rem",
-                  letterSpacing: "1px",
-                  textTransform: "capitalize",
-                  fontSize: "1em",
-                }}
+              Kindly fill all required fields in order to add your parent data.
+              Click{" "}
+              <a
+                href={`/sensec/students/enrollment/online/${studentId}/guardian/add`}
               >
-                {loadingComplete === false && (
-                  <LoadingProgress color={"#fff"} size={"1.5rem"} />
-                )}
-                {loadingComplete === true &&
-                  createStatus === "success" &&
-                  !redirecting && (
-                    <>
-                      <span>Successful</span> <TaskAlt />
-                    </>
+                here
+              </a>{" "}
+              to add guardian instead!
+            </Typography>
+            <Grid container spacing={3}>
+              {/* Father */}
+              <Grid item xs={12} sm={6}>
+                <CustomTextField
+                  fullWidth
+                  label="Father's Name"
+                  name="fatherName"
+                  value={newParent?.fatherName}
+                  onChange={handleInputValues}
+                  required
+                />
+              </Grid>
+              {/* Mother */}
+              <Grid item xs={12} sm={6}>
+                <CustomTextField
+                  fullWidth
+                  label="Mother's Name"
+                  name="motherName"
+                  value={newParent?.motherName}
+                  onChange={handleInputValues}
+                  required
+                />
+              </Grid>
+              {/* Father Occupation */}
+              <Grid item xs={12} sm={6}>
+                <CustomTextField
+                  fullWidth
+                  label="Father's Occupation"
+                  name="fathersOccupation"
+                  value={newParent?.fathersOccupation}
+                  onChange={handleInputValues}
+                  required
+                />
+              </Grid>
+              {/* Mother's Occupation */}
+              <Grid item xs={12} sm={6}>
+                <CustomTextField
+                  fullWidth
+                  label="Mother's Occupation"
+                  name="mothersOccupation"
+                  value={newParent?.mothersOccupation}
+                  onChange={handleInputValues}
+                  required
+                />
+              </Grid>
+              {/* Address */}
+              <Grid item xs={12} sm={6}>
+                <CustomTextField
+                  fullWidth
+                  label="Address"
+                  name="address"
+                  value={newParent?.address}
+                  onChange={handleInputValues}
+                  required
+                />
+              </Grid>
+              {/* Mobile */}
+              <Grid item xs={12} sm={6}>
+                <CustomTextField
+                  fullWidth
+                  label="Mobile"
+                  name="mobile"
+                  value={newParent?.mobile}
+                  onChange={handleInputValues}
+                  required
+                />
+              </Grid>
+              {/* Email */}
+              <Grid item xs={12} sm={6}>
+                <CustomTextField
+                  fullWidth
+                  label="Email"
+                  name="email"
+                  value={newParent?.email}
+                  onChange={handleInputValues}
+                  // required
+                />
+              </Grid>
+              {/* Submit Button */}
+              <Grid item xs={12}>
+                <Button
+                  variant="contained"
+                  color="success"
+                  type="submit"
+                  fullWidth
+                  sx={{
+                    height: "3.5rem",
+                    letterSpacing: "1px",
+                    textTransform: "capitalize",
+                    fontSize: "1em",
+                  }}
+                >
+                  {loadingComplete === false && (
+                    <LoadingProgress color={"#fff"} size={"1.5rem"} />
                   )}
-                {redirecting && <Redirection color={"#fff"} size={"1.5rem"} />}
-                {loadingComplete === null && "Add Parent"}
-              </Button>
+                  {loadingComplete === true &&
+                    createStatus === "success" &&
+                    !redirecting && (
+                      <>
+                        <span>Successful</span> <TaskAlt />
+                      </>
+                    )}
+                  {redirecting && (
+                    <Redirection color={"#fff"} size={"1.5rem"} />
+                  )}
+                  {loadingComplete === null && "Add Parent"}
+                </Button>
+              </Grid>
             </Grid>
-          </Grid>
+          </Box>
         </Box>
-      </Box>
-      {/* <Button
+        {/* <Button
         variant="contained"
         size="sm"
         sx={{ bgcolor: "green" }}
@@ -330,6 +356,7 @@ export function ParentForm() {
       >
         Enroll
       </Button> */}
-    </ContainerBox>
+      </ContainerBox>
+    </>
   );
 }
