@@ -7,11 +7,15 @@ const initialState = {
   allUsers: [],
   authUser: "",
   userInfo: "",
+  refreshTokenInfo: "",
   signUpStatus: "",
   loginStatus: "",
+  refreshTokenStatus: "",
   fetchStatus: "",
   error: "",
+  fetchError: "",
   successMessage: "",
+  fetchSuccessMessage: "",
   authenticated: false,
 };
 
@@ -34,6 +38,15 @@ if (getUserToken) {
     initialState.authenticated = true;
   }
 }
+// Get refresh-token from local storage
+// const getRefreshToken = localStorage.getItem("refreshToken");
+// if (getRefreshToken) {
+//   const getUserInfo = tokenDecoded(getRefreshToken);
+//   if (getUserInfo) {
+//     initialState.authUser = getUserInfo;
+//     initialState.authenticated = true;
+//   }
+// }
 
 export const userSignUp = createAsyncThunk(
   "Auth/userSignUp",
@@ -59,6 +72,26 @@ export const userLogin = createAsyncThunk(
       //   localStorage.setItem("userId", res?.data?.user?.uniqueId);
       localStorage.setItem("userToken", res?.data?.token);
       // localStorage.removeItem("emailVerificationToken");
+      return res.data;
+    } catch (error) {
+      console.log(error.response);
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const refreshSessionToken = createAsyncThunk(
+  "Auth/refreshSessionToken",
+  async (token, { rejectWithValue }) => {
+    try {
+      const res = await axios.post(
+        `${SENSEC_API_ENDPOINT}/users/refresh-token`,
+        { token }
+      );
+      //   localStorage.setItem("userId", res?.data?.user?.uniqueId);
+      localStorage.setItem("userToken", res?.data?.newToken);
+      // localStorage.removeItem("emailVerificationToken");
+      console.log(res?.data?.newToken);
+
       return res.data;
     } catch (error) {
       console.log(error.response);
@@ -99,6 +132,14 @@ const authSlice = createSlice({
         successMessage: "",
       };
     },
+    resetSessionUpdateState(state) {
+      return {
+        ...state,
+        refreshTokenStatus: "",
+        error: "",
+        successMessage: "",
+      };
+    },
     userLogout(state) {
       localStorage.removeItem("userToken");
       localStorage.removeItem("emailVerificationToken");
@@ -113,7 +154,7 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     //   Sign Up
-    builder.addCase(userSignUp.pending, (state, action) => {
+    builder.addCase(userSignUp.pending, (state) => {
       return { ...state, signUpStatus: "pending" };
     });
     builder.addCase(userSignUp.fulfilled, (state, action) => {
@@ -134,12 +175,13 @@ const authSlice = createSlice({
       };
     });
     //   User Login
-    builder.addCase(userLogin.pending, (state, action) => {
+    builder.addCase(userLogin.pending, (state) => {
       return { ...state, loginStatus: "pending" };
     });
     builder.addCase(userLogin.fulfilled, (state, action) => {
       if (action.payload) {
         const user = tokenDecoded(action.payload.token);
+        localStorage?.setItem("Login-Token", action.payload.token);
         return {
           ...state,
           authUser: user,
@@ -155,8 +197,31 @@ const authSlice = createSlice({
         error: action.payload,
       };
     });
+    //   User Session Update
+    builder.addCase(refreshSessionToken.pending, (state) => {
+      return { ...state, refreshTokenStatus: "pending" };
+    });
+    builder.addCase(refreshSessionToken.fulfilled, (state, action) => {
+      if (action.payload) {
+        const user = tokenDecoded(action.payload.newToken);
+        localStorage?.setItem("Refresh-Token: L-204", action.payload.newToken);
+        return {
+          ...state,
+          authUser: user,
+          successMessage: action.payload.successMessage,
+          refreshTokenStatus: "success",
+        };
+      } else return state;
+    });
+    builder.addCase(refreshSessionToken.rejected, (state, action) => {
+      return {
+        ...state,
+        refreshTokenStatus: "rejected",
+        error: action.payload,
+      };
+    });
     //   Fetch All Users
-    builder.addCase(fetchAllUsers.pending, (state, action) => {
+    builder.addCase(fetchAllUsers.pending, (state) => {
       return { ...state, fetchStatus: "pending" };
     });
     builder.addCase(fetchAllUsers.fulfilled, (state, action) => {
@@ -164,7 +229,7 @@ const authSlice = createSlice({
         return {
           ...state,
           allUsers: action.payload.allUsers,
-          successMessage: action.payload.successMessage,
+          fetchSuccessMessage: action.payload.successMessage,
           fetchStatus: "success",
         };
       } else return state;
@@ -173,14 +238,19 @@ const authSlice = createSlice({
       return {
         ...state,
         fetchStatus: "rejected",
-        error: action.payload,
+        fetchError: action.payload,
       };
     });
   },
 });
 
-export const { resetSignUpState, resetLoginState, userLogout } =
-  authSlice.actions;
+export const {
+  resetSignUpState,
+  resetLoginState,
+  resetSessionUpdateState,
+  userLogout,
+} = authSlice.actions;
 export const getAuthUser = (state) => state.authUser.authUser;
 export const getAllUsers = (state) => state.authUser.allUsers;
+export const getRefreshToken = (state) => state.authUser.refreshTokenInfo;
 export default authSlice.reducer;

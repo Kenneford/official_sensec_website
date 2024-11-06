@@ -5,24 +5,12 @@ import { useEffect, useLayoutEffect, useState } from "react";
 import { toast } from "react-toastify";
 import {
   Lock,
-  LockOpen,
   LoginOutlined,
-  Security,
   TaskAlt,
   Visibility,
   VisibilityOff,
-  VpnKey,
 } from "@mui/icons-material";
-import {
-  Avatar,
-  Box,
-  Button,
-  Checkbox,
-  FormControlLabel,
-  Grid,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Grid, Typography } from "@mui/material";
 import { CustomTextField } from "../../../muiStyling/muiStyling";
 import {
   fetchAllUsers,
@@ -56,7 +44,6 @@ export function Login() {
   // Input values error state handling
   const [uniqueIDInputError, setUniqueIDInputError] = useState(false);
   const [passwordInputError, setPasswordInputError] = useState(false);
-  console.log(passwordInputError);
 
   const showPassword = (e) => {
     e.preventDefault();
@@ -83,8 +70,7 @@ export function Login() {
     });
   };
   // handle user login
-  const handleLogin = (e) => {
-    e.preventDefault();
+  const handleLogin = () => {
     if (newUser?.password?.length < 6) {
       setPasswordInputError(true);
     } else if (
@@ -134,6 +120,14 @@ export function Login() {
     }
   };
 
+  // Function to handle the Enter key press
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleLogin();
+    }
+  };
+
   // Validate input data
   useEffect(() => {
     // Unique ID
@@ -154,29 +148,6 @@ export function Login() {
   useEffect(() => {
     dispatch(fetchAllUsers());
   }, [dispatch]);
-
-  // Find signed up user
-  // useEffect(() => {
-  //   if (newUser?.uniqueId) {
-  //     const userFound = allUsersData?.find(
-  //       (std) => std?.uniqueId === newUser?.uniqueId
-  //     );
-  //     setUserFound(userFound);
-  //   }
-  // }, [allUsersData, newUser?.uniqueId]);
-
-  // Generate new sensosa ID for new member
-  // useEffect(() => {
-  //   if (newUser?.sensosaUserName) {
-  //     const newSensosaId = `OSA-${num}${newUser?.sensosaUserName.charAt(
-  //       0
-  //     )}${newUser?.sensosaUserName
-  //       .charAt(newUser?.sensosaUserName?.length - 1)
-  //       .toUpperCase()}-${currentYear}`;
-
-  //     setNewSensosaId(newSensosaId);
-  //   }
-  // }, [dispatch, newUser?.sensosaUserName, num, currentYear, userFound]);
 
   // Function to redirect users to their dashboard
   const getUserRolePath = () => {
@@ -267,9 +238,7 @@ export function Login() {
       margin={"auto"}
       mt={5}
       mb={5}
-      // height={"70vh"}
       display={"flex"}
-      // flexDirection={"column"}
       justifyContent={"center"}
       alignItems={"center"}
       fontSize={"calc(.7rem + 1vmin)"}
@@ -277,7 +246,10 @@ export function Login() {
     >
       <Box
         component={"form"}
-        onSubmit={handleLogin}
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleLogin();
+        }}
         color={"#696969"}
         sx={{
           filter: "drop-shadow(0 0 0.3em rgb(255, 255, 255, 0.68))",
@@ -320,12 +292,7 @@ export function Login() {
             >
               Login
             </Typography>
-            {/* <Avatar
-            src="https://plus.unsplash.com/premium_photo-1689977927774-401b12d137d6?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            sx={{ width: "6rem", height: "6rem" }}
-          /> */}
             <Box className="profilePictureWrap">
-              {/* {userFound && ( */}
               <Box className="profilePictureCont">
                 <img
                   className="profileImg"
@@ -337,7 +304,6 @@ export function Login() {
                   alt=""
                 />
               </Box>
-              {/* )} */}
             </Box>
           </Box>
           <Grid container spacing={2}>
@@ -350,6 +316,7 @@ export function Login() {
                 value={newUser?.uniqueId}
                 onChange={handleInputValue}
                 required
+                onKeyDown={handleKeyDown}
                 error={uniqueIDInputError}
                 helperText={uniqueIDInputError ? "Invalid user-ID!" : ""}
                 sx={{
@@ -371,6 +338,7 @@ export function Login() {
                 value={newUser?.password}
                 onChange={handleInputValue}
                 required
+                onKeyDown={handleKeyDown}
                 error={passwordInputError}
                 helperText={
                   passwordInputError &&
@@ -415,7 +383,7 @@ export function Login() {
           </div>
           <Box mt={1}>
             <Typography>
-              Don't have an account?{" "}
+              Don&apos;t have an account?{" "}
               <Typography
                 component={"span"}
                 onClick={() => navigate("/sensec/sign_up")}
