@@ -1,4 +1,4 @@
-import { Box, Button, Container, TextField, Typography } from "@mui/material";
+import { Box, Container } from "@mui/material";
 import "./adminDashboardOverview.scss";
 import { useParams } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
@@ -12,47 +12,38 @@ import {
   SupervisedUserCircle,
 } from "@mui/icons-material";
 import { Editor } from "@tinymce/tinymce-react";
-import {
-  CenteredBox,
-  ContainerBox,
-  CustomTextField,
-  ExpandableTitleTextField,
-} from "../../../../muiStyling/muiStyling";
+import { ExpandableTitleTextField } from "../../../../muiStyling/muiStyling";
 import SearchForm from "../../../searchForm/SearchForm";
 import { getAuthUser } from "../../../../features/auth/authSlice";
 import { useSelector } from "react-redux";
-
-const cardsData = [
-  {
-    title: "Card 1",
-    image: "https://via.placeholder.com/150",
-    description: "This is card 1",
-  },
-  {
-    title: "Card 2",
-    image: "https://via.placeholder.com/150",
-    description: "This is card 2",
-  },
-  {
-    title: "Card 3",
-    image: "https://via.placeholder.com/150",
-    description: "This is card 3",
-  },
-  {
-    title: "Card 4",
-    image: "https://via.placeholder.com/150",
-    description: "This is card 4",
-  },
-  {
-    title: "Card 5",
-    image: "https://via.placeholder.com/150",
-    description: "This is card 5",
-  },
-  // Add more cards as needed
-];
+import {
+  FetchAllEmployedAdmins,
+  FetchAllPendingAdmins,
+} from "../../../../data/admins/FetchAdmins";
+import {
+  FetchAllEmployedLecturers,
+  FetchAllPendingLecturers,
+} from "../../../../data/lecturers/FetchLecturers";
+import {
+  FetchAllApprovedStudents,
+  FetchAllPendingStudents,
+} from "../../../../data/students/FetchAllStudents";
+import {
+  FetchAllEmployedNTStaffs,
+  FetchAllPendingNTStaffs,
+} from "../../../../data/nt.staffs/FetchNT-Staffs";
 
 export function AdminDashboardOverview() {
   const authAdmin = useSelector(getAuthUser);
+  const allEmployedAdmins = FetchAllEmployedAdmins();
+  const allPendingAdmins = FetchAllPendingAdmins();
+  const allEmployedLecturers = FetchAllEmployedLecturers();
+  const allPendingLecturers = FetchAllPendingLecturers();
+  const approvedStudents = FetchAllApprovedStudents();
+  const allPendingStudents = FetchAllPendingStudents();
+  const allEmployedNTStaffs = FetchAllEmployedNTStaffs();
+  const allPendingNTStaffs = FetchAllPendingNTStaffs();
+
   const tinyMCEKey = import.meta.env.VITE_APP_TINYMCE_KEY;
   const { adminCurrentAction, adminCurrentLink } = useParams();
   const [loadBlogImage, setLoadBlogImage] = useState("");
@@ -161,14 +152,14 @@ export function AdminDashboardOverview() {
                       titleAccess="All Employed Admins"
                     />
                   </div>
-                  <div className="cardTotal">{7}</div>
+                  <div className="cardTotal">{allEmployedAdmins?.length}</div>
                 </HashLink>
                 <HashLink
                   to={`/sensec/users/${authAdmin?.uniqueId}/admin/Users/Admins/employees/Pending_Admins`}
                   className="pending"
                 >
                   <h4>Pending Admin(s)</h4>
-                  <div className="cardPending">{20}</div>
+                  <div className="cardPending">{allPendingAdmins?.length}</div>
                 </HashLink>
               </div>
               <div className="card">
@@ -188,14 +179,18 @@ export function AdminDashboardOverview() {
                       titleAccess="All Employed Lecturers"
                     />
                   </div>
-                  <div className="cardTotal">6</div>
+                  <div className="cardTotal">
+                    {allEmployedLecturers?.length}
+                  </div>
                 </HashLink>
                 <HashLink
                   to={`/sensec/users/${authAdmin?.uniqueId}/admin/Users/Lecturers/employees/Pending_Lecturers`}
                   className="pending"
                 >
                   <h4>Pending Lecturer(s)</h4>
-                  <div className="cardPending">5</div>
+                  <div className="cardPending">
+                    {allPendingLecturers?.length}
+                  </div>
                 </HashLink>
               </div>
               <div className="card">
@@ -212,14 +207,16 @@ export function AdminDashboardOverview() {
                       titleAccess="All Enrolled Students"
                     />
                   </div>
-                  <div className="cardTotal">13</div>
+                  <div className="cardTotal">{approvedStudents?.length}</div>
                 </HashLink>
                 <HashLink
                   to={`/sensec/users/${authAdmin?.uniqueId}/admin/User_Types/Students/Pending_Students`}
                   className="pending"
                 >
                   <h4>Pending Student(s)</h4>
-                  <div className="cardPending">{121}</div>
+                  <div className="cardPending">
+                    {allPendingStudents?.length}
+                  </div>
                 </HashLink>
               </div>
               <div className="card">
@@ -236,14 +233,16 @@ export function AdminDashboardOverview() {
                       titleAccess="All Employed NT Staffs"
                     />
                   </div>
-                  <div className="cardTotal">{17}</div>
+                  <div className="cardTotal">{allEmployedNTStaffs?.length}</div>
                 </HashLink>
                 <HashLink
                   to={`/sensec/users/${authAdmin?.uniqueId}/admin/Users/NT-Staffs/employees/Pending_NT-Staffs`}
                   className="pending"
                 >
                   <h4>Pending Staff(s)</h4>
-                  <div className="cardPending">{23}</div>
+                  <div className="cardPending">
+                    {allPendingNTStaffs?.length}
+                  </div>
                 </HashLink>
               </div>
               <div className="card">

@@ -106,10 +106,26 @@
               animation-delay: 900ms;
               border-top: 1px solid #ccc;
             }
+            &:nth-child(8) {
+              animation-delay: 1000ms;
+              border-top: 1px solid #ccc;
+            }
+            &:nth-child(9) {
+              animation-delay: 1100ms;
+              border-top: 1px solid #ccc;
+            }
+            &:nth-child(10) {
+              animation-delay: 1200ms;
+              border-top: 1px solid #ccc;
+            }
+            &:nth-child(11) {
+              animation-delay: 1300ms;
+              border-top: 1px solid #ccc;
+            }
           }
           .otherLinkSelected.active {
             color: yellow;
-            border-bottom: none;
+            border-bottom: 1px solid transparent;
           }
         }
         .closeSubNavLinks {
@@ -197,10 +213,22 @@
         animation-delay: 1200ms;
         border-top: 1px solid #ccc;
       }
+      &:nth-child(11) {
+        animation-delay: 1300ms;
+        border-top: 1px solid #ccc;
+      }
+      &:nth-child(12) {
+        animation-delay: 1400ms;
+        border-top: 1px solid #ccc;
+      }
+      &:nth-child(13) {
+        animation-delay: 1500ms;
+        border-top: 1px solid #ccc;
+      }
     }
     .menuListSelected.active {
       color: yellow;
-      border-bottom: none;
+      border-bottom: 1px solid transparent;
     }
   }
   // For removing padding from current user image div on navbar

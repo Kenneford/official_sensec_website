@@ -22,7 +22,7 @@ import {
 } from "../lazyLoading/admin/AdminLazyLoadingComponents";
 import SearchForm from "../searchForm/SearchForm";
 import { useEffect, useState } from "react";
-import { NavigationBar } from "../lazyLoading/LazyComponents";
+import { EmploymentForm, NavigationBar } from "../lazyLoading/LazyComponents";
 
 export function AdminDashboard() {
   const {
@@ -39,6 +39,8 @@ export function AdminDashboard() {
     setOpenMenuLinks,
     openMenuLinks,
     isSidebarOpen,
+    openSearchModal,
+    setOpenSearchModal,
   } = useOutletContext();
   const { adminCurrentLink, adminCurrentAction, data } = useParams();
   const navigate = useNavigate();
@@ -153,6 +155,8 @@ export function AdminDashboard() {
           currentLink={currentLink}
           setCurrentLink={setCurrentLink}
           isSidebarOpen={isSidebarOpen}
+          openSearchModal={openSearchModal}
+          setOpenSearchModal={setOpenSearchModal}
         />
       </Box>
       {/* <Box
@@ -249,6 +253,7 @@ export function AdminDashboard() {
         {adminCurrentLink === "Placement_Students" && <PlacementStudents />}
         {adminCurrentLink === "View_Attendance" && <AdminAttendance />}
         {adminCurrentLink === "Search_Attendance" && <SearchAttendance />}
+        {adminCurrentLink === "new_employment" && <EmploymentForm />}
         {/* {adminCurrentLink === "Admins" && !pathname?.includes("new") && (
           <AllAdmins />
         )} */}

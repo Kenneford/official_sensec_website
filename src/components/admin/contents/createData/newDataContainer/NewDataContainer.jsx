@@ -17,6 +17,8 @@ import {
   CreateSchoolInfoData,
   CreateTimeTable,
 } from "../../../../lazyLoading/admin/AdminLazyLoadingComponents";
+import { useSelector } from "react-redux";
+import { getAuthUser } from "../../../../../features/auth/authSlice";
 // import CreateAcademicYear from "../create/academicYear/CreateAcademicYear";
 // import CreateClassLevel from "../create/classLevel/CreateClassLevel";
 // import CreateClassSection from "../create/classLevelSection/CreateClassLevelSection";
@@ -35,6 +37,7 @@ export function NewDataContainer({
   currentAction,
   currentLink,
 }) {
+  const authUser = useSelector(getAuthUser);
   const adminLink = localStorage.getItem("currentAdminLink");
   const adminAction = localStorage.getItem("currentAdminAction");
   const navigate = useNavigate();
@@ -87,7 +90,7 @@ export function NewDataContainer({
             }
             onClick={() => {
               navigate(
-                `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/school_batch/new`
+                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/school_batch/new`
               );
             }}
           >
@@ -99,7 +102,7 @@ export function NewDataContainer({
             }
             onClick={() => {
               navigate(
-                `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/placement_batch/new`
+                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/placement_batch/new`
               );
             }}
           >
@@ -111,7 +114,7 @@ export function NewDataContainer({
             }
             onClick={() =>
               navigate(
-                `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/academic_year/new`
+                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/academic_year/new`
               )
             }
           >
@@ -123,7 +126,7 @@ export function NewDataContainer({
             }
             onClick={() =>
               navigate(
-                `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/academic_term/new`
+                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/academic_term/new`
               )
             }
           >
@@ -133,7 +136,7 @@ export function NewDataContainer({
             className={data === "class_level" ? "activeCreateBtn" : "createBtn"}
             onClick={() =>
               navigate(
-                `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/class_level/new`
+                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/class_level/new`
               )
             }
           >
@@ -143,7 +146,7 @@ export function NewDataContainer({
             className={data === "program" ? "activeCreateBtn" : "createBtn"}
             onClick={() =>
               navigate(
-                `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/program/new`
+                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/program/new`
               )
             }
           >
@@ -155,7 +158,7 @@ export function NewDataContainer({
             }
             onClick={() =>
               navigate(
-                `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/class_section/new`
+                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/class_section/new`
               )
             }
           >
@@ -165,7 +168,7 @@ export function NewDataContainer({
             className={data === "house" ? "activeCreateBtn" : "createBtn"}
             onClick={() =>
               navigate(
-                `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/house/new`
+                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/house/new`
               )
             }
           >
@@ -175,7 +178,7 @@ export function NewDataContainer({
             className={data === "subject" ? "activeCreateBtn" : "createBtn"}
             onClick={() =>
               navigate(
-                `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/subject/new`
+                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/subject/new`
               )
             }
           >
@@ -187,7 +190,7 @@ export function NewDataContainer({
             }
             onClick={() =>
               navigate(
-                `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/old_students_group/new`
+                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/old_students_group/new`
               )
             }
           >
@@ -197,7 +200,7 @@ export function NewDataContainer({
             className={data === "school_data" ? "activeCreateBtn" : "createBtn"}
             onClick={() => {
               navigate(
-                `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/school_data/new`
+                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/school_data/new`
               );
             }}
           >
@@ -207,7 +210,7 @@ export function NewDataContainer({
             className={data === "time_table" ? "activeCreateBtn" : "createBtn"}
             onClick={() => {
               navigate(
-                `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/time_table/new`
+                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/time_table/new`
               );
             }}
           >

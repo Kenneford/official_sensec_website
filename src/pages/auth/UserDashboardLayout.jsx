@@ -1,7 +1,7 @@
-import SideBar from "../../components/sidebar/SideBar";
 import { Outlet, useOutletContext } from "react-router-dom";
 import { Box, useMediaQuery, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
+import { SideBar } from "../../components/lazyLoading/auth/AuthLazyComponents";
 
 export function UserDashboardLayout() {
   const {
@@ -15,12 +15,13 @@ export function UserDashboardLayout() {
     openSignUpActions,
     setOpenMenuLinks,
     openMenuLinks,
+    openSearchModal,
+    setOpenSearchModal,
   } = useOutletContext();
   // State to control sidebar open/close
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [currentAction, setCurrentAction] = useState("");
   const [currentLink, setCurrentLink] = useState("");
-  console.log(currentAction);
 
   // Media query to detect screen size (breakpoint for tablet is 900px)
   const theme = useTheme();
@@ -36,7 +37,6 @@ export function UserDashboardLayout() {
       setSidebarOpen(false);
     }
   }, [setSidebarOpen]);
-  console.log(isSidebarOpen);
 
   return (
     <Box id="userDashboardWrap" display={"flex"}>
@@ -67,6 +67,8 @@ export function UserDashboardLayout() {
           openSignUpActions,
           setOpenMenuLinks,
           openMenuLinks,
+          openSearchModal,
+          setOpenSearchModal,
         }}
       />
     </Box>

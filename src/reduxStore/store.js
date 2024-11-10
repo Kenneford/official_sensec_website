@@ -8,6 +8,7 @@ import placementReducer from "../features/academics/placementSlice";
 import studentReducer from "../features/students/studentsSlice";
 import parentReducer from "../features/students/parentSlice";
 import guardianReducer from "../features/students/guardianSlice";
+import employmentReducer from "../features/employments/employmentSlice";
 
 export const store = configureStore({
   reducer: {
@@ -20,5 +21,6 @@ export const store = configureStore({
     student: studentReducer,
     parent: parentReducer,
     guardian: guardianReducer,
+    employment: employmentReducer,
   },
 });

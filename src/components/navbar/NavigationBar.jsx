@@ -6,11 +6,11 @@ import CloseIcon from "@mui/icons-material/Close";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { HashLink, NavHashLink } from "react-router-hash-link";
-import { AppBar, Avatar, Box, Button, Stack, Typography } from "@mui/material";
+import { Avatar, Box, Button, Typography } from "@mui/material";
 import { StyledNavbar } from "../../muiStyling/muiStyling";
-import { Login, PersonAddAlt } from "@mui/icons-material";
+import { Login, PersonAddAlt, Search } from "@mui/icons-material";
 import {
   fetchAllUsers,
   getAllUsers,
@@ -19,6 +19,7 @@ import {
 } from "../../features/auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import { SearchModal } from "../lazyLoading/LazyComponents";
 
 const signUpOptions = [
   {
@@ -106,16 +107,17 @@ export function NavigationBar({
   openMenuLinks,
   setCurrentAction,
   setCurrentLink,
-  isSidebarOpen,
+  openSearchModal,
+  setOpenSearchModal,
 }) {
   const currentNavLink = localStorage.getItem("currentNavLink");
   const currentOtherNavLink = localStorage.getItem("currentOtherNavLink");
   const navigate = useNavigate();
-  const location = useLocation();
   const dispatch = useDispatch();
   const authUser = useSelector(getAuthUser);
   const allUsers = useSelector(getAllUsers);
   const { currentGuestPage } = useParams();
+  console.log(openSearchModal);
 
   const otherLinks = [
     {
@@ -129,6 +131,14 @@ export function NavigationBar({
     {
       name: "Enrollment",
       path: "/sensec/students/enrollment",
+    },
+    {
+      name: "Employment",
+      path: {
+        admin: `/sensec/users/${authUser?.uniqueId}/admin/User_Types/new_employment`,
+        others: "/sensec/new_employment",
+      },
+      // path: "/sensec/sensosa/application_process",
     },
     {
       name: "Dashboard",
@@ -179,6 +189,13 @@ export function NavigationBar({
       path: "/sensec/students/enrollment",
     },
     {
+      name: "Employment",
+      path: {
+        admin: `/sensec/users/${authUser?.uniqueId}/admin/User_Types/new_employment`,
+        others: "/sensec/new_employment",
+      },
+    },
+    {
       name: "Dashboard",
       path: {
         admin: `/sensec/users/${authUser?.uniqueId}/admin/Dashboard/Overview`,
@@ -196,12 +213,7 @@ export function NavigationBar({
   const userInfo = allUsers?.find(
     (user) => user?.uniqueId === authUser?.uniqueId
   );
-  const { pathname } = location;
-  // const userInfo = true;
-  // const userInfo = { adminStatusExtend: { isAdmin: true } };
-  console.log(authUser);
 
-  const [navbar, setNavbar] = useState(false);
   const [openUserLinks, setOpenUserLinks] = useState(false);
 
   const filteredOtherLinks = otherLinks?.filter(
@@ -212,76 +224,10 @@ export function NavigationBar({
     (links) => links && !userInfo && links?.name !== "Dashboard"
   );
 
-  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
-  const isMobile = screenWidth && screenWidth <= 600;
-  const isTablet = screenWidth && screenWidth > 600 && screenWidth <= 900;
-  const isLaptop = screenWidth && screenWidth > 900 && screenWidth <= 1024;
-  const isDesktop = screenWidth && screenWidth > 1024 && screenWidth <= 1200;
-  const isLargeScreen = screenWidth && screenWidth > 1200;
-
-  // console.log(isMobile && "isMobile");
-  // console.log(isTablet && "isTablet");
-  // console.log(isLaptop && "isLaptop");
-  // console.log(isDesktop && "isDesktop");
-  // console.log(isLargeScreen && "isLargeScreen");
-
-  const [isLandscape, setIsLandscape] = useState(
-    window.innerWidth > window.innerHeight
-  );
-  // console.log(isLandscape ? "Landscape Mode" : "Portrait Mode");
-
-  // Find current device in use
-  useEffect(() => {
-    const handleResize = () => {
-      setScreenWidth(window.innerWidth);
-    };
-
-    // Add event listener to detect window resizing
-    window.addEventListener("resize", handleResize);
-
-    // Cleanup event listener on component unmount
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  // Check for landscape orientation mode
-  useEffect(() => {
-    const handleResize = () => {
-      setIsLandscape(window.innerWidth > window.innerHeight);
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    // Clean up event listener on component unmount
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
   //THIS REMOVES THE NavLINK TAG FROM THE URL
   if (window.location.hash) {
     window.history.replaceState("", document.title, window.location.pathname);
   }
-
-  //FUNCTION TO CHANGE THE NAVBAR BACKGROUND COLOR ON SCROLL
-  const changeBackground = () => {
-    if (window.scrollY >= 25) {
-      setNavbar(true);
-    } else {
-      setNavbar(false);
-    }
-  };
-  window.addEventListener("scroll", changeBackground);
-
-  //   const changeNavLinksPosition = () => {
-  //     if (window.scrollY >= 165) {
-  //       setNavLinks(true);
-  //     } else {
-  //       setNavLinks(false);
-  //     }
-  //   };
-  //   window.addEventListener("scroll", changeNavLinksPosition);
 
   const handleLogout = (e) => {
     e.preventDefault();
@@ -293,8 +239,12 @@ export function NavigationBar({
         theme: "dark",
         toastId: "loggedOut",
       });
-      // localStorage.removeItem("currentNavLink");
     }
+  };
+
+  const handleEscapeKey = (e) => {
+    e.preventDefault();
+    () => setOpenSearchModal(false);
   };
 
   // Clear popup links
@@ -337,20 +287,115 @@ export function NavigationBar({
             }}
           >
             {!openMenuLinks ? (
-              <MenuIcon
-                onClick={() => setOpenMenuLinks(!openMenuLinks)}
-                sx={{
-                  display: { xs: "block", sm: "none" },
-                  fontSize: { xs: "1.5", md: "2rem" },
-                }}
-              />
+              <Box display={"flex"} alignItems={"center"}>
+                <MenuIcon
+                  onClick={() => setOpenMenuLinks(!openMenuLinks)}
+                  sx={{
+                    display: { xs: "block", sm: "none" },
+                    fontSize: { xs: "1.5", md: "2rem" },
+                  }}
+                />
+                {authUser ? (
+                  <Box
+                    component={"button"}
+                    onClick={() => setOpenSearchModal(true)}
+                    bgcolor={"transparent"}
+                    sx={{ cursor: "pointer" }}
+                    mt={".3rem"}
+                  >
+                    <Search
+                      sx={{
+                        display: { xs: "block", sm: "none" },
+                        color: "#fff",
+                        fontSize: "1.6rem",
+                        marginLeft: "1rem",
+                      }}
+                    />
+                    <SearchModal
+                      open={openSearchModal}
+                      onClose={() => setOpenSearchModal(false)}
+                      handleEscapeKey={handleEscapeKey}
+                    />
+                  </Box>
+                ) : (
+                  <Box
+                    component={"button"}
+                    onClick={() => setOpenSearchModal(true)}
+                    bgcolor={"transparent"}
+                    sx={{ cursor: "pointer" }}
+                    mt={".3rem"}
+                  >
+                    <Search
+                      sx={{
+                        display: { xs: "block", sm: "none" },
+                        color: "#fff",
+                        fontSize: "1.6rem",
+                        marginLeft: "1rem",
+                      }}
+                    />
+                    <SearchModal
+                      open={openSearchModal}
+                      onClose={() => setOpenSearchModal(false)}
+                      handleEscapeKey={handleEscapeKey}
+                    />
+                  </Box>
+                )}
+              </Box>
             ) : (
-              <CloseIcon
-                sx={{
-                  display: { xs: "block", sm: "none" },
-                  fontSize: { xs: "1.5", md: "2rem" },
-                }}
-              />
+              <Box display={"flex"} alignItems={"center"}>
+                <CloseIcon
+                  onClick={() => setOpenMenuLinks(!openMenuLinks)}
+                  sx={{
+                    display: { xs: "block", sm: "none" },
+                    fontSize: { xs: "1.5", md: "2rem" },
+                  }}
+                />
+                {!authUser ? (
+                  <Box
+                    component={"button"}
+                    onClick={() => setOpenSearchModal(true)}
+                    bgcolor={"transparent"}
+                    sx={{ cursor: "pointer" }}
+                    mt={".3rem"}
+                  >
+                    <Search
+                      sx={{
+                        display: { xs: "block", sm: "none" },
+                        color: "#fff",
+                        fontSize: "1.6rem",
+                        marginLeft: "1rem",
+                      }}
+                    />
+                    <SearchModal
+                      open={openSearchModal}
+                      onClose={() => setOpenSearchModal(false)}
+                      handleEscapeKey={handleEscapeKey}
+                    />
+                  </Box>
+                ) : (
+                  <Box
+                    component={"button"}
+                    onClick={() => setOpenSearchModal(true)}
+                    bgcolor={"transparent"}
+                    sx={{ cursor: "pointer" }}
+                    mt={".3rem"}
+                  >
+                    <Search
+                      sx={{
+                        display: { xs: "block", sm: "none" },
+                        color: "#fff",
+                        fontSize: "1.6rem",
+                        marginLeft: "1rem",
+                      }}
+                    />
+                    <SearchModal
+                      open={openSearchModal}
+                      onClose={() => setOpenSearchModal(false)}
+                      handleEscapeKey={handleEscapeKey}
+                    />
+                  </Box>
+                )}
+              </Box>
             )}
             {openMenuLinks && (
               <Box id="smallScreenMenu">
@@ -377,6 +422,11 @@ export function NavigationBar({
                             : link?.name === "Dashboard" &&
                               userInfo?.studentStatusExtend?.isStudent
                             ? link?.path?.student
+                            : link?.name === "Employment" &&
+                              userInfo?.adminStatusExtend?.isAdmin
+                            ? link?.path?.admin
+                            : link?.name === "Employment" && !userInfo
+                            ? link?.path?.others
                             : link?.path
                         }
                         onClick={() => {
@@ -408,6 +458,11 @@ export function NavigationBar({
                             : link?.name === "Dashboard" &&
                               userInfo?.studentStatusExtend?.isStudent
                             ? link?.path?.student
+                            : link?.name === "Employment" &&
+                              userInfo?.adminStatusExtend?.isAdmin
+                            ? link?.path?.admin
+                            : link?.name === "Employment" && !userInfo
+                            ? link?.path?.others
                             : link?.path
                         }
                         onClick={() =>
@@ -437,166 +492,206 @@ export function NavigationBar({
               sx={{
                 display: { xs: "none", sm: "flex" },
                 justifyContent: "center",
+                alignItems: "center",
               }}
             >
-              {navbarLinks.map((link) => (
-                <Box
-                  component={"div"}
-                  key={link?.name}
-                  // sx={{
-                  //   display: "flex",
-                  //   justifyContent: "center",
-                  //   alignItems: "center",
-                  // }}
-                >
-                  <Button
-                    id="navLinks"
+              <>
+                {navbarLinks.map((link) => (
+                  <Box
+                    component={"div"}
                     key={link?.name}
-                    // onClick={handleCloseNavMenu}
-                    sx={{
-                      // my: 2,
-                      color: `${
-                        currentGuestPage && link?.name === currentGuestPage
-                          ? "yellow"
-                          : "white"
-                      }`,
-                    }}
-                    onClick={() => {
-                      // Click handler
-                      localStorage.setItem("currentNavLink", link?.name);
-                      if (link?.name === "others") {
-                        setOpenUserLinks(
-                          !openUserLinks,
-                          setOpenSubNavLinks(!openSubNavLinks)
-                        );
-                      } else {
-                        localStorage.removeItem("currentOtherNavLink");
-                      }
-                      navigate(link?.path);
-                    }}
+                    // sx={{
+                    //   display: "flex",
+                    //   justifyContent: "center",
+                    //   alignItems: "center",
+                    // }}
                   >
-                    {link?.name === "homepage" ? "Home" : link?.name}
-                    {link?.name == "others" && (
-                      <>
-                        {!openUserLinks ? (
-                          <ExpandMoreIcon className="expandMoreIcon" />
-                        ) : (
-                          <ExpandLessIcon className="expandMoreIcon" />
-                        )}
-                      </>
-                    )}
-                  </Button>
-                  {link?.name === "others" && (
-                    <div id="otherLinks">
-                      <button
-                        className={
-                          //   Change text color on button click
-                          openUserLinks
-                            ? "otherLinksWrap active"
-                            : "otherLinksWrap"
+                    <Button
+                      id="navLinks"
+                      key={link?.name}
+                      // onClick={handleCloseNavMenu}
+                      sx={{
+                        // my: 2,
+                        color: `${
+                          currentGuestPage && link?.name === currentGuestPage
+                            ? "yellow"
+                            : "white"
+                        }`,
+                      }}
+                      onClick={() => {
+                        // Click handler
+                        localStorage.setItem("currentNavLink", link?.name);
+                        if (link?.name === "others") {
+                          setOpenUserLinks(
+                            !openUserLinks,
+                            setOpenSubNavLinks(!openSubNavLinks)
+                          );
+                        } else {
+                          localStorage.removeItem("currentOtherNavLink");
                         }
-                        onClick={() => setOpenSubNavLinks(!openSubNavLinks)}
-                      >
-                        {/* <span className="otherLinksText">Others</span>{" "} */}
-                        {/* {!openUserLinks ? (
+                        navigate(link?.path);
+                      }}
+                    >
+                      {link?.name === "homepage" ? "Home" : link?.name}
+                      {link?.name == "others" && (
+                        <>
+                          {!openUserLinks ? (
+                            <ExpandMoreIcon className="expandMoreIcon" />
+                          ) : (
+                            <ExpandLessIcon className="expandMoreIcon" />
+                          )}
+                        </>
+                      )}
+                    </Button>
+                    {link?.name === "others" && (
+                      <div id="otherLinks">
+                        <button
+                          className={
+                            //   Change text color on button click
+                            openUserLinks
+                              ? "otherLinksWrap active"
+                              : "otherLinksWrap"
+                          }
+                          onClick={() => setOpenSubNavLinks(!openSubNavLinks)}
+                        >
+                          {/* <span className="otherLinksText">Others</span>{" "} */}
+                          {/* {!openUserLinks ? (
                             <ExpandMoreIcon className="expandMoreIcon" />
                           ) : (
                             <ExpandLessIcon className="expandMoreIcon" />
                           )} */}
-                      </button>
-                      <div className="subNav" style={{ zIndex: 3 }}>
-                        {openSubNavLinks && (
-                          <div
-                            className={
-                              openSubNavLinks
-                                ? "openSubNavLinks"
-                                : "closeSubNavLinks"
-                            }
-                          >
-                            {userInfo &&
-                              otherLinks?.map((link) => (
-                                <HashLink
-                                  key={link?.name}
-                                  className={
-                                    currentOtherNavLink &&
-                                    link?.name === currentOtherNavLink
-                                      ? "otherLinkSelected active"
-                                      : "otherLinkSelected"
-                                  }
-                                  to={
-                                    link?.name === "Dashboard" &&
-                                    userInfo?.adminStatusExtend?.isAdmin
-                                      ? link?.path?.admin
-                                      : link?.name === "Dashboard" &&
-                                        userInfo?.teacherStatusExtend?.isTeacher
-                                      ? link?.path?.teacher
-                                      : link?.name === "Dashboard" &&
-                                        userInfo?.nTStaffStatusExtend?.isNTStaff
-                                      ? link?.path?.nt_Staff
-                                      : link?.name === "Dashboard" &&
-                                        userInfo?.studentStatusExtend?.isStudent
-                                      ? link?.path?.student
-                                      : link?.path
-                                  }
-                                  onClick={() => {
-                                    localStorage.setItem(
-                                      "currentOtherNavLink",
-                                      link?.name
-                                    );
-                                    if (
+                        </button>
+                        <div className="subNav" style={{ zIndex: 3 }}>
+                          {openSubNavLinks && (
+                            <div
+                              className={
+                                openSubNavLinks
+                                  ? "openSubNavLinks"
+                                  : "closeSubNavLinks"
+                              }
+                            >
+                              {userInfo &&
+                                otherLinks?.map((link) => (
+                                  <HashLink
+                                    key={link?.name}
+                                    className={
+                                      currentOtherNavLink &&
+                                      link?.name === currentOtherNavLink
+                                        ? "otherLinkSelected active"
+                                        : "otherLinkSelected"
+                                    }
+                                    to={
                                       link?.name === "Dashboard" &&
                                       userInfo?.adminStatusExtend?.isAdmin
-                                    ) {
-                                      setCurrentAction("Dashboard");
-                                      setCurrentLink("Overview");
+                                        ? link?.path?.admin
+                                        : link?.name === "Dashboard" &&
+                                          userInfo?.teacherStatusExtend
+                                            ?.isTeacher
+                                        ? link?.path?.teacher
+                                        : link?.name === "Dashboard" &&
+                                          userInfo?.nTStaffStatusExtend
+                                            ?.isNTStaff
+                                        ? link?.path?.nt_Staff
+                                        : link?.name === "Dashboard" &&
+                                          userInfo?.studentStatusExtend
+                                            ?.isStudent
+                                        ? link?.path?.student
+                                        : link?.name === "Employment" &&
+                                          userInfo?.adminStatusExtend?.isAdmin
+                                        ? link?.path?.admin
+                                        : link?.name === "Employment" &&
+                                          !userInfo
+                                        ? link?.path?.others
+                                        : link?.path
                                     }
-                                  }}
-                                >
-                                  {link?.name}
-                                </HashLink>
-                              ))}
-                            {!userInfo &&
-                              filteredOtherLinks?.map((link) => (
-                                <NavHashLink
-                                  key={link?.name}
-                                  className={
-                                    currentOtherNavLink &&
-                                    link?.name === currentOtherNavLink
-                                      ? "otherLinkSelected active"
-                                      : "otherLinkSelected"
-                                  }
-                                  to={
-                                    link?.name === "Dashboard" &&
-                                    userInfo?.adminStatusExtend?.isAdmin
-                                      ? link?.path?.admin
-                                      : link?.name === "Dashboard" &&
-                                        userInfo?.teacherStatusExtend?.isTeacher
-                                      ? link?.path?.teacher
-                                      : link?.name === "Dashboard" &&
-                                        userInfo?.nTStaffStatusExtend?.isNTStaff
-                                      ? link?.path?.nt_Staff
-                                      : link?.name === "Dashboard" &&
-                                        userInfo?.studentStatusExtend?.isStudent
-                                      ? link?.path?.student
-                                      : link?.path
-                                  }
-                                  onClick={() =>
-                                    localStorage.setItem(
-                                      "currentOtherNavLink",
-                                      link?.name
-                                    )
-                                  }
-                                >
-                                  {link?.name}
-                                </NavHashLink>
-                              ))}
-                          </div>
-                        )}
+                                    onClick={() => {
+                                      localStorage.setItem(
+                                        "currentOtherNavLink",
+                                        link?.name
+                                      );
+                                      if (
+                                        link?.name === "Dashboard" &&
+                                        userInfo?.adminStatusExtend?.isAdmin
+                                      ) {
+                                        setCurrentAction("Dashboard");
+                                        setCurrentLink("Overview");
+                                      }
+                                    }}
+                                  >
+                                    {link?.name}
+                                  </HashLink>
+                                ))}
+                              {!userInfo &&
+                                filteredOtherLinks?.map((link) => (
+                                  <NavHashLink
+                                    key={link?.name}
+                                    className={
+                                      currentOtherNavLink &&
+                                      link?.name === currentOtherNavLink
+                                        ? "otherLinkSelected active"
+                                        : "otherLinkSelected"
+                                    }
+                                    to={
+                                      link?.name === "Dashboard" &&
+                                      userInfo?.adminStatusExtend?.isAdmin
+                                        ? link?.path?.admin
+                                        : link?.name === "Dashboard" &&
+                                          userInfo?.teacherStatusExtend
+                                            ?.isTeacher
+                                        ? link?.path?.teacher
+                                        : link?.name === "Dashboard" &&
+                                          userInfo?.nTStaffStatusExtend
+                                            ?.isNTStaff
+                                        ? link?.path?.nt_Staff
+                                        : link?.name === "Dashboard" &&
+                                          userInfo?.studentStatusExtend
+                                            ?.isStudent
+                                        ? link?.path?.student
+                                        : link?.name === "Employment" &&
+                                          userInfo?.adminStatusExtend?.isAdmin
+                                        ? link?.path?.admin
+                                        : link?.name === "Employment" &&
+                                          !userInfo
+                                        ? link?.path?.others
+                                        : link?.path
+                                    }
+                                    onClick={() =>
+                                      localStorage.setItem(
+                                        "currentOtherNavLink",
+                                        link?.name
+                                      )
+                                    }
+                                  >
+                                    {link?.name}
+                                  </NavHashLink>
+                                ))}
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
+                  </Box>
+                ))}
+                <Box
+                  component={"button"}
+                  onClick={() => setOpenSearchModal(true)}
+                  bgcolor={"transparent"}
+                  sx={{ cursor: "pointer" }}
+                >
+                  <Search
+                    sx={{
+                      color: "#fff",
+                      fontSize: "1.6rem",
+                      marginLeft: "1rem",
+                    }}
+                  />
                 </Box>
-              ))}
+                <SearchModal
+                  open={openSearchModal}
+                  onClose={() => setOpenSearchModal(false)}
+                  handleEscapeKey={handleEscapeKey}
+                />
+              </>
             </Box>
           </Box>
           {/* Current User */}
@@ -609,7 +704,7 @@ export function NavigationBar({
             {authUser && (
               <StyledNavbar.CurrentUser>
                 <Typography
-                  sx={{ display: { xs: "none", md: "block", color: "#fff" } }}
+                  sx={{ display: { xs: "none", md: "block" }, color: "#fff" }}
                 >
                   @{authUser?.userSignUpDetails?.userName}
                 </Typography>
@@ -728,5 +823,6 @@ NavigationBar.propTypes = {
   openUserActions: PropTypes.bool,
   setOpenSignUpActions: PropTypes.func,
   openSignUpActions: PropTypes.bool,
-  isSidebarOpen: PropTypes.bool,
+  openSearchModal: PropTypes.bool,
+  setOpenSearchModal: PropTypes.func,
 };

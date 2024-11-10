@@ -9,15 +9,18 @@ import { Box, Grid } from "@mui/material";
 import { AllEmployedLecturersPageQuickLinks } from "../../../../../linksFormat/LinksFormat";
 import { useDispatch, useSelector } from "react-redux";
 import { getAuthUser } from "../../../../../features/auth/authSlice";
+import { FetchAllEmployedLecturers } from "../../../../../data/lecturers/FetchLecturers";
+import { teachersColumn } from "../../../../../usersInfoDataFormat/UsersInfoDataFormat";
+import SearchFilter from "../../../../searchForm/SearchFilter";
 
 export function LecturersData() {
   const authAdmin = useSelector(getAuthUser);
+  const allEmployedLecturers = FetchAllEmployedLecturers();
   const currentEmployeeLink = localStorage.getItem("currentEmployeeLink");
   const navigate = useNavigate();
   const actionBtns = AllEmployedLecturersPageQuickLinks();
   const dispatch = useDispatch();
-  const allApprovedLecturers = [];
-  console.log(allApprovedLecturers);
+  console.log(allEmployedLecturers);
   const allClassLevels = [
     {
       name: "Level 100",
@@ -29,14 +32,14 @@ export function LecturersData() {
       name: "Level 300",
     },
   ];
-  // const teachersData = teachersColumn();
+  const teachersData = teachersColumn();
   const { adminCurrentAction, adminCurrentLink, class_level, employees_link } =
     useParams();
   console.log(employees_link);
 
   console.log(adminCurrentAction, adminCurrentLink);
   const [searchTeacher, setSearchTeacher] = useState("");
-  const teachersEmployed = allApprovedLecturers?.filter(
+  const teachersEmployed = allEmployedLecturers?.filter(
     (tch) =>
       (tch &&
         tch?.personalInfo?.firstName?.toLowerCase()?.includes(searchTeacher)) ||
@@ -89,13 +92,13 @@ export function LecturersData() {
           <span>{adminCurrentLink?.replace(/_/g, " ")}</span>
         </h1>
         {/* Main search bar */}
-        {/* <Box sx={{ display: { xs: "none", sm: "block" } }}>
-          <SearchForm
-            value={searchedBlog}
-            onChange={handleOnChange}
+        <Box sx={{ display: { xs: "none", sm: "block" } }}>
+          <SearchFilter
+            value={searchTeacher}
+            onChange={setSearchTeacher}
             placeholder={"Search"}
           />
-        </Box> */}
+        </Box>
       </Box>
       <Box
         className="allAdminsData"
@@ -105,7 +108,7 @@ export function LecturersData() {
         <Box className="searchDetails">
           {teachersEmployed?.length === 0 && searchTeacher !== "" && (
             <p className="searchInfo">
-              We couldn't find any matches for "{searchTeacher}"
+              We couldn&apos;t find any matches for &apos;{searchTeacher}&apos;
             </p>
           )}
           {teachersEmployed?.length === 0 && searchTeacher !== "" && (
@@ -127,7 +130,7 @@ export function LecturersData() {
           )}
           {!searchTeacher && (
             <p className="searchInfo">
-              Total Lecturers = {allApprovedLecturers.length}
+              Total Lecturers = {allEmployedLecturers?.length}
             </p>
           )}
         </Box>
@@ -226,10 +229,10 @@ export function LecturersData() {
             </Grid>
           ))}
         </Grid>
-        <Box>
+        <Box className="lecturerDataTable">
           <DataTable
             title={allStd}
-            // columns={adminsData}
+            columns={teachersData}
             data={teachersEmployed}
             customStyles={customUserTableStyle}
             pagination

@@ -4,11 +4,12 @@ import CloseIcon from "@mui/icons-material/Close";
 import { CircularProgress } from "@mui/material";
 import Parser from "html-react-parser";
 import Redirection from "../pageLoading/Redirection";
+import PropTypes from "prop-types";
 
 export default function ApproveEmploymentModal({
   open,
   onClose,
-  approveEmploymentmentFunction,
+  approveEmploymentFunction,
   setLoadingComplete,
   dispatch,
   setCurrentUser,
@@ -31,7 +32,7 @@ export default function ApproveEmploymentModal({
                 className="employLectBtn"
                 onClick={() => {
                   setCurrentUser(currentUserId);
-                  dispatch(approveEmploymentmentFunction);
+                  dispatch(approveEmploymentFunction);
                   onClose();
                 }}
               >
@@ -53,3 +54,14 @@ export default function ApproveEmploymentModal({
     </div>
   );
 }
+
+ApproveEmploymentModal.propTypes = {
+  open: PropTypes.bool,
+  onClose: PropTypes.func,
+  approveEmploymentFunction: PropTypes.func,
+  setLoadingComplete: PropTypes.func,
+  dispatch: PropTypes.func,
+  setCurrentUser: PropTypes.func,
+  currentStudentId: PropTypes.string,
+  rejectAction: PropTypes.string,
+};

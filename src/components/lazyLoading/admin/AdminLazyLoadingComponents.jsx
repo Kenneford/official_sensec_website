@@ -290,6 +290,26 @@ export const HangingAdmins = lazyWithSuspense(
   <PageLoading />,
   "HangingAdminsComponent"
 );
+export const NTStaffsData = lazyWithSuspense(
+  () =>
+    import(
+      "../../admin/contents/allNTStaffs/employedNTStaffs/NTStaffsData"
+    ).then((module) => {
+      return { default: module.NTStaffsData };
+    }),
+  <PageLoading />,
+  "NTStaffsDataComponent"
+);
+export const PendingNTStaffs = lazyWithSuspense(
+  () =>
+    import(
+      "../../admin/contents/allNTStaffs/pendingNTStaffs/PendingNTStaffs"
+    ).then((module) => {
+      return { default: module.PendingNTStaffs };
+    }),
+  <PageLoading />,
+  "PendingNTStaffsComponent"
+);
 export const LecturersData = lazyWithSuspense(
   () =>
     import(

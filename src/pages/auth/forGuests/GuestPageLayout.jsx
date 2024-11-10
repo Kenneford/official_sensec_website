@@ -1,30 +1,21 @@
-import { Avatar, Box, Stack, Typography } from "@mui/material";
-import React, { useLayoutEffect, useState } from "react";
-import {
-  Outlet,
-  useNavigate,
-  useOutletContext,
-  useParams,
-} from "react-router-dom";
+import { Avatar, Box, Typography } from "@mui/material";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import {
   About,
   Contact,
   Courses,
+  EmploymentForm,
   Home,
   NavigationBar,
 } from "../../../components/lazyLoading/LazyComponents";
-import { Blogs } from "../../../components/lazyLoading/admin/AdminLazyLoadingComponents";
 import {
   Login,
   LoginOptions,
   SignUpContainer,
-  UserSignUp,
 } from "../../../components/lazyLoading/auth/AuthLazyComponents";
-import { getAuthUser } from "../../../features/auth/authSlice";
-import { useSelector } from "react-redux";
+import SearchForm from "../../../components/searchForm/SearchForm";
 
 export function GuestPageLayout() {
-  const authUser = useSelector(getAuthUser);
   const { currentGuestPage } = useParams();
   const navigate = useNavigate();
   const {
@@ -40,18 +31,9 @@ export function GuestPageLayout() {
     openSignUpActions,
     setOpenMenuLinks,
     openMenuLinks,
+    openSearchModal,
+    setOpenSearchModal,
   } = useOutletContext();
-
-  const [fixedNavbar, setFixedNavbar] = useState(false);
-  //FUNCTION TO CHECK PAGE SCROLL
-  const detectPageScroll = () => {
-    if (window.scrollY >= 25) {
-      setFixedNavbar(true);
-    } else {
-      setFixedNavbar(false);
-    }
-  };
-  window.addEventListener("scroll", detectPageScroll);
 
   return (
     <Box>
@@ -118,6 +100,8 @@ export function GuestPageLayout() {
           setCurrentAction={setCurrentAction}
           currentLink={currentLink}
           setCurrentLink={setCurrentLink}
+          openSearchModal={openSearchModal}
+          setOpenSearchModal={setOpenSearchModal}
         />
       </Box>
       {currentGuestPage === "homepage" && <Home />}
@@ -127,6 +111,7 @@ export function GuestPageLayout() {
       {currentGuestPage === "sign_up" && <SignUpContainer />}
       {currentGuestPage === "login" && <Login />}
       {currentGuestPage === "login_options" && <LoginOptions />}
+      {currentGuestPage === "new_employment" && <EmploymentForm />}
     </Box>
   );
 }

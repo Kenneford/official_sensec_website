@@ -132,7 +132,7 @@ export function AdminSidebar({
         component={"div"}
         id="sidebarContentWrap"
         sx={{
-          padding: isSidebarOpen ? "0 1rem" : "0 .5rem",
+          padding: hovered ? "0 1rem" : "0 .5rem",
         }}
       >
         {/* Sidebar content */}
@@ -211,4 +211,5 @@ AdminSidebar.propTypes = {
   setCurrentAction: PropTypes.func,
   setCurrentLink: PropTypes.func,
   navbar: PropTypes.bool,
+  hovered: PropTypes.bool,
 };

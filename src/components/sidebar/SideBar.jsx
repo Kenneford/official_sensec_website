@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 // import { AdminSidebar } from "../lazyLoading/admin/AdminLazyLoadingComponents";
 // import AdminSidebar from "./admin/AdminSidebar";
 
-export default function SideBar({
+export function SideBar({
   isSidebarOpen,
   setSidebarOpen,
   toggleSidebar,
@@ -19,7 +19,6 @@ export default function SideBar({
   setCurrentLink,
 }) {
   const authUser = useSelector(getAuthUser);
-  console.log(isSidebarOpen);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [hovered, setHovered] = useState(false);

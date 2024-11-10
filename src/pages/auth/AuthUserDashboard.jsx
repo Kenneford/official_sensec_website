@@ -17,6 +17,8 @@ export function AuthUserDashboard() {
     openSignUpActions,
     setOpenMenuLinks,
     openMenuLinks,
+    openSearchModal,
+    setOpenSearchModal,
   } = useOutletContext();
   return (
     <Outlet
@@ -35,6 +37,8 @@ export function AuthUserDashboard() {
         openSignUpActions,
         setOpenMenuLinks,
         openMenuLinks,
+        openSearchModal,
+        setOpenSearchModal,
       }}
     />
   );

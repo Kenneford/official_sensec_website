@@ -83,6 +83,14 @@ export const EnrollmentPage = lazyWithSuspense(
   <PageLoading />,
   "EnrollmentPage"
 );
+export const EmploymentForm = lazyWithSuspense(
+  () =>
+    import("../../pages/employment/EmploymentForm").then((module) => {
+      return { default: module.EmploymentForm };
+    }),
+  <PageLoading />,
+  "EmploymentPage"
+);
 export const StudentPlacementCheck = lazyWithSuspense(
   () =>
     import("../../pages/enrollment/placementCheck/StudentPlacementCheck").then(
@@ -138,6 +146,14 @@ export const FrequentlyAskedQuestions = lazyWithSuspense(
     }),
   <PageLoading />,
   "FrequentlyAskedQuestions"
+);
+export const SearchModal = lazyWithSuspense(
+  () =>
+    import("../../modals/SearchModal").then((module) => {
+      return { default: module.SearchModal };
+    }),
+  <PageLoading />,
+  "SearchModalComponent"
 );
 // For Admin
 export const AdminDashboard = lazyWithSuspense(

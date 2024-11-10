@@ -38,15 +38,6 @@ if (getUserToken) {
     initialState.authenticated = true;
   }
 }
-// Get refresh-token from local storage
-// const getRefreshToken = localStorage.getItem("refreshToken");
-// if (getRefreshToken) {
-//   const getUserInfo = tokenDecoded(getRefreshToken);
-//   if (getUserInfo) {
-//     initialState.authUser = getUserInfo;
-//     initialState.authenticated = true;
-//   }
-// }
 
 export const userSignUp = createAsyncThunk(
   "Auth/userSignUp",
@@ -104,7 +95,7 @@ export const fetchAllUsers = createAsyncThunk(
   async (rejectWithValue) => {
     try {
       const res = await axios.get(`${SENSEC_API_ENDPOINT}/users/fetch_all`);
-      //   console.log(res.data);
+      console.log(res.data);
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -181,7 +172,6 @@ const authSlice = createSlice({
     builder.addCase(userLogin.fulfilled, (state, action) => {
       if (action.payload) {
         const user = tokenDecoded(action.payload.token);
-        localStorage?.setItem("Login-Token", action.payload.token);
         return {
           ...state,
           authUser: user,
@@ -204,7 +194,6 @@ const authSlice = createSlice({
     builder.addCase(refreshSessionToken.fulfilled, (state, action) => {
       if (action.payload) {
         const user = tokenDecoded(action.payload.newToken);
-        localStorage?.setItem("Refresh-Token: L-204", action.payload.newToken);
         return {
           ...state,
           authUser: user,

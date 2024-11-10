@@ -7,6 +7,7 @@ import {
   AdminDashboard,
   Contact,
   Courses,
+  EmploymentForm,
   EnrollmentPage,
   FrequentlyAskedQuestions,
   Home,
@@ -76,6 +77,10 @@ export default function PageNavigation() {
                 {
                   path: ":signUpAction",
                   element: <SignUpContainer />,
+                },
+                {
+                  path: "new_employment",
+                  element: <EmploymentForm />,
                 },
                 { path: "*", element: <PageNotFound /> },
               ],
@@ -159,6 +164,10 @@ export default function PageNavigation() {
                     {
                       path: "new_enrollment",
                       element: <EnrollmentForm />,
+                    },
+                    {
+                      path: "new_employment",
+                      element: <EmploymentForm />,
                     },
                     {
                       path: "new_enrollment/parent/add",
