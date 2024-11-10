@@ -710,6 +710,17 @@ export function EnrollmentForm() {
                   required
                 />
               </Grid>
+              {/* House Address */}
+              <Grid item xs={12} sm={6} md={4} lg={4}>
+                <CustomTextField
+                  fullWidth
+                  label="House Address"
+                  name="residentialAddress"
+                  value={newStudent?.residentialAddress}
+                  onChange={handleChange}
+                  required
+                />
+              </Grid>
               {/* District */}
               <Grid item xs={12} sm={6} md={4} lg={4}>
                 <CustomTextField
