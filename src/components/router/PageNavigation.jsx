@@ -26,6 +26,7 @@ import {
 } from "../lazyLoading/auth/AuthLazyComponents";
 import {
   AdminAttendance,
+  AdminsDataUpdateForm,
   ClassLevelLecturers,
   ClassLevelProgrammeStudents,
   ClassLevelStudentsContainer,
@@ -39,6 +40,7 @@ import {
   GuardianForm,
   ParentForm,
   StudentDashboard,
+  StudentDataUpdateForm,
 } from "../lazyLoading/student/StudentsLazyLoadingComponents";
 import { useSelector } from "react-redux";
 import { getAuthUser } from "../../features/auth/authSlice";
@@ -164,6 +166,14 @@ export default function PageNavigation() {
                     {
                       path: "new_enrollment",
                       element: <EnrollmentForm />,
+                    },
+                    {
+                      path: "student_update",
+                      element: <StudentDataUpdateForm />,
+                    },
+                    {
+                      path: "admin_update",
+                      element: <AdminsDataUpdateForm />,
                     },
                     {
                       path: "new_employment",

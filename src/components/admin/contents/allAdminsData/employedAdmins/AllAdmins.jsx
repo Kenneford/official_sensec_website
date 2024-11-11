@@ -32,10 +32,10 @@ export function AllAdmins() {
       admin.personalInfo.lastName.includes(searchAdmin)
     );
   });
-  const adminsData = adminsColumn();
+  const adminsData = adminsColumn(authAdmin);
   const [currentActionBtn, setCurrentActionBtn] = useState("");
   // const [searchAdmin, setSearchAdmin] = useState("");
-  const [redirecting, setRedirecting] = useState("");
+  const [redirecting, setRedirecting] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [uncompletedEmploymentTask, setUncompletedEmploymentTask] =
     useState("");

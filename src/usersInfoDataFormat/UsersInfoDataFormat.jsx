@@ -35,6 +35,7 @@ import { SENSEC_API_ENDPOINT } from "../apiEndPoint/api";
 import ApproveEmploymentModal from "../components/approvalModal/ApproveEmploymentModal";
 
 const adminsColumn = (
+  authAdmin,
   setCurrentStudentId,
   currentStudentId,
   loadingComplete,
@@ -150,7 +151,7 @@ const adminsColumn = (
           {row?.employment?.employmentStatus === "approved" && (
             <Link
               className="editLink"
-              to={`/sensec/admin/Users/Admins/${row.personalInfo?.firstName}_${row.personalInfo?.lastName}/${row.uniqueId}/update`}
+              to={`/sensec/users/${authAdmin.uniqueId}/admin/Admins/${row.uniqueId}/admin_update`}
             >
               <EditIcon />
             </Link>
@@ -1226,7 +1227,7 @@ const studentsColumn = (
       selector: (row) => (
         <Link
           className="editLink"
-          to={`/sensec/admin/${adminCurrentAction}/${adminCurrentLink}/${row.personalInfo?.firstName}_${row.personalInfo?.lastName}/${row.uniqueId}/update`}
+          to={`/sensec/users/${authAdmin.uniqueId}/admin/Students/${row.uniqueId}/student_update`}
         >
           <EditIcon />
         </Link>
