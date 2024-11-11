@@ -22,9 +22,7 @@ export function PendingAdmins() {
   const allUsers = [];
   // const { approveAdminStatus, approveAdminSuccessMessage, approveAdminError } =
   //   useSelector((state) => state.admin);
-  console.log(allUsers);
   const { adminCurrentAction, adminCurrentLink, employees_link } = useParams();
-  console.log(adminCurrentLink);
   const [currentAdmin, setCurrentAdmin] = useState("");
   const [loadingComplete, setLoadingComplete] = useState(null);
   const [searchAdmin, setSearchAdmin] = useState("");
@@ -45,7 +43,6 @@ export function PendingAdmins() {
   const foundAdmin = allPendingAdmins?.find(
     (user) => user._id === currentAdmin
   );
-  console.log(allFoundPendingAdmins);
   const [currentActionBtn, setCurrentActionBtn] = useState(
     "Hanging Employments"
   );

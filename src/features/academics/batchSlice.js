@@ -19,7 +19,6 @@ export const createBatch = createAsyncThunk(
         `${SENSEC_API_ENDPOINT}/admin/academics/batches/create`,
         data
       );
-      console.log(res.data);
       return res.data;
     } catch (error) {
       console.log(error.response.data);
@@ -35,7 +34,6 @@ export const fetchAllBatches = createAsyncThunk(
       `${SENSEC_API_ENDPOINT}/academics/batches/fetch_all`
     );
     // const students = response.data;
-    console.log(response.data);
     return response.data;
   }
 );

@@ -38,7 +38,6 @@ export const createClassLevelSection = createAsyncThunk(
           createdBy,
         }
       );
-      console.log(res.data);
       return res.data;
     } catch (error) {
       console.log(error.response.data);
@@ -67,7 +66,6 @@ export const fetchSingleClassLevelSection = createAsyncThunk(
     const res = await axios.get(
       `${SENSEC_API_ENDPOINT}/admin/academics/single_class_section/${classLevelName}/${sectionName}`
     );
-    console.log(res.data);
     return res.data;
   }
 );
@@ -98,7 +96,6 @@ export const updateClassLevelSection = createAsyncThunk(
           lastUpdatedBy,
         }
       );
-      console.log(res.data);
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -113,7 +110,6 @@ export const removeClassSectionLecturer = createAsyncThunk(
       const res = await axios.put(
         `${SENSEC_API_ENDPOINT}/admin/${adminId}/academics/class_section/lecturer/${lecturerId}/remove`
       );
-      console.log(res.data);
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response.data);

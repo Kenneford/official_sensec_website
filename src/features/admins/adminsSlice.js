@@ -77,7 +77,6 @@ export const adminUpdate = createAsyncThunk(
         },
         { headers: { Authorization: `Bearer ${accessToken}` } }
       );
-      console.log(res.data);
       return res.data;
     } catch (error) {
       console.log(error.response.data);
@@ -99,7 +98,6 @@ export const approveAdminEmployment = createAsyncThunk(
         },
         { headers: { Authorization: `Bearer ${accessToken}` } }
       );
-      console.log(res.data);
       return res.data;
     } catch (error) {
       console.log(error.response.data);

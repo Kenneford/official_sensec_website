@@ -13,7 +13,6 @@ import { Box } from "@mui/material";
 
 export function UserTypesContainer() {
   const { employees_link, adminCurrentLink } = useParams();
-  console.log(adminCurrentLink);
   return (
     <Box>
       <Box>

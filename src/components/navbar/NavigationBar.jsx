@@ -117,7 +117,6 @@ export function NavigationBar({
   const authUser = useSelector(getAuthUser);
   const allUsers = useSelector(getAllUsers);
   const { currentGuestPage } = useParams();
-  console.log(openSearchModal);
 
   const otherLinks = [
     {

@@ -95,7 +95,6 @@ export const fetchAllUsers = createAsyncThunk(
   async (rejectWithValue) => {
     try {
       const res = await axios.get(`${SENSEC_API_ENDPOINT}/users/fetch_all`);
-      console.log(res.data);
       return res.data;
     } catch (error) {
       return rejectWithValue(error.response.data);

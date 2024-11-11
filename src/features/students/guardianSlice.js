@@ -21,10 +21,8 @@ export const AddStudentGuardian = createAsyncThunk(
           guardianData,
         }
       );
-      console.log(res.data);
       return res.data;
     } catch (error) {
-      console.log(error.response.data);
       return rejectWithValue(error.response.data);
     }
   }
@@ -58,10 +56,8 @@ export const studentGuardianUpdate = createAsyncThunk(
           updatedDate,
         }
       );
-      console.log(res.data);
       return res.data;
     } catch (error) {
-      console.log(error.response.data);
       return rejectWithValue(error.response.data);
     }
   }

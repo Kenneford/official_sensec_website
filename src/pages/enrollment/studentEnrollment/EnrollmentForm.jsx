@@ -51,6 +51,7 @@ export function EnrollmentForm() {
   const { enrollmentStatus, error, successMessage } = useSelector(
     (state) => state.student
   );
+  console.log(studentIndexNo);
 
   //Get current year and random number for student's unique-Id
   const currentYear = new Date().getFullYear();
@@ -126,9 +127,6 @@ export function EnrollmentForm() {
     mobile: "",
     email: "",
   });
-  console.log(newStudent);
-  console.log(new Date(newStudent?.dateOfBirth).toDateString());
-  console.log(allDivisionProgrammes);
 
   // Find student's programme
   const studentProgramme = allProgrammes?.find(
@@ -211,7 +209,7 @@ export function EnrollmentForm() {
   const psDOB = newStudent?.dateOfBirth
     ? new Date(newStudent?.dateOfBirth).toISOString()
     : "";
-  console.log(psDOB);
+
   // Handle enrollment
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -220,7 +218,6 @@ export function EnrollmentForm() {
       dateOfBirth: psDOB,
     };
     dispatch(studentEnrollment(data));
-    console.log(data);
   };
   // Find placement student
   const memoizedPlacementStudentData = useMemo(() => {
@@ -229,7 +226,6 @@ export function EnrollmentForm() {
     );
     return placementStudentFound;
   }, [allPlacementStudents, newStudent]);
-  console.log(memoizedPlacementStudentData);
 
   // Fetch needed data
   useEffect(() => {

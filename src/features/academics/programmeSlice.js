@@ -23,7 +23,6 @@ export const createProgramme = createAsyncThunk(
         `${SENSEC_API_ENDPOINT}/academics/programme/create`,
         program
       );
-      console.log(res.data);
       return res.data;
     } catch (error) {
       console.log(error.response.data);
@@ -38,7 +37,6 @@ export const fetchAllProgrammes = createAsyncThunk(
     const response = await axios.get(
       `${SENSEC_API_ENDPOINT}/academics/programmes/fetch_all`
     );
-    console.log(response.data);
     return response.data;
   }
 );
@@ -50,7 +48,6 @@ export const fetchAllDivisionProgrammes = createAsyncThunk(
       const response = await axios.get(
         `${SENSEC_API_ENDPOINT}/academics/programs/${programId}/divisions/fetch_all`
       );
-      console.log(response.data);
       return response.data;
     } catch (error) {
       console.log(error.response.data);
@@ -66,7 +63,6 @@ export const fetchSingleProgram = createAsyncThunk(
         `${SENSEC_API_ENDPOINT}/admin/academics/single_program/${programName}`
       );
       // const students = response.data;
-      console.log(response.data);
       return response.data;
     } catch (error) {
       console.log(error.response.data);
@@ -85,7 +81,6 @@ export const updateProgram = createAsyncThunk(
         { name, lastUpdatedBy },
         { headers: { Authorization: `Bearer ${accessToken}` } }
       );
-      console.log(response.data);
       return response.data;
     } catch (error) {
       console.log(error.response.data);
@@ -103,7 +98,6 @@ export const deleteProgram = createAsyncThunk(
       const response = await axios.delete(
         `${SENSEC_API_ENDPOINT}/admin/academics/delete_program/${id}/${deletedBy}`
       );
-      console.log(response.data);
       return response.data;
     } catch (error) {
       console.log(error.response.data);

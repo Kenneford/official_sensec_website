@@ -5,7 +5,6 @@ import { Box, Typography } from "@mui/material";
 import PropType from "prop-types";
 
 export default function SearchFilter({ value, onChange, placeholder }) {
-  console.log(value);
   // const dispatch = useDispatch();
   const handleSearch = (e) => {
     e.preventDefault();

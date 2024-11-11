@@ -19,12 +19,10 @@ const initialState = {
 export const newEmployee = createAsyncThunk(
   "Employment/newEmployee",
   async (employeeData, { rejectWithValue }) => {
-    console.log(employeeData);
     try {
       const res = await axios.post(`${SENSEC_API_ENDPOINT}/employment/new`, {
         employeeData,
       });
-      console.log(res.data);
       return res.data;
     } catch (error) {
       console.log(error.response.data);
