@@ -10,15 +10,18 @@ import { customUserTableStyle } from "../../../../../usersInfoDataFormat/usersIn
 import { AllEmployedLecturersPageQuickLinks } from "../../../../../linksFormat/LinksFormat";
 import { Box, Grid } from "@mui/material";
 import { getAuthUser } from "../../../../../features/auth/authSlice";
+import { pendingTeachersColumn } from "../../../../../usersInfoDataFormat/UsersInfoDataFormat";
+import { FetchAllPendingLecturers } from "../../../../../data/lecturers/FetchLecturers";
+import SearchFilter from "../../../../searchForm/SearchFilter";
 
 export function PendingLecturers() {
   const authAdmin = useSelector(getAuthUser);
+  const allPendingLecturers = FetchAllPendingLecturers();
   const currentEmployeeLink = localStorage.getItem("currentEmployeeLink");
   const navigate = useNavigate();
   const actionBtns = AllEmployedLecturersPageQuickLinks();
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const userInfo = {};
-  const allPendingLecturers = [];
   const allClassLevels = [
     {
       name: "Level 100",
@@ -63,18 +66,18 @@ export function PendingLecturers() {
   const [openApproveEmploymentModal, setOpenApproveEmploymentModal] =
     useState(false);
 
-  // const teachersData = pendingTeachersColumn(
-  //   setCurrentLecturer,
-  //   loadingComplete,
-  //   setLoadingComplete,
-  //   toast,
-  //   dispatch,
-  //   userInfo,
-  //   foundLecturer,
-  //   approveTeacherEmploymentStatus,
-  //   openApproveEmploymentModal,
-  //   setOpenApproveEmploymentModal
-  // );
+  const teachersData = pendingTeachersColumn(
+    setCurrentLecturer,
+    loadingComplete,
+    setLoadingComplete,
+    toast,
+    dispatch,
+    userInfo,
+    foundLecturer,
+    // approveTeacherEmploymentStatus,
+    openApproveEmploymentModal,
+    setOpenApproveEmploymentModal
+  );
 
   const handleNewEmployment = () => {
     setRedirecting(true);
@@ -147,6 +150,14 @@ export function PendingLecturers() {
           {adminCurrentAction?.replace(/_/g, "-")} /{" "}
           <span>{adminCurrentLink?.replace(/_/g, " ")}</span>
         </h1>
+        {/* Main search bar */}
+        <Box sx={{ display: { xs: "none", sm: "block" } }}>
+          <SearchFilter
+            value={searchTeacher}
+            onChange={setSearchTeacher}
+            placeholder={"Search"}
+          />
+        </Box>
       </Box>
       <Box
         className="allAdminsData"
@@ -277,10 +288,10 @@ export function PendingLecturers() {
             ))}
           </Grid>
         </Box>
-        <Box>
+        <Box className="lecturerDataTable">
           <DataTable
             title={allStd}
-            // columns={adminsData}
+            columns={teachersData}
             data={pendingLecturers}
             customStyles={customUserTableStyle}
             pagination

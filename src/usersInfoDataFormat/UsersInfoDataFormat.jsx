@@ -30,156 +30,160 @@ import { Box } from "@mui/material";
 import { approvedStudentEnrollment } from "../features/students/studentsSlice";
 import ApproveEnrollmentModal from "../components/approvalModal/ApproveEnrollmentModal";
 import RejectEnrollmentModal from "../components/approvalModal/RejectionModal";
+import Redirection from "../components/pageLoading/Redirection";
+import { SENSEC_API_ENDPOINT } from "../apiEndPoint/api";
+import ApproveEmploymentModal from "../components/approvalModal/ApproveEmploymentModal";
 
-// const adminsColumn = (
-//   setCurrentStudentId,
-//   currentStudentId,
-//   loadingComplete,
-//   redirecting
-// ) => {
-//   const hangingAdminsColumn = [
-//     {
-//       name: "Image",
-//       selector: (row) =>
-//         row?.personalInfo?.profilePicture ? (
-//           <HashLink
-//             to={`/sensec/admin/Users/Admins/${row?.personalInfo?.firstName.replace(
-//               / /g,
-//               "_"
-//             )}_${row?.personalInfo?.lastName}/${
-//               row?.uniqueId
-//             }/admin_info#studentInfo`}
-//             title="View Admin Info"
-//           >
-//             <img
-//               className="studentImg"
-//               src={
-//                 row?.personalInfo
-//                   ? row?.personalInfo?.profilePicture?.url
-//                   : row?.personalInfo?.profilePicture
-//               }
-//               alt=""
-//             />
-//           </HashLink>
-//         ) : (
-//           <HashLink
-//             className="noImgLink"
-//             to={`/sensec/admin/Users/Admins/${row?.personalInfo?.firstName}_${row?.personalInfo?.lastName}/${row?.personalInfo?.uniqueId}/admin_info#studentInfo`}
-//             title="View Admin Info"
-//           >
-//             {row?.personalInfo?.gender === "Male" && (
-//               <img
-//                 className="studentImg"
-//                 src={"/assets/maleAvatar.png"}
-//                 alt=""
-//               />
-//             )}
-//             {row?.personalInfo?.gender === "Female" && (
-//               <img
-//                 className="studentImg"
-//                 src={"/assets/femaleAvatar.png"}
-//                 alt=""
-//               />
-//             )}
-//             {row?.personalInfo?.gender === "" && (
-//               <div className="noImg">
-//                 <p>No</p>
-//                 <p>Image</p>
-//               </div>
-//             )}
-//           </HashLink>
-//         ),
-//     },
-//     {
-//       name: "First Name",
-//       selector: (row) => row?.personalInfo?.firstName,
-//       sortable: true,
-//     },
-//     { name: "Surname", selector: (row) => row?.personalInfo?.lastName },
-//     {
-//       name: "Date Of Birth",
-//       selector: (row) => (
-//         <p
-//           title={dateFormatter.format(
-//             new Date(
-//               row?.personalInfo?.dateOfBirth
-//                 ? row?.personalInfo?.dateOfBirth
-//                 : "---"
-//             )
-//           )}
-//         >
-//           {dateFormatter.format(
-//             new Date(
-//               row?.personalInfo?.dateOfBirth
-//                 ? row?.personalInfo?.dateOfBirth
-//                 : "---"
-//             )
-//           )}
-//         </p>
-//       ),
-//     },
-//     {
-//       name: "Unique-ID",
-//       selector: (row) => <p title={row?.uniqueId}>{row?.uniqueId}</p>,
-//       sortable: true,
-//     },
-//     {
-//       name: "Email",
-//       selector: (row) => (
-//         <p title={row?.contactAddress?.email}>
-//           {row?.contactAddress?.email ? row?.contactAddress?.email : "---"}
-//         </p>
-//       ),
-//     },
-//     {
-//       name: "Date Employed",
-//       selector: (row) =>
-//         !row?.employment?.employmentApprovedDate
-//           ? "---"
-//           : dateFormatter?.format(
-//               new Date(row?.employment?.employmentApprovedDate)
-//             ),
-//     },
-//     {
-//       name: "Update",
-//       selector: (row) => (
-//         <>
-//           {row?.employment?.employmentStatus === "approved" && (
-//             <Link
-//               className="editLink"
-//               to={`/sensec/admin/Users/Admins/${row.personalInfo?.firstName}_${row.personalInfo?.lastName}/${row.uniqueId}/update`}
-//             >
-//               <EditIcon />
-//             </Link>
-//           )}
-//           {row?.employment?.employmentStatus === "in progress" && (
-//             <Link
-//               className="editLink"
-//               onClick={async () => {
-//                 setCurrentStudentId(row);
-//               }}
-//             >
-//               {currentStudentId && currentStudentId?._id === row?._id && (
-//                 <>
-//                   {loadingComplete === false && "Processing..."}
-//                   {loadingComplete &&
-//                     currentStudentId?._id === row?._id &&
-//                     redirecting && <Redirection color={"#555"} size={"1rem"} />}
-//                 </>
-//               )}
-//               <>
-//                 {loadingComplete === null && <EditIcon />}
-//                 {row?._id !== currentStudentId?._id &&
-//                   loadingComplete !== null && <EditIcon />}
-//               </>
-//             </Link>
-//           )}
-//         </>
-//       ),
-//     },
-//   ];
-//   return hangingAdminsColumn;
-// };
+const adminsColumn = (
+  authAdmin,
+  setCurrentStudentId,
+  currentStudentId,
+  loadingComplete,
+  redirecting
+) => {
+  const hangingAdminsColumn = [
+    {
+      name: "Image",
+      selector: (row) =>
+        row?.personalInfo?.profilePicture ? (
+          <HashLink
+            to={`/sensec/admin/Users/Admins/${row?.personalInfo?.firstName.replace(
+              / /g,
+              "_"
+            )}_${row?.personalInfo?.lastName}/${
+              row?.uniqueId
+            }/admin_info#studentInfo`}
+            title="View Admin Info"
+          >
+            <img
+              className="studentImg"
+              src={
+                row?.personalInfo
+                  ? row?.personalInfo?.profilePicture?.url
+                  : row?.personalInfo?.profilePicture
+              }
+              alt=""
+            />
+          </HashLink>
+        ) : (
+          <HashLink
+            className="noImgLink"
+            to={`/sensec/admin/Users/Admins/${row?.personalInfo?.firstName}_${row?.personalInfo?.lastName}/${row?.personalInfo?.uniqueId}/admin_info#studentInfo`}
+            title="View Admin Info"
+          >
+            {row?.personalInfo?.gender === "Male" && (
+              <img
+                className="studentImg"
+                src={"/assets/maleAvatar.png"}
+                alt=""
+              />
+            )}
+            {row?.personalInfo?.gender === "Female" && (
+              <img
+                className="studentImg"
+                src={"/assets/femaleAvatar.png"}
+                alt=""
+              />
+            )}
+            {row?.personalInfo?.gender === "" && (
+              <div className="noImg">
+                <p>No</p>
+                <p>Image</p>
+              </div>
+            )}
+          </HashLink>
+        ),
+    },
+    {
+      name: "First Name",
+      selector: (row) => row?.personalInfo?.firstName,
+      sortable: true,
+    },
+    { name: "Surname", selector: (row) => row?.personalInfo?.lastName },
+    {
+      name: "Date Of Birth",
+      selector: (row) => (
+        <p
+          title={dateFormatter.format(
+            new Date(
+              row?.personalInfo?.dateOfBirth
+                ? row?.personalInfo?.dateOfBirth
+                : "---"
+            )
+          )}
+        >
+          {dateFormatter.format(
+            new Date(
+              row?.personalInfo?.dateOfBirth
+                ? row?.personalInfo?.dateOfBirth
+                : "---"
+            )
+          )}
+        </p>
+      ),
+    },
+    {
+      name: "Unique-ID",
+      selector: (row) => <p title={row?.uniqueId}>{row?.uniqueId}</p>,
+      sortable: true,
+    },
+    {
+      name: "Email",
+      selector: (row) => (
+        <p title={row?.contactAddress?.email}>
+          {row?.contactAddress?.email ? row?.contactAddress?.email : "---"}
+        </p>
+      ),
+    },
+    {
+      name: "Date Employed",
+      selector: (row) =>
+        !row?.employment?.employmentApprovedDate
+          ? "---"
+          : dateFormatter?.format(
+              new Date(row?.employment?.employmentApprovedDate)
+            ),
+    },
+    {
+      name: "Update",
+      selector: (row) => (
+        <>
+          {row?.employment?.employmentStatus === "approved" && (
+            <Link
+              className="editLink"
+              to={`/sensec/users/${authAdmin.uniqueId}/admin/Admins/${row.uniqueId}/admin_update`}
+            >
+              <EditIcon />
+            </Link>
+          )}
+          {row?.employment?.employmentStatus === "in progress" && (
+            <Link
+              className="editLink"
+              onClick={async () => {
+                setCurrentStudentId(row);
+              }}
+            >
+              {currentStudentId && currentStudentId?._id === row?._id && (
+                <>
+                  {loadingComplete === false && "Processing..."}
+                  {loadingComplete &&
+                    currentStudentId?._id === row?._id &&
+                    redirecting && <Redirection color={"#555"} size={"1rem"} />}
+                </>
+              )}
+              <>
+                {loadingComplete === null && <EditIcon />}
+                {row?._id !== currentStudentId?._id &&
+                  loadingComplete !== null && <EditIcon />}
+              </>
+            </Link>
+          )}
+        </>
+      ),
+    },
+  ];
+  return hangingAdminsColumn;
+};
 // const hangingAdminsColumn = (
 //   setCurrentStudentId,
 //   currentStudentId,
@@ -312,234 +316,234 @@ import RejectEnrollmentModal from "../components/approvalModal/RejectionModal";
 //   ];
 //   return hangingAdminsColumn;
 // };
-// const pendingAdminsColumn = (
-//   setCurrentAdmin,
-//   loadingComplete,
-//   setLoadingComplete,
-//   toast,
-//   dispatch,
-//   userInfo,
-//   foundAdmin,
-//   approveAdminStatus,
-//   openApproveEmploymentModal,
-//   setOpenApproveEmploymentModal
-// ) => {
-//   const pendingAdminsColumn = [
-//     {
-//       name: "Image",
-//       selector: (row) =>
-//         row?.personalInfo?.profilePicture ? (
-//           <HashLink
-//             to={`/sensec/admin/Users/Admins/${row?.personalInfo?.firstName.replace(
-//               / /g,
-//               "_"
-//             )}_${row?.personalInfo?.lastName}/${
-//               row?.uniqueId
-//             }/admin_info#studentInfo`}
-//             title="View Admin Info"
-//           >
-//             <img
-//               className="studentImg"
-//               src={
-//                 row?.personalInfo
-//                   ? row?.personalInfo?.profilePicture?.url
-//                   : row?.personalInfo?.profilePicture
-//               }
-//               alt=""
-//             />
-//           </HashLink>
-//         ) : (
-//           <HashLink
-//             className="noImgLink"
-//             to={`/sensec/admin/Users/Admins/${row?.personalInfo?.firstName}_${row?.personalInfo?.lastName}/${row?.personalInfo?.uniqueId}/admin_info#studentInfo`}
-//             title="View Admin Info"
-//           >
-//             {row?.personalInfo?.gender === "Male" && (
-//               <img
-//                 className="studentImg"
-//                 src={"/assets/maleAvatar.png"}
-//                 alt=""
-//               />
-//             )}
-//             {row?.personalInfo?.gender === "Female" && (
-//               <img
-//                 className="studentImg"
-//                 src={"/assets/femaleAvatar.png"}
-//                 alt=""
-//               />
-//             )}
-//             {row?.personalInfo?.gender === "" && (
-//               <div className="noImg">
-//                 <p>No</p>
-//                 <p>Image</p>
-//               </div>
-//             )}
-//           </HashLink>
-//         ),
-//     },
-//     {
-//       name: "First Name",
-//       selector: (row) => row?.personalInfo?.firstName,
-//       sortable: true,
-//     },
-//     { name: "Surname", selector: (row) => row?.personalInfo?.lastName },
-//     {
-//       name: "Date Of Birth",
-//       selector: (row) => (
-//         <p
-//           title={dateFormatter.format(
-//             new Date(
-//               row?.personalInfo?.dateOfBirth
-//                 ? row?.personalInfo?.dateOfBirth
-//                 : "---"
-//             )
-//           )}
-//         >
-//           {dateFormatter.format(
-//             new Date(
-//               row?.personalInfo?.dateOfBirth
-//                 ? row?.personalInfo?.dateOfBirth
-//                 : "---"
-//             )
-//           )}
-//         </p>
-//       ),
-//     },
-//     {
-//       name: "Unique-ID",
-//       selector: (row) => <p title={row?.uniqueId}>{row?.uniqueId}</p>,
-//       sortable: true,
-//     },
-//     {
-//       name: "Email",
-//       selector: (row) => (
-//         <p title={row?.contactAddress?.email}>
-//           {row?.contactAddress?.email ? row?.contactAddress?.email : "---"}
-//         </p>
-//       ),
-//     },
-//     {
-//       name: "Date Processed",
-//       selector: (row) =>
-//         !row?.employment?.employmentProcessedDate
-//           ? "---"
-//           : dateFormatter?.format(
-//               new Date(row?.employment?.employmentProcessedDate)
-//             ),
-//     },
-//     {
-//       name: "Update",
-//       selector: (row) => (
-//         <Link
-//           className="editLink"
-//           to={`/sensec/admin/Users/Admins/${row.personalInfo?.firstName}_${row.personalInfo?.lastName}/${row.uniqueId}/update`}
-//         >
-//           <EditIcon />
-//         </Link>
-//       ),
-//     },
-//     {
-//       name: "Approve",
-//       selector: (row) =>
-//         row?.employment?.employmentStatus === "pending" && (
-//           <>
-//             <HashLink
-//               className="approveLink"
-//               onClick={async () => {
-//                 setCurrentAdmin(row?._id);
-//                 setOpenApproveEmploymentModal(true);
-//                 // dispatch(
-//                 //   approveAdminEmployment({
-//                 //     userUniqueId: row?.uniqueId,
-//                 //     employmentApprovedBy: `${userInfo?.id}`,
-//                 //     // enrolmentApprovementDate: date,
-//                 //   })
-//                 // );
-//               }}
-//             >
-//               {foundAdmin && foundAdmin._id === row._id && (
-//                 <>
-//                   {loadingComplete === false && "Processing..."}
-//                   {loadingComplete && approveAdminStatus === "success" && (
-//                     <>
-//                       <span>Approved</span> <TaskAltIcon />
-//                     </>
-//                   )}
-//                 </>
-//               )}
-//               <>
-//                 {loadingComplete === null && (
-//                   <HowToRegIcon
-//                     titleAccess="Approve Employment"
-//                     style={{ fontSize: "2rem" }}
-//                   />
-//                 )}
-//                 {row?._id !== foundAdmin?._id && loadingComplete !== null && (
-//                   <HowToRegIcon
-//                     titleAccess="Approve Employment"
-//                     style={{ fontSize: "2rem" }}
-//                   />
-//                 )}
-//               </>
-//             </HashLink>
-//             {foundAdmin && foundAdmin._id === row._id && (
-//               <ApproveEmploymentModal
-//                 open={openApproveEmploymentModal}
-//                 onClose={() => setOpenApproveEmploymentModal(false)}
-//                 approveEmploymentmentFunction={approveAdminEmployment({
-//                   adminUniqueId: row?.uniqueId,
-//                   employmentApprovedBy: `${userInfo?.id}`,
-//                   // enrolmentApprovementDate: date,
-//                 })}
-//                 setLoadingComplete={setLoadingComplete}
-//                 dispatch={dispatch}
-//                 setCurrentUser={setCurrentAdmin}
-//                 currentUserId={row?._id}
-//               />
-//             )}
-//           </>
-//         ),
-//     },
-//     {
-//       name: "Reject",
-//       selector: (row) =>
-//         row?.employment?.employmentStatus === "pending" && (
-//           <HashLink
-//             className="rejectLink"
-//             onClick={async () => {
-//               try {
-//                 const res = await axios.delete(
-//                   `${API_ENDPOINT}/admin/reject_student_application/${row._id}`
-//                 );
-//                 if (res) {
-//                   toast.success("Student disapproved successfully...", {
-//                     position: "top-right",
-//                     theme: "dark",
-//                     // toastId: successId,
-//                   });
-//                   setTimeout(() => {
-//                     window.location.reload();
-//                   }, 5000);
-//                 }
-//               } catch (error) {
-//                 toast.error("Student disapproved failed! Try again later", {
-//                   position: "top-right",
-//                   theme: "light",
-//                   // toastId: successId,
-//                 });
-//               }
-//             }}
-//           >
-//             <PersonRemoveIcon
-//               titleAccess="Reject Employment"
-//               style={{ fontSize: "2rem" }}
-//             />
-//           </HashLink>
-//         ),
-//     },
-//   ];
-//   return pendingAdminsColumn;
-// };
+const pendingAdminsColumn = (
+  setCurrentAdmin,
+  loadingComplete,
+  setLoadingComplete,
+  toast,
+  dispatch,
+  userInfo,
+  foundAdmin,
+  // approveAdminStatus,
+  openApproveEmploymentModal,
+  setOpenApproveEmploymentModal
+) => {
+  const pendingAdminsColumn = [
+    {
+      name: "Image",
+      selector: (row) =>
+        row?.personalInfo?.profilePicture ? (
+          <HashLink
+            to={`/sensec/admin/Users/Admins/${row?.personalInfo?.firstName.replace(
+              / /g,
+              "_"
+            )}_${row?.personalInfo?.lastName}/${
+              row?.uniqueId
+            }/admin_info#studentInfo`}
+            title="View Admin Info"
+          >
+            <img
+              className="studentImg"
+              src={
+                row?.personalInfo
+                  ? row?.personalInfo?.profilePicture?.url
+                  : row?.personalInfo?.profilePicture
+              }
+              alt=""
+            />
+          </HashLink>
+        ) : (
+          <HashLink
+            className="noImgLink"
+            to={`/sensec/admin/Users/Admins/${row?.personalInfo?.firstName}_${row?.personalInfo?.lastName}/${row?.personalInfo?.uniqueId}/admin_info#studentInfo`}
+            title="View Admin Info"
+          >
+            {row?.personalInfo?.gender === "Male" && (
+              <img
+                className="studentImg"
+                src={"/assets/maleAvatar.png"}
+                alt=""
+              />
+            )}
+            {row?.personalInfo?.gender === "Female" && (
+              <img
+                className="studentImg"
+                src={"/assets/femaleAvatar.png"}
+                alt=""
+              />
+            )}
+            {row?.personalInfo?.gender === "" && (
+              <div className="noImg">
+                <p>No</p>
+                <p>Image</p>
+              </div>
+            )}
+          </HashLink>
+        ),
+    },
+    {
+      name: "First Name",
+      selector: (row) => row?.personalInfo?.firstName,
+      sortable: true,
+    },
+    { name: "Surname", selector: (row) => row?.personalInfo?.lastName },
+    {
+      name: "Date Of Birth",
+      selector: (row) => (
+        <p
+          title={dateFormatter.format(
+            new Date(
+              row?.personalInfo?.dateOfBirth
+                ? row?.personalInfo?.dateOfBirth
+                : "---"
+            )
+          )}
+        >
+          {dateFormatter.format(
+            new Date(
+              row?.personalInfo?.dateOfBirth
+                ? row?.personalInfo?.dateOfBirth
+                : "---"
+            )
+          )}
+        </p>
+      ),
+    },
+    {
+      name: "Unique-ID",
+      selector: (row) => <p title={row?.uniqueId}>{row?.uniqueId}</p>,
+      sortable: true,
+    },
+    {
+      name: "Email",
+      selector: (row) => (
+        <p title={row?.contactAddress?.email}>
+          {row?.contactAddress?.email ? row?.contactAddress?.email : "---"}
+        </p>
+      ),
+    },
+    {
+      name: "Date Processed",
+      selector: (row) =>
+        !row?.employment?.employmentProcessedDate
+          ? "---"
+          : dateFormatter?.format(
+              new Date(row?.employment?.employmentProcessedDate)
+            ),
+    },
+    {
+      name: "Update",
+      selector: (row) => (
+        <Link
+          className="editLink"
+          to={`/sensec/admin/Users/Admins/${row.personalInfo?.firstName}_${row.personalInfo?.lastName}/${row.uniqueId}/update`}
+        >
+          <EditIcon />
+        </Link>
+      ),
+    },
+    {
+      name: "Approve",
+      selector: (row) =>
+        row?.employment?.employmentStatus === "pending" && (
+          <>
+            <HashLink
+              className="approveLink"
+              onClick={async () => {
+                setCurrentAdmin(row?._id);
+                setOpenApproveEmploymentModal(true);
+                // dispatch(
+                //   approveAdminEmployment({
+                //     userUniqueId: row?.uniqueId,
+                //     employmentApprovedBy: `${userInfo?.id}`,
+                //     // enrolmentApprovementDate: date,
+                //   })
+                // );
+              }}
+            >
+              {foundAdmin && foundAdmin._id === row._id && (
+                <>
+                  {loadingComplete === false && "Processing..."}
+                  {loadingComplete && approveAdminStatus === "success" && (
+                    <>
+                      <span>Approved</span> <TaskAltIcon />
+                    </>
+                  )}
+                </>
+              )}
+              <>
+                {loadingComplete === null && (
+                  <HowToRegIcon
+                    titleAccess="Approve Employment"
+                    style={{ fontSize: "2rem" }}
+                  />
+                )}
+                {row?._id !== foundAdmin?._id && loadingComplete !== null && (
+                  <HowToRegIcon
+                    titleAccess="Approve Employment"
+                    style={{ fontSize: "2rem" }}
+                  />
+                )}
+              </>
+            </HashLink>
+            {foundAdmin && foundAdmin._id === row._id && (
+              <ApproveEmploymentModal
+                open={openApproveEmploymentModal}
+                onClose={() => setOpenApproveEmploymentModal(false)}
+                // approveEmploymentFunction={approveAdminEmployment({
+                //   adminUniqueId: row?.uniqueId,
+                //   employmentApprovedBy: `${userInfo?.id}`,
+                //   // enrolmentApprovementDate: date,
+                // })}
+                setLoadingComplete={setLoadingComplete}
+                dispatch={dispatch}
+                setCurrentUser={setCurrentAdmin}
+                currentUserId={row?._id}
+              />
+            )}
+          </>
+        ),
+    },
+    {
+      name: "Reject",
+      selector: (row) =>
+        row?.employment?.employmentStatus === "pending" && (
+          <HashLink
+            className="rejectLink"
+            onClick={async () => {
+              try {
+                const res = await axios.delete(
+                  `${SENSEC_API_ENDPOINT}/admin/reject_student_application/${row._id}`
+                );
+                if (res) {
+                  toast.success("Student disapproved successfully...", {
+                    position: "top-right",
+                    theme: "dark",
+                    // toastId: successId,
+                  });
+                  setTimeout(() => {
+                    window.location.reload();
+                  }, 5000);
+                }
+              } catch (error) {
+                toast.error("Student disapproved failed! Try again later", {
+                  position: "top-right",
+                  theme: "light",
+                  // toastId: successId,
+                });
+              }
+            }}
+          >
+            <PersonRemoveIcon
+              titleAccess="Reject Employment"
+              style={{ fontSize: "2rem" }}
+            />
+          </HashLink>
+        ),
+    },
+  ];
+  return pendingAdminsColumn;
+};
 const pendingStudentsColumn = (
   authAdmin,
   setCurrentStudent,
@@ -1223,7 +1227,7 @@ const studentsColumn = (
       selector: (row) => (
         <Link
           className="editLink"
-          to={`/sensec/admin/${adminCurrentAction}/${adminCurrentLink}/${row.personalInfo?.firstName}_${row.personalInfo?.lastName}/${row.uniqueId}/update`}
+          to={`/sensec/users/${authAdmin.uniqueId}/admin/Students/${row.uniqueId}/student_update`}
         >
           <EditIcon />
         </Link>
@@ -1232,185 +1236,185 @@ const studentsColumn = (
   ];
   return studentColumn;
 };
-// const teachersColumn = (
-//   setCurrentStudentId,
-//   currentStudentId,
-//   loadingComplete,
-//   redirecting
-// ) => {
-//   const teachersDataFormat = [
-//     {
-//       name: "Image",
-//       selector: (row) =>
-//         row?.personalInfo?.profilePicture ? (
-//           <HashLink
-//             to={`/sensec/admin/Users/Lecturers/${row?.personalInfo?.firstName.replace(
-//               / /g,
-//               "_"
-//             )}_${row?.personalInfo?.lastName}/${
-//               row?.uniqueId
-//             }/lecturer_info#teacherInfo`}
-//             title="View Student Info"
-//           >
-//             {!row?.personalInfo?.profilePicture?.url && (
-//               <img
-//                 className="studentImg"
-//                 src={row?.personalInfo?.profilePicture}
-//                 alt=""
-//               />
-//             )}
-//             {row?.personalInfo?.profilePicture?.url && (
-//               <img
-//                 className="studentImg"
-//                 src={row?.personalInfo?.profilePicture?.url}
-//                 alt=""
-//               />
-//             )}
-//           </HashLink>
-//         ) : (
-//           <HashLink
-//             className="noImgLink"
-//             to={`/sensec/admin/Students/student_info/${row?.personalInfo?.firstName}_${row?.personalInfo?.lastName}/${row?.personalInfo?.uniqueId}#studentInfo`}
-//             title="View Lecturer Info"
-//           >
-//             {row?.personalInfo?.gender === "Male" && (
-//               <img
-//                 className="studentImg"
-//                 src={"/assets/maleAvatar.png"}
-//                 alt=""
-//               />
-//             )}
-//             {row?.personalInfo?.gender === "Female" && (
-//               <img
-//                 className="studentImg"
-//                 src={"/assets/femaleAvatar.png"}
-//                 alt=""
-//               />
-//             )}
-//             {row?.personalInfo?.gender === "" && (
-//               <div className="noImg">
-//                 <p>No</p>
-//                 <p>Image</p>
-//               </div>
-//             )}
-//           </HashLink>
-//         ),
-//     },
-//     {
-//       name: "First Name",
-//       selector: (row) => row?.personalInfo?.firstName,
-//       sortable: true,
-//     },
-//     { name: "Surname", selector: (row) => row?.personalInfo?.lastName },
-//     {
-//       name: "Date Of Birth",
-//       selector: (row) => (
-//         <p
-//           title={dateFormatter.format(
-//             new Date(
-//               row?.personalInfo?.dateOfBirth
-//                 ? row?.personalInfo?.dateOfBirth
-//                 : "---"
-//             )
-//           )}
-//         >
-//           {dateFormatter.format(
-//             new Date(
-//               row?.personalInfo?.dateOfBirth
-//                 ? row?.personalInfo?.dateOfBirth
-//                 : "---"
-//             )
-//           )}
-//         </p>
-//       ),
-//     },
-//     {
-//       name: "Class Handling",
-//       selector: (row) => (
-//         <p title={row?.teacherSchoolData?.classLevelHandling?.sectionName}>
-//           {row?.teacherSchoolData?.classLevelHandling
-//             ? row?.teacherSchoolData?.classLevelHandling?.label
-//             : "None"}
-//         </p>
-//       ),
-//     },
-//     {
-//       name: "Unique-ID",
-//       selector: (row) => <p title={row?.uniqueId}>{row?.uniqueId}</p>,
-//       sortable: true,
-//     },
-//     {
-//       name: "Email",
-//       selector: (row) => (
-//         <p title={row?.contactAddress?.email}>
-//           {row?.contactAddress?.email ? row?.contactAddress?.email : "---"}
-//         </p>
-//       ),
-//     },
-//     {
-//       name: "Date Employed",
-//       selector: (row) =>
-//         row?.employment?.employmentApprovedDate
-//           ? dateFormatter.format(
-//               new Date(row?.employment.employmentApprovedDate)
-//             )
-//           : "---",
-//     },
-//     {
-//       name: "Class Levels",
-//       selector: (row) =>
-//         row?.teacherSchoolData?.classLevels
-//           ? row?.teacherSchoolData?.classLevels?.length
-//           : "---",
-//     },
-//     {
-//       name: "Update",
-//       selector: (row) => (
-//         <>
-//           {row?.employment?.employmentStatus === "approved" && (
-//             <Link
-//               className="editLink"
-//               to={`/sensec/admin/Users/Lecturers/${row.personalInfo?.firstName}_${row.personalInfo?.lastName}/${row.uniqueId}/update`}
-//             >
-//               <EditIcon />
-//             </Link>
-//           )}
-//           {row?.employment?.employmentStatus === "pending" && (
-//             <Link
-//               className="editLink"
-//               to={`/sensec/admin/Users/Lecturers/${row.personalInfo?.firstName}_${row.personalInfo?.lastName}/${row.uniqueId}/update`}
-//             >
-//               <EditIcon />
-//             </Link>
-//           )}
-//           {row?.employment?.employmentStatus === "in progress" && (
-//             <Link
-//               className="editLink"
-//               onClick={async () => {
-//                 setCurrentStudentId(row);
-//               }}
-//             >
-//               {currentStudentId && currentStudentId?._id === row?._id && (
-//                 <>
-//                   {loadingComplete === false && "Processing..."}
-//                   {loadingComplete &&
-//                     currentStudentId?._id === row?._id &&
-//                     redirecting && <Redirection color={"#555"} size={"1rem"} />}
-//                 </>
-//               )}
-//               <>
-//                 {loadingComplete === null && <EditIcon />}
-//                 {row?._id !== currentStudentId?._id &&
-//                   loadingComplete !== null && <EditIcon />}
-//               </>
-//             </Link>
-//           )}
-//         </>
-//       ),
-//     },
-//   ];
-//   return teachersDataFormat;
-// };
+const teachersColumn = (
+  setCurrentStudentId,
+  currentStudentId,
+  loadingComplete,
+  redirecting
+) => {
+  const teachersDataFormat = [
+    {
+      name: "Image",
+      selector: (row) =>
+        row?.personalInfo?.profilePicture ? (
+          <HashLink
+            to={`/sensec/admin/Users/Lecturers/${row?.personalInfo?.firstName.replace(
+              / /g,
+              "_"
+            )}_${row?.personalInfo?.lastName}/${
+              row?.uniqueId
+            }/lecturer_info#teacherInfo`}
+            title="View Lecturer Info"
+          >
+            {!row?.personalInfo?.profilePicture?.url && (
+              <img
+                className="studentImg"
+                src={row?.personalInfo?.profilePicture}
+                alt=""
+              />
+            )}
+            {row?.personalInfo?.profilePicture?.url && (
+              <img
+                className="studentImg"
+                src={row?.personalInfo?.profilePicture?.url}
+                alt=""
+              />
+            )}
+          </HashLink>
+        ) : (
+          <HashLink
+            className="noImgLink"
+            to={`/sensec/admin/Students/student_info/${row?.personalInfo?.firstName}_${row?.personalInfo?.lastName}/${row?.personalInfo?.uniqueId}#studentInfo`}
+            title="View Lecturer Info"
+          >
+            {row?.personalInfo?.gender === "Male" && (
+              <img
+                className="studentImg"
+                src={"/assets/maleAvatar.png"}
+                alt=""
+              />
+            )}
+            {row?.personalInfo?.gender === "Female" && (
+              <img
+                className="studentImg"
+                src={"/assets/femaleAvatar.png"}
+                alt=""
+              />
+            )}
+            {row?.personalInfo?.gender === "" && (
+              <div className="noImg">
+                <p>No</p>
+                <p>Image</p>
+              </div>
+            )}
+          </HashLink>
+        ),
+    },
+    {
+      name: "First Name",
+      selector: (row) => row?.personalInfo?.firstName,
+      sortable: true,
+    },
+    { name: "Surname", selector: (row) => row?.personalInfo?.lastName },
+    {
+      name: "Date Of Birth",
+      selector: (row) => (
+        <p
+          title={dateFormatter.format(
+            new Date(
+              row?.personalInfo?.dateOfBirth
+                ? row?.personalInfo?.dateOfBirth
+                : "---"
+            )
+          )}
+        >
+          {dateFormatter.format(
+            new Date(
+              row?.personalInfo?.dateOfBirth
+                ? row?.personalInfo?.dateOfBirth
+                : "---"
+            )
+          )}
+        </p>
+      ),
+    },
+    {
+      name: "Class Handling",
+      selector: (row) => (
+        <p title={row?.teacherSchoolData?.classLevelHandling?.sectionName}>
+          {row?.teacherSchoolData?.classLevelHandling
+            ? row?.teacherSchoolData?.classLevelHandling?.label
+            : "None"}
+        </p>
+      ),
+    },
+    {
+      name: "Unique-ID",
+      selector: (row) => <p title={row?.uniqueId}>{row?.uniqueId}</p>,
+      sortable: true,
+    },
+    {
+      name: "Email",
+      selector: (row) => (
+        <p title={row?.contactAddress?.email}>
+          {row?.contactAddress?.email ? row?.contactAddress?.email : "---"}
+        </p>
+      ),
+    },
+    {
+      name: "Date Employed",
+      selector: (row) =>
+        row?.employment?.employmentApprovedDate
+          ? dateFormatter.format(
+              new Date(row?.employment.employmentApprovedDate)
+            )
+          : "---",
+    },
+    {
+      name: "Class Levels",
+      selector: (row) =>
+        row?.teacherSchoolData?.classLevels
+          ? row?.teacherSchoolData?.classLevels?.length
+          : "---",
+    },
+    {
+      name: "Update",
+      selector: (row) => (
+        <>
+          {row?.employment?.employmentStatus === "approved" && (
+            <Link
+              className="editLink"
+              to={`/sensec/admin/Users/Lecturers/${row.personalInfo?.firstName}_${row.personalInfo?.lastName}/${row.uniqueId}/update`}
+            >
+              <EditIcon />
+            </Link>
+          )}
+          {row?.employment?.employmentStatus === "pending" && (
+            <Link
+              className="editLink"
+              to={`/sensec/admin/Users/Lecturers/${row.personalInfo?.firstName}_${row.personalInfo?.lastName}/${row.uniqueId}/update`}
+            >
+              <EditIcon />
+            </Link>
+          )}
+          {row?.employment?.employmentStatus === "in progress" && (
+            <Link
+              className="editLink"
+              onClick={async () => {
+                setCurrentStudentId(row);
+              }}
+            >
+              {currentStudentId && currentStudentId?._id === row?._id && (
+                <>
+                  {loadingComplete === false && "Processing..."}
+                  {loadingComplete &&
+                    currentStudentId?._id === row?._id &&
+                    redirecting && <Redirection color={"#555"} size={"1rem"} />}
+                </>
+              )}
+              <>
+                {loadingComplete === null && <EditIcon />}
+                {row?._id !== currentStudentId?._id &&
+                  loadingComplete !== null && <EditIcon />}
+              </>
+            </Link>
+          )}
+        </>
+      ),
+    },
+  ];
+  return teachersDataFormat;
+};
 // const hangingTeachersColumn = (
 //   setCurrentStudentId,
 //   currentStudentId,
@@ -1550,593 +1554,605 @@ const studentsColumn = (
 //   ];
 //   return teachersDataFormat;
 // };
-// const pendingTeachersColumn = (
-//   setCurrentLecturer,
-//   loadingComplete,
-//   setLoadingComplete,
-//   toast,
-//   dispatch,
-//   userInfo,
-//   foundLecturer,
-//   approveTeacherEmploymentStatus,
-//   openApproveEmploymentModal,
-//   setOpenApproveEmploymentModal
-// ) => {
-//   const teachersDataFormat = [
-//     {
-//       name: "Image",
-//       selector: (row) =>
-//         row?.personalInfo?.profilePicture ? (
-//           <HashLink
-//             to={`/sensec/admin/Users/Lecturers/${row?.personalInfo?.firstName.replace(
-//               / /g,
-//               "_"
-//             )}_${row?.personalInfo?.lastName}/${
-//               row?.uniqueId
-//             }/lecturer_info#teacherInfo`}
-//             title="View Lecturer Info"
-//           >
-//             {!row?.personalInfo?.profilePicture?.url && (
-//               <img
-//                 className="studentImg"
-//                 src={row?.personalInfo?.profilePicture}
-//                 alt=""
-//               />
-//             )}
-//             {row?.personalInfo?.profilePicture?.url && (
-//               <img
-//                 className="studentImg"
-//                 src={row?.personalInfo?.profilePicture?.url}
-//                 alt=""
-//               />
-//             )}
-//           </HashLink>
-//         ) : (
-//           <HashLink
-//             className="noImgLink"
-//             to={`/sensec/admin/Students/student_info/${row?.personalInfo?.firstName}_${row?.personalInfo?.lastName}/${row?.personalInfo?.uniqueId}#studentInfo`}
-//             title="View Student Info"
-//           >
-//             {row?.personalInfo?.gender === "Male" && (
-//               <img
-//                 className="studentImg"
-//                 src={"/assets/maleAvatar.png"}
-//                 alt=""
-//               />
-//             )}
-//             {row?.personalInfo?.gender === "Female" && (
-//               <img
-//                 className="studentImg"
-//                 src={"/assets/femaleAvatar.png"}
-//                 alt=""
-//               />
-//             )}
-//             {row?.personalInfo?.gender === "" && (
-//               <div className="noImg">
-//                 <p>No</p>
-//                 <p>Image</p>
-//               </div>
-//             )}
-//           </HashLink>
-//         ),
-//     },
-//     {
-//       name: "First Name",
-//       selector: (row) => row?.personalInfo?.firstName,
-//       sortable: true,
-//     },
-//     { name: "Surname", selector: (row) => row?.personalInfo?.lastName },
-//     {
-//       name: "Date Of Birth",
-//       selector: (row) => (
-//         <p
-//           title={dateFormatter.format(
-//             new Date(
-//               row?.personalInfo?.dateOfBirth
-//                 ? row?.personalInfo?.dateOfBirth
-//                 : "---"
-//             )
-//           )}
-//         >
-//           {dateFormatter.format(
-//             new Date(
-//               row?.personalInfo?.dateOfBirth
-//                 ? row?.personalInfo?.dateOfBirth
-//                 : "---"
-//             )
-//           )}
-//         </p>
-//       ),
-//     },
-//     {
-//       name: "Unique-ID",
-//       selector: (row) => <p title={row?.uniqueId}>{row?.uniqueId}</p>,
-//       sortable: true,
-//     },
-//     {
-//       name: "Email",
-//       selector: (row) => (
-//         <p title={row?.contactAddress?.email}>
-//           {row?.contactAddress?.email ? row?.contactAddress?.email : "---"}
-//         </p>
-//       ),
-//     },
-//     {
-//       name: "Update",
-//       selector: (row) => (
-//         <>
-//           {row?.employment?.employmentStatus === "pending" && (
-//             <Link
-//               className="editLink"
-//               to={`/sensec/admin/Users/Lecturers/${row.personalInfo?.firstName}_${row.personalInfo?.lastName}/${row.uniqueId}/update`}
-//             >
-//               <EditIcon />
-//             </Link>
-//           )}
-//         </>
-//       ),
-//     },
-//     {
-//       name: "Approve",
-//       selector: (row) =>
-//         row?.employment?.employmentStatus === "pending" && (
-//           <>
-//             <HashLink
-//               className="approveLink"
-//               onClick={async () => {
-//                 setCurrentLecturer(row._id);
-//                 setOpenApproveEmploymentModal(true);
-//               }}
-//             >
-//               {foundLecturer && foundLecturer._id === row._id && (
-//                 <>
-//                   {loadingComplete === false && "Processing..."}
-//                   {loadingComplete &&
-//                     approveTeacherEmploymentStatus === "success" && (
-//                       <>
-//                         <span>Approved</span> <TaskAltIcon />
-//                       </>
-//                     )}
-//                 </>
-//               )}
-//               <>
-//                 {loadingComplete === null && (
-//                   <HowToRegIcon
-//                     titleAccess="Approve Employment"
-//                     style={{ fontSize: "2rem" }}
-//                   />
-//                 )}
-//                 {row?._id !== foundLecturer?._id &&
-//                   loadingComplete !== null && (
-//                     <HowToRegIcon
-//                       titleAccess="Approve Employment"
-//                       style={{ fontSize: "2rem" }}
-//                     />
-//                   )}
-//               </>
-//             </HashLink>
-//             {foundLecturer && foundLecturer._id === row._id && (
-//               <ApproveEmploymentModal
-//                 open={openApproveEmploymentModal}
-//                 onClose={() => setOpenApproveEmploymentModal(false)}
-//                 approveEmploymentmentFunction={approveTeacherEmploymentment({
-//                   teacherUniqueId: row?.uniqueId,
-//                   employmentApprovedBy: `${userInfo?.id}`,
-//                   // enrolmentApprovementDate: date,
-//                 })}
-//                 setLoadingComplete={setLoadingComplete}
-//                 dispatch={dispatch}
-//                 setCurrentUser={setCurrentLecturer}
-//                 currentUserId={row?._id}
-//               />
-//             )}
-//           </>
-//         ),
-//     },
-//     {
-//       name: "Reject",
-//       selector: (row) =>
-//         row?.employment?.employmentStatus === "pending" && (
-//           <HashLink
-//             className="rejectLink"
-//             onClick={async () => {
-//               try {
-//                 const res = await axios.delete(
-//                   `${API_ENDPOINT}/admin/reject_student_application/${row._id}`
-//                 );
-//                 if (res) {
-//                   toast.success("Student disapproved successfully...", {
-//                     position: "top-right",
-//                     theme: "dark",
-//                     // toastId: successId,
-//                   });
-//                   setTimeout(() => {
-//                     window.location.reload();
-//                   }, 5000);
-//                 }
-//               } catch (error) {
-//                 toast.error("Student disapproved failed! Try again later", {
-//                   position: "top-right",
-//                   theme: "light",
-//                   // toastId: successId,
-//                 });
-//               }
-//             }}
-//           >
-//             <PersonRemoveIcon
-//               titleAccess="Reject Employment"
-//               style={{ fontSize: "2rem" }}
-//             />
-//           </HashLink>
-//         ),
-//     },
-//   ];
-//   return teachersDataFormat;
-// };
-// const nTStaffsColumn = (adminCurrentLink) => {
-//   const nTStaffsDataFormat = [
-//     {
-//       name: "Image",
-//       selector: (row) =>
-//         row?.personalInfo?.profilePicture ? (
-//           <HashLink
-//             to={`/sensec/admin/Users/${adminCurrentLink}/${row?.personalInfo?.firstName.replace(
-//               / /g,
-//               "_"
-//             )}_${row?.personalInfo?.lastName}/${row?.uniqueId}/nt_staff_info`}
-//             title="View NT-Staff Info"
-//           >
-//             {!row?.personalInfo?.profilePicture?.url && (
-//               <img
-//                 className="studentImg"
-//                 src={row?.personalInfo?.profilePicture}
-//                 alt=""
-//               />
-//             )}
-//             {row?.personalInfo?.profilePicture?.url && (
-//               <img
-//                 className="studentImg"
-//                 src={row?.personalInfo?.profilePicture?.url}
-//                 alt=""
-//               />
-//             )}
-//           </HashLink>
-//         ) : (
-//           <HashLink
-//             className="noImgLink"
-//             to={`/sensec/admin/Students/student_info/${row?.personalInfo?.firstName}_${row?.personalInfo?.lastName}/${row?.personalInfo?.uniqueId}#studentInfo`}
-//             title="View Lecturer Info"
-//           >
-//             {row?.personalInfo?.gender === "Male" && (
-//               <img
-//                 className="studentImg"
-//                 src={"/assets/maleAvatar.png"}
-//                 alt=""
-//               />
-//             )}
-//             {row?.personalInfo?.gender === "Female" && (
-//               <img
-//                 className="studentImg"
-//                 src={"/assets/femaleAvatar.png"}
-//                 alt=""
-//               />
-//             )}
-//             {row?.personalInfo?.gender === "" && (
-//               <div className="noImg">
-//                 <p>No</p>
-//                 <p>Image</p>
-//               </div>
-//             )}
-//           </HashLink>
-//         ),
-//     },
-//     {
-//       name: "First Name",
-//       selector: (row) => row?.personalInfo?.firstName,
-//       sortable: true,
-//     },
-//     { name: "Surname", selector: (row) => row?.personalInfo?.lastName },
-//     {
-//       name: "Date Of Birth",
-//       selector: (row) => (
-//         <p
-//           title={dateFormatter.format(
-//             new Date(
-//               row?.personalInfo?.dateOfBirth
-//                 ? row?.personalInfo?.dateOfBirth
-//                 : "---"
-//             )
-//           )}
-//         >
-//           {dateFormatter.format(
-//             new Date(
-//               row?.personalInfo?.dateOfBirth
-//                 ? row?.personalInfo?.dateOfBirth
-//                 : "---"
-//             )
-//           )}
-//         </p>
-//       ),
-//     },
-//     {
-//       name: "Unique-ID",
-//       selector: (row) => <p title={row?.uniqueId}>{row?.uniqueId}</p>,
-//       sortable: true,
-//     },
-//     {
-//       name: "Email",
-//       selector: (row) => (
-//         <p title={row?.contactAddress?.email}>
-//           {row?.contactAddress?.email ? row?.contactAddress?.email : "---"}
-//         </p>
-//       ),
-//     },
-//     {
-//       name: "Date Employed",
-//       selector: (row) =>
-//         row?.employment?.employmentApprovedDate
-//           ? dateFormatter.format(
-//               new Date(row?.employment.employmentApprovedDate)
-//             )
-//           : "---",
-//     },
-//     {
-//       name: "Update",
-//       selector: (row) => (
-//         <>
-//           {row?.employment?.employmentStatus === "approved" && (
-//             <Link
-//               className="editLink"
-//               to={`/sensec/admin/Users/${adminCurrentLink}/${row.personalInfo?.firstName}_${row.personalInfo?.lastName}/${row.uniqueId}/update`}
-//             >
-//               <EditIcon />
-//             </Link>
-//           )}
-//         </>
-//       ),
-//     },
-//   ];
-//   return nTStaffsDataFormat;
-// };
-// const pendingNTStaffsColumn = (
-//   setCurrentNTStaff,
-//   loadingComplete,
-//   setLoadingComplete,
-//   toast,
-//   dispatch,
-//   userInfo,
-//   foundNTStaff,
-//   approveNTStaffEmploymentStatus,
-//   openApproveEmploymentModal,
-//   setOpenApproveEmploymentModal,
-//   setRejectNTStaff,
-//   nTStaffToReject,
-//   openRejectModal,
-//   setOpenRejectModal
-// ) => {
-//   const nTStaffsDataFormat = [
-//     {
-//       name: "Image",
-//       selector: (row) =>
-//         row?.personalInfo?.profilePicture ? (
-//           <HashLink
-//             to={`/sensec/admin/Users/Lecturers/${row?.personalInfo?.firstName.replace(
-//               / /g,
-//               "_"
-//             )}_${row?.personalInfo?.lastName}/${
-//               row?.uniqueId
-//             }/lecturer_info#teacherInfo`}
-//             title="View Student Info"
-//           >
-//             {!row?.personalInfo?.profilePicture?.url && (
-//               <img
-//                 className="studentImg"
-//                 src={row?.personalInfo?.profilePicture}
-//                 alt=""
-//               />
-//             )}
-//             {row?.personalInfo?.profilePicture?.url && (
-//               <img
-//                 className="studentImg"
-//                 src={row?.personalInfo?.profilePicture?.url}
-//                 alt=""
-//               />
-//             )}
-//           </HashLink>
-//         ) : (
-//           <HashLink
-//             className="noImgLink"
-//             to={`/sensec/admin/Students/student_info/${row?.personalInfo?.firstName}_${row?.personalInfo?.lastName}/${row?.personalInfo?.uniqueId}#studentInfo`}
-//             title="View Lecturer Info"
-//           >
-//             {row?.personalInfo?.gender === "Male" && (
-//               <img
-//                 className="studentImg"
-//                 src={"/assets/maleAvatar.png"}
-//                 alt=""
-//               />
-//             )}
-//             {row?.personalInfo?.gender === "Female" && (
-//               <img
-//                 className="studentImg"
-//                 src={"/assets/femaleAvatar.png"}
-//                 alt=""
-//               />
-//             )}
-//             {row?.personalInfo?.gender === "" && (
-//               <div className="noImg">
-//                 <p>No</p>
-//                 <p>Image</p>
-//               </div>
-//             )}
-//           </HashLink>
-//         ),
-//     },
-//     {
-//       name: "First Name",
-//       selector: (row) => row?.personalInfo?.firstName,
-//       sortable: true,
-//     },
-//     { name: "Surname", selector: (row) => row?.personalInfo?.lastName },
-//     {
-//       name: "Date Of Birth",
-//       selector: (row) => (
-//         <p
-//           title={dateFormatter.format(
-//             new Date(
-//               row?.personalInfo?.dateOfBirth
-//                 ? row?.personalInfo?.dateOfBirth
-//                 : "---"
-//             )
-//           )}
-//         >
-//           {dateFormatter.format(
-//             new Date(
-//               row?.personalInfo?.dateOfBirth
-//                 ? row?.personalInfo?.dateOfBirth
-//                 : "---"
-//             )
-//           )}
-//         </p>
-//       ),
-//     },
-//     {
-//       name: "Unique-ID",
-//       selector: (row) => <p title={row?.uniqueId}>{row?.uniqueId}</p>,
-//       sortable: true,
-//     },
-//     {
-//       name: "Email",
-//       selector: (row) => (
-//         <p title={row?.contactAddress?.email}>
-//           {row?.contactAddress?.email ? row?.contactAddress?.email : "---"}
-//         </p>
-//       ),
-//     },
-//     {
-//       name: "Date Processed",
-//       selector: (row) =>
-//         row?.employment?.employmentProcessedDate
-//           ? dateFormatter.format(
-//               new Date(row?.employment.employmentProcessedDate)
-//             )
-//           : "---",
-//     },
-//     {
-//       name: "Update",
-//       selector: (row) => (
-//         <>
-//           {row?.employment?.employmentStatus === "pending" && (
-//             <Link
-//               className="editLink"
-//               to={`/sensec/admin/Users/NT-Staffs/${row.personalInfo?.firstName}_${row.personalInfo?.lastName}/${row.uniqueId}/update`}
-//             >
-//               <EditIcon />
-//             </Link>
-//           )}
-//         </>
-//       ),
-//     },
-//     {
-//       name: "Approve",
-//       selector: (row) =>
-//         row?.employment?.employmentStatus === "pending" && (
-//           <>
-//             <HashLink
-//               className="approveLink"
-//               onClick={async () => {
-//                 setCurrentNTStaff(row?._id);
-//                 setOpenApproveEmploymentModal(true);
-//                 // dispatch(
-//                 // approveNTStaffEmploymentment({
-//                 //   nTStaffUniqueId: row?.uniqueId,
-//                 //   employmentApprovedBy: `${userInfo?.id}`,
-//                 //   // enrolmentApprovementDate: date,
-//                 // });
-//                 // );
-//               }}
-//             >
-//               {foundNTStaff && foundNTStaff._id === row._id && (
-//                 <>
-//                   {loadingComplete === false && "Processing..."}
-//                   {loadingComplete &&
-//                     approveNTStaffEmploymentStatus === "success" && (
-//                       <>
-//                         <span>Approved</span> <TaskAltIcon />
-//                       </>
-//                     )}
-//                 </>
-//               )}
-//               <>
-//                 {loadingComplete === null && (
-//                   <HowToRegIcon
-//                     titleAccess="Approve Employment"
-//                     style={{ fontSize: "2rem" }}
-//                   />
-//                 )}
-//                 {row?._id !== foundNTStaff?._id && loadingComplete !== null && (
-//                   <HowToRegIcon
-//                     titleAccess="Approve Employment"
-//                     style={{ fontSize: "2rem" }}
-//                   />
-//                 )}
-//               </>
-//             </HashLink>
-//             {foundNTStaff && foundNTStaff._id === row._id && (
-//               <ApproveEmploymentModal
-//                 open={openApproveEmploymentModal}
-//                 onClose={() => setOpenApproveEmploymentModal(false)}
-//                 approveEmploymentmentFunction={approveNTStaffEmploymentment({
-//                   nTStaffUniqueId: row?.uniqueId,
-//                   employmentApprovedBy: `${userInfo?.id}`,
-//                   // enrolmentApprovementDate: date,
-//                 })}
-//                 setLoadingComplete={setLoadingComplete}
-//                 dispatch={dispatch}
-//                 setCurrentUser={setCurrentNTStaff}
-//                 currentUserId={row?._id}
-//               />
-//             )}
-//           </>
-//         ),
-//     },
-//     {
-//       name: "Reject",
-//       selector: (row) =>
-//         row?.employment?.employmentStatus === "pending" && (
-//           <HashLink
-//             className="rejectLink"
-//             onClick={async () => {
-//               setRejectNTStaff(row._id);
-//               setOpenRejectModal(true);
-//               setOpenApproveEmploymentModal(false);
-//             }}
-//           >
-//             <PersonRemoveIcon
-//               titleAccess="Reject Employment"
-//               style={{ fontSize: "2rem" }}
-//             />
-//             {nTStaffToReject && nTStaffToReject._id === row._id && (
-//               <RejectionModal
-//                 open={openRejectModal}
-//                 onClose={() => setOpenRejectModal(false)}
-//                 rejectionFunction={rejectNTStaffEmploymentment({
-//                   nTStaffUniqueId: row?.uniqueId,
-//                   adminId: userInfo?.uniqueId,
-//                 })}
-//                 setLoadingComplete={setLoadingComplete}
-//                 dispatch={dispatch}
-//                 setUserToReject={setRejectNTStaff}
-//                 currentUserId={row?._id}
-//                 rejectAction={"Reject Employment"}
-//               />
-//             )}
-//           </HashLink>
-//         ),
-//     },
-//   ];
-//   return nTStaffsDataFormat;
-// };
+const pendingTeachersColumn = (
+  setCurrentLecturer,
+  loadingComplete,
+  setLoadingComplete,
+  toast,
+  dispatch,
+  userInfo,
+  foundLecturer,
+  // approveTeacherEmploymentStatus,
+  openApproveEmploymentModal,
+  setOpenApproveEmploymentModal
+) => {
+  const teachersDataFormat = [
+    {
+      name: "Image",
+      selector: (row) =>
+        row?.personalInfo?.profilePicture ? (
+          <HashLink
+            to={`/sensec/admin/Users/Lecturers/${row?.personalInfo?.firstName.replace(
+              / /g,
+              "_"
+            )}_${row?.personalInfo?.lastName}/${
+              row?.uniqueId
+            }/lecturer_info#teacherInfo`}
+            title="View Lecturer Info"
+          >
+            {!row?.personalInfo?.profilePicture?.url && (
+              <img
+                className="studentImg"
+                src={row?.personalInfo?.profilePicture}
+                alt=""
+              />
+            )}
+            {row?.personalInfo?.profilePicture?.url && (
+              <img
+                className="studentImg"
+                src={row?.personalInfo?.profilePicture?.url}
+                alt=""
+              />
+            )}
+          </HashLink>
+        ) : (
+          <HashLink
+            className="noImgLink"
+            to={`/sensec/admin/Students/student_info/${row?.personalInfo?.firstName}_${row?.personalInfo?.lastName}/${row?.personalInfo?.uniqueId}#studentInfo`}
+            title="View Lecturer Info"
+          >
+            {row?.personalInfo?.gender === "Male" && (
+              <img
+                className="studentImg"
+                src={"/assets/maleAvatar.png"}
+                alt=""
+              />
+            )}
+            {row?.personalInfo?.gender === "Female" && (
+              <img
+                className="studentImg"
+                src={"/assets/femaleAvatar.png"}
+                alt=""
+              />
+            )}
+            {row?.personalInfo?.gender === "" && (
+              <div className="noImg">
+                <p>No</p>
+                <p>Image</p>
+              </div>
+            )}
+          </HashLink>
+        ),
+    },
+    {
+      name: "First Name",
+      selector: (row) => row?.personalInfo?.firstName,
+      sortable: true,
+    },
+    { name: "Surname", selector: (row) => row?.personalInfo?.lastName },
+    {
+      name: "Date Of Birth",
+      selector: (row) => (
+        <p
+          title={dateFormatter.format(
+            new Date(
+              row?.personalInfo?.dateOfBirth
+                ? row?.personalInfo?.dateOfBirth
+                : "---"
+            )
+          )}
+        >
+          {dateFormatter.format(
+            new Date(
+              row?.personalInfo?.dateOfBirth
+                ? row?.personalInfo?.dateOfBirth
+                : "---"
+            )
+          )}
+        </p>
+      ),
+    },
+    {
+      name: "Unique-ID",
+      selector: (row) => <p title={row?.uniqueId}>{row?.uniqueId}</p>,
+      sortable: true,
+    },
+    {
+      name: "Email",
+      selector: (row) => (
+        <p title={row?.contactAddress?.email}>
+          {row?.contactAddress?.email ? row?.contactAddress?.email : "---"}
+        </p>
+      ),
+    },
+    {
+      name: "Update",
+      selector: (row) => (
+        <>
+          {row?.employment?.employmentStatus === "pending" && (
+            <Link
+              className="editLink"
+              to={`/sensec/admin/Users/Lecturers/${row.personalInfo?.firstName}_${row.personalInfo?.lastName}/${row.uniqueId}/update`}
+            >
+              <EditIcon />
+            </Link>
+          )}
+        </>
+      ),
+    },
+    {
+      name: "Approve",
+      selector: (row) =>
+        row?.employment?.employmentStatus === "pending" && (
+          <>
+            <HashLink
+              className="approveLink"
+              onClick={async () => {
+                setCurrentLecturer(row._id);
+                setOpenApproveEmploymentModal(true);
+              }}
+            >
+              {foundLecturer && foundLecturer._id === row._id && (
+                <>
+                  {loadingComplete === false && "Processing..."}
+                  {loadingComplete &&
+                    approveTeacherEmploymentStatus === "success" && (
+                      <>
+                        <span>Approved</span> <TaskAltIcon />
+                      </>
+                    )}
+                </>
+              )}
+              <>
+                {loadingComplete === null && (
+                  <HowToRegIcon
+                    titleAccess="Approve Employment"
+                    style={{ fontSize: "2rem" }}
+                  />
+                )}
+                {row?._id !== foundLecturer?._id &&
+                  loadingComplete !== null && (
+                    <HowToRegIcon
+                      titleAccess="Approve Employment"
+                      style={{ fontSize: "2rem" }}
+                    />
+                  )}
+              </>
+            </HashLink>
+            {foundLecturer && foundLecturer._id === row._id && (
+              <ApproveEmploymentModal
+                open={openApproveEmploymentModal}
+                onClose={() => setOpenApproveEmploymentModal(false)}
+                // approveEmploymentmentFunction={approveTeacherEmploymentment({
+                //   teacherUniqueId: row?.uniqueId,
+                //   employmentApprovedBy: `${userInfo?.id}`,
+                //   // enrolmentApprovementDate: date,
+                // })}
+                setLoadingComplete={setLoadingComplete}
+                dispatch={dispatch}
+                setCurrentUser={setCurrentLecturer}
+                currentUserId={row?._id}
+              />
+            )}
+          </>
+        ),
+    },
+    {
+      name: "Reject",
+      selector: (row) =>
+        row?.employment?.employmentStatus === "pending" && (
+          <HashLink
+            className="rejectLink"
+            onClick={async () => {
+              try {
+                const res = await axios.delete(
+                  `${SENSEC_API_ENDPOINT}/admin/reject_student_application/${row._id}`
+                );
+                if (res) {
+                  toast.success("Student disapproved successfully...", {
+                    position: "top-right",
+                    theme: "dark",
+                    // toastId: successId,
+                  });
+                  setTimeout(() => {
+                    window.location.reload();
+                  }, 5000);
+                }
+              } catch (error) {
+                toast.error("Student disapproved failed! Try again later", {
+                  position: "top-right",
+                  theme: "light",
+                  // toastId: successId,
+                });
+              }
+            }}
+          >
+            <PersonRemoveIcon
+              titleAccess="Reject Employment"
+              style={{ fontSize: "2rem" }}
+            />
+          </HashLink>
+        ),
+    },
+  ];
+  return teachersDataFormat;
+};
+const nTStaffsColumn = (adminCurrentLink) => {
+  const nTStaffsDataFormat = [
+    {
+      name: "Image",
+      selector: (row) =>
+        row?.personalInfo?.profilePicture ? (
+          <HashLink
+            to={`/sensec/admin/Users/${adminCurrentLink}/${row?.personalInfo?.firstName.replace(
+              / /g,
+              "_"
+            )}_${row?.personalInfo?.lastName}/${row?.uniqueId}/nt_staff_info`}
+            title="View NT-Staff Info"
+          >
+            {!row?.personalInfo?.profilePicture?.url && (
+              <img
+                className="studentImg"
+                src={row?.personalInfo?.profilePicture}
+                alt=""
+              />
+            )}
+            {row?.personalInfo?.profilePicture?.url && (
+              <img
+                className="studentImg"
+                src={row?.personalInfo?.profilePicture?.url}
+                alt=""
+              />
+            )}
+          </HashLink>
+        ) : (
+          <HashLink
+            className="noImgLink"
+            to={`/sensec/admin/Students/student_info/${row?.personalInfo?.firstName}_${row?.personalInfo?.lastName}/${row?.personalInfo?.uniqueId}#studentInfo`}
+            title="View Lecturer Info"
+          >
+            {row?.personalInfo?.gender === "Male" && (
+              <img
+                className="studentImg"
+                src={"/assets/maleAvatar.png"}
+                alt=""
+              />
+            )}
+            {row?.personalInfo?.gender === "Female" && (
+              <img
+                className="studentImg"
+                src={"/assets/femaleAvatar.png"}
+                alt=""
+              />
+            )}
+            {row?.personalInfo?.gender === "" && (
+              <div className="noImg">
+                <p>No</p>
+                <p>Image</p>
+              </div>
+            )}
+          </HashLink>
+        ),
+    },
+    {
+      name: "First Name",
+      selector: (row) => row?.personalInfo?.firstName,
+      sortable: true,
+    },
+    { name: "Surname", selector: (row) => row?.personalInfo?.lastName },
+    {
+      name: "Date Of Birth",
+      selector: (row) => (
+        <p
+          title={dateFormatter.format(
+            new Date(
+              row?.personalInfo?.dateOfBirth
+                ? row?.personalInfo?.dateOfBirth
+                : "---"
+            )
+          )}
+        >
+          {dateFormatter.format(
+            new Date(
+              row?.personalInfo?.dateOfBirth
+                ? row?.personalInfo?.dateOfBirth
+                : "---"
+            )
+          )}
+        </p>
+      ),
+    },
+    {
+      name: "Unique-ID",
+      selector: (row) => <p title={row?.uniqueId}>{row?.uniqueId}</p>,
+      sortable: true,
+    },
+    {
+      name: "Email",
+      selector: (row) => (
+        <p title={row?.contactAddress?.email}>
+          {row?.contactAddress?.email ? row?.contactAddress?.email : "---"}
+        </p>
+      ),
+    },
+    {
+      name: "Date Employed",
+      selector: (row) =>
+        row?.employment?.employmentApprovedDate
+          ? dateFormatter.format(
+              new Date(row?.employment.employmentApprovedDate)
+            )
+          : "---",
+    },
+    {
+      name: "Update",
+      selector: (row) => (
+        <>
+          {row?.employment?.employmentStatus === "approved" && (
+            <Link
+              className="editLink"
+              to={`/sensec/admin/Users/${adminCurrentLink}/${row.personalInfo?.firstName}_${row.personalInfo?.lastName}/${row.uniqueId}/update`}
+            >
+              <EditIcon />
+            </Link>
+          )}
+        </>
+      ),
+    },
+  ];
+  return nTStaffsDataFormat;
+};
+const pendingNTStaffsColumn = (
+  setCurrentNTStaff,
+  loadingComplete,
+  setLoadingComplete,
+  toast,
+  dispatch,
+  userInfo,
+  foundNTStaff,
+  // approveNTStaffEmploymentStatus,
+  openApproveEmploymentModal,
+  setOpenApproveEmploymentModal,
+  setRejectNTStaff,
+  nTStaffToReject,
+  openRejectModal,
+  setOpenRejectModal
+) => {
+  const nTStaffsDataFormat = [
+    {
+      name: "Image",
+      selector: (row) =>
+        row?.personalInfo?.profilePicture ? (
+          <HashLink
+            to={`/sensec/admin/Users/Lecturers/${row?.personalInfo?.firstName.replace(
+              / /g,
+              "_"
+            )}_${row?.personalInfo?.lastName}/${
+              row?.uniqueId
+            }/lecturer_info#teacherInfo`}
+            title="View Student Info"
+          >
+            {!row?.personalInfo?.profilePicture?.url && (
+              <img
+                className="studentImg"
+                src={row?.personalInfo?.profilePicture}
+                alt=""
+              />
+            )}
+            {row?.personalInfo?.profilePicture?.url && (
+              <img
+                className="studentImg"
+                src={row?.personalInfo?.profilePicture?.url}
+                alt=""
+              />
+            )}
+          </HashLink>
+        ) : (
+          <HashLink
+            className="noImgLink"
+            to={`/sensec/admin/Students/student_info/${row?.personalInfo?.firstName}_${row?.personalInfo?.lastName}/${row?.personalInfo?.uniqueId}#studentInfo`}
+            title="View Lecturer Info"
+          >
+            {row?.personalInfo?.gender === "Male" && (
+              <img
+                className="studentImg"
+                src={"/assets/maleAvatar.png"}
+                alt=""
+              />
+            )}
+            {row?.personalInfo?.gender === "Female" && (
+              <img
+                className="studentImg"
+                src={"/assets/femaleAvatar.png"}
+                alt=""
+              />
+            )}
+            {row?.personalInfo?.gender === "" && (
+              <div className="noImg">
+                <p>No</p>
+                <p>Image</p>
+              </div>
+            )}
+          </HashLink>
+        ),
+    },
+    {
+      name: "First Name",
+      selector: (row) => row?.personalInfo?.firstName,
+      sortable: true,
+    },
+    { name: "Surname", selector: (row) => row?.personalInfo?.lastName },
+    {
+      name: "Date Of Birth",
+      selector: (row) => (
+        <p
+          title={dateFormatter.format(
+            new Date(
+              row?.personalInfo?.dateOfBirth
+                ? row?.personalInfo?.dateOfBirth
+                : "---"
+            )
+          )}
+        >
+          {dateFormatter.format(
+            new Date(
+              row?.personalInfo?.dateOfBirth
+                ? row?.personalInfo?.dateOfBirth
+                : "---"
+            )
+          )}
+        </p>
+      ),
+    },
+    {
+      name: "Unique-ID",
+      selector: (row) => <p title={row?.uniqueId}>{row?.uniqueId}</p>,
+      sortable: true,
+    },
+    {
+      name: "Email",
+      selector: (row) => (
+        <p title={row?.contactAddress?.email}>
+          {row?.contactAddress?.email ? row?.contactAddress?.email : "---"}
+        </p>
+      ),
+    },
+    {
+      name: "Date Processed",
+      selector: (row) => (
+        <p
+          title={
+            row?.employment?.employmentProcessedDate
+              ? dateFormatter.format(
+                  new Date(row?.employment.employmentProcessedDate)
+                )
+              : "---"
+          }
+        >
+          {row?.employment?.employmentProcessedDate
+            ? dateFormatter.format(
+                new Date(row?.employment.employmentProcessedDate)
+              )
+            : "---"}
+        </p>
+      ),
+    },
+    {
+      name: "Update",
+      selector: (row) => (
+        <>
+          {row?.employment?.employmentStatus === "pending" && (
+            <Link
+              className="editLink"
+              to={`/sensec/admin/Users/NT-Staffs/${row.personalInfo?.firstName}_${row.personalInfo?.lastName}/${row.uniqueId}/update`}
+            >
+              <EditIcon />
+            </Link>
+          )}
+        </>
+      ),
+    },
+    {
+      name: "Approve",
+      selector: (row) =>
+        row?.employment?.employmentStatus === "pending" && (
+          <>
+            <HashLink
+              className="approveLink"
+              onClick={async () => {
+                setCurrentNTStaff(row?._id);
+                setOpenApproveEmploymentModal(true);
+                setOpenRejectModal(false);
+                // dispatch(
+                // approveNTStaffEmploymentment({
+                //   nTStaffUniqueId: row?.uniqueId,
+                //   employmentApprovedBy: `${userInfo?.id}`,
+                //   // enrolmentApprovementDate: date,
+                // });
+                // );
+              }}
+            >
+              {/* {foundNTStaff && foundNTStaff._id === row._id && (
+                <>
+                  {loadingComplete === false && "Processing..."}
+                  {loadingComplete &&
+                    approveNTStaffEmploymentStatus === "success" && (
+                      <>
+                        <span>Approved</span> <TaskAltIcon />
+                      </>
+                    )}
+                </>
+              )} */}
+              <>
+                {loadingComplete === null && (
+                  <HowToRegIcon
+                    titleAccess="Approve Employment"
+                    style={{ fontSize: "2rem" }}
+                  />
+                )}
+                {row?._id !== foundNTStaff?._id && loadingComplete !== null && (
+                  <HowToRegIcon
+                    titleAccess="Approve Employment"
+                    style={{ fontSize: "2rem" }}
+                  />
+                )}
+              </>
+            </HashLink>
+            {foundNTStaff && foundNTStaff._id === row._id && (
+              <ApproveEmploymentModal
+                open={openApproveEmploymentModal}
+                onClose={async () => setOpenApproveEmploymentModal(false)}
+                // approveEmploymentmentFunction={approveNTStaffEmploymentment({
+                //   nTStaffUniqueId: row?.uniqueId,
+                //   employmentApprovedBy: `${userInfo?.id}`,
+                //   // enrolmentApprovementDate: date,
+                // })}
+                setLoadingComplete={setLoadingComplete}
+                dispatch={dispatch}
+                setCurrentUser={setCurrentNTStaff}
+                currentUserId={row?._id}
+              />
+            )}
+          </>
+        ),
+    },
+    {
+      name: "Reject",
+      selector: (row) =>
+        row?.employment?.employmentStatus === "pending" && (
+          <HashLink
+            className="rejectLink"
+            onClick={async () => {
+              setRejectNTStaff(row._id);
+              setOpenRejectModal(true);
+              setOpenApproveEmploymentModal(false);
+            }}
+          >
+            <PersonRemoveIcon
+              titleAccess="Reject Employment"
+              style={{ fontSize: "2rem" }}
+            />
+            {nTStaffToReject && nTStaffToReject._id === row._id && (
+              <RejectEnrollmentModal
+                open={openRejectModal}
+                onClose={async () => setOpenRejectModal(false)}
+                // rejectionFunction={rejectNTStaffEmploymentment({
+                //   nTStaffUniqueId: row?.uniqueId,
+                //   adminId: userInfo?.uniqueId,
+                // })}
+                setLoadingComplete={setLoadingComplete}
+                dispatch={dispatch}
+                setUserToReject={setRejectNTStaff}
+                currentUserId={row?._id}
+                rejectAction={"Reject Employment"}
+              />
+            )}
+          </HashLink>
+        ),
+    },
+  ];
+  return nTStaffsDataFormat;
+};
 // const hangingNTStaffsColumn = (
 //   setCurrentStudentId,
 //   currentStudentId,
@@ -2581,18 +2597,18 @@ const studentsColumn = (
 // };
 
 export {
-  //   adminsColumn,
+  adminsColumn,
   //   hangingAdminsColumn,
-  //   pendingAdminsColumn,
-  //   teachersColumn,
-  //   pendingTeachersColumn,
+  pendingAdminsColumn,
+  teachersColumn,
+  pendingTeachersColumn,
   //   hangingTeachersColumn,
   studentsColumn,
   pendingStudentsColumn,
   //   courseMatesColumn,
   //   hangingEmploymentsColumn,
   //   graduatesColumn,
-  //   nTStaffsColumn,
-  //   pendingNTStaffsColumn,
+  nTStaffsColumn,
+  pendingNTStaffsColumn,
   //   hangingNTStaffsColumn,
 };

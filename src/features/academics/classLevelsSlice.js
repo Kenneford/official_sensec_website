@@ -21,7 +21,6 @@ export const createClassLevel = createAsyncThunk(
         `${SENSEC_API_ENDPOINT}/admin/academics/class_level/create`,
         data
       );
-      console.log(res.data);
       return res.data;
     } catch (error) {
       console.log(error.response.data);
@@ -40,7 +39,6 @@ export const updateClassLevel = createAsyncThunk(
         { name, lastUpdatedBy },
         { headers: { Authorization: `Bearer ${accessToken}` } }
       );
-      console.log(res.data);
       return res.data;
     } catch (error) {
       console.log(error.response.data);
@@ -56,7 +54,6 @@ export const fetchClassLevels = createAsyncThunk(
       `${SENSEC_API_ENDPOINT}/academics/class_levels/fetch_all`
     );
     // const students = response.data;
-    console.log(response.data);
     return response.data;
   }
 );

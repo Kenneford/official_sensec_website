@@ -1,26 +1,24 @@
 import React, { useEffect, useState } from "react";
-import "../lecturersData.scss";
+import "../ntStaffsData.scss";
 import SearchIcon from "@mui/icons-material/Search";
 import DataTable from "react-data-table-component";
 import { useNavigate, useParams } from "react-router-dom";
 import NewEmploymentModal from "../../../../actionModal/ActionModal";
 import { customUserTableStyle } from "../../../../../usersInfoDataFormat/usersInfoTableStyle";
 import { Box, Grid } from "@mui/material";
-import { AllEmployedLecturersPageQuickLinks } from "../../../../../linksFormat/LinksFormat";
+import { AllEmployedNTStaffsPageQuickLinks } from "../../../../../linksFormat/LinksFormat";
 import { useDispatch, useSelector } from "react-redux";
 import { getAuthUser } from "../../../../../features/auth/authSlice";
-import { FetchAllEmployedLecturers } from "../../../../../data/lecturers/FetchLecturers";
-import { teachersColumn } from "../../../../../usersInfoDataFormat/UsersInfoDataFormat";
+import { nTStaffsColumn } from "../../../../../usersInfoDataFormat/UsersInfoDataFormat";
+import { FetchAllEmployedNTStaffs } from "../../../../../data/nt.staffs/FetchNT-Staffs";
 import SearchFilter from "../../../../searchForm/SearchFilter";
 
-export function LecturersData() {
+export function NTStaffsData() {
   const authAdmin = useSelector(getAuthUser);
-  const allEmployedLecturers = FetchAllEmployedLecturers();
-  const currentEmployeeLink = localStorage.getItem("currentEmployeeLink");
+  const allEmployedNTStaffs = FetchAllEmployedNTStaffs();
   const navigate = useNavigate();
-  const actionBtns = AllEmployedLecturersPageQuickLinks();
+  const actionBtns = AllEmployedNTStaffsPageQuickLinks();
   const dispatch = useDispatch();
-  console.log(allEmployedLecturers);
   const allClassLevels = [
     {
       name: "Level 100",
@@ -32,14 +30,11 @@ export function LecturersData() {
       name: "Level 300",
     },
   ];
-  const teachersData = teachersColumn();
+  const ntStaffsData = nTStaffsColumn();
   const { adminCurrentAction, adminCurrentLink, class_level, employees_link } =
     useParams();
-  console.log(employees_link);
-
-  console.log(adminCurrentAction, adminCurrentLink);
   const [searchTeacher, setSearchTeacher] = useState("");
-  const teachersEmployed = allEmployedLecturers?.filter(
+  const teachersEmployed = allEmployedNTStaffs?.filter(
     (tch) =>
       (tch &&
         tch?.personalInfo?.firstName?.toLowerCase()?.includes(searchTeacher)) ||
@@ -71,7 +66,7 @@ export function LecturersData() {
   //   dispatch(fetchTeachers());
   // }, [dispatch]);
 
-  const allStd = `All Employed Lecturers / Total = ${teachersEmployed?.length}`;
+  const allStd = `All Employed NT-Staffs / Total = ${teachersEmployed?.length}`;
   return (
     <>
       {/* Current dashboard title */}
@@ -130,7 +125,7 @@ export function LecturersData() {
           )}
           {!searchTeacher && (
             <p className="searchInfo">
-              Total Lecturers = {allEmployedLecturers?.length}
+              Total NT-Staffs = {allEmployedNTStaffs?.length}
             </p>
           )}
         </Box>
@@ -156,7 +151,7 @@ export function LecturersData() {
                 // minWidth={"15rem"}
                 onClick={() => {
                   // setCurrentActionBtn(action.label);
-                  if (action.label === "Add New Lecturer +") {
+                  if (action.label === "Add New NT-Staff +") {
                     setOpenModal(true);
                   } else {
                     navigate(
@@ -172,13 +167,13 @@ export function LecturersData() {
                 className={
                   employees_link?.replace(/_/g, " ") === action.label
                     ? "adminDashBtn isActive"
-                    : action?.label === "Add New Lecturer +"
+                    : action?.label === "Add New NT-Staff +"
                     ? "adminDashAddBtn"
                     : "adminDashBtn"
                 }
               >
                 {action.label === "All"
-                  ? "All Employed Lecturers"
+                  ? "All Employed NT-Staffs"
                   : action.label}
               </Grid>
             ))}
@@ -188,7 +183,7 @@ export function LecturersData() {
               handleNewEmployment={handleNewEmployment}
               redirecting={redirecting}
               uncompletedEmploymentTask={uncompletedEmploymentTask}
-              question={"Are you sure you would like to employ a new Lecturer?"}
+              question={"Are you sure you would like to employ a new NT-Staff?"}
             />
           </Grid>
         </Box>
@@ -232,7 +227,7 @@ export function LecturersData() {
         <Box className="lecturerDataTable">
           <DataTable
             title={allStd}
-            columns={teachersData}
+            columns={ntStaffsData}
             data={teachersEmployed}
             customStyles={customUserTableStyle}
             pagination

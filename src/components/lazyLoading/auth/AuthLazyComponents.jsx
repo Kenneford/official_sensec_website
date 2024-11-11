@@ -18,6 +18,14 @@ export const UserDashboardLayout = lazyWithSuspense(
   <PageLoading />,
   "UserDashboardLayout"
 );
+export const SideBar = lazyWithSuspense(
+  () =>
+    import("../../sidebar/SideBar").then((module) => {
+      return { default: module.SideBar };
+    }),
+  <PageLoading />,
+  "SideBarComponent"
+);
 export const SignUpContainer = lazyWithSuspense(
   () =>
     import("../../../pages/auth/user.signUp/SignUpContainer").then((module) => {

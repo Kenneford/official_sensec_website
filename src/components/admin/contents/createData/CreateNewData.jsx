@@ -3,8 +3,11 @@ import "./createNewData.scss";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { Box } from "@mui/material";
+import { useSelector } from "react-redux";
+import { getAuthUser } from "../../../../features/auth/authSlice";
 
 export function CreateNewData({ setCurrentAction, setCurrentLink }) {
+  const authUser = useSelector(getAuthUser);
   const adminLink = localStorage.getItem("currentAdminLink");
   const adminAction = localStorage.getItem("currentAdminAction");
   const navigate = useNavigate();
@@ -66,7 +69,7 @@ export function CreateNewData({ setCurrentAction, setCurrentLink }) {
             className="createBtn"
             onClick={() => {
               navigate(
-                `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/school_batch/new`
+                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/school_batch/new`
               );
             }}
           >
@@ -76,7 +79,7 @@ export function CreateNewData({ setCurrentAction, setCurrentLink }) {
             className="createBtn"
             onClick={() => {
               navigate(
-                `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/placement_batch/new`
+                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/placement_batch/new`
               );
             }}
           >
@@ -86,7 +89,7 @@ export function CreateNewData({ setCurrentAction, setCurrentLink }) {
             className="createBtn"
             onClick={() =>
               navigate(
-                `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/academic_year/new`
+                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/academic_year/new`
               )
             }
           >
@@ -96,7 +99,7 @@ export function CreateNewData({ setCurrentAction, setCurrentLink }) {
             className="createBtn"
             onClick={() =>
               navigate(
-                `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/academic_term/new`
+                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/academic_term/new`
               )
             }
           >
@@ -106,7 +109,7 @@ export function CreateNewData({ setCurrentAction, setCurrentLink }) {
             className="createBtn"
             onClick={() =>
               navigate(
-                `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/class_level/new`
+                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/class_level/new`
               )
             }
           >
@@ -116,7 +119,7 @@ export function CreateNewData({ setCurrentAction, setCurrentLink }) {
             className="createBtn"
             onClick={() =>
               navigate(
-                `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/program/new`
+                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/program/new`
               )
             }
           >
@@ -126,7 +129,7 @@ export function CreateNewData({ setCurrentAction, setCurrentLink }) {
             className="createBtn"
             onClick={() =>
               navigate(
-                `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/class_section/new`
+                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/class_section/new`
               )
             }
           >
@@ -136,7 +139,7 @@ export function CreateNewData({ setCurrentAction, setCurrentLink }) {
             className="createBtn"
             onClick={() =>
               navigate(
-                `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/house/new`
+                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/house/new`
               )
             }
           >
@@ -146,7 +149,7 @@ export function CreateNewData({ setCurrentAction, setCurrentLink }) {
             className={"createBtn"}
             onClick={() =>
               navigate(
-                `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/subject/new`
+                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/subject/new`
               )
             }
           >
@@ -156,7 +159,7 @@ export function CreateNewData({ setCurrentAction, setCurrentLink }) {
           className="createBtn"
           onClick={() =>
             navigate(
-              `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/elective_subject/new`
+              `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/elective_subject/new`
             )
           }
         >
@@ -166,7 +169,7 @@ export function CreateNewData({ setCurrentAction, setCurrentLink }) {
           className="createBtn"
           onClick={() =>
             navigate(
-              `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/core_subject/new`
+              `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/core_subject/new`
             )
           }
         >
@@ -176,7 +179,7 @@ export function CreateNewData({ setCurrentAction, setCurrentLink }) {
             className="createBtn"
             onClick={() =>
               navigate(
-                `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/old_students_group/new`
+                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/old_students_group/new`
               )
             }
           >
@@ -186,7 +189,7 @@ export function CreateNewData({ setCurrentAction, setCurrentLink }) {
             className="createBtn"
             onClick={() => {
               navigate(
-                `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/school_data/new`
+                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/school_data/new`
               );
             }}
           >
@@ -196,7 +199,7 @@ export function CreateNewData({ setCurrentAction, setCurrentLink }) {
             className="createBtn"
             onClick={() => {
               navigate(
-                `/sensec/users/admin/${adminCurrentAction}/${adminCurrentLink}/time_table/new`
+                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/time_table/new`
               );
             }}
           >

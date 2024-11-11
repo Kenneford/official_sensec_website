@@ -1,117 +1,142 @@
 import { useEffect, useState } from "react";
-import "../adminsData.scss";
+import "../ntStaffsData.scss";
 import DataTable from "react-data-table-component";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import NewEmploymentModal from "../../../../actionModal/ActionModal";
 import { customUserTableStyle } from "../../../../../usersInfoDataFormat/usersInfoTableStyle";
-import { AllEmployedAdminsPageQuickLinks } from "../../../../../linksFormat/LinksFormat";
+import { AllEmployedNTStaffsPageQuickLinks } from "../../../../../linksFormat/LinksFormat";
 import { Box, Grid } from "@mui/material";
 import { getAuthUser } from "../../../../../features/auth/authSlice";
-import { FetchAllPendingAdmins } from "../../../../../data/admins/FetchAdmins";
+import { pendingNTStaffsColumn } from "../../../../../usersInfoDataFormat/UsersInfoDataFormat";
+import { FetchAllPendingNTStaffs } from "../../../../../data/nt.staffs/FetchNT-Staffs";
 import SearchFilter from "../../../../searchForm/SearchFilter";
-import { pendingAdminsColumn } from "../../../../../usersInfoDataFormat/UsersInfoDataFormat";
 
-export function PendingAdmins() {
+export function PendingNTStaffs() {
   const authAdmin = useSelector(getAuthUser);
+  const allPendingNTStaffs = FetchAllPendingNTStaffs();
   const navigate = useNavigate();
-  const actionBtns = AllEmployedAdminsPageQuickLinks();
+  const actionBtns = AllEmployedNTStaffsPageQuickLinks();
   const dispatch = useDispatch();
   const userInfo = {};
-  const allUsers = [];
-  // const { approveAdminStatus, approveAdminSuccessMessage, approveAdminError } =
-  //   useSelector((state) => state.admin);
-  const { adminCurrentAction, adminCurrentLink, employees_link } = useParams();
-  const [currentAdmin, setCurrentAdmin] = useState("");
+  const allClassLevels = [
+    {
+      name: "Level 100",
+    },
+    {
+      name: "Level 200",
+    },
+    {
+      name: "Level 300",
+    },
+  ];
+  // const { approveTeacherEmploymentStatus, approveTeacherEmploymentError } =
+  //   useSelector((state) => state.teacher);
+  const {
+    adminCurrentAction,
+    adminCurrentLink,
+    // currentEmployeeLink,
+    class_level,
+    employees_link,
+  } = useParams();
+  console.log(employees_link);
+  const [currentNTStaff, setCurrentNTStaff] = useState("");
+  const [rejectNTStaff, setRejectNTStaff] = useState("");
+  const [currentLecturer, setCurrentLecturer] = useState("");
   const [loadingComplete, setLoadingComplete] = useState(null);
-  const [searchAdmin, setSearchAdmin] = useState("");
-  const [adminFound, setAdminFound] = useState("");
+  const [searchTeacher, setSearchTeacher] = useState("");
+
+  //Filter teacher during search
+  const pendingLecturers = allPendingNTStaffs?.filter(
+    (tch) =>
+      tch.personalInfo.firstName.toLowerCase().includes(searchTeacher) ||
+      tch.personalInfo.firstName.includes(searchTeacher) ||
+      tch.personalInfo.lastName.toLowerCase().includes(searchTeacher) ||
+      tch.personalInfo.lastName.includes(searchTeacher)
+  );
+
+  const foundNTStaff = allPendingNTStaffs?.find(
+    (user) => user?._id === currentNTStaff
+  );
+
+  const nTStaffToReject = allPendingNTStaffs?.find(
+    (user) => user?._id === rejectNTStaff
+  );
+  const [redirecting, setRedirecting] = useState("");
+  const [openModal, setOpenModal] = useState(false);
+  const [openRejectModal, setOpenRejectModal] = useState(false);
+  const [uncompletedEmploymentTask, setUncompletedEmploymentTask] =
+    useState("");
   const [openApproveEmploymentModal, setOpenApproveEmploymentModal] =
     useState(false);
 
-  const allPendingAdmins = FetchAllPendingAdmins();
-  const allFoundPendingAdmins = allPendingAdmins.filter((admin) => {
-    return (
-      admin?.personalInfo?.firstName?.toLowerCase().includes(searchAdmin) ||
-      admin?.personalInfo?.firstName?.includes(searchAdmin) ||
-      admin?.personalInfo?.lastName?.toLowerCase().includes(searchAdmin) ||
-      admin?.personalInfo?.lastName?.includes(searchAdmin)
-    );
-  });
-
-  const foundAdmin = allPendingAdmins?.find(
-    (user) => user._id === currentAdmin
-  );
-  const [currentActionBtn, setCurrentActionBtn] = useState(
-    "Hanging Employments"
-  );
-  const adminsData = pendingAdminsColumn(
-    setCurrentAdmin,
+  const teachersData = pendingNTStaffsColumn(
+    setCurrentNTStaff,
     loadingComplete,
     setLoadingComplete,
     toast,
     dispatch,
     userInfo,
-    foundAdmin,
-    // approveAdminStatus,
+    foundNTStaff,
+    // approveNTStaffEmploymentStatus,
     openApproveEmploymentModal,
-    setOpenApproveEmploymentModal
+    setOpenApproveEmploymentModal,
+    setRejectNTStaff,
+    nTStaffToReject,
+    openRejectModal,
+    setOpenRejectModal
   );
-  const [redirecting, setRedirecting] = useState("");
-  const [openModal, setOpenModal] = useState(false);
-  const [uncompletedEmploymentTask, setUncompletedEmploymentTask] =
-    useState("");
-
-  //THIS REMOVES THE HASHLINK TAG FROM THE URL
-  if (window.location.hash) {
-    window.history.replaceState("", document.title, window.location.pathname);
-  }
 
   const handleNewEmployment = () => {
     setRedirecting(true);
     setUncompletedEmploymentTask("You're being redirected");
     setTimeout(() => {
       navigate(
-        `/sensec/users/${authAdmin?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/new_employment`
+        `/sensec/admin/${adminCurrentAction}/${adminCurrentLink}/new_employment/personal_info`
       );
     }, 3000);
   };
 
-  //Fetch all pending Admins again when successfully approved
+  //Approve Teacher status check
   // useEffect(() => {
-  //   if (foundAdmin) {
+  //   if (foundLecturer) {
   //     setLoadingComplete(false);
-  //     if (approveAdminStatus === "pending") {
+  //     if (approveTeacherEmploymentStatus === "pending") {
   //       setTimeout(() => {
   //         setLoadingComplete(true);
   //       }, 3000);
   //     }
-  //     if (approveAdminStatus === "rejected") {
+  //     if (approveTeacherEmploymentStatus === "rejected") {
   //       setTimeout(() => {
   //         setLoadingComplete(null);
   //       }, 3000);
   //       setTimeout(() => {
-  //         approveAdminError.errorMessage.message.map((err) =>
+  //         approveTeacherEmploymentError?.errorMessage?.message?.map((err) =>
   //           toast.error(err, {
   //             position: "top-right",
-  //             theme: "dark",
+  //             theme: "light",
   //             // toastId: successId,
   //           })
   //         );
   //       }, 2000);
   //       return;
   //     }
-  //     if (approveAdminStatus === "success") {
+  //     if (approveTeacherEmploymentStatus === "success") {
   //       setTimeout(() => {
   //         //Fetch all users again when successfully approved
   //         dispatch(fetchAllUsers());
   //       }, 6000);
   //     }
   //   }
-  // }, [dispatch, approveAdminStatus, approveAdminError, foundAdmin]);
+  // }, [
+  //   dispatch,
+  //   approveTeacherEmploymentStatus,
+  //   approveTeacherEmploymentError,
+  //   foundLecturer,
+  // ]);
 
-  const allStd = `All Pending Admins / Total = ${allPendingAdmins?.length}`;
+  const allStd = `All Pending NT-Staff / Total = ${pendingLecturers?.length}`;
   return (
     <>
       {/* Current dashboard title */}
@@ -134,8 +159,8 @@ export function PendingAdmins() {
         {/* Main search bar */}
         <Box sx={{ display: { xs: "none", sm: "block" } }}>
           <SearchFilter
-            value={searchAdmin}
-            onChange={setSearchAdmin}
+            value={searchTeacher}
+            onChange={setSearchTeacher}
             placeholder={"Search"}
           />
         </Box>
@@ -146,12 +171,12 @@ export function PendingAdmins() {
         padding={{ xs: " 1rem .5rem", sm: " 1rem" }}
       >
         <Box className="searchDetails">
-          {allFoundPendingAdmins?.length === 0 && searchAdmin !== "" && (
+          {pendingLecturers?.length === 0 && searchTeacher !== "" && (
             <p className="searchInfo">
-              We couldn't find any matches for " {searchAdmin} "
+              We couldn&apos;t find any matches for &apos;{searchTeacher}&apos;
             </p>
           )}
-          {allFoundPendingAdmins?.length === 0 && searchAdmin !== "" && (
+          {pendingLecturers?.length === 0 && searchTeacher !== "" && (
             <p
               style={{
                 paddingLeft: "1.5rem",
@@ -163,14 +188,14 @@ export function PendingAdmins() {
               ||
             </p>
           )}
-          {searchAdmin && (
+          {searchTeacher && (
             <p className="searchInfo">
-              Search Result = {allFoundPendingAdmins.length}
+              Search Result = {pendingLecturers?.length}
             </p>
           )}
-          {!searchAdmin && (
+          {!searchTeacher && (
             <p className="searchInfo">
-              Total Admins = {allPendingAdmins.length}
+              Total NT-Staffs = {allPendingNTStaffs?.length}
             </p>
           )}
         </Box>
@@ -195,8 +220,8 @@ export function PendingAdmins() {
                 // maxWidth={{ xs: "10rem", sm: "15rem" }}
                 // minWidth={"15rem"}
                 onClick={() => {
-                  setCurrentActionBtn(action.label);
-                  if (action.label === "Add New Admin +") {
+                  // setCurrentActionBtn(action.label);
+                  if (action.label === "Add New NT-Staff +") {
                     setOpenModal(true);
                   } else {
                     navigate(
@@ -212,14 +237,14 @@ export function PendingAdmins() {
                 className={
                   employees_link?.replace(/_/g, " ") === action.label
                     ? "adminDashBtn isActive"
-                    : action?.label === "Add New Admin +"
+                    : action?.label === "Add New NT-Staff +"
                     ? "adminDashAddBtn"
                     : "adminDashBtn"
                 }
-                // className={changeBackgroundColor}
               >
-                {/* {action.label !== "All" && action.label} */}
-                {action.label === "All" ? "All Employed Admins" : action.label}
+                {action.label === "All"
+                  ? "All Employed NT-Staffs"
+                  : action.label}
               </Grid>
             ))}
             <NewEmploymentModal
@@ -228,15 +253,52 @@ export function PendingAdmins() {
               handleNewEmployment={handleNewEmployment}
               redirecting={redirecting}
               uncompletedEmploymentTask={uncompletedEmploymentTask}
-              question={"Are you sure you would like to employ a new Admin?"}
+              question={"Are you sure you would like to employ a new NT-Staff?"}
             />
           </Grid>
         </Box>
-        <Box className="adminDataTable">
+        <Box>
+          <Grid
+            container
+            spacing={3}
+            // className="addNewAdminBtnsWrap"
+            width={"100%"}
+            m={"0 auto"}
+            className="classLevelLecturers"
+          >
+            {allClassLevels.map((cLevel) => (
+              <Grid
+                component={"span"}
+                item
+                xs={2.9}
+                sm={2}
+                key={cLevel._id}
+                onClick={() =>
+                  navigate(
+                    `/sensec/users/${
+                      authAdmin?.uniqueId
+                    }/admin/${adminCurrentAction}/${adminCurrentLink}/employees/${employees_link}/${cLevel.name.replace(
+                      / /g,
+                      "_"
+                    )}`
+                  )
+                }
+                className={
+                  cLevel?.name === class_level?.replace(/_/g, " ")
+                    ? "classLevelLecturersBtn isActive"
+                    : "classLevelLecturersBtn"
+                }
+              >
+                {cLevel.name}
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+        <Box className="lecturerDataTable">
           <DataTable
             title={allStd}
-            columns={adminsData}
-            data={allFoundPendingAdmins}
+            columns={teachersData}
+            data={pendingLecturers}
             customStyles={customUserTableStyle}
             pagination
             selectableRows

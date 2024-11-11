@@ -120,14 +120,17 @@ export const CustomSearchField = styled(TextField)({
   // width: "100%",
   // Border styles for focused state
   "& .MuiOutlinedInput-root": {
+    borderRadius: ".5rem .5rem 0 0",
     "&.Mui-focused fieldset": {
       borderColor: "#454343ad", // Change focus border color
       boxShadow: "2px 2px 3px 0px #454343ad",
+      borderRadius: ".5rem .5rem 0 0",
     },
     // Border styles for hover
     "&:hover fieldset": {
       border: ".5px solid #454343ad", // Disable border on hover
       boxShadow: "2px 2px 3px 0px #1a0505ad",
+      borderRadius: ".5rem .5rem 0 0",
     },
   },
   // Label color on focus
@@ -135,6 +138,7 @@ export const CustomSearchField = styled(TextField)({
     fontSize: "1.05rem",
     color: "#454343ad", // Custom focus label color
     borderColor: "transparent",
+    borderRadius: ".5rem .5rem 0 0",
   },
   // Target the required asterisk
   "& .MuiInputLabel-asterisk": {

@@ -1,33 +1,30 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "../adminsData.scss";
-import SearchIcon from "@mui/icons-material/Search";
 import DataTable from "react-data-table-component";
 import { useNavigate, useParams } from "react-router-dom";
-// import { useDispatch } from "react-redux";
-// import { adminsColumn } from "../../usersInfoDataFormat/UsersInfoDataFormat";
-// import PageLoading from "../../pageLoading/PageLoading";
-// import { FetchEmployedAdmins } from "../../../dataFetching/fetchAdmins/FetchAdminsCategories";
+import { useDispatch } from "react-redux";
 import { AllEmployedAdminsPageQuickLinks } from "../../../../../linksFormat/LinksFormat";
 import NewEmploymentModal from "../../../../actionModal/ActionModal";
-// import PageLoading from "../../../pageLoading/PageLoading";
-// import { adminsColumn } from "../../../../usersInfoDataFormat/UsersInfoDataFormat";
 import { customUserTableStyle } from "../../../../../usersInfoDataFormat/usersInfoTableStyle";
 import { Box, Grid } from "@mui/material";
 import { useSelector } from "react-redux";
 import { getAuthUser } from "../../../../../features/auth/authSlice";
+import { FetchAllEmployedAdmins } from "../../../../../data/admins/FetchAdmins";
+import { adminsColumn } from "../../../../../usersInfoDataFormat/UsersInfoDataFormat";
+import SearchFilter from "../../../../searchForm/SearchFilter";
 
 export function AllAdmins() {
   const authAdmin = useSelector(getAuthUser);
   const navigate = useNavigate();
-  //   const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const { adminCurrentAction, adminCurrentLink, employees_link } = useParams();
   // Fetch All Employed Admins
-  const allAdmins = [];
+  const allEmployedAdmins = FetchAllEmployedAdmins();
 
   const actionBtns = AllEmployedAdminsPageQuickLinks();
 
   const [searchAdmin, setSearchAdmin] = useState("");
-  const allFoundAdmins = allAdmins?.filter((admin) => {
+  const allFoundAdmins = allEmployedAdmins?.filter((admin) => {
     return (
       admin.personalInfo.firstName.toLowerCase().includes(searchAdmin) ||
       admin.personalInfo.firstName.includes(searchAdmin) ||
@@ -35,10 +32,10 @@ export function AllAdmins() {
       admin.personalInfo.lastName.includes(searchAdmin)
     );
   });
-  //   const adminsData = adminsColumn();
+  const adminsData = adminsColumn(authAdmin);
   const [currentActionBtn, setCurrentActionBtn] = useState("");
   // const [searchAdmin, setSearchAdmin] = useState("");
-  const [redirecting, setRedirecting] = useState("");
+  const [redirecting, setRedirecting] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [uncompletedEmploymentTask, setUncompletedEmploymentTask] =
     useState("");
@@ -47,10 +44,6 @@ export function AllAdmins() {
   if (window.location.hash) {
     window.history.replaceState("", document.title, window.location.pathname);
   }
-
-  const handleAdminSearch = (e) => {
-    e.preventDefault();
-  };
 
   const handleNewEmployment = () => {
     setRedirecting(true);
@@ -62,19 +55,7 @@ export function AllAdmins() {
     }, 3000);
   };
 
-  const backgroundColor = (actionBtn) => {
-    if (employees_link?.replace(/_/g, " ") === actionBtn) {
-      return "greenBackground";
-    } else {
-      return "allStdBtn";
-    }
-  };
-  const changeBackgroundColor = backgroundColor(currentActionBtn);
-  //   if (!allAdmins) {
-  //     return <PageLoading />;
-  //   }
-
-  const allStd = `All Employed Admins / Total = ${allAdmins?.length}`;
+  const allStd = `All Employed Admins / Total = ${allEmployedAdmins?.length}`;
   return (
     <>
       {/* Current dashboard title */}
@@ -95,13 +76,13 @@ export function AllAdmins() {
           <span>{adminCurrentLink?.replace(/_/g, " ")}</span>
         </h1>
         {/* Main search bar */}
-        {/* <Box sx={{ display: { xs: "none", sm: "block" } }}>
-          <SearchForm
-            value={searchedBlog}
-            onChange={handleOnChange}
+        <Box sx={{ display: { xs: "none", sm: "block" } }}>
+          <SearchFilter
+            value={searchAdmin}
+            onChange={setSearchAdmin}
             placeholder={"Search"}
           />
-        </Box> */}
+        </Box>
       </Box>
       <Box
         className="allAdminsData"
@@ -111,7 +92,8 @@ export function AllAdmins() {
         <Box className="searchDetails">
           {allFoundAdmins?.length === 0 && searchAdmin !== "" && (
             <p className="searchInfo">
-              We couldn't find any matches for `&quot;`{searchAdmin}`&quot;`
+              We couldn&apos;t find any matches for &quot;{searchAdmin}
+              &quot;
             </p>
           )}
           {allFoundAdmins?.length === 0 && searchAdmin !== "" && (
@@ -128,11 +110,13 @@ export function AllAdmins() {
           )}
           {searchAdmin && (
             <p className="searchInfo">
-              Search Result = {allFoundAdmins.length}
+              Search Result = {allFoundAdmins?.length}
             </p>
           )}
           {!searchAdmin && (
-            <p className="searchInfo">Total Admins = {allAdmins.length}</p>
+            <p className="searchInfo">
+              Total Admins = {allEmployedAdmins?.length}
+            </p>
           )}
         </Box>
         <Box>
@@ -151,19 +135,19 @@ export function AllAdmins() {
                 sm={2}
                 // md={2}
                 // lg={2}
-                key={action.label}
+                key={action?.label}
                 // minWidth={{ xs: "8rem", sm: "10rem" }}
                 // maxWidth={{ xs: "10rem", sm: "15rem" }}
                 // minWidth={"15rem"}
                 onClick={() => {
-                  setCurrentActionBtn(action.label);
-                  if (action.label === "Add New Admin +") {
+                  setCurrentActionBtn(action?.label);
+                  if (action?.label === "Add New Admin +") {
                     setOpenModal(true);
                   } else {
                     navigate(
                       `/sensec/users/${
                         authAdmin?.uniqueId
-                      }/admin/${adminCurrentAction}/${adminCurrentLink}/employees/${action.label.replace(
+                      }/admin/${adminCurrentAction}/${adminCurrentLink}/employees/${action?.label?.replace(
                         / /g,
                         "_"
                       )}`
@@ -171,7 +155,7 @@ export function AllAdmins() {
                   }
                 }}
                 className={
-                  employees_link?.replace(/_/g, " ") === action.label
+                  employees_link?.replace(/_/g, " ") === action?.label
                     ? "adminDashBtn isActive"
                     : action?.label === "Add New Admin +"
                     ? "adminDashAddBtn"
@@ -180,7 +164,9 @@ export function AllAdmins() {
                 // className={changeBackgroundColor}
               >
                 {/* {action.label !== "All" && action.label} */}
-                {action.label === "All" ? "All Employed Admins" : action.label}
+                {action?.label === "All"
+                  ? "All Employed Admins"
+                  : action?.label}
               </Grid>
             ))}
             <NewEmploymentModal
@@ -193,10 +179,10 @@ export function AllAdmins() {
             />
           </Grid>
         </Box>
-        <Box>
+        <Box className="adminDataTable">
           <DataTable
             title={allStd}
-            // columns={adminsData}
+            columns={adminsData}
             data={allFoundAdmins}
             customStyles={customUserTableStyle}
             pagination

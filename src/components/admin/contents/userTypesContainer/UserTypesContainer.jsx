@@ -4,22 +4,20 @@ import {
   HangingAdmins,
   HangingLecturers,
   LecturersData,
+  NTStaffsData,
   PendingAdmins,
   PendingLecturers,
+  PendingNTStaffs,
 } from "../../../lazyLoading/admin/AdminLazyLoadingComponents";
 import { Box } from "@mui/material";
 
-export function UserTypesContainer({ searchAdmin, setSearchAdmin }) {
+export function UserTypesContainer() {
   const { employees_link, adminCurrentLink } = useParams();
-  console.log(adminCurrentLink);
   return (
     <Box>
       <Box>
         {adminCurrentLink === "Admins" && employees_link === "All" && (
-          <AllAdmins
-            searchAdmin={searchAdmin}
-            setSearchAdmin={setSearchAdmin}
-          />
+          <AllAdmins />
         )}
         {adminCurrentLink === "Admins" &&
           employees_link === "Pending_Admins" && <PendingAdmins />}
@@ -40,11 +38,11 @@ export function UserTypesContainer({ searchAdmin, setSearchAdmin }) {
           employees_link === "Lecturers" && <HangingTeachersCategory />} */}
         {/* {adminCurrentLink === "Hanging_Employments" &&
           employees_link === "NT-Staffs" && <HangingNTStaffsCategory />} */}
-        {/* {adminCurrentLink === "NT-Staffs" && employees_link === "All" && (
+        {adminCurrentLink === "NT-Staffs" && employees_link === "All" && (
           <NTStaffsData />
-        )} */}
-        {/* {adminCurrentLink === "NT-Staffs" &&
-          employees_link === "Pending_NT-Staffs" && <PendingNTStaffs />} */}
+        )}
+        {adminCurrentLink === "NT-Staffs" &&
+          employees_link === "Pending_NT-Staffs" && <PendingNTStaffs />}
         {/* {adminCurrentLink === "NT-Staffs" &&
           employees_link === "Hanging_Employments" && <HangingNTStaffs />} */}
       </Box>

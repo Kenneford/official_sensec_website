@@ -1,6 +1,6 @@
-import React, { useEffect, useLayoutEffect, useMemo, useState } from "react";
-import "./studentEnrollment.scss";
-import { ContainerBox, CustomTextField } from "../../../muiStyling/muiStyling";
+import { useEffect, useMemo, useState } from "react";
+// import "./studentEnrollment.scss";
+import { ContainerBox, CustomTextField } from "../../muiStyling/muiStyling";
 import {
   MenuItem,
   Button,
@@ -13,50 +13,43 @@ import {
 import {
   resetEnrolmentState,
   studentEnrollment,
-} from "../../../features/students/studentsSlice";
+} from "../../features/students/studentsSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { FetchAllProgrammes } from "../../../data/programme/FetchProgrammeData";
+import { FetchAllProgrammes } from "../../data/programme/FetchProgrammeData";
 import {
   fetchAllDivisionProgrammes,
   getAllDivisionProgrammes,
-} from "../../../features/academics/programmeSlice";
-import { FetchAllClassLevels } from "../../../data/class/FetchClassLevel";
-import { FetchAllBatches } from "../../../data/batch/FetchBatch";
+} from "../../features/academics/programmeSlice";
+import { FetchAllBatches } from "../../data/batch/FetchBatch";
 import {
   fetchAllPlacementStudents,
   getAllPlacementStudents,
-} from "../../../features/academics/placementSlice";
-import {
-  dateFormatter,
-  shortDateFormatter,
-} from "../../../dateFormatter/DateFormatter";
+} from "../../features/academics/placementSlice";
 import { toast } from "react-toastify";
-import LoadingProgress from "../../../components/pageLoading/LoadingProgress";
+import LoadingProgress from "../../components/pageLoading/LoadingProgress";
 import { TaskAlt } from "@mui/icons-material";
-import Redirection from "../../../components/pageLoading/Redirection";
+import Redirection from "../../components/pageLoading/Redirection";
 import { useNavigate, useParams } from "react-router-dom";
-import { getAuthUser } from "../../../features/auth/authSlice";
+import { getAuthUser } from "../../features/auth/authSlice";
+import { newEmployee } from "../../features/employments/employmentSlice";
 
-export function EnrollmentForm() {
+export function EmploymentForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const authUser = useSelector(getAuthUser);
   const { studentIndexNo, adminCurrentAction, adminCurrentLink } = useParams();
-  const indexNumber = localStorage.getItem("indexNumber");
   const allProgrammes = FetchAllProgrammes();
-  const allClassLevels = FetchAllClassLevels();
   const allBatches = FetchAllBatches();
   const allDivisionProgrammes = useSelector(getAllDivisionProgrammes);
   const allPlacementStudents = useSelector(getAllPlacementStudents);
   const { enrollmentStatus, error, successMessage } = useSelector(
     (state) => state.student
   );
-  console.log(studentIndexNo);
 
   //Get current year and random number for student's unique-Id
   const currentYear = new Date().getFullYear();
   const nextYear = currentYear + 1;
-  const [num] = useState(Math.floor(10000 + Math.random() * 90000));
+  const num = Math.floor(10000 + Math.random() * 90000);
   const academicYear = `${currentYear} / ${nextYear}`;
 
   // Dynamically calculate academic year base on current month of the Year
@@ -82,16 +75,12 @@ export function EnrollmentForm() {
   const [loadingComplete, setLoadingComplete] = useState(null);
   const [redirecting, setRedirecting] = useState("");
 
-  // Handle Errors
-  const [firstNameError, setFirstNameError] = useState(false);
-  const [lastNameError, setLastNameError] = useState(false);
-  const [jhsAttendedError, setJhsAttendedError] = useState(false);
-  const [graduatedJhsError, setGraduatedJhsError] = useState(false);
-  const [jhsIndexNoError, setJhsIndexNoError] = useState(false);
+  // New Employee state
+  const [userID, setUserID] = useState("");
+  console.log(userID);
 
-  // New Student state
-  const [newStudent, setNewStudent] = useState({
-    uniqueId: "",
+  const [newEmployment, setNewEmployment] = useState({
+    uniqueId: userID ? userID : "",
     firstName: "",
     lastName: "",
     otherName: "",
@@ -107,7 +96,7 @@ export function EnrollmentForm() {
     program: "",
     divisionProgram: "",
     optionalElectiveSubject: "",
-    currentClassLevel: "",
+    typeOfEmployment: "",
     currentAcademicYear: "",
     batch: "",
     // Status
@@ -128,16 +117,9 @@ export function EnrollmentForm() {
     email: "",
   });
 
-  // Find student's programme
-  const studentProgramme = allProgrammes?.find(
-    (programme) => programme?._id === newStudent?.program
-  );
-  // Find student's division programme
-  const selectedDivisionProgramme = allDivisionProgrammes?.find(
-    (programme) => programme?._id === newStudent?.divisionProgram
-  );
-
   const [imagePreview, setImagePreview] = useState(null);
+
+  // Handle image file upload
   const handleImageFileUpload = (e) => {
     const file = e.target.files[0];
     const maxSize = 5 * 1024 * 1024; // 5MB
@@ -147,7 +129,7 @@ export function EnrollmentForm() {
       return;
     }
     if (e.target.files.length !== 0) {
-      setNewStudent({ ...newStudent, [e.target.name]: file });
+      setNewEmployment({ ...newEmployment, [e.target.name]: file });
     }
     const reader = new FileReader();
     reader.readAsDataURL(e.target.files[0]);
@@ -155,151 +137,102 @@ export function EnrollmentForm() {
       // console.log(reader.result);
       setImagePreview(reader.result);
 
-      setNewStudent({
-        ...newStudent,
+      setNewEmployment({
+        ...newEmployment,
         profilePicture: reader.result,
       });
     };
   };
-
-  // console.log(memoizedStudentUniqueId);
-  // useLayoutEffect runs before the browser paints, allowing for DOM manipulations
-  // that need to happen before the user sees the update.
-  // useLayoutEffect(() => {
-  //   const studentUniqueId = `STD-${num}${newStudent?.firstName.charAt(
-  //     0
-  //   )}${newStudent?.lastName.charAt(0)}-${currentYear}`;
-  //   if (newStudent?.uniqueId === "") {
-  //     setNewStudent({
-  //       ...newStudent,
-  //       uniqueId: studentUniqueId,
-  //     });
-  //   }
-  // }, [currentYear, newStudent, num]);
-
+  // Helper function to generate new unique-Id for new employee
+  const generateUniqueId = (employmentType, fName, lName) => {
+    let prefix = "";
+    switch (employmentType) {
+      case "Administration":
+        prefix = "ADM";
+        break;
+      case "Teaching Staff":
+        prefix = "LCT";
+        break;
+      case "Non-Teaching Staff":
+        prefix = "NTS";
+        break;
+      default:
+        prefix = "EMP"; // Unknown or unspecified
+    }
+    // Get current year
+    const currentYear = new Date().getFullYear();
+    // Get initials from the first and last names
+    const firstNameInitial = fName ? fName?.charAt(0)?.toUpperCase() : "";
+    const lastNameInitial = lName ? lName?.charAt(0)?.toUpperCase() : "";
+    // Generate a unique suffix using current timestamp or random number
+    const uniqueSuffix = Date.now().toString().slice(-5); // Take last 5 digits for brevity
+    return `${prefix}-${uniqueSuffix}${firstNameInitial}${lastNameInitial}-${currentYear}`;
+  };
+  // Handle input value change
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setNewStudent({
-      ...newStudent,
+    setNewEmployment({
+      ...newEmployment,
       [name]: value,
     });
   };
 
-  // Generate new unique-Id for old student
-  useMemo(() => {
-    const studentUniqueId = `STD-${num}${newStudent?.firstName.charAt(
-      0
-    )}${newStudent?.lastName.charAt(0)}-${currentYear}`;
-    if (newStudent?.uniqueId === "") {
-      setNewStudent({
-        ...newStudent,
-        uniqueId: studentUniqueId,
-      });
-    }
-    // return studentUniqueId;
-  }, [newStudent, currentYear, num]);
+  // Use useEffect to automatically update the userID when any of the dependencies change
+  useEffect(() => {
+    const newId = generateUniqueId(
+      newEmployment?.typeOfEmployment,
+      newEmployment?.firstName,
+      newEmployment?.lastName
+    );
+    setUserID(newId);
+  }, [newEmployment]); // Dependencies
 
-  // memoizedStudentUniqueId();
-  // Update student unique ID
-  // useEffect(() => {
-  //   if (memoizedStudentUniqueId) {
-  //   }
-  // }, [memoizedStudentUniqueId]);
-
-  const psDOB = newStudent?.dateOfBirth
-    ? new Date(newStudent?.dateOfBirth).toISOString()
-    : "";
-
-  // Handle enrollment
+  // Handle employment
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = {
-      newStudent,
-      dateOfBirth: psDOB,
+      uniqueId: userID,
+      firstName: newEmployment?.firstName,
+      lastName: newEmployment?.lastName,
+      otherName: newEmployment?.otherName,
+      dateOfBirth: newEmployment?.dateOfBirth,
+      placeOfBirth: newEmployment?.placeOfBirth,
+      nationality: newEmployment?.nationality,
+      gender: newEmployment?.gender,
+      profilePicture: newEmployment?.profilePicture,
+      // School Data
+      program: newEmployment?.program,
+      typeOfEmployment: newEmployment?.typeOfEmployment,
+      // Status
+      height: newEmployment?.height,
+      weight: newEmployment?.weight,
+      complexion: newEmployment?.complexion,
+      motherTongue: newEmployment?.motherTongue,
+      otherTongue: newEmployment?.otherTongue,
+      residentialStatus: newEmployment?.residentialStatus,
+      // Contact Address
+      homeTown: newEmployment?.homeTown,
+      district: newEmployment?.district,
+      region: newEmployment?.region,
+      currentCity: newEmployment?.currentCity,
+      residentialAddress: newEmployment?.residentialAddress,
+      gpsAddress: newEmployment?.gpsAddress,
+      mobile: newEmployment?.mobile,
+      email: newEmployment?.email,
     };
-    dispatch(studentEnrollment(data));
+    dispatch(newEmployee(data));
+    console.log(data);
   };
-  // Find placement student
-  const memoizedPlacementStudentData = useMemo(() => {
-    const placementStudentFound = allPlacementStudents?.find(
-      (std) => std?.jhsIndexNo === newStudent?.jhsIndexNo
-    );
-    return placementStudentFound;
-  }, [allPlacementStudents, newStudent]);
 
   // Fetch needed data
   useEffect(() => {
-    if (newStudent?.program) {
-      dispatch(fetchAllDivisionProgrammes({ programId: newStudent?.program }));
+    if (newEmployment?.program) {
+      dispatch(
+        fetchAllDivisionProgrammes({ programId: newEmployment?.program })
+      );
     }
     dispatch(fetchAllPlacementStudents());
-  }, [dispatch, newStudent]);
-
-  // Validate input data
-  useEffect(() => {
-    // First Name
-    if (
-      memoizedPlacementStudentData &&
-      newStudent?.firstName &&
-      memoizedPlacementStudentData?.firstName !== newStudent?.firstName
-    ) {
-      setFirstNameError(true);
-      return;
-    } else {
-      setFirstNameError(false);
-    }
-    // Surname
-    if (
-      memoizedPlacementStudentData &&
-      newStudent?.lastName &&
-      memoizedPlacementStudentData?.lastName !== newStudent?.lastName
-    ) {
-      setLastNameError(true);
-      return;
-    } else {
-      setLastNameError(false);
-    }
-    // Date Of Birth
-    // if (
-    //   memoizedPlacementStudentData &&
-    //   newStudent?.dateOfBirth &&
-    //   psDOB !== newStudent?.dateOfBirth
-    // ) {
-    //   setDateOfBirthError(true);
-    //   return;
-    // } else {
-    //   setDateOfBirthError(false);
-    // }
-    // Jhs Attended
-    if (
-      memoizedPlacementStudentData &&
-      newStudent?.jhsAttended &&
-      memoizedPlacementStudentData?.jhsAttended !== newStudent?.jhsAttended
-    ) {
-      setJhsAttendedError(true);
-      return;
-    } else {
-      setJhsAttendedError(false);
-    }
-    // Jhs Graduated Year
-    if (
-      memoizedPlacementStudentData &&
-      newStudent?.completedJhs &&
-      memoizedPlacementStudentData?.yearGraduated !== newStudent?.completedJhs
-    ) {
-      setGraduatedJhsError(true);
-      return;
-    } else {
-      setGraduatedJhsError(false);
-    }
-    // Jhs Index No
-    if (newStudent?.jhsIndexNo && !memoizedPlacementStudentData) {
-      setJhsIndexNoError(true);
-      return;
-    } else {
-      setJhsIndexNoError(false);
-    }
-  }, [newStudent, memoizedPlacementStudentData]);
+  }, [dispatch, newEmployment]);
 
   // Handle enrollment status check
   useEffect(() => {
@@ -336,7 +269,7 @@ export function EnrollmentForm() {
           );
         } else {
           navigate(
-            `/sensec/students/enrollment/online/${newStudent?.uniqueId}/parent/add`
+            `/sensec/students/enrollment/online/${newEmployment?.uniqueId}/parent/add`
           );
         }
       }, 9000);
@@ -348,7 +281,7 @@ export function EnrollmentForm() {
     error,
     successMessage,
     loadingComplete,
-    newStudent,
+    newEmployment,
     adminCurrentAction,
     adminCurrentLink,
     authUser,
@@ -382,52 +315,51 @@ export function EnrollmentForm() {
         sx={{
           width: { xs: "100%", sm: "95%", md: "90%", lg: "90%", xl: "75%" },
           margin: "auto",
-          paddingTop: "2rem",
+          p: { xs: "2rem .5rem", sm: "2rem" },
           display: "flex",
           flexDirection: "column",
           position: "relative",
         }}
       >
-        <h1>Student Online Enrollment</h1>
-        <Typography textAlign={"center"} color="#696969">
-          ({" "}
-          <span style={{ fontWeight: "500" }}>
-            {currentYear}/{currentYear + 1}
-          </span>{" "}
-          Academic Year )
-        </Typography>
+        {!adminCurrentAction && (
+          <Box mb={2}>
+            <Typography
+              variant="h4"
+              fontSize={{ xs: "1.4rem", sm: "1.7rem" }}
+              color="#696969"
+              textAlign={"center"}
+              letterSpacing={1}
+              fontWeight={500}
+            >
+              New Employment
+            </Typography>
+            <Typography
+              variant="h6"
+              textAlign={"center"}
+              color="#696969"
+              fontSize={{ xs: ".9rem", sm: "1rem" }}
+            >
+              ({" "}
+              <span style={{ fontWeight: "500" }}>
+                {currentYear}/{currentYear + 1}
+              </span>{" "}
+              Academic Year )
+            </Typography>
+          </Box>
+        )}
         <Box
           component="div"
           id="enrollmentFormWrap"
           sx={{
             maxWidth: 1000,
             mx: "auto",
-            mt: 5,
-            p: 3,
+            // mt: 5,
+            p: { xs: ".5rem .7rem", sm: 3 },
             border: "1px solid #ccc",
             borderRadius: "8px",
             backgroundColor: "#f9f9f9",
           }}
         >
-          {/* <Typography
-          variant="h6"
-          component={"p"}
-          fontWeight={300}
-          mb={3}
-          color="#cccc"
-          fontSize={"1em"}
-          lineHeight={"1.2em"}
-          letterSpacing={"1px"}
-          // textAlign={"center"}
-          bgcolor={"#292929"}
-          borderRadius={".4rem"}
-          padding={"1rem"}
-        >
-          To enroll into Senya Senior High School, you will be redirected to few
-          other pages. Please, kindly go through all the processes and also make
-        //   sure to fill all required fields in order to ensure a successful
-          enrollment.
-        </Typography> */}
           <form
             onSubmit={handleSubmit}
             style={{
@@ -439,15 +371,6 @@ export function EnrollmentForm() {
               padding: ".5rem 0",
             }}
           >
-            {/* <Avatar
-            src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            sx={{
-              width: "7rem",
-              height: "7rem",
-              "&:hover": { cursor: "pointer" },
-            }}
-          /> */}
-            {/* <Avatar {...stringAvatar("Kent Dodds")} /> */}
             <Grid container spacing={3}>
               {/* Student First Name */}
               <Grid item xs={12} sm={6} md={4} lg={4}>
@@ -455,20 +378,13 @@ export function EnrollmentForm() {
                   fullWidth
                   label="First Name"
                   name="firstName"
-                  value={newStudent?.firstName}
+                  value={newEmployment?.firstName}
                   onChange={handleChange}
                   required
                   className="textField"
-                  error={firstNameError}
-                  helperText={
-                    firstNameError ? "First name is not correct!" : ""
-                  }
                   sx={{
                     "& .MuiInputLabel-asterisk": {
-                      color:
-                        newStudent?.firstName && !firstNameError
-                          ? "green"
-                          : "red", // Change the asterisk color to red
+                      color: newEmployment?.firstName ? "green" : "red", // Change the asterisk color to red
                     },
                   }}
                 />
@@ -479,17 +395,12 @@ export function EnrollmentForm() {
                   fullWidth
                   label="Surname"
                   name="lastName"
-                  value={newStudent?.lastName}
+                  value={newEmployment?.lastName}
                   onChange={handleChange}
                   required
-                  error={lastNameError}
-                  helperText={lastNameError ? "Surname is not correct!" : ""}
                   sx={{
                     "& .MuiInputLabel-asterisk": {
-                      color:
-                        newStudent?.lastName && !lastNameError
-                          ? "green"
-                          : "red", // Change the asterisk color to red
+                      color: newEmployment?.lastName ? "green" : "red", // Change the asterisk color to red
                     },
                   }}
                 />
@@ -500,7 +411,7 @@ export function EnrollmentForm() {
                   fullWidth
                   label="Other Name"
                   name="otherName"
-                  value={newStudent?.otherName}
+                  value={newEmployment?.otherName}
                   onChange={handleChange}
                 />
               </Grid>
@@ -510,9 +421,14 @@ export function EnrollmentForm() {
                   fullWidth
                   label="Place Of Birth"
                   name="placeOfBirth"
-                  value={newStudent?.placeOfBirth}
+                  value={newEmployment?.placeOfBirth}
                   onChange={handleChange}
                   required
+                  sx={{
+                    "& .MuiInputLabel-asterisk": {
+                      color: newEmployment?.placeOfBirth ? "green" : "red", // Change the asterisk color to red
+                    },
+                  }}
                 />
               </Grid>
               {/* Date Of Birth */}
@@ -522,21 +438,9 @@ export function EnrollmentForm() {
                   // label="DD/MM/YYYY"
                   name="dateOfBirth"
                   type="date"
-                  value={newStudent?.dateOfBirth || ""}
+                  value={newEmployment?.dateOfBirth || ""}
                   onChange={handleChange}
                   required
-                  // error={dateOfBirthError}
-                  // helperText={
-                  //   dateOfBirthError ? "Date of birth is not correct!" : ""
-                  // }
-                  // sx={{
-                  //   "& .MuiInputLabel-asterisk": {
-                  //     color:
-                  //       newStudent?.dateOfBirth && !dateOfBirthError
-                  //         ? "green"
-                  //         : "red", // Change the asterisk color to red
-                  //   },
-                  // }}
                 />
               </Grid>
               {/* Nationality */}
@@ -545,7 +449,7 @@ export function EnrollmentForm() {
                   fullWidth
                   label="Nationality"
                   name="nationality"
-                  value={newStudent?.nationality}
+                  value={newEmployment?.nationality}
                   onChange={handleChange}
                   required
                 />
@@ -557,7 +461,7 @@ export function EnrollmentForm() {
                   fullWidth
                   label="Gender"
                   name="gender"
-                  value={newStudent?.gender}
+                  value={newEmployment?.gender}
                   onChange={handleChange}
                   required
                 >
@@ -572,7 +476,7 @@ export function EnrollmentForm() {
                   fullWidth
                   label="Mother Tongue"
                   name="motherTongue"
-                  value={newStudent?.motherTongue}
+                  value={newEmployment?.motherTongue}
                   onChange={handleChange}
                   required
                 >
@@ -600,7 +504,7 @@ export function EnrollmentForm() {
                   fullWidth
                   label="Other Tongue"
                   name="otherTongue"
-                  value={newStudent?.otherTongue}
+                  value={newEmployment?.otherTongue}
                   onChange={handleChange}
                 >
                   <MenuItem value="English">English</MenuItem>
@@ -618,7 +522,7 @@ export function EnrollmentForm() {
                   fullWidth
                   label="Complexion"
                   name="complexion"
-                  value={newStudent?.complexion}
+                  value={newEmployment?.complexion}
                   onChange={handleChange}
                   required
                 >
@@ -636,7 +540,7 @@ export function EnrollmentForm() {
                   fullWidth
                   label="Height"
                   name="height"
-                  value={newStudent?.height}
+                  value={newEmployment?.height}
                   onChange={handleChange}
                   required
                   slotProps={{
@@ -654,7 +558,7 @@ export function EnrollmentForm() {
                   fullWidth
                   label="Weight"
                   name="weight"
-                  value={newStudent?.weight}
+                  value={newEmployment?.weight}
                   onChange={handleChange}
                   required
                   slotProps={{
@@ -673,7 +577,7 @@ export function EnrollmentForm() {
                   select
                   label="Region"
                   name="region"
-                  value={newStudent?.region}
+                  value={newEmployment?.region}
                   onChange={handleChange}
                   required
                 >
@@ -701,18 +605,7 @@ export function EnrollmentForm() {
                   fullWidth
                   label="HomeTown"
                   name="homeTown"
-                  value={newStudent?.homeTown}
-                  onChange={handleChange}
-                  required
-                />
-              </Grid>
-              {/* House Address */}
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <CustomTextField
-                  fullWidth
-                  label="House Address"
-                  name="residentialAddress"
-                  value={newStudent?.residentialAddress}
+                  value={newEmployment?.homeTown}
                   onChange={handleChange}
                   required
                 />
@@ -723,7 +616,7 @@ export function EnrollmentForm() {
                   fullWidth
                   label="District"
                   name="district"
-                  value={newStudent?.district}
+                  value={newEmployment?.district}
                   onChange={handleChange}
                   required
                 />
@@ -734,7 +627,18 @@ export function EnrollmentForm() {
                   fullWidth
                   label="Current City"
                   name="currentCity"
-                  value={newStudent?.currentCity}
+                  value={newEmployment?.currentCity}
+                  onChange={handleChange}
+                  required
+                />
+              </Grid>
+              {/* House Address */}
+              <Grid item xs={12} sm={6} md={4} lg={4}>
+                <CustomTextField
+                  fullWidth
+                  label="House Address"
+                  name="residentialAddress"
+                  value={newEmployment?.residentialAddress}
                   onChange={handleChange}
                   required
                 />
@@ -745,7 +649,7 @@ export function EnrollmentForm() {
                   fullWidth
                   label="GPS Address"
                   name="gpsAddress"
-                  value={newStudent?.gpsAddress}
+                  value={newEmployment?.gpsAddress}
                   onChange={handleChange}
                   required
                 />
@@ -756,7 +660,7 @@ export function EnrollmentForm() {
                   fullWidth
                   label="Email"
                   name="email"
-                  value={newStudent?.email}
+                  value={newEmployment?.email}
                   onChange={handleChange}
                   required
                 />
@@ -767,211 +671,49 @@ export function EnrollmentForm() {
                   fullWidth
                   label="Mobile"
                   name="mobile"
-                  value={newStudent?.mobile}
+                  value={newEmployment?.mobile}
                   onChange={handleChange}
                   required
                 />
               </Grid>
-              {/* JHS Attended */}
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <CustomTextField
-                  fullWidth
-                  label="JHS Attended"
-                  name="jhsAttended"
-                  value={newStudent?.jhsAttended}
-                  onChange={handleChange}
-                  required
-                  error={jhsAttendedError}
-                  helperText={
-                    jhsAttendedError ? "JHS attended is not correct!" : ""
-                  }
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color:
-                        newStudent?.jhsAttended && !jhsAttendedError
-                          ? "green"
-                          : "red", // Change the asterisk color to red
-                    },
-                  }}
-                />
-              </Grid>
-              {/* JHS Graduated Year */}
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <CustomTextField
-                  fullWidth
-                  label="Year Graduated [ JHS ]"
-                  name="completedJhs"
-                  value={newStudent?.completedJhs}
-                  onChange={handleChange}
-                  required
-                  error={graduatedJhsError}
-                  helperText={
-                    graduatedJhsError ? "Graduated year is not correct!" : ""
-                  }
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color:
-                        newStudent?.completedJhs && !graduatedJhsError
-                          ? "green"
-                          : "red", // Change the asterisk color to red
-                    },
-                  }}
-                />
-              </Grid>
-              {/* JHS Index No. */}
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <CustomTextField
-                  fullWidth
-                  label="JHS Index No."
-                  name="jhsIndexNo"
-                  value={newStudent?.jhsIndexNo}
-                  onChange={handleChange}
-                  disabled={
-                    !authUser ||
-                    (authUser && authUser?.roles?.includes("admin"))
-                  }
-                />
-              </Grid>
-              {/* Programme Selection */}
+              {/* Employment Type Selection */}
               <Grid item xs={12} sm={6} md={4} lg={4}>
                 <CustomTextField
                   select
                   fullWidth
-                  label="Select Programme"
-                  name="program"
-                  value={newStudent?.program}
+                  label="Employment Type"
+                  name="typeOfEmployment"
+                  value={newEmployment?.typeOfEmployment}
                   onChange={handleChange}
                   required
                 >
-                  {allProgrammes?.map((programme) => (
-                    <MenuItem key={programme?._id} value={programme?._id}>
-                      {programme?.name}
-                    </MenuItem>
-                  ))}
+                  <MenuItem value="Administration">Administration</MenuItem>
+                  <MenuItem value="Teaching Staff">Teaching Staff</MenuItem>
+                  <MenuItem value="Non-Teaching Staff">
+                    Non-Teaching Staff
+                  </MenuItem>
                 </CustomTextField>
               </Grid>
-              {/* Division Program (conditional) */}
-              {allDivisionProgrammes && allDivisionProgrammes?.length > 0 && (
+              {/* Programme Selection */}
+              {newEmployment?.typeOfEmployment === "Teaching Staff" && (
                 <Grid item xs={12} sm={6} md={4} lg={4}>
                   <CustomTextField
                     select
                     fullWidth
-                    label="Division Program"
-                    name="divisionProgram"
-                    value={newStudent?.divisionProgram}
+                    label="Select Programme"
+                    name="program"
+                    value={newEmployment?.program}
                     onChange={handleChange}
-                    //   required
+                    required
                   >
-                    {allDivisionProgrammes?.map((programme) => (
+                    {allProgrammes?.map((programme) => (
                       <MenuItem key={programme?._id} value={programme?._id}>
-                        {programme?.divisionName}
+                        {programme?.name}
                       </MenuItem>
                     ))}
                   </CustomTextField>
                 </Grid>
               )}
-              {/* Optional Elective Subject (conditional) */}
-              {selectedDivisionProgramme &&
-                selectedDivisionProgramme?.optionalElectiveSubjects?.length >
-                  0 && (
-                  <Grid item xs={12} sm={6} md={4} lg={4}>
-                    <CustomTextField
-                      select
-                      fullWidth
-                      label="Optional Elective Subject"
-                      name="optionalElectiveSubject"
-                      value={newStudent?.optionalElectiveSubject}
-                      onChange={handleChange}
-                      required
-                    >
-                      {selectedDivisionProgramme?.optionalElectiveSubjects?.map(
-                        (subject) => (
-                          <MenuItem key={subject?._id} value={subject?._id}>
-                            {subject?.subjectName}
-                          </MenuItem>
-                        )
-                      )}
-                    </CustomTextField>
-                  </Grid>
-                )}
-              {allDivisionProgrammes &&
-                !allDivisionProgrammes?.length > 0 &&
-                studentProgramme?.optionalElectiveSubjects?.length > 0 && (
-                  <Grid item xs={12} sm={6} md={4} lg={4}>
-                    <CustomTextField
-                      select
-                      fullWidth
-                      label="Optional Elective Subject"
-                      name="optionalElectiveSubject"
-                      value={newStudent?.optionalElectiveSubject}
-                      onChange={handleChange}
-                      required
-                    >
-                      {studentProgramme?.optionalElectiveSubjects?.map(
-                        (subject) => (
-                          <MenuItem key={subject?._id} value={subject?._id}>
-                            {subject?.subjectName}
-                          </MenuItem>
-                        )
-                      )}
-                    </CustomTextField>
-                  </Grid>
-                )}
-              {/* Class Level Selection */}
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <CustomTextField
-                  select
-                  fullWidth
-                  label="Class Level"
-                  name="currentClassLevel"
-                  value={newStudent?.currentClassLevel}
-                  onChange={handleChange}
-                  required
-                >
-                  {allClassLevels?.map((cLevel) => (
-                    <MenuItem key={cLevel?._id} value={cLevel?._id}>
-                      {cLevel?.name}
-                    </MenuItem>
-                  ))}
-                </CustomTextField>
-              </Grid>
-              {/* Batch Selection */}
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <CustomTextField
-                  select
-                  fullWidth
-                  label="Batch"
-                  name="batch"
-                  value={newStudent?.batch}
-                  onChange={handleChange}
-                  required
-                >
-                  {allBatches?.map((batch) => (
-                    <MenuItem key={batch?._id} value={batch?._id}>
-                      {batch?.yearRange}
-                    </MenuItem>
-                  ))}
-                </CustomTextField>
-              </Grid>
-              {/* Academic Year Selection */}
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <CustomTextField
-                  select
-                  fullWidth
-                  label="Academic Year"
-                  name="currentAcademicYear"
-                  value={newStudent?.currentAcademicYear}
-                  onChange={handleChange}
-                  required
-                  // disabled
-                >
-                  {academicYears.map((year) => (
-                    <MenuItem key={year} value={year}>
-                      {year}
-                    </MenuItem>
-                  ))}
-                </CustomTextField>
-              </Grid>
               {/* Residential Status Selection */}
               <Grid item xs={12} sm={6} md={4} lg={4}>
                 <CustomTextField
@@ -979,7 +721,7 @@ export function EnrollmentForm() {
                   fullWidth
                   label="Residential Status"
                   name="residentialStatus"
-                  value={newStudent?.residentialStatus}
+                  value={newEmployment?.residentialStatus}
                   onChange={handleChange}
                   required
                 >
@@ -1070,7 +812,7 @@ export function EnrollmentForm() {
                         <span>Successful</span> <TaskAlt />
                       </>
                     )}
-                  {loadingComplete === null && "Submit Enrollment"}
+                  {loadingComplete === null && "Submit Employment Data"}
                   {redirecting && (
                     <Redirection color={"#fff"} size={"1.5rem"} />
                   )}

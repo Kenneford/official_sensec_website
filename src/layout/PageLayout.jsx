@@ -8,6 +8,7 @@ export function PageLayout() {
   const [openUserActions, setOpenUserActions] = useState(false);
   const [openSignUpActions, setOpenSignUpActions] = useState(false);
   const [postOptions, setPostOptions] = useState(false);
+  const [openSearchModal, setOpenSearchModal] = useState(false);
   const [currentAction, setCurrentAction] = useState("Dashboard");
   const [currentLink, setCurrentLink] = useState("Overview");
 
@@ -47,6 +48,8 @@ export function PageLayout() {
           openSignUpActions,
           setOpenMenuLinks,
           openMenuLinks,
+          openSearchModal,
+          setOpenSearchModal,
         }}
       />
     </Box>

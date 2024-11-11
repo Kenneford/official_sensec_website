@@ -23,10 +23,8 @@ export const studentEnrollment = createAsyncThunk(
         `${SENSEC_API_ENDPOINT}/students/enrolment/online`,
         { data }
       );
-      console.log(res.data);
       return res.data;
     } catch (error) {
-      console.log(error.response.data);
       return rejectWithValue(error.response?.data);
     }
   }
@@ -41,10 +39,8 @@ export const approvedStudentEnrollment = createAsyncThunk(
         { enrolmentApprovedBy },
         { headers: { Authorization: `Bearer ${accessToken}` } }
       );
-      console.log(res.data);
       return res.data;
     } catch (error) {
-      console.log(error.response.data);
       return rejectWithValue(error.response.data);
     }
   }

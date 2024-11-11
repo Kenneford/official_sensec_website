@@ -21,10 +21,8 @@ export const AddStudentParent = createAsyncThunk(
           parentData,
         }
       );
-      console.log(res.data);
       return res.data;
     } catch (error) {
-      console.log(error.response.data);
       return rejectWithValue(error.response.data);
     }
   }
@@ -60,10 +58,8 @@ export const studentParentUpdate = createAsyncThunk(
           updatedDate,
         }
       );
-      console.log(res.data);
       return res.data;
     } catch (error) {
-      console.log(error.response.data);
       return rejectWithValue(error.response.data);
     }
   }
