@@ -26,7 +26,7 @@ import {
 } from "../lazyLoading/auth/AuthLazyComponents";
 import {
   AdminAttendance,
-  AdminsDataUpdateForm,
+  EmployeeDataUpdateForm,
   ClassLevelLecturers,
   ClassLevelProgrammeStudents,
   ClassLevelStudentsContainer,
@@ -164,16 +164,20 @@ export default function PageNavigation() {
                       element: <StudentPlacementVerification />,
                     },
                     {
-                      path: "new_enrollment",
-                      element: <EnrollmentForm />,
-                    },
-                    {
                       path: "student_update",
                       element: <StudentDataUpdateForm />,
                     },
                     {
                       path: "admin_update",
-                      element: <AdminsDataUpdateForm />,
+                      element: <EmployeeDataUpdateForm />,
+                    },
+                    {
+                      path: "lecturer_update",
+                      element: <EmployeeDataUpdateForm />,
+                    },
+                    {
+                      path: "nt-staff_update",
+                      element: <EmployeeDataUpdateForm />,
                     },
                     {
                       path: "new_employment",

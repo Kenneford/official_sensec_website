@@ -33,14 +33,15 @@ import { useNavigate, useParams } from "react-router-dom";
 import { getAuthUser } from "../../features/auth/authSlice";
 import { newEmployee } from "../../features/employments/employmentSlice";
 import { FetchAllAdmins } from "../../data/admins/FetchAdmins";
+import { FetchAllEmployees } from "../../data/allUsers/FetchAllUsers";
 
-export function AdminsDataUpdateForm() {
+export function EmployeeDataUpdateForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const authUser = useSelector(getAuthUser);
   const { studentIndexNo, adminCurrentAction, adminCurrentLink } = useParams();
   const allProgrammes = FetchAllProgrammes();
-  const allAdmins = FetchAllAdmins();
+  const allEmployees = FetchAllEmployees();
   const allBatches = FetchAllBatches();
   const allDivisionProgrammes = useSelector(getAllDivisionProgrammes);
   const allPlacementStudents = useSelector(getAllPlacementStudents);
@@ -79,10 +80,9 @@ export function AdminsDataUpdateForm() {
 
   // New Employee state
   const [userID, setUserID] = useState("");
-  console.log(userID);
   // Get selected admin ID
-  const adminId = adminCurrentLink;
-  const foundAdmin = allAdmins?.find((adm) => adm?.uniqueId === adminId);
+  const employeeId = adminCurrentLink;
+  const foundAdmin = allEmployees?.find((adm) => adm?.uniqueId === employeeId);
 
   const [newEmployment, setNewEmployment] = useState({
     uniqueId: "",
@@ -414,7 +414,6 @@ export function AdminsDataUpdateForm() {
                   name="firstName"
                   value={newEmployment?.firstName || ""}
                   onChange={handleChange}
-                  required
                   className="textField"
                   sx={{
                     "& .MuiInputLabel-asterisk": {
@@ -431,7 +430,6 @@ export function AdminsDataUpdateForm() {
                   name="lastName"
                   value={newEmployment?.lastName || ""}
                   onChange={handleChange}
-                  required
                   sx={{
                     "& .MuiInputLabel-asterisk": {
                       color: newEmployment?.lastName ? "green" : "red", // Change the asterisk color to red
@@ -457,7 +455,6 @@ export function AdminsDataUpdateForm() {
                   name="placeOfBirth"
                   value={newEmployment?.placeOfBirth || ""}
                   onChange={handleChange}
-                  required
                   sx={{
                     "& .MuiInputLabel-asterisk": {
                       color: newEmployment?.placeOfBirth ? "green" : "red", // Change the asterisk color to red
@@ -474,7 +471,6 @@ export function AdminsDataUpdateForm() {
                   type="date"
                   value={newEmployment?.dateOfBirth || ""}
                   onChange={handleChange}
-                  required
                 />
               </Grid>
               {/* Nationality */}
@@ -485,7 +481,6 @@ export function AdminsDataUpdateForm() {
                   name="nationality"
                   value={newEmployment?.nationality || ""}
                   onChange={handleChange}
-                  required
                 />
               </Grid>
               {/* Gender Selection */}
@@ -497,7 +492,6 @@ export function AdminsDataUpdateForm() {
                   name="gender"
                   value={newEmployment?.gender || ""}
                   onChange={handleChange}
-                  required
                 >
                   <MenuItem value="Male">Male</MenuItem>
                   <MenuItem value="Female">Female</MenuItem>
@@ -512,7 +506,6 @@ export function AdminsDataUpdateForm() {
                   name="motherTongue"
                   value={newEmployment?.motherTongue || ""}
                   onChange={handleChange}
-                  required
                 >
                   <MenuItem value="Twi">Twi</MenuItem>
                   <MenuItem value="Fante">Fante</MenuItem>
@@ -542,6 +535,7 @@ export function AdminsDataUpdateForm() {
                   onChange={handleChange}
                 >
                   <MenuItem value="English">English</MenuItem>
+                  <MenuItem value="French">French</MenuItem>
                   <MenuItem value="Spanish">Spanish</MenuItem>
                   <MenuItem value="Deutsch">Deutsch</MenuItem>
                   <MenuItem value="Italian">Italian</MenuItem>
@@ -558,7 +552,6 @@ export function AdminsDataUpdateForm() {
                   name="complexion"
                   value={newEmployment?.complexion || ""}
                   onChange={handleChange}
-                  required
                 >
                   <MenuItem value="Very Fair">Very Fair</MenuItem>
                   <MenuItem value="Fair">Fair</MenuItem>
@@ -576,7 +569,6 @@ export function AdminsDataUpdateForm() {
                   name="height"
                   value={newEmployment?.height || ""}
                   onChange={handleChange}
-                  required
                   slotProps={{
                     input: {
                       endAdornment: (
@@ -594,7 +586,6 @@ export function AdminsDataUpdateForm() {
                   name="weight"
                   value={newEmployment?.weight || ""}
                   onChange={handleChange}
-                  required
                   slotProps={{
                     input: {
                       endAdornment: (
@@ -613,7 +604,6 @@ export function AdminsDataUpdateForm() {
                   name="region"
                   value={newEmployment?.region || ""}
                   onChange={handleChange}
-                  required
                 >
                   <MenuItem value="Greater Accra">Greater Accra</MenuItem>
                   <MenuItem value="Ashanti">Ashanti</MenuItem>
@@ -641,7 +631,6 @@ export function AdminsDataUpdateForm() {
                   name="homeTown"
                   value={newEmployment?.homeTown || ""}
                   onChange={handleChange}
-                  required
                 />
               </Grid>
               {/* District */}
@@ -652,7 +641,6 @@ export function AdminsDataUpdateForm() {
                   name="district"
                   value={newEmployment?.district || ""}
                   onChange={handleChange}
-                  required
                 />
               </Grid>
               {/* Current City */}
@@ -663,7 +651,6 @@ export function AdminsDataUpdateForm() {
                   name="currentCity"
                   value={newEmployment?.currentCity || ""}
                   onChange={handleChange}
-                  required
                 />
               </Grid>
               {/* House Address */}
@@ -674,7 +661,6 @@ export function AdminsDataUpdateForm() {
                   name="residentialAddress"
                   value={newEmployment?.residentialAddress || ""}
                   onChange={handleChange}
-                  required
                 />
               </Grid>
               {/* GPS Address */}
@@ -685,7 +671,6 @@ export function AdminsDataUpdateForm() {
                   name="gpsAddress"
                   value={newEmployment?.gpsAddress || ""}
                   onChange={handleChange}
-                  required
                 />
               </Grid>
               {/* Email */}
@@ -696,7 +681,6 @@ export function AdminsDataUpdateForm() {
                   name="email"
                   value={newEmployment?.email || ""}
                   onChange={handleChange}
-                  required
                 />
               </Grid>
               {/* Mobile */}
@@ -707,7 +691,6 @@ export function AdminsDataUpdateForm() {
                   name="mobile"
                   value={newEmployment?.mobile || ""}
                   onChange={handleChange}
-                  required
                 />
               </Grid>
               {/* Employment Type Selection */}
@@ -719,7 +702,6 @@ export function AdminsDataUpdateForm() {
                   name="typeOfEmployment"
                   value={newEmployment?.typeOfEmployment || ""}
                   onChange={handleChange}
-                  required
                 >
                   <MenuItem value="Administration">Administration</MenuItem>
                   <MenuItem value="Teaching Staff">Teaching Staff</MenuItem>
@@ -737,7 +719,6 @@ export function AdminsDataUpdateForm() {
                   name="residentialStatus"
                   value={newEmployment?.residentialStatus || ""}
                   onChange={handleChange}
-                  required
                 >
                   <MenuItem value="Day">Day</MenuItem>
                   <MenuItem value="Boarding">Boarding</MenuItem>

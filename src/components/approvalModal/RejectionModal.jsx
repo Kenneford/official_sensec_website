@@ -1,59 +1,65 @@
 import React from "react";
 // import "./adminsmodal.scss";
 import CloseIcon from "@mui/icons-material/Close";
-import { CircularProgress } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 import Parser from "html-react-parser";
 import Redirection from "../pageLoading/Redirection";
 import PropTypes from "prop-types";
+import { useDispatch } from "react-redux";
 
 export default function RejectEnrollmentModal({
   open,
   onClose,
   rejectionFunction,
   setLoadingComplete,
-  dispatch,
   setUserToReject,
-  currentStudent,
-  rejectAction,
+  currentUserId,
+  employeeToApprove,
+  employeeToReject,
 }) {
+  const dispatch = useDispatch();
   if (!open) return null;
   return (
-    <div className="employmentModalOverlay">
-      <div className="employmentModalCont" onClick={onClose}>
-        <div
+    <Box className="employmentModalOverlay">
+      <Box className="employmentModalCont" onClick={onClose}>
+        <Box
           className="previewHistoryWrap"
           onClick={(e) => {
             e.stopPropagation();
           }}
         >
-          <div className="previewCont">
-            <p>{rejectAction}</p>
-            <div className="modalActionBtns">
+          <Box className="previewCont">
+            <p>Reject Employment</p>
+            <Box className="modalActionBtns">
               <button
                 className="employLectBtn"
-                onClick={() => {
-                  setUserToReject(currentStudent);
-                  // dispatch(rejectionFunction);
+                onClick={(e) => {
+                  e.preventDefault();
+                  setUserToReject(currentUserId);
+                  if (employeeToReject && !employeeToApprove) {
+                    dispatch(rejectionFunction);
+                    // setLoadingComplete(false);
+                  }
                   onClose();
-                  setLoadingComplete(false);
                 }}
               >
                 Yes
               </button>
               <button
                 className="employLectBtn"
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault();
                   setLoadingComplete(null);
                   onClose();
                 }}
               >
                 No
               </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+            </Box>
+          </Box>
+        </Box>
+      </Box>
+    </Box>
   );
 }
 
@@ -64,6 +70,7 @@ RejectEnrollmentModal.propTypes = {
   setLoadingComplete: PropTypes.func,
   dispatch: PropTypes.func,
   setUserToReject: PropTypes.func,
-  currentStudent: PropTypes.string,
-  rejectAction: PropTypes.string,
+  currentUserId: PropTypes.string,
+  employeeToApprove: PropTypes.object,
+  employeeToReject: PropTypes.object,
 };

@@ -177,7 +177,7 @@ export function UserSignUp() {
     if (signUpStatus === "rejected") {
       error?.errorMessage?.message?.map((err) => {
         toast.error(err, {
-          position: "top-center",
+          position: "top-right",
           theme: "light",
           toastId: err,
         });

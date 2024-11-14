@@ -604,6 +604,7 @@ export function EnrollmentForm() {
                   onChange={handleChange}
                 >
                   <MenuItem value="English">English</MenuItem>
+                  <MenuItem value="French">French</MenuItem>
                   <MenuItem value="Spanish">Spanish</MenuItem>
                   <MenuItem value="Deutsch">Deutsch</MenuItem>
                   <MenuItem value="Italian">Italian</MenuItem>
