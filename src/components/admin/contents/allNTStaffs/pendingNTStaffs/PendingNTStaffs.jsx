@@ -8,10 +8,14 @@ import NewEmploymentModal from "../../../../actionModal/ActionModal";
 import { customUserTableStyle } from "../../../../../usersInfoDataFormat/usersInfoTableStyle";
 import { AllEmployedNTStaffsPageQuickLinks } from "../../../../../linksFormat/LinksFormat";
 import { Box, Grid } from "@mui/material";
-import { getAuthUser } from "../../../../../features/auth/authSlice";
+import {
+  fetchAllUsers,
+  getAuthUser,
+} from "../../../../../features/auth/authSlice";
 import { pendingNTStaffsColumn } from "../../../../../usersInfoDataFormat/UsersInfoDataFormat";
 import { FetchAllPendingNTStaffs } from "../../../../../data/nt.staffs/FetchNT-Staffs";
 import SearchFilter from "../../../../searchForm/SearchFilter";
+import { FetchAllClassLevels } from "../../../../../data/class/FetchClassLevel";
 
 export function PendingNTStaffs() {
   const authAdmin = useSelector(getAuthUser);
@@ -19,33 +23,21 @@ export function PendingNTStaffs() {
   const navigate = useNavigate();
   const actionBtns = AllEmployedNTStaffsPageQuickLinks();
   const dispatch = useDispatch();
-  const userInfo = {};
-  const allClassLevels = [
-    {
-      name: "Level 100",
-    },
-    {
-      name: "Level 200",
-    },
-    {
-      name: "Level 300",
-    },
-  ];
-  // const { approveTeacherEmploymentStatus, approveTeacherEmploymentError } =
-  //   useSelector((state) => state.teacher);
+  const allClassLevels = FetchAllClassLevels();
   const {
-    adminCurrentAction,
-    adminCurrentLink,
-    // currentEmployeeLink,
-    class_level,
-    employees_link,
-  } = useParams();
-  console.log(employees_link);
+    approveEmploymentStatus,
+    rejectEmploymentStatus,
+    successMessage,
+    error,
+  } = useSelector((state) => state.employment);
+  const { adminCurrentAction, adminCurrentLink, class_level, employees_link } =
+    useParams();
   const [currentNTStaff, setCurrentNTStaff] = useState("");
   const [rejectNTStaff, setRejectNTStaff] = useState("");
   const [currentLecturer, setCurrentLecturer] = useState("");
   const [loadingComplete, setLoadingComplete] = useState(null);
   const [searchTeacher, setSearchTeacher] = useState("");
+  const [rejectLoadingComplete, setRejectLoadingComplete] = useState(null);
 
   //Filter teacher during search
   const pendingLecturers = allPendingNTStaffs?.filter(
@@ -63,30 +55,31 @@ export function PendingNTStaffs() {
   const nTStaffToReject = allPendingNTStaffs?.find(
     (user) => user?._id === rejectNTStaff
   );
-  const [redirecting, setRedirecting] = useState("");
+  const [redirecting, setRedirecting] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [openRejectModal, setOpenRejectModal] = useState(false);
   const [uncompletedEmploymentTask, setUncompletedEmploymentTask] =
     useState("");
   const [openApproveEmploymentModal, setOpenApproveEmploymentModal] =
     useState(false);
-
-  const teachersData = pendingNTStaffsColumn(
+  const columnObjData = {
     setCurrentNTStaff,
     loadingComplete,
     setLoadingComplete,
-    toast,
-    dispatch,
-    userInfo,
+    rejectLoadingComplete,
+    setRejectLoadingComplete,
+    authAdmin,
     foundNTStaff,
-    // approveNTStaffEmploymentStatus,
+    approveEmploymentStatus,
+    rejectEmploymentStatus,
     openApproveEmploymentModal,
     setOpenApproveEmploymentModal,
     setRejectNTStaff,
     nTStaffToReject,
     openRejectModal,
-    setOpenRejectModal
-  );
+    setOpenRejectModal,
+  };
+  const teachersData = pendingNTStaffsColumn(columnObjData);
 
   const handleNewEmployment = () => {
     setRedirecting(true);
@@ -98,43 +91,70 @@ export function PendingNTStaffs() {
     }, 3000);
   };
 
-  //Approve Teacher status check
-  // useEffect(() => {
-  //   if (foundLecturer) {
-  //     setLoadingComplete(false);
-  //     if (approveTeacherEmploymentStatus === "pending") {
-  //       setTimeout(() => {
-  //         setLoadingComplete(true);
-  //       }, 3000);
-  //     }
-  //     if (approveTeacherEmploymentStatus === "rejected") {
-  //       setTimeout(() => {
-  //         setLoadingComplete(null);
-  //       }, 3000);
-  //       setTimeout(() => {
-  //         approveTeacherEmploymentError?.errorMessage?.message?.map((err) =>
-  //           toast.error(err, {
-  //             position: "top-right",
-  //             theme: "light",
-  //             // toastId: successId,
-  //           })
-  //         );
-  //       }, 2000);
-  //       return;
-  //     }
-  //     if (approveTeacherEmploymentStatus === "success") {
-  //       setTimeout(() => {
-  //         //Fetch all users again when successfully approved
-  //         dispatch(fetchAllUsers());
-  //       }, 6000);
-  //     }
-  //   }
-  // }, [
-  //   dispatch,
-  //   approveTeacherEmploymentStatus,
-  //   approveTeacherEmploymentError,
-  //   foundLecturer,
-  // ]);
+  //Fetch all pending Admins again when successfully approved
+  useEffect(() => {
+    if (foundNTStaff && !nTStaffToReject) {
+      if (approveEmploymentStatus === "pending") {
+        setLoadingComplete(false);
+      }
+      if (approveEmploymentStatus === "rejected") {
+        setTimeout(() => {
+          setLoadingComplete(null);
+        }, 3000);
+        setTimeout(() => {
+          error?.errorMessage?.message?.map((err) =>
+            toast.error(err, {
+              position: "top-right",
+              theme: "dark",
+              // toastId: successId,
+            })
+          );
+        }, 2000);
+        return;
+      }
+      if (approveEmploymentStatus === "success") {
+        setTimeout(() => {
+          setLoadingComplete(true);
+        }, 3000);
+        setTimeout(() => {
+          //Fetch all users again when successfully approved
+          dispatch(fetchAllUsers());
+        }, 6000);
+      }
+    }
+  }, [dispatch, approveEmploymentStatus, error, foundNTStaff, nTStaffToReject]);
+  //Fetch all pending Admins again when successfully rejected
+  useEffect(() => {
+    if (nTStaffToReject && !foundNTStaff) {
+      if (rejectEmploymentStatus === "pending") {
+        setRejectLoadingComplete(false);
+      }
+      if (rejectEmploymentStatus === "rejected") {
+        setTimeout(() => {
+          setRejectLoadingComplete(null);
+        }, 3000);
+        setTimeout(() => {
+          error?.errorMessage?.message?.map((err) =>
+            toast.error(err, {
+              position: "top-right",
+              theme: "dark",
+              // toastId: successId,
+            })
+          );
+        }, 2000);
+        return;
+      }
+      if (rejectEmploymentStatus === "success") {
+        setTimeout(() => {
+          setRejectLoadingComplete(true);
+        }, 3000);
+        setTimeout(() => {
+          //Fetch all users again when successfully rejected
+          dispatch(fetchAllUsers());
+        }, 6000);
+      }
+    }
+  }, [dispatch, rejectEmploymentStatus, error, nTStaffToReject, foundNTStaff]);
 
   const allStd = `All Pending NT-Staff / Total = ${pendingLecturers?.length}`;
   return (

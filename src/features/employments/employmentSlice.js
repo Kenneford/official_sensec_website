@@ -1,13 +1,17 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { API_ENDPOINT, SENSEC_API_ENDPOINT } from "../../apiEndPoint/api";
+import { SENSEC_API_ENDPOINT } from "../../apiEndPoint/api";
+import tokenInterceptor from "../../apiEndPoint/interceptors";
 
 const initialState = {
   employeeInfo: "",
   allEmployees: [],
   approvedEmployee: "",
+  rejectedEmployee: "",
   updatedEmployee: "",
   employmentStatus: "",
+  approveEmploymentStatus: "",
+  rejectEmploymentStatus: "",
   updateStatus: "",
   successMessage: "",
   fetchSuccessMessage: "",
@@ -30,6 +34,34 @@ export const newEmployee = createAsyncThunk(
     }
   }
 );
+export const approveEmployee = createAsyncThunk(
+  "Employment/approveEmployee",
+  async ({ employeeId, employmentApprovedBy }, { rejectWithValue }) => {
+    try {
+      const res = await tokenInterceptor.put(
+        `/employment/${employeeId}/${employmentApprovedBy}/approve`
+      );
+      return res.data;
+    } catch (error) {
+      console.log(error.response.data);
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const rejectEmployee = createAsyncThunk(
+  "Employment/rejectEmployee",
+  async ({ employeeId, employmentRejectedBy }, { rejectWithValue }) => {
+    try {
+      const res = await tokenInterceptor.put(
+        `/employment/${employeeId}/${employmentRejectedBy}/reject`
+      );
+      return res.data;
+    } catch (error) {
+      console.log(error.response.data);
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 
 const employmentSlice = createSlice({
   name: "Employment",
@@ -45,7 +77,7 @@ const employmentSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    //   Sign Up
+    // New Employment
     builder.addCase(newEmployee.pending, (state) => {
       return { ...state, employmentStatus: "pending" };
     });
@@ -63,6 +95,48 @@ const employmentSlice = createSlice({
       return {
         ...state,
         employmentStatus: "rejected",
+        error: action.payload,
+      };
+    });
+    // Approve Employment
+    builder.addCase(approveEmployee.pending, (state) => {
+      return { ...state, approveEmploymentStatus: "pending" };
+    });
+    builder.addCase(approveEmployee.fulfilled, (state, action) => {
+      if (action.payload) {
+        return {
+          ...state,
+          approvedEmployee: action.payload.userEmploymentApproved,
+          successMessage: action.payload.successMessage,
+          approveEmploymentStatus: "success",
+        };
+      } else return state;
+    });
+    builder.addCase(approveEmployee.rejected, (state, action) => {
+      return {
+        ...state,
+        approveEmploymentStatus: "rejected",
+        error: action.payload,
+      };
+    });
+    // Reject Employment
+    builder.addCase(rejectEmployee.pending, (state) => {
+      return { ...state, rejectEmploymentStatus: "pending" };
+    });
+    builder.addCase(rejectEmployee.fulfilled, (state, action) => {
+      if (action.payload) {
+        return {
+          ...state,
+          rejectedEmployee: action.payload.userEmploymentRejected,
+          successMessage: action.payload.successMessage,
+          rejectEmploymentStatus: "success",
+        };
+      } else return state;
+    });
+    builder.addCase(rejectEmployee.rejected, (state, action) => {
+      return {
+        ...state,
+        rejectEmploymentStatus: "rejected",
         error: action.payload,
       };
     });

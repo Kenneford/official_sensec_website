@@ -33,6 +33,10 @@ import RejectEnrollmentModal from "../components/approvalModal/RejectionModal";
 import Redirection from "../components/pageLoading/Redirection";
 import { SENSEC_API_ENDPOINT } from "../apiEndPoint/api";
 import ApproveEmploymentModal from "../components/approvalModal/ApproveEmploymentModal";
+import {
+  approveEmployee,
+  rejectEmployee,
+} from "../features/employments/employmentSlice";
 
 const adminsColumn = (
   authAdmin,
@@ -138,11 +142,9 @@ const adminsColumn = (
     {
       name: "Date Employed",
       selector: (row) =>
-        !row?.employment?.employmentApprovedDate
+        !row?.employment?.createdAt
           ? "---"
-          : dateFormatter?.format(
-              new Date(row?.employment?.employmentApprovedDate)
-            ),
+          : dateFormatter?.format(new Date(row?.employment?.createdAt)),
     },
     {
       name: "Update",
@@ -165,7 +167,25 @@ const adminsColumn = (
             >
               {currentStudentId && currentStudentId?._id === row?._id && (
                 <>
-                  {loadingComplete === false && "Processing..."}
+                  {loadingComplete === false && (
+                    <Box
+                      className="promotionSpinner"
+                      sx={{
+                        // display: "flex",
+                        // justifyContent: "center",
+                        // alignItems: "center",
+                        marginTop: "1rem",
+                      }}
+                    >
+                      <p>Processing</p>
+                      {/* <CircularProgress style={{ color: "#555" }} size={"1.3em"} /> */}
+                      <span className="dot-ellipsis">
+                        <span className="dot">.</span>
+                        <span className="dot">.</span>
+                        <span className="dot">.</span>
+                      </span>
+                    </Box>
+                  )}
                   {loadingComplete &&
                     currentStudentId?._id === row?._id &&
                     redirecting && <Redirection color={"#555"} size={"1rem"} />}
@@ -297,7 +317,24 @@ const adminsColumn = (
 //             >
 //               {currentStudentId && currentStudentId?._id === row?._id && (
 //                 <>
-//                   {loadingComplete === false && "Processing..."}
+//                   {loadingComplete === false &&
+// <Box
+//   className="promotionSpinner"
+//   sx={{
+//     // display: "flex",
+//     // justifyContent: "center",
+//     // alignItems: "center",
+//     marginTop: "1rem",
+//   }}
+// >
+//   <p>Processing</p>
+//   {/* <CircularProgress style={{ color: "#555" }} size={"1.3em"} /> */}
+//   <span className="dot-ellipsis">
+//     <span className="dot">.</span>
+//     <span className="dot">.</span>
+//     <span className="dot">.</span>
+//   </span>
+// </Box>}
 //                   {loadingComplete &&
 //                     currentStudentId?._id === row?._id &&
 //                     redirecting && <Redirection color={"#555"} size={"1rem"} />}
@@ -316,18 +353,7 @@ const adminsColumn = (
 //   ];
 //   return hangingAdminsColumn;
 // };
-const pendingAdminsColumn = (
-  setCurrentAdmin,
-  loadingComplete,
-  setLoadingComplete,
-  toast,
-  dispatch,
-  userInfo,
-  foundAdmin,
-  // approveAdminStatus,
-  openApproveEmploymentModal,
-  setOpenApproveEmploymentModal
-) => {
+const pendingAdminsColumn = (columnObjData) => {
   const pendingAdminsColumn = [
     {
       name: "Image",
@@ -425,18 +451,16 @@ const pendingAdminsColumn = (
     {
       name: "Date Processed",
       selector: (row) =>
-        !row?.employment?.employmentProcessedDate
+        !row?.employment?.createdAt
           ? "---"
-          : dateFormatter?.format(
-              new Date(row?.employment?.employmentProcessedDate)
-            ),
+          : dateFormatter?.format(new Date(row?.employment?.createdAt)),
     },
     {
       name: "Update",
       selector: (row) => (
         <Link
           className="editLink"
-          to={`/sensec/admin/Users/Admins/${row.personalInfo?.firstName}_${row.personalInfo?.lastName}/${row.uniqueId}/update`}
+          to={`/sensec/users/${columnObjData?.authAdmin.uniqueId}/admin/Admins/${row.uniqueId}/admin_update`}
         >
           <EditIcon />
         </Link>
@@ -450,57 +474,75 @@ const pendingAdminsColumn = (
             <HashLink
               className="approveLink"
               onClick={async () => {
-                setCurrentAdmin(row?._id);
-                setOpenApproveEmploymentModal(true);
-                // dispatch(
-                //   approveAdminEmployment({
-                //     userUniqueId: row?.uniqueId,
-                //     employmentApprovedBy: `${userInfo?.id}`,
-                //     // enrolmentApprovementDate: date,
-                //   })
-                // );
+                columnObjData?.setCurrentAdmin(row?._id);
+                columnObjData?.setOpenApproveEmploymentModal(true);
+                columnObjData?.setOpenRejectModal(false);
               }}
             >
-              {foundAdmin && foundAdmin._id === row._id && (
-                <>
-                  {loadingComplete === false && "Processing..."}
-                  {loadingComplete && approveAdminStatus === "success" && (
-                    <>
-                      <span>Approved</span> <TaskAltIcon />
-                    </>
-                  )}
-                </>
-              )}
+              {columnObjData?.foundAdmin &&
+                columnObjData?.foundAdmin._id === row._id && (
+                  <>
+                    {columnObjData?.loadingComplete === false && (
+                      <Box
+                        className="promotionSpinner"
+                        sx={{
+                          // display: "flex",
+                          // justifyContent: "center",
+                          // alignItems: "center",
+                          marginTop: "1rem",
+                        }}
+                      >
+                        <p>Processing</p>
+                        {/* <CircularProgress style={{ color: "#555" }} size={"1.3em"} /> */}
+                        <span className="dot-ellipsis">
+                          <span className="dot">.</span>
+                          <span className="dot">.</span>
+                          <span className="dot">.</span>
+                        </span>
+                      </Box>
+                    )}
+                    {columnObjData?.loadingComplete &&
+                      columnObjData?.approveEmploymentStatus === "success" && (
+                        <>
+                          <span>Approved</span> <TaskAltIcon />
+                        </>
+                      )}
+                  </>
+                )}
               <>
-                {loadingComplete === null && (
+                {columnObjData?.loadingComplete === null && (
                   <HowToRegIcon
                     titleAccess="Approve Employment"
                     style={{ fontSize: "2rem" }}
                   />
                 )}
-                {row?._id !== foundAdmin?._id && loadingComplete !== null && (
-                  <HowToRegIcon
-                    titleAccess="Approve Employment"
-                    style={{ fontSize: "2rem" }}
-                  />
-                )}
+                {row?._id !== columnObjData?.foundAdmin?._id &&
+                  columnObjData?.loadingComplete !== null && (
+                    <HowToRegIcon
+                      titleAccess="Approve Employment"
+                      style={{ fontSize: "2rem" }}
+                    />
+                  )}
               </>
             </HashLink>
-            {foundAdmin && foundAdmin._id === row._id && (
-              <ApproveEmploymentModal
-                open={openApproveEmploymentModal}
-                onClose={() => setOpenApproveEmploymentModal(false)}
-                // approveEmploymentFunction={approveAdminEmployment({
-                //   adminUniqueId: row?.uniqueId,
-                //   employmentApprovedBy: `${userInfo?.id}`,
-                //   // enrolmentApprovementDate: date,
-                // })}
-                setLoadingComplete={setLoadingComplete}
-                dispatch={dispatch}
-                setCurrentUser={setCurrentAdmin}
-                currentUserId={row?._id}
-              />
-            )}
+            {columnObjData?.foundAdmin &&
+              columnObjData?.foundAdmin._id === row._id && (
+                <ApproveEmploymentModal
+                  open={columnObjData?.openApproveEmploymentModal}
+                  onClose={async () =>
+                    columnObjData?.setOpenApproveEmploymentModal(false)
+                  }
+                  approveEmploymentFunction={approveEmployee({
+                    employeeId: row?.uniqueId,
+                    employmentApprovedBy: columnObjData?.authAdmin?.id,
+                  })}
+                  setLoadingComplete={columnObjData?.setLoadingComplete}
+                  setCurrentUser={columnObjData?.setCurrentAdmin}
+                  currentUserId={row?._id}
+                  employeeToApprove={columnObjData?.foundAdmin}
+                  employeeToReject={columnObjData?.adminToReject}
+                />
+              )}
           </>
         ),
     },
@@ -511,33 +553,67 @@ const pendingAdminsColumn = (
           <HashLink
             className="rejectLink"
             onClick={async () => {
-              try {
-                const res = await axios.delete(
-                  `${SENSEC_API_ENDPOINT}/admin/reject_student_application/${row._id}`
-                );
-                if (res) {
-                  toast.success("Student disapproved successfully...", {
-                    position: "top-right",
-                    theme: "dark",
-                    // toastId: successId,
-                  });
-                  setTimeout(() => {
-                    window.location.reload();
-                  }, 5000);
-                }
-              } catch (error) {
-                toast.error("Student disapproved failed! Try again later", {
-                  position: "top-right",
-                  theme: "light",
-                  // toastId: successId,
-                });
-              }
+              columnObjData?.setRejectAdmin(row._id);
+              columnObjData?.setOpenRejectModal(true);
+              columnObjData?.setOpenApproveEmploymentModal(false);
             }}
           >
-            <PersonRemoveIcon
-              titleAccess="Reject Employment"
-              style={{ fontSize: "2rem" }}
-            />
+            {columnObjData?.rejectLoadingComplete === null && (
+              <PersonRemoveIcon
+                titleAccess="Reject Employment"
+                style={{ fontSize: "2rem" }}
+              />
+            )}
+            {row?._id !== columnObjData?.adminToReject?._id &&
+              columnObjData?.rejectLoadingComplete !== null && (
+                <PersonRemoveIcon
+                  titleAccess="Reject Employment"
+                  style={{ fontSize: "2rem" }}
+                />
+              )}
+            {columnObjData?.adminToReject &&
+              columnObjData?.adminToReject._id === row._id && (
+                <>
+                  {columnObjData?.rejectLoadingComplete === false && (
+                    <Box
+                      className="promotionSpinner"
+                      sx={{
+                        // display: "flex",
+                        // justifyContent: "center",
+                        // alignItems: "center",
+                        marginTop: "1rem",
+                      }}
+                    >
+                      <p>Processing</p>
+                      {/* <CircularProgress style={{ color: "#555" }} size={"1.3em"} /> */}
+                      <span className="dot-ellipsis">
+                        <span className="dot">.</span>
+                        <span className="dot">.</span>
+                        <span className="dot">.</span>
+                      </span>
+                    </Box>
+                  )}
+                  {columnObjData?.rejectLoadingComplete &&
+                    columnObjData?.rejectEmploymentStatus === "success" && (
+                      <>
+                        <span>Rejected</span> <TaskAltIcon />
+                      </>
+                    )}
+                  <RejectEnrollmentModal
+                    open={columnObjData?.openRejectModal}
+                    onClose={() => columnObjData?.setOpenRejectModal(false)}
+                    rejectionFunction={rejectEmployee({
+                      employeeId: row?.uniqueId,
+                      employmentRejectedBy: columnObjData?.authAdmin?.id,
+                    })}
+                    setLoadingComplete={columnObjData?.setRejectLoadingComplete}
+                    setUserToReject={columnObjData?.setRejectAdmin}
+                    currentUserId={row?._id}
+                    employeeToApprove={columnObjData?.foundAdmin}
+                    employeeToReject={columnObjData?.adminToReject}
+                  />
+                </>
+              )}
           </HashLink>
         ),
     },
@@ -945,8 +1021,7 @@ const studentsColumn = (
   level300loadingComplete,
   level100PromotionStatus,
   level200PromotionStatus,
-  level300PromotionStatus,
-  dispatch
+  level300PromotionStatus
 ) => {
   const studentColumn = [
     {
@@ -1396,7 +1471,25 @@ const teachersColumn = (
             >
               {currentStudentId && currentStudentId?._id === row?._id && (
                 <>
-                  {loadingComplete === false && "Processing..."}
+                  {loadingComplete === false && (
+                    <Box
+                      className="promotionSpinner"
+                      sx={{
+                        // display: "flex",
+                        // justifyContent: "center",
+                        // alignItems: "center",
+                        marginTop: "1rem",
+                      }}
+                    >
+                      <p>Processing</p>
+                      {/* <CircularProgress style={{ color: "#555" }} size={"1.3em"} /> */}
+                      <span className="dot-ellipsis">
+                        <span className="dot">.</span>
+                        <span className="dot">.</span>
+                        <span className="dot">.</span>
+                      </span>
+                    </Box>
+                  )}
                   {loadingComplete &&
                     currentStudentId?._id === row?._id &&
                     redirecting && <Redirection color={"#555"} size={"1rem"} />}
@@ -1535,7 +1628,24 @@ const teachersColumn = (
 //             >
 //               {currentStudentId && currentStudentId?._id === row?._id && (
 //                 <>
-//                   {loadingComplete === false && "Processing..."}
+//                   {loadingComplete === false &&
+// <Box
+//   className="promotionSpinner"
+//   sx={{
+//     // display: "flex",
+//     // justifyContent: "center",
+//     // alignItems: "center",
+//     marginTop: "1rem",
+//   }}
+// >
+//   <p>Processing</p>
+//   {/* <CircularProgress style={{ color: "#555" }} size={"1.3em"} /> */}
+//   <span className="dot-ellipsis">
+//     <span className="dot">.</span>
+//     <span className="dot">.</span>
+//     <span className="dot">.</span>
+//   </span>
+// </Box>}
 //                   {loadingComplete &&
 //                     currentStudentId?._id === row?._id &&
 //                     redirecting && <Redirection color={"#555"} size={"1rem"} />}
@@ -1554,18 +1664,7 @@ const teachersColumn = (
 //   ];
 //   return teachersDataFormat;
 // };
-const pendingTeachersColumn = (
-  setCurrentLecturer,
-  loadingComplete,
-  setLoadingComplete,
-  toast,
-  dispatch,
-  userInfo,
-  foundLecturer,
-  // approveTeacherEmploymentStatus,
-  openApproveEmploymentModal,
-  setOpenApproveEmploymentModal
-) => {
+const pendingTeachersColumn = (columnObjData) => {
   const teachersDataFormat = [
     {
       name: "Image",
@@ -1672,7 +1771,7 @@ const pendingTeachersColumn = (
           {row?.employment?.employmentStatus === "pending" && (
             <Link
               className="editLink"
-              to={`/sensec/admin/Users/Lecturers/${row.personalInfo?.firstName}_${row.personalInfo?.lastName}/${row.uniqueId}/update`}
+              to={`/sensec/users/${columnObjData?.authAdmin.uniqueId}/admin/Lecturers/${row.uniqueId}/lecturer_update`}
             >
               <EditIcon />
             </Link>
@@ -1688,30 +1787,46 @@ const pendingTeachersColumn = (
             <HashLink
               className="approveLink"
               onClick={async () => {
-                setCurrentLecturer(row._id);
-                setOpenApproveEmploymentModal(true);
+                columnObjData?.setCurrentLecturer(row._id);
+                columnObjData?.setOpenApproveEmploymentModal(true);
+                columnObjData?.setOpenRejectModal(false);
               }}
             >
-              {foundLecturer && foundLecturer._id === row._id && (
-                <>
-                  {loadingComplete === false && "Processing..."}
-                  {loadingComplete &&
-                    approveTeacherEmploymentStatus === "success" && (
-                      <>
-                        <span>Approved</span> <TaskAltIcon />
-                      </>
+              {columnObjData?.foundLecturer &&
+                columnObjData?.foundLecturer._id === row._id && (
+                  <>
+                    {columnObjData?.loadingComplete === false && (
+                      <Box
+                        className="promotionSpinner"
+                        sx={{
+                          marginTop: "1rem",
+                        }}
+                      >
+                        <p>Processing</p>
+                        <span className="dot-ellipsis">
+                          <span className="dot">.</span>
+                          <span className="dot">.</span>
+                          <span className="dot">.</span>
+                        </span>
+                      </Box>
                     )}
-                </>
-              )}
+                    {columnObjData?.loadingComplete &&
+                      columnObjData?.approveEmploymentStatus === "success" && (
+                        <>
+                          <span>Approved</span> <TaskAltIcon />
+                        </>
+                      )}
+                  </>
+                )}
               <>
-                {loadingComplete === null && (
+                {columnObjData?.loadingComplete === null && (
                   <HowToRegIcon
                     titleAccess="Approve Employment"
                     style={{ fontSize: "2rem" }}
                   />
                 )}
-                {row?._id !== foundLecturer?._id &&
-                  loadingComplete !== null && (
+                {row?._id !== columnObjData?.foundLecturer?._id &&
+                  columnObjData?.loadingComplete !== null && (
                     <HowToRegIcon
                       titleAccess="Approve Employment"
                       style={{ fontSize: "2rem" }}
@@ -1719,21 +1834,24 @@ const pendingTeachersColumn = (
                   )}
               </>
             </HashLink>
-            {foundLecturer && foundLecturer._id === row._id && (
-              <ApproveEmploymentModal
-                open={openApproveEmploymentModal}
-                onClose={() => setOpenApproveEmploymentModal(false)}
-                // approveEmploymentmentFunction={approveTeacherEmploymentment({
-                //   teacherUniqueId: row?.uniqueId,
-                //   employmentApprovedBy: `${userInfo?.id}`,
-                //   // enrolmentApprovementDate: date,
-                // })}
-                setLoadingComplete={setLoadingComplete}
-                dispatch={dispatch}
-                setCurrentUser={setCurrentLecturer}
-                currentUserId={row?._id}
-              />
-            )}
+            {columnObjData?.foundLecturer &&
+              columnObjData?.foundLecturer?._id === row?._id && (
+                <ApproveEmploymentModal
+                  open={columnObjData?.openApproveEmploymentModal}
+                  onClose={() =>
+                    columnObjData?.setOpenApproveEmploymentModal(false)
+                  }
+                  approveEmploymentFunction={approveEmployee({
+                    employeeId: row?.uniqueId,
+                    employmentApprovedBy: columnObjData?.authAdmin?.id,
+                  })}
+                  setLoadingComplete={columnObjData?.setLoadingComplete}
+                  setCurrentUser={columnObjData?.setCurrentLecturer}
+                  currentUserId={row?._id}
+                  employeeToApprove={columnObjData?.foundLecturer}
+                  employeeToReject={columnObjData?.lecturerToReject}
+                />
+              )}
           </>
         ),
     },
@@ -1744,40 +1862,72 @@ const pendingTeachersColumn = (
           <HashLink
             className="rejectLink"
             onClick={async () => {
-              try {
-                const res = await axios.delete(
-                  `${SENSEC_API_ENDPOINT}/admin/reject_student_application/${row._id}`
-                );
-                if (res) {
-                  toast.success("Student disapproved successfully...", {
-                    position: "top-right",
-                    theme: "dark",
-                    // toastId: successId,
-                  });
-                  setTimeout(() => {
-                    window.location.reload();
-                  }, 5000);
-                }
-              } catch (error) {
-                toast.error("Student disapproved failed! Try again later", {
-                  position: "top-right",
-                  theme: "light",
-                  // toastId: successId,
-                });
-              }
+              columnObjData?.setRejectLecturer(row?._id);
+              columnObjData?.setOpenRejectModal(true);
+              columnObjData?.setOpenApproveEmploymentModal(false);
             }}
           >
-            <PersonRemoveIcon
-              titleAccess="Reject Employment"
-              style={{ fontSize: "2rem" }}
-            />
+            {columnObjData?.rejectLoadingComplete === null && (
+              <PersonRemoveIcon
+                titleAccess="Reject Employment"
+                style={{ fontSize: "2rem" }}
+              />
+            )}
+            {row?._id !== columnObjData?.lecturerToReject?._id &&
+              columnObjData?.rejectLoadingComplete !== null && (
+                <PersonRemoveIcon
+                  titleAccess="Reject Employment"
+                  style={{ fontSize: "2rem" }}
+                />
+              )}
+            {columnObjData?.lecturerToReject &&
+              columnObjData?.lecturerToReject?._id === row._id && (
+                <>
+                  {columnObjData?.rejectLoadingComplete === false && (
+                    <Box
+                      className="promotionSpinner"
+                      sx={{
+                        marginTop: "1rem",
+                      }}
+                    >
+                      <p>Processing</p>
+                      <span className="dot-ellipsis">
+                        <span className="dot">.</span>
+                        <span className="dot">.</span>
+                        <span className="dot">.</span>
+                      </span>
+                    </Box>
+                  )}
+                  {columnObjData?.rejectLoadingComplete &&
+                    columnObjData?.rejectEmploymentStatus === "success" && (
+                      <>
+                        <span>Rejected</span> <TaskAltIcon />
+                      </>
+                    )}
+                  <RejectEnrollmentModal
+                    open={columnObjData?.openRejectModal}
+                    onClose={async () =>
+                      columnObjData?.setOpenRejectModal(false)
+                    }
+                    rejectionFunction={rejectEmployee({
+                      employeeId: row?.uniqueId,
+                      employmentRejectedBy: columnObjData?.authAdmin?.id,
+                    })}
+                    setLoadingComplete={columnObjData?.setRejectLoadingComplete}
+                    setUserToReject={columnObjData?.setRejectLecturer}
+                    currentUserId={row?._id}
+                    employeeToApprove={columnObjData?.foundLecturer}
+                    employeeToReject={columnObjData?.lecturerToReject}
+                  />
+                </>
+              )}
           </HashLink>
         ),
     },
   ];
   return teachersDataFormat;
 };
-const nTStaffsColumn = (adminCurrentLink) => {
+const nTStaffsColumn = (adminCurrentLink, authAdmin) => {
   const nTStaffsDataFormat = [
     {
       name: "Image",
@@ -1891,7 +2041,7 @@ const nTStaffsColumn = (adminCurrentLink) => {
           {row?.employment?.employmentStatus === "approved" && (
             <Link
               className="editLink"
-              to={`/sensec/admin/Users/${adminCurrentLink}/${row.personalInfo?.firstName}_${row.personalInfo?.lastName}/${row.uniqueId}/update`}
+              to={`/sensec/users/${authAdmin?.uniqueId}/admin/NT-Staff/${row?.uniqueId}/nt-staff_update`}
             >
               <EditIcon />
             </Link>
@@ -1902,22 +2052,9 @@ const nTStaffsColumn = (adminCurrentLink) => {
   ];
   return nTStaffsDataFormat;
 };
-const pendingNTStaffsColumn = (
-  setCurrentNTStaff,
-  loadingComplete,
-  setLoadingComplete,
-  toast,
-  dispatch,
-  userInfo,
-  foundNTStaff,
-  // approveNTStaffEmploymentStatus,
-  openApproveEmploymentModal,
-  setOpenApproveEmploymentModal,
-  setRejectNTStaff,
-  nTStaffToReject,
-  openRejectModal,
-  setOpenRejectModal
-) => {
+const pendingNTStaffsColumn = (columnObjData) => {
+  console.log(columnObjData);
+
   const nTStaffsDataFormat = [
     {
       name: "Image",
@@ -2044,7 +2181,7 @@ const pendingNTStaffsColumn = (
           {row?.employment?.employmentStatus === "pending" && (
             <Link
               className="editLink"
-              to={`/sensec/admin/Users/NT-Staffs/${row.personalInfo?.firstName}_${row.personalInfo?.lastName}/${row.uniqueId}/update`}
+              to={`/sensec/users/${columnObjData?.authAdmin?.uniqueId}/admin/NT-Staff/${row?.uniqueId}/nt-staff_update`}
             >
               <EditIcon />
             </Link>
@@ -2060,59 +2197,75 @@ const pendingNTStaffsColumn = (
             <HashLink
               className="approveLink"
               onClick={async () => {
-                setCurrentNTStaff(row?._id);
-                setOpenApproveEmploymentModal(true);
-                setOpenRejectModal(false);
-                // dispatch(
-                // approveNTStaffEmploymentment({
-                //   nTStaffUniqueId: row?.uniqueId,
-                //   employmentApprovedBy: `${userInfo?.id}`,
-                //   // enrolmentApprovementDate: date,
-                // });
-                // );
+                columnObjData?.setCurrentNTStaff(row?._id);
+                columnObjData?.setOpenApproveEmploymentModal(true);
+                columnObjData?.setOpenRejectModal(false);
               }}
             >
-              {/* {foundNTStaff && foundNTStaff._id === row._id && (
-                <>
-                  {loadingComplete === false && "Processing..."}
-                  {loadingComplete &&
-                    approveNTStaffEmploymentStatus === "success" && (
-                      <>
-                        <span>Approved</span> <TaskAltIcon />
-                      </>
+              {columnObjData?.foundNTStaff &&
+                columnObjData?.foundNTStaff._id === row._id && (
+                  <>
+                    {columnObjData?.loadingComplete === false && (
+                      <Box
+                        className="promotionSpinner"
+                        sx={{
+                          // display: "flex",
+                          // justifyContent: "center",
+                          // alignItems: "center",
+                          marginTop: "1rem",
+                        }}
+                      >
+                        <p>Processing</p>
+                        {/* <CircularProgress style={{ color: "#555" }} size={"1.3em"} /> */}
+                        <span className="dot-ellipsis">
+                          <span className="dot">.</span>
+                          <span className="dot">.</span>
+                          <span className="dot">.</span>
+                        </span>
+                      </Box>
                     )}
-                </>
-              )} */}
+                    {columnObjData?.loadingComplete &&
+                      columnObjData?.approveEmploymentStatus === "success" && (
+                        <>
+                          <span>Approved</span> <TaskAltIcon />
+                        </>
+                      )}
+                  </>
+                )}
               <>
-                {loadingComplete === null && (
+                {columnObjData?.loadingComplete === null && (
                   <HowToRegIcon
                     titleAccess="Approve Employment"
                     style={{ fontSize: "2rem" }}
                   />
                 )}
-                {row?._id !== foundNTStaff?._id && loadingComplete !== null && (
-                  <HowToRegIcon
-                    titleAccess="Approve Employment"
-                    style={{ fontSize: "2rem" }}
-                  />
-                )}
+                {row?._id !== columnObjData?.foundNTStaff?._id &&
+                  columnObjData?.loadingComplete !== null && (
+                    <HowToRegIcon
+                      titleAccess="Approve Employment"
+                      style={{ fontSize: "2rem" }}
+                    />
+                  )}
               </>
             </HashLink>
-            {foundNTStaff && foundNTStaff._id === row._id && (
-              <ApproveEmploymentModal
-                open={openApproveEmploymentModal}
-                onClose={async () => setOpenApproveEmploymentModal(false)}
-                // approveEmploymentmentFunction={approveNTStaffEmploymentment({
-                //   nTStaffUniqueId: row?.uniqueId,
-                //   employmentApprovedBy: `${userInfo?.id}`,
-                //   // enrolmentApprovementDate: date,
-                // })}
-                setLoadingComplete={setLoadingComplete}
-                dispatch={dispatch}
-                setCurrentUser={setCurrentNTStaff}
-                currentUserId={row?._id}
-              />
-            )}
+            {columnObjData?.foundNTStaff &&
+              columnObjData?.foundNTStaff?._id === row?._id && (
+                <ApproveEmploymentModal
+                  open={columnObjData?.openApproveEmploymentModal}
+                  onClose={async () =>
+                    columnObjData?.setOpenApproveEmploymentModal(false)
+                  }
+                  approveEmploymentFunction={approveEmployee({
+                    employeeId: row?.uniqueId,
+                    employmentApprovedBy: columnObjData?.authAdmin?.id,
+                  })}
+                  setLoadingComplete={columnObjData?.setLoadingComplete}
+                  setCurrentUser={columnObjData?.setCurrentNTStaff}
+                  currentUserId={row?._id}
+                  employeeToApprove={columnObjData?.foundNTStaff}
+                  employeeToReject={columnObjData?.nTStaffToReject}
+                />
+              )}
           </>
         ),
     },
@@ -2123,30 +2276,69 @@ const pendingNTStaffsColumn = (
           <HashLink
             className="rejectLink"
             onClick={async () => {
-              setRejectNTStaff(row._id);
-              setOpenRejectModal(true);
-              setOpenApproveEmploymentModal(false);
+              columnObjData?.setRejectNTStaff(row?._id);
+              columnObjData?.setOpenRejectModal(true);
+              columnObjData?.setOpenApproveEmploymentModal(false);
             }}
           >
-            <PersonRemoveIcon
-              titleAccess="Reject Employment"
-              style={{ fontSize: "2rem" }}
-            />
-            {nTStaffToReject && nTStaffToReject._id === row._id && (
-              <RejectEnrollmentModal
-                open={openRejectModal}
-                onClose={async () => setOpenRejectModal(false)}
-                // rejectionFunction={rejectNTStaffEmploymentment({
-                //   nTStaffUniqueId: row?.uniqueId,
-                //   adminId: userInfo?.uniqueId,
-                // })}
-                setLoadingComplete={setLoadingComplete}
-                dispatch={dispatch}
-                setUserToReject={setRejectNTStaff}
-                currentUserId={row?._id}
-                rejectAction={"Reject Employment"}
+            {columnObjData?.rejectLoadingComplete === null && (
+              <PersonRemoveIcon
+                titleAccess="Reject Employment"
+                style={{ fontSize: "2rem" }}
               />
             )}
+            {row?._id !== columnObjData?.nTStaffToReject?._id &&
+              columnObjData?.rejectLoadingComplete !== null && (
+                <PersonRemoveIcon
+                  titleAccess="Reject Employment"
+                  style={{ fontSize: "2rem" }}
+                />
+              )}
+            {columnObjData?.nTStaffToReject &&
+              columnObjData?.nTStaffToReject._id === row._id && (
+                <>
+                  {columnObjData?.rejectLoadingComplete === false && (
+                    <Box
+                      className="promotionSpinner"
+                      sx={{
+                        // display: "flex",
+                        // justifyContent: "center",
+                        // alignItems: "center",
+                        marginTop: "1rem",
+                      }}
+                    >
+                      <p>Processing</p>
+                      {/* <CircularProgress style={{ color: "#555" }} size={"1.3em"} /> */}
+                      <span className="dot-ellipsis">
+                        <span className="dot">.</span>
+                        <span className="dot">.</span>
+                        <span className="dot">.</span>
+                      </span>
+                    </Box>
+                  )}
+                  {columnObjData?.rejectLoadingComplete &&
+                    columnObjData?.rejectEmploymentStatus === "success" && (
+                      <>
+                        <span>Rejected</span> <TaskAltIcon />
+                      </>
+                    )}
+                  <RejectEnrollmentModal
+                    open={columnObjData?.openRejectModal}
+                    onClose={async () =>
+                      columnObjData?.setOpenRejectModal(false)
+                    }
+                    rejectionFunction={rejectEmployee({
+                      employeeId: row?.uniqueId,
+                      employmentRejectedBy: columnObjData?.authAdmin?.id,
+                    })}
+                    setLoadingComplete={columnObjData?.setRejectLoadingComplete}
+                    setUserToReject={columnObjData?.setRejectNTStaff}
+                    currentUserId={row?._id}
+                    employeeToApprove={columnObjData?.foundNTStaff}
+                    employeeToReject={columnObjData?.nTStaffToReject}
+                  />
+                </>
+              )}
           </HashLink>
         ),
     },
@@ -2273,7 +2465,24 @@ const pendingNTStaffsColumn = (
 //             >
 //               {currentStudentId && currentStudentId?._id === row?._id && (
 //                 <>
-//                   {loadingComplete === false && "Processing..."}
+//                   {loadingComplete === false &&
+// <Box
+//   className="promotionSpinner"
+//   sx={{
+//     // display: "flex",
+//     // justifyContent: "center",
+//     // alignItems: "center",
+//     marginTop: "1rem",
+//   }}
+// >
+//   <p>Processing</p>
+//   {/* <CircularProgress style={{ color: "#555" }} size={"1.3em"} /> */}
+//   <span className="dot-ellipsis">
+//     <span className="dot">.</span>
+//     <span className="dot">.</span>
+//     <span className="dot">.</span>
+//   </span>
+// </Box>}
 //                   {loadingComplete &&
 //                     currentStudentId?._id === row?._id &&
 //                     redirecting && <Redirection color={"#555"} size={"1rem"} />}
@@ -2459,7 +2668,24 @@ const pendingNTStaffsColumn = (
 //             >
 //               {currentUser && currentUser?._id === row?._id && (
 //                 <>
-//                   {loadingComplete === false && "Processing..."}
+//                   {loadingComplete === false &&
+// <Box
+//   className="promotionSpinner"
+//   sx={{
+//     // display: "flex",
+//     // justifyContent: "center",
+//     // alignItems: "center",
+//     marginTop: "1rem",
+//   }}
+// >
+//   <p>Processing</p>
+//   {/* <CircularProgress style={{ color: "#555" }} size={"1.3em"} /> */}
+//   <span className="dot-ellipsis">
+//     <span className="dot">.</span>
+//     <span className="dot">.</span>
+//     <span className="dot">.</span>
+//   </span>
+// </Box>}
 //                   {loadingComplete &&
 //                     currentUser?._id === row?._id &&
 //                     redirecting && <Redirection color={"#555"} size={"1rem"} />}

@@ -9,32 +9,31 @@ import NewEmploymentModal from "../../../../actionModal/ActionModal";
 import { customUserTableStyle } from "../../../../../usersInfoDataFormat/usersInfoTableStyle";
 import { AllEmployedLecturersPageQuickLinks } from "../../../../../linksFormat/LinksFormat";
 import { Box, Grid } from "@mui/material";
-import { getAuthUser } from "../../../../../features/auth/authSlice";
+import {
+  fetchAllUsers,
+  getAuthUser,
+} from "../../../../../features/auth/authSlice";
 import { pendingTeachersColumn } from "../../../../../usersInfoDataFormat/UsersInfoDataFormat";
 import { FetchAllPendingLecturers } from "../../../../../data/lecturers/FetchLecturers";
 import SearchFilter from "../../../../searchForm/SearchFilter";
+import { FetchAllClassLevels } from "../../../../../data/class/FetchClassLevel";
 
 export function PendingLecturers() {
   const authAdmin = useSelector(getAuthUser);
+
   const allPendingLecturers = FetchAllPendingLecturers();
   const currentEmployeeLink = localStorage.getItem("currentEmployeeLink");
   const navigate = useNavigate();
   const actionBtns = AllEmployedLecturersPageQuickLinks();
   const dispatch = useDispatch();
-  const userInfo = {};
-  const allClassLevels = [
-    {
-      name: "Level 100",
-    },
-    {
-      name: "Level 200",
-    },
-    {
-      name: "Level 300",
-    },
-  ];
-  // const { approveTeacherEmploymentStatus, approveTeacherEmploymentError } =
-  //   useSelector((state) => state.teacher);
+  const allClassLevels = FetchAllClassLevels();
+  const {
+    approveEmploymentStatus,
+    rejectEmploymentStatus,
+    successMessage,
+    error,
+  } = useSelector((state) => state.employment);
+
   console.log(allPendingLecturers);
   const {
     adminCurrentAction,
@@ -45,8 +44,10 @@ export function PendingLecturers() {
   } = useParams();
   console.log(employees_link);
   const [currentLecturer, setCurrentLecturer] = useState("");
+  const [rejectLecturer, setRejectLecturer] = useState("");
   const [loadingComplete, setLoadingComplete] = useState(null);
   const [searchTeacher, setSearchTeacher] = useState("");
+  const [rejectLoadingComplete, setRejectLoadingComplete] = useState(null);
 
   //Filter teacher during search
   const pendingLecturers = allPendingLecturers?.filter(
@@ -56,28 +57,40 @@ export function PendingLecturers() {
       tch.personalInfo.lastName.toLowerCase().includes(searchTeacher) ||
       tch.personalInfo.lastName.includes(searchTeacher)
   );
+  console.log(currentLecturer);
   const foundLecturer = allPendingLecturers.find(
     (user) => user._id === currentLecturer
   );
+  const lecturerToReject = allPendingLecturers.find(
+    (user) => user._id === rejectLecturer
+  );
+  console.log(lecturerToReject);
   const [redirecting, setRedirecting] = useState("");
   const [openModal, setOpenModal] = useState(false);
+  const [openRejectModal, setOpenRejectModal] = useState(false);
   const [uncompletedEmploymentTask, setUncompletedEmploymentTask] =
     useState("");
   const [openApproveEmploymentModal, setOpenApproveEmploymentModal] =
     useState(false);
 
-  const teachersData = pendingTeachersColumn(
+  const columnObjData = {
     setCurrentLecturer,
     loadingComplete,
     setLoadingComplete,
-    toast,
-    dispatch,
-    userInfo,
+    rejectLoadingComplete,
+    setRejectLoadingComplete,
+    authAdmin,
     foundLecturer,
-    // approveTeacherEmploymentStatus,
+    approveEmploymentStatus,
+    rejectEmploymentStatus,
     openApproveEmploymentModal,
-    setOpenApproveEmploymentModal
-  );
+    setOpenApproveEmploymentModal,
+    setOpenRejectModal,
+    openRejectModal,
+    setRejectLecturer,
+    lecturerToReject,
+  };
+  const teachersData = pendingTeachersColumn(columnObjData);
 
   const handleNewEmployment = () => {
     setRedirecting(true);
@@ -88,47 +101,84 @@ export function PendingLecturers() {
       );
     }, 3000);
   };
-  const handleStudentSearch = (e) => {
-    e.preventDefault();
-  };
 
-  //Approve Teacher status check
-  // useEffect(() => {
-  //   if (foundLecturer) {
-  //     setLoadingComplete(false);
-  //     if (approveTeacherEmploymentStatus === "pending") {
-  //       setTimeout(() => {
-  //         setLoadingComplete(true);
-  //       }, 3000);
-  //     }
-  //     if (approveTeacherEmploymentStatus === "rejected") {
-  //       setTimeout(() => {
-  //         setLoadingComplete(null);
-  //       }, 3000);
-  //       setTimeout(() => {
-  //         approveTeacherEmploymentError?.errorMessage?.message?.map((err) =>
-  //           toast.error(err, {
-  //             position: "top-right",
-  //             theme: "light",
-  //             // toastId: successId,
-  //           })
-  //         );
-  //       }, 2000);
-  //       return;
-  //     }
-  //     if (approveTeacherEmploymentStatus === "success") {
-  //       setTimeout(() => {
-  //         //Fetch all users again when successfully approved
-  //         dispatch(fetchAllUsers());
-  //       }, 6000);
-  //     }
-  //   }
-  // }, [
-  //   dispatch,
-  //   approveTeacherEmploymentStatus,
-  //   approveTeacherEmploymentError,
-  //   foundLecturer,
-  // ]);
+  //Fetch all pending Admins again when successfully approved
+  useEffect(() => {
+    if (foundLecturer && !lecturerToReject) {
+      if (approveEmploymentStatus === "pending") {
+        setLoadingComplete(false);
+      }
+      if (approveEmploymentStatus === "rejected") {
+        setTimeout(() => {
+          setLoadingComplete(null);
+        }, 3000);
+        setTimeout(() => {
+          error.errorMessage.message.map((err) =>
+            toast.error(err, {
+              position: "top-right",
+              theme: "dark",
+              // toastId: successId,
+            })
+          );
+        }, 2000);
+        return;
+      }
+      if (approveEmploymentStatus === "success") {
+        setTimeout(() => {
+          setLoadingComplete(true);
+        }, 3000);
+        setTimeout(() => {
+          //Fetch all users again when successfully approved
+          dispatch(fetchAllUsers());
+        }, 6000);
+      }
+    }
+  }, [
+    dispatch,
+    approveEmploymentStatus,
+    error,
+    foundLecturer,
+    lecturerToReject,
+  ]);
+
+  //Fetch all pending Admins again when successfully rejected
+  useEffect(() => {
+    if (lecturerToReject && !foundLecturer) {
+      if (rejectEmploymentStatus === "pending") {
+        setRejectLoadingComplete(false);
+      }
+      if (rejectEmploymentStatus === "rejected") {
+        setTimeout(() => {
+          setRejectLoadingComplete(null);
+        }, 3000);
+        setTimeout(() => {
+          error.errorMessage.message.map((err) =>
+            toast.error(err, {
+              position: "top-right",
+              theme: "dark",
+              // toastId: successId,
+            })
+          );
+        }, 2000);
+        return;
+      }
+      if (rejectEmploymentStatus === "success") {
+        setTimeout(() => {
+          setRejectLoadingComplete(true);
+        }, 3000);
+        setTimeout(() => {
+          //Fetch all users again when successfully rejected
+          dispatch(fetchAllUsers());
+        }, 6000);
+      }
+    }
+  }, [
+    dispatch,
+    rejectEmploymentStatus,
+    error,
+    lecturerToReject,
+    foundLecturer,
+  ]);
 
   const allStd = `All Pending Lecturers / Total = ${pendingLecturers?.length}`;
   return (
@@ -167,7 +217,7 @@ export function PendingLecturers() {
         <Box className="searchDetails">
           {pendingLecturers?.length === 0 && searchTeacher !== "" && (
             <p className="searchInfo">
-              We couldn't find any matches for "{searchTeacher}"
+              We couldn&apos;t find any matches for &quot;{searchTeacher}&quot;
             </p>
           )}
           {pendingLecturers?.length === 0 && searchTeacher !== "" && (

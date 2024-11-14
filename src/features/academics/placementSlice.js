@@ -35,7 +35,6 @@ export const uploadPlacementFile = createAsyncThunk(
       console.log(res);
       return res.data;
     } catch (error) {
-      console.log(error.response.data);
       return rejectWithValue(error.response.data);
     }
   }
@@ -48,10 +47,9 @@ export const checkPlacement = createAsyncThunk(
       const res = await axios.get(
         `${SENSEC_API_ENDPOINT}/students/placement/${studentIndexNo}/check`
       );
-      console.log(res.data);
+
       return res.data;
     } catch (error) {
-      console.log(error.response.data);
       return rejectWithValue(error.response.data);
     }
   }
@@ -66,10 +64,9 @@ export const updatePlacementData = createAsyncThunk(
           data,
         }
       );
-      console.log(res.data);
+
       return res.data;
     } catch (error) {
-      console.log(error.response.data);
       return rejectWithValue(error.response.data);
     }
   }
@@ -83,10 +80,9 @@ export const verifyPlacementStudent = createAsyncThunk(
         `${SENSEC_API_ENDPOINT}/students/placement/verify`,
         { data }
       );
-      console.log(res.data);
+
       return res.data;
     } catch (error) {
-      console.log(error.response.data);
       return rejectWithValue(error.response.data);
     }
   }
@@ -99,10 +95,9 @@ export const fetchSinglePlacementStudent = createAsyncThunk(
       const res = await axios.get(
         `${SENSEC_API_ENDPOINT}/students/placement/${studentIndexNo}/fetch`
       );
-      console.log(res.data);
+
       return res.data;
     } catch (error) {
-      console.log(error.response.data);
       return rejectWithValue(error.response.data);
     }
   }
@@ -113,7 +108,6 @@ export const fetchAllPlacementStudents = createAsyncThunk(
     const res = await axios.get(
       `${SENSEC_API_ENDPOINT}/students/placement/fetch_all`
     );
-    console.log(res.data);
     return res.data;
   }
 );

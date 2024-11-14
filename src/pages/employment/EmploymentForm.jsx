@@ -31,7 +31,10 @@ import { TaskAlt } from "@mui/icons-material";
 import Redirection from "../../components/pageLoading/Redirection";
 import { useNavigate, useParams } from "react-router-dom";
 import { getAuthUser } from "../../features/auth/authSlice";
-import { newEmployee } from "../../features/employments/employmentSlice";
+import {
+  newEmployee,
+  resetEmploymentState,
+} from "../../features/employments/employmentSlice";
 
 export function EmploymentForm() {
   const dispatch = useDispatch();
@@ -42,8 +45,8 @@ export function EmploymentForm() {
   const allBatches = FetchAllBatches();
   const allDivisionProgrammes = useSelector(getAllDivisionProgrammes);
   const allPlacementStudents = useSelector(getAllPlacementStudents);
-  const { enrollmentStatus, error, successMessage } = useSelector(
-    (state) => state.student
+  const { employmentStatus, error, successMessage } = useSelector(
+    (state) => state.employment
   );
 
   //Get current year and random number for student's unique-Id
@@ -77,8 +80,6 @@ export function EmploymentForm() {
 
   // New Employee state
   const [userID, setUserID] = useState("");
-  console.log(userID);
-
   const [newEmployment, setNewEmployment] = useState({
     uniqueId: userID ? userID : "",
     firstName: "",
@@ -234,12 +235,12 @@ export function EmploymentForm() {
     dispatch(fetchAllPlacementStudents());
   }, [dispatch, newEmployment]);
 
-  // Handle enrollment status check
+  // Handle employment status check
   useEffect(() => {
-    if (enrollmentStatus === "pending") {
+    if (employmentStatus === "pending") {
       setLoadingComplete(false);
     }
-    if (enrollmentStatus === "rejected") {
+    if (employmentStatus === "rejected") {
       setTimeout(() => {
         error?.errorMessage?.message?.map((err) =>
           toast.error(err, {
@@ -251,41 +252,65 @@ export function EmploymentForm() {
       }, 2000);
       setTimeout(() => {
         setLoadingComplete(null);
-        dispatch(resetEnrolmentState());
+        dispatch(resetEmploymentState());
       }, 3000);
       return;
     }
-    if (enrollmentStatus === "success") {
+    if (employmentStatus === "success") {
       setTimeout(() => {
         setLoadingComplete(true);
       }, 3000);
       setTimeout(() => {
-        setRedirecting(true);
+        setLoadingComplete(null);
+        dispatch(resetEmploymentState());
+        // setNewEmployment({
+        //   uniqueId: userID ? userID : "",
+        //   firstName: "",
+        //   lastName: "",
+        //   otherName: "",
+        //   dateOfBirth: "",
+        //   placeOfBirth: "",
+        //   nationality: "",
+        //   gender: "",
+        //   profilePicture: "",
+        //   // School Data
+        //   program: "",
+        //   typeOfEmployment: "",
+        //   // Status
+        //   height: "",
+        //   weight: "",
+        //   complexion: "",
+        //   motherTongue: "",
+        //   otherTongue: "",
+        //   residentialStatus: "",
+        //   // Contact Address
+        //   homeTown: "",
+        //   district: "",
+        //   region: "",
+        //   currentCity: "",
+        //   residentialAddress: "",
+        //   gpsAddress: "",
+        //   mobile: "",
+        //   email: "",
+        // });
+        // setImagePreview(null);
       }, 6000);
-      setTimeout(() => {
-        if (authUser?.roles?.includes("admin")) {
-          navigate(
-            `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/new_enrollment/parent/add`
-          );
-        } else {
-          navigate(
-            `/sensec/students/enrollment/online/${newEmployment?.uniqueId}/parent/add`
-          );
-        }
-      }, 9000);
+      // setTimeout(() => {
+      //   dispatch(resetEmploymentState());
+      // }, 9000);
+      // setTimeout(() => {
+      //   if (authUser?.roles?.includes("admin")) {
+      //     navigate(
+      //       `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/new_enrollment/parent/add`
+      //     );
+      //   } else {
+      //     navigate(
+      //       `/sensec/students/enrollment/online/${newEmployment?.uniqueId}/parent/add`
+      //     );
+      //   }
+      // }, 9000);
     }
-  }, [
-    navigate,
-    dispatch,
-    enrollmentStatus,
-    error,
-    successMessage,
-    loadingComplete,
-    newEmployment,
-    adminCurrentAction,
-    adminCurrentLink,
-    authUser,
-  ]);
+  }, [dispatch, employmentStatus, error, userID]);
 
   return (
     <>
@@ -508,6 +533,7 @@ export function EmploymentForm() {
                   onChange={handleChange}
                 >
                   <MenuItem value="English">English</MenuItem>
+                  <MenuItem value="French">French</MenuItem>
                   <MenuItem value="Spanish">Spanish</MenuItem>
                   <MenuItem value="Deutsch">Deutsch</MenuItem>
                   <MenuItem value="Italian">Italian</MenuItem>
@@ -806,16 +832,12 @@ export function EmploymentForm() {
                     <LoadingProgress color={"#fff"} size={"1.5rem"} />
                   )}
                   {loadingComplete === true &&
-                    enrollmentStatus === "success" &&
-                    !redirecting && (
+                    employmentStatus === "success" && (
                       <>
                         <span>Successful</span> <TaskAlt />
                       </>
                     )}
                   {loadingComplete === null && "Submit Employment Data"}
-                  {redirecting && (
-                    <Redirection color={"#fff"} size={"1.5rem"} />
-                  )}
                 </Button>
               </Grid>
             </Grid>

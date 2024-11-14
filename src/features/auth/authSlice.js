@@ -2,6 +2,21 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { SENSEC_API_ENDPOINT } from "../../apiEndPoint/api";
+import tokenInterceptor from "../../apiEndPoint/interceptors";
+
+// Initialize an Axios instance
+const api = axios.create({
+  baseURL: SENSEC_API_ENDPOINT,
+});
+
+// Interceptor to attach token to each request
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("userToken");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
 const initialState = {
   allUsers: [],
@@ -17,11 +32,14 @@ const initialState = {
   successMessage: "",
   fetchSuccessMessage: "",
   authenticated: false,
+  token: localStorage.getItem("userToken") || null,
+  isRefreshing: false,
+  sessionExpired: false,
 };
 
 // Decode user token
 const tokenDecoded = (token) => {
-  if (!token) return true;
+  if (!token) return;
   const decodeTokenString = jwtDecode(token);
   const expTime = new Date(decodeTokenString.exp * 1000);
   if (new Date() > expTime) {
@@ -74,15 +92,12 @@ export const refreshSessionToken = createAsyncThunk(
   "Auth/refreshSessionToken",
   async (token, { rejectWithValue }) => {
     try {
-      const res = await axios.post(
-        `${SENSEC_API_ENDPOINT}/users/refresh-token`,
-        { token }
-      );
+      const res = await tokenInterceptor.post(`/users/refresh-token`, {
+        token,
+      });
       //   localStorage.setItem("userId", res?.data?.user?.uniqueId);
-      localStorage.setItem("userToken", res?.data?.newToken);
+      localStorage.setItem("userToken", res?.data?.token);
       // localStorage.removeItem("emailVerificationToken");
-      console.log(res?.data?.newToken);
-
       return res.data;
     } catch (error) {
       console.log(error.response);
@@ -101,6 +116,7 @@ export const fetchAllUsers = createAsyncThunk(
     }
   }
 );
+
 const authSlice = createSlice({
   name: "Auth",
   initialState: initialState,
@@ -192,7 +208,7 @@ const authSlice = createSlice({
     });
     builder.addCase(refreshSessionToken.fulfilled, (state, action) => {
       if (action.payload) {
-        const user = tokenDecoded(action.payload.newToken);
+        const user = tokenDecoded(action.payload.token);
         return {
           ...state,
           authUser: user,

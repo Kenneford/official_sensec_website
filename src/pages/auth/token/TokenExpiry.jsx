@@ -73,9 +73,9 @@ export default function TokenExpiry() {
   // Handle session refresh or logout
   const onRefreshToken = () => {
     console.log("Refresh Token");
-    if (refreshToken) {
+    if (token) {
       // Update expiresAt based on the new token
-      const decodedNewToken = jwtDecode(refreshToken);
+      const decodedNewToken = jwtDecode(token);
       const newExpiresAt = decodedNewToken.exp * 1000; // Convert to milliseconds
       setTimeLeft(newExpiresAt - Date.now());
       setShowWarning(false);

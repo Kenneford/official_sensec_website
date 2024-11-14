@@ -8,7 +8,10 @@ import NewEmploymentModal from "../../../../actionModal/ActionModal";
 import { customUserTableStyle } from "../../../../../usersInfoDataFormat/usersInfoTableStyle";
 import { AllEmployedAdminsPageQuickLinks } from "../../../../../linksFormat/LinksFormat";
 import { Box, Grid } from "@mui/material";
-import { getAuthUser } from "../../../../../features/auth/authSlice";
+import {
+  fetchAllUsers,
+  getAuthUser,
+} from "../../../../../features/auth/authSlice";
 import { FetchAllPendingAdmins } from "../../../../../data/admins/FetchAdmins";
 import SearchFilter from "../../../../searchForm/SearchFilter";
 import { pendingAdminsColumn } from "../../../../../usersInfoDataFormat/UsersInfoDataFormat";
@@ -18,17 +21,26 @@ export function PendingAdmins() {
   const navigate = useNavigate();
   const actionBtns = AllEmployedAdminsPageQuickLinks();
   const dispatch = useDispatch();
-  const userInfo = {};
-  const allUsers = [];
-  // const { approveAdminStatus, approveAdminSuccessMessage, approveAdminError } =
-  //   useSelector((state) => state.admin);
+  const {
+    approveEmploymentStatus,
+    rejectEmploymentStatus,
+    successMessage,
+    error,
+  } = useSelector((state) => state.employment);
   const { adminCurrentAction, adminCurrentLink, employees_link } = useParams();
   const [currentAdmin, setCurrentAdmin] = useState("");
   const [loadingComplete, setLoadingComplete] = useState(null);
+  const [rejectLoadingComplete, setRejectLoadingComplete] = useState(null);
   const [searchAdmin, setSearchAdmin] = useState("");
   const [adminFound, setAdminFound] = useState("");
+  const [openRejectModal, setOpenRejectModal] = useState(false);
   const [openApproveEmploymentModal, setOpenApproveEmploymentModal] =
     useState(false);
+  const [redirecting, setRedirecting] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
+  const [rejectAdmin, setRejectAdmin] = useState("");
+  const [uncompletedEmploymentTask, setUncompletedEmploymentTask] =
+    useState("");
 
   const allPendingAdmins = FetchAllPendingAdmins();
   const allFoundPendingAdmins = allPendingAdmins.filter((admin) => {
@@ -43,25 +55,31 @@ export function PendingAdmins() {
   const foundAdmin = allPendingAdmins?.find(
     (user) => user._id === currentAdmin
   );
+  const adminToReject = allPendingAdmins?.find(
+    (user) => user._id === rejectAdmin
+  );
   const [currentActionBtn, setCurrentActionBtn] = useState(
     "Hanging Employments"
   );
-  const adminsData = pendingAdminsColumn(
+
+  const columnObjData = {
     setCurrentAdmin,
     loadingComplete,
     setLoadingComplete,
-    toast,
-    dispatch,
-    userInfo,
+    rejectLoadingComplete,
+    setRejectLoadingComplete,
+    authAdmin,
     foundAdmin,
-    // approveAdminStatus,
+    approveEmploymentStatus,
+    rejectEmploymentStatus,
     openApproveEmploymentModal,
-    setOpenApproveEmploymentModal
-  );
-  const [redirecting, setRedirecting] = useState("");
-  const [openModal, setOpenModal] = useState(false);
-  const [uncompletedEmploymentTask, setUncompletedEmploymentTask] =
-    useState("");
+    setOpenApproveEmploymentModal,
+    setRejectAdmin,
+    adminToReject,
+    setOpenRejectModal,
+    openRejectModal,
+  };
+  const adminsData = pendingAdminsColumn(columnObjData);
 
   //THIS REMOVES THE HASHLINK TAG FROM THE URL
   if (window.location.hash) {
@@ -79,37 +97,69 @@ export function PendingAdmins() {
   };
 
   //Fetch all pending Admins again when successfully approved
-  // useEffect(() => {
-  //   if (foundAdmin) {
-  //     setLoadingComplete(false);
-  //     if (approveAdminStatus === "pending") {
-  //       setTimeout(() => {
-  //         setLoadingComplete(true);
-  //       }, 3000);
-  //     }
-  //     if (approveAdminStatus === "rejected") {
-  //       setTimeout(() => {
-  //         setLoadingComplete(null);
-  //       }, 3000);
-  //       setTimeout(() => {
-  //         approveAdminError.errorMessage.message.map((err) =>
-  //           toast.error(err, {
-  //             position: "top-right",
-  //             theme: "dark",
-  //             // toastId: successId,
-  //           })
-  //         );
-  //       }, 2000);
-  //       return;
-  //     }
-  //     if (approveAdminStatus === "success") {
-  //       setTimeout(() => {
-  //         //Fetch all users again when successfully approved
-  //         dispatch(fetchAllUsers());
-  //       }, 6000);
-  //     }
-  //   }
-  // }, [dispatch, approveAdminStatus, approveAdminError, foundAdmin]);
+  useEffect(() => {
+    if (foundAdmin && !adminToReject) {
+      if (approveEmploymentStatus === "pending") {
+        setLoadingComplete(false);
+      }
+      if (approveEmploymentStatus === "rejected") {
+        setTimeout(() => {
+          setLoadingComplete(null);
+        }, 3000);
+        setTimeout(() => {
+          error.errorMessage.message.map((err) =>
+            toast.error(err, {
+              position: "top-right",
+              theme: "dark",
+              // toastId: successId,
+            })
+          );
+        }, 2000);
+        return;
+      }
+      if (approveEmploymentStatus === "success") {
+        setTimeout(() => {
+          setLoadingComplete(true);
+        }, 3000);
+        setTimeout(() => {
+          //Fetch all users again when successfully approved
+          dispatch(fetchAllUsers());
+        }, 6000);
+      }
+    }
+  }, [dispatch, approveEmploymentStatus, error, foundAdmin, adminToReject]);
+  //Fetch all pending Admins again when successfully rejected
+  useEffect(() => {
+    if (adminToReject && !foundAdmin) {
+      if (rejectEmploymentStatus === "pending") {
+        setRejectLoadingComplete(false);
+      }
+      if (rejectEmploymentStatus === "rejected") {
+        setTimeout(() => {
+          setRejectLoadingComplete(null);
+        }, 3000);
+        setTimeout(() => {
+          error.errorMessage.message.map((err) =>
+            toast.error(err, {
+              position: "top-right",
+              theme: "dark",
+              // toastId: successId,
+            })
+          );
+        }, 2000);
+        return;
+      }
+      if (rejectEmploymentStatus === "success") {
+        setTimeout(() => {
+          setRejectLoadingComplete(true);
+        }, 3000);
+        setTimeout(() => {
+          //Fetch all users again when successfully rejected
+          dispatch(fetchAllUsers());
+        }, 6000);
+      }
+    }
+  }, [dispatch, rejectEmploymentStatus, error, adminToReject, foundAdmin]);
 
   const allStd = `All Pending Admins / Total = ${allPendingAdmins?.length}`;
   return (

@@ -280,13 +280,15 @@ export const PendingAdmins = lazyWithSuspense(
   <PageLoading />,
   "PendingAdminsComponent"
 );
-export const AdminsDataUpdateForm = lazyWithSuspense(
+export const EmployeeDataUpdateForm = lazyWithSuspense(
   () =>
-    import("../../../pages/employment/AdminsDataUpdateForm").then((module) => {
-      return { default: module.AdminsDataUpdateForm };
-    }),
+    import("../../../pages/employment/EmployeeDataUpdateForm").then(
+      (module) => {
+        return { default: module.EmployeeDataUpdateForm };
+      }
+    ),
   <PageLoading />,
-  "AdminsDataUpdateFormComponent"
+  "EmployeeDataUpdateFormComponent"
 );
 export const HangingAdmins = lazyWithSuspense(
   () =>
