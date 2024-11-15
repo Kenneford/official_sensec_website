@@ -13,9 +13,9 @@ import { toast } from "react-toastify";
 import { HashLink } from "react-router-hash-link";
 import { customUserTableStyle } from "../../../../../usersInfoDataFormat/usersInfoTableStyle";
 import { Box, Grid } from "@mui/material";
-import NewEmploymentModal from "../../../../actionModal/NewEmploymentModal";
+import NewEmploymentModal from "../../../../modals/NewEmploymentModal";
 import { AllStudentsPageQuickLinks } from "../../../../../linksFormat/LinksFormat";
-import ActionModal from "../../../../actionModal/NewEmploymentModal";
+import ActionModal from "../../../../modals/NewEmploymentModal";
 import { getAuthUser } from "../../../../../features/auth/authSlice";
 import { FetchAllClassLevels } from "../../../../../data/class/FetchClassLevel";
 

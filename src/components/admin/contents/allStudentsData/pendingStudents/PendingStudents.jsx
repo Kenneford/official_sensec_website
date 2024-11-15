@@ -5,7 +5,6 @@ import DataTable from "react-data-table-component";
 import { useNavigate, useParams } from "react-router-dom";
 import { customUserTableStyle } from "../../../../../usersInfoDataFormat/usersInfoTableStyle";
 import { Box, Grid } from "@mui/material";
-import ActionModal from "../../../../actionModal/NewEmploymentModal";
 import { AllStudentsPageQuickLinks } from "../../../../../linksFormat/LinksFormat";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -16,6 +15,7 @@ import { FetchAllPendingStudents } from "../../../../../data/students/FetchAllSt
 import { FetchAllClassLevels } from "../../../../../data/class/FetchClassLevel";
 import { pendingStudentsColumn } from "../../../../../usersInfoDataFormat/UsersInfoDataFormat";
 import { toast } from "react-toastify";
+import NewEnrollmentModal from "../../../../modals/NewEnrollmentModal";
 // import { toast } from "react-toastify";
 
 export function PendingStudents() {
@@ -307,7 +307,7 @@ export function PendingStudents() {
                   : action.label}
               </Grid>
             ))}
-            <ActionModal
+            <NewEnrollmentModal
               open={openModal}
               onClose={() => setOpenModal(false)}
               handleNewEnrollment={handleNewEnrollment}

@@ -8,12 +8,12 @@ import { Link } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
 import { customUserTableStyle } from "../../../../../usersInfoDataFormat/usersInfoTableStyle";
 import { Box, Grid } from "@mui/material";
-import ActionModal from "../../../../actionModal/NewEmploymentModal";
 import { AllStudentsPageQuickLinks } from "../../../../../linksFormat/LinksFormat";
 import { getAuthUser } from "../../../../../features/auth/authSlice";
 import { FetchAllClassLevels } from "../../../../../data/class/FetchClassLevel";
 import { FetchPendingClassLevelStudents } from "../../../../../data/students/FetchAllStudents";
 import { pendingStudentsColumn } from "../../../../../usersInfoDataFormat/UsersInfoDataFormat";
+import NewEnrollmentModal from "../../../../modals/NewEnrollmentModal";
 
 export function PendingClassLevelStudents() {
   const authAdmin = useSelector(getAuthUser);
@@ -380,7 +380,7 @@ export function PendingClassLevelStudents() {
                   : action.label}
               </Grid>
             ))}
-            <ActionModal
+            <NewEnrollmentModal
               open={openModal}
               onClose={() => setOpenModal(false)}
               handleNewEnrollment={handleNewEnrollment}

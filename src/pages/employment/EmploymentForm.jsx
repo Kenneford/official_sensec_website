@@ -263,37 +263,37 @@ export function EmploymentForm() {
       setTimeout(() => {
         setLoadingComplete(null);
         dispatch(resetEmploymentState());
-        // setNewEmployment({
-        //   uniqueId: userID ? userID : "",
-        //   firstName: "",
-        //   lastName: "",
-        //   otherName: "",
-        //   dateOfBirth: "",
-        //   placeOfBirth: "",
-        //   nationality: "",
-        //   gender: "",
-        //   profilePicture: "",
-        //   // School Data
-        //   program: "",
-        //   typeOfEmployment: "",
-        //   // Status
-        //   height: "",
-        //   weight: "",
-        //   complexion: "",
-        //   motherTongue: "",
-        //   otherTongue: "",
-        //   residentialStatus: "",
-        //   // Contact Address
-        //   homeTown: "",
-        //   district: "",
-        //   region: "",
-        //   currentCity: "",
-        //   residentialAddress: "",
-        //   gpsAddress: "",
-        //   mobile: "",
-        //   email: "",
-        // });
-        // setImagePreview(null);
+        setNewEmployment({
+          uniqueId: userID ? userID : "",
+          firstName: "",
+          lastName: "",
+          otherName: "",
+          dateOfBirth: "",
+          placeOfBirth: "",
+          nationality: "",
+          gender: "",
+          profilePicture: "",
+          // School Data
+          program: "",
+          typeOfEmployment: "",
+          // Status
+          height: "",
+          weight: "",
+          complexion: "",
+          motherTongue: "",
+          otherTongue: "",
+          residentialStatus: "",
+          // Contact Address
+          homeTown: "",
+          district: "",
+          region: "",
+          currentCity: "",
+          residentialAddress: "",
+          gpsAddress: "",
+          mobile: "",
+          email: "",
+        });
+        setImagePreview(null);
       }, 6000);
       // setTimeout(() => {
       //   dispatch(resetEmploymentState());

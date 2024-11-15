@@ -28,10 +28,10 @@ import axios from "axios";
 import { dateFormatter } from "../dateFormatter/DateFormatter";
 import { Box } from "@mui/material";
 import { approvedStudentEnrollment } from "../features/students/studentsSlice";
-import ApproveEnrollmentModal from "../components/approvalModal/ApproveEnrollmentModal";
-import RejectEnrollmentModal from "../components/approvalModal/RejectionModal";
+import ApproveEnrollmentModal from "../components/modals/ApproveEnrollmentModal";
+import RejectEnrollmentModal from "../components/modals/RejectionModal";
 import Redirection from "../components/pageLoading/Redirection";
-import ApproveEmploymentModal from "../components/approvalModal/ApproveEmploymentModal";
+import ApproveEmploymentModal from "../components/modals/ApproveEmploymentModal";
 import {
   approveEmployee,
   rejectEmployee,

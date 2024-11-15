@@ -1,14 +1,5 @@
-import React from "react";
-import "./actionModal.scss";
-import CloseIcon from "@mui/icons-material/Close";
-import {
-  Box,
-  Button,
-  Modal,
-  Typography,
-  Stack,
-  CircularProgress,
-} from "@mui/material";
+import "./modals.scss";
+import { Box, Button, Modal, Typography, Stack } from "@mui/material";
 import PropTypes from "prop-types";
 
 export default function NewEmploymentModal({

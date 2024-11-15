@@ -8,7 +8,6 @@ import { Link } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
 import { customUserTableStyle } from "../../../../../usersInfoDataFormat/usersInfoTableStyle";
 import { Box, Grid } from "@mui/material";
-import ActionModal from "../../../../actionModal/NewEmploymentModal";
 import { AllStudentsPageQuickLinks } from "../../../../../linksFormat/LinksFormat";
 import { getAuthUser } from "../../../../../features/auth/authSlice";
 import {
@@ -21,6 +20,7 @@ import { studentsColumn } from "../../../../../usersInfoDataFormat/UsersInfoData
 import SearchFilter from "../../../../searchForm/SearchFilter";
 import { FetchAllClassSections } from "../../../../../data/class/FetchClassSections";
 import { FetchAllProgrammes } from "../../../../../data/programme/FetchProgrammeData";
+import NewEnrollmentModal from "../../../../modals/NewEnrollmentModal";
 
 export function ClassLevelProgrammeStudents() {
   const authAdmin = useSelector(getAuthUser);
@@ -380,7 +380,7 @@ export function ClassLevelProgrammeStudents() {
                   : action.label}
               </Grid>
             ))}
-            <ActionModal
+            <NewEnrollmentModal
               open={openModal}
               onClose={() => setOpenModal(false)}
               handleNewEnrollment={handleNewEnrollment}

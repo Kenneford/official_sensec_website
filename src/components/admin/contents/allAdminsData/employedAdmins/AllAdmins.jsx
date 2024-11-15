@@ -4,7 +4,7 @@ import DataTable from "react-data-table-component";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { AllEmployedAdminsPageQuickLinks } from "../../../../../linksFormat/LinksFormat";
-import NewEmploymentModal from "../../../../actionModal/NewEmploymentModal";
+import NewEmploymentModal from "../../../../modals/NewEmploymentModal";
 import { customUserTableStyle } from "../../../../../usersInfoDataFormat/usersInfoTableStyle";
 import { Box, Grid } from "@mui/material";
 import { useSelector } from "react-redux";

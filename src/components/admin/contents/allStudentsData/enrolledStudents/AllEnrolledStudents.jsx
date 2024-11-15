@@ -12,12 +12,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { customUserTableStyle } from "../../../../../usersInfoDataFormat/usersInfoTableStyle";
 import { Box, Grid } from "@mui/material";
 import { AllStudentsPageQuickLinks } from "../../../../../linksFormat/LinksFormat";
-import ActionModal from "../../../../actionModal/NewEmploymentModal";
 import { getAuthUser } from "../../../../../features/auth/authSlice";
 import { FetchAllApprovedStudents } from "../../../../../data/students/FetchAllStudents";
 import { studentsColumn } from "../../../../../usersInfoDataFormat/UsersInfoDataFormat";
 import SearchFilter from "../../../../searchForm/SearchFilter";
 import { FetchAllClassLevels } from "../../../../../data/class/FetchClassLevel";
+import NewEnrollmentModal from "../../../../modals/NewEnrollmentModal";
 
 export function AllEnrolledStudents() {
   const authAdmin = useSelector(getAuthUser);
@@ -394,7 +394,7 @@ export function AllEnrolledStudents() {
                   : action.label}
               </Grid>
             ))}
-            <ActionModal
+            <NewEnrollmentModal
               open={openModal}
               onClose={() => setOpenModal(false)}
               handleNewEnrollment={handleNewEnrollment}
