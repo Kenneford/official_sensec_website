@@ -31,20 +31,13 @@ import { approvedStudentEnrollment } from "../features/students/studentsSlice";
 import ApproveEnrollmentModal from "../components/approvalModal/ApproveEnrollmentModal";
 import RejectEnrollmentModal from "../components/approvalModal/RejectionModal";
 import Redirection from "../components/pageLoading/Redirection";
-import { SENSEC_API_ENDPOINT } from "../apiEndPoint/api";
 import ApproveEmploymentModal from "../components/approvalModal/ApproveEmploymentModal";
 import {
   approveEmployee,
   rejectEmployee,
 } from "../features/employments/employmentSlice";
 
-const adminsColumn = (
-  authAdmin,
-  setCurrentStudentId,
-  currentStudentId,
-  loadingComplete,
-  redirecting
-) => {
+const adminsColumn = (authAdmin) => {
   const hangingAdminsColumn = [
     {
       name: "Image",
@@ -158,201 +151,12 @@ const adminsColumn = (
               <EditIcon />
             </Link>
           )}
-          {row?.employment?.employmentStatus === "in progress" && (
-            <Link
-              className="editLink"
-              onClick={async () => {
-                setCurrentStudentId(row);
-              }}
-            >
-              {currentStudentId && currentStudentId?._id === row?._id && (
-                <>
-                  {loadingComplete === false && (
-                    <Box
-                      className="promotionSpinner"
-                      sx={{
-                        // display: "flex",
-                        // justifyContent: "center",
-                        // alignItems: "center",
-                        marginTop: "1rem",
-                      }}
-                    >
-                      <p>Processing</p>
-                      {/* <CircularProgress style={{ color: "#555" }} size={"1.3em"} /> */}
-                      <span className="dot-ellipsis">
-                        <span className="dot">.</span>
-                        <span className="dot">.</span>
-                        <span className="dot">.</span>
-                      </span>
-                    </Box>
-                  )}
-                  {loadingComplete &&
-                    currentStudentId?._id === row?._id &&
-                    redirecting && <Redirection color={"#555"} size={"1rem"} />}
-                </>
-              )}
-              <>
-                {loadingComplete === null && <EditIcon />}
-                {row?._id !== currentStudentId?._id &&
-                  loadingComplete !== null && <EditIcon />}
-              </>
-            </Link>
-          )}
         </>
       ),
     },
   ];
   return hangingAdminsColumn;
 };
-// const hangingAdminsColumn = (
-//   setCurrentStudentId,
-//   currentStudentId,
-//   loadingComplete,
-//   redirecting,
-//   toast,
-//   setLoadingComplete,
-//   dispatch,
-//   userInfo,
-//   foundAdmin,
-//   approveAdminStatus
-// ) => {
-//   const hangingAdminsColumn = [
-//     {
-//       name: "Image",
-//       selector: (row) =>
-//         row?.personalInfo?.profilePicture ? (
-//           <HashLink
-//             to={`/sensec/admin/Users/Admins/${row?.personalInfo?.firstName.replace(
-//               / /g,
-//               "_"
-//             )}_${row?.personalInfo?.lastName}/${
-//               row?.uniqueId
-//             }/admin_info#studentInfo`}
-//             title="View Admin Info"
-//           >
-//             <img
-//               className="studentImg"
-//               src={
-//                 row?.personalInfo
-//                   ? row?.personalInfo?.profilePicture?.url
-//                   : row?.personalInfo?.profilePicture
-//               }
-//               alt=""
-//             />
-//           </HashLink>
-//         ) : (
-//           <HashLink
-//             className="noImgLink"
-//             to={`/sensec/admin/Users/Admins/${row?.personalInfo?.firstName}_${row?.personalInfo?.lastName}/${row?.personalInfo?.uniqueId}/admin_info#studentInfo`}
-//             title="View Admin Info"
-//           >
-//             {row?.personalInfo?.gender === "Male" && (
-//               <img
-//                 className="studentImg"
-//                 src={"/assets/maleAvatar.png"}
-//                 alt=""
-//               />
-//             )}
-//             {row?.personalInfo?.gender === "Female" && (
-//               <img
-//                 className="studentImg"
-//                 src={"/assets/femaleAvatar.png"}
-//                 alt=""
-//               />
-//             )}
-//             {row?.personalInfo?.gender === "" && (
-//               <div className="noImg">
-//                 <p>No</p>
-//                 <p>Image</p>
-//               </div>
-//             )}
-//           </HashLink>
-//         ),
-//     },
-//     {
-//       name: "First Name",
-//       selector: (row) => row?.personalInfo?.firstName,
-//       sortable: true,
-//     },
-//     { name: "Surname", selector: (row) => row?.personalInfo?.lastName },
-//     {
-//       name: "Date Of Birth",
-//       selector: (row) =>
-//         dateFormatter.format(
-//           new Date(
-//             row?.personalInfo?.dateOfBirth
-//               ? row?.personalInfo?.dateOfBirth
-//               : "---"
-//           )
-//         ),
-//     },
-//     {
-//       name: "Unique-ID",
-//       selector: (row) => (row?.uniqueId ? row?.uniqueId : "---"),
-//       sortable: true,
-//     },
-//     {
-//       name: "Email",
-//       selector: (row) =>
-//         row?.contactAddress?.email ? row?.contactAddress?.email : "---",
-//     },
-//     {
-//       name: "Update",
-//       selector: (row) => (
-//         <>
-//           {row?.employment?.employmentStatus === "approved" && (
-//             <Link
-//               className="editLink"
-//               to={`/sensec/admin/Users/Admins/${row.personalInfo?.firstName}_${row.personalInfo?.lastName}/${row.uniqueId}/update`}
-//             >
-//               <EditIcon />
-//             </Link>
-//           )}
-//           {row?.employment?.employmentStatus === "in progress" && (
-//             <Link
-//               className="editLink"
-//               onClick={async () => {
-//                 setCurrentStudentId(row);
-//               }}
-//             >
-//               {currentStudentId && currentStudentId?._id === row?._id && (
-//                 <>
-//                   {loadingComplete === false &&
-// <Box
-//   className="promotionSpinner"
-//   sx={{
-//     // display: "flex",
-//     // justifyContent: "center",
-//     // alignItems: "center",
-//     marginTop: "1rem",
-//   }}
-// >
-//   <p>Processing</p>
-//   {/* <CircularProgress style={{ color: "#555" }} size={"1.3em"} /> */}
-//   <span className="dot-ellipsis">
-//     <span className="dot">.</span>
-//     <span className="dot">.</span>
-//     <span className="dot">.</span>
-//   </span>
-// </Box>}
-//                   {loadingComplete &&
-//                     currentStudentId?._id === row?._id &&
-//                     redirecting && <Redirection color={"#555"} size={"1rem"} />}
-//                 </>
-//               )}
-//               <>
-//                 {loadingComplete === null && <EditIcon />}
-//                 {row?._id !== currentStudentId?._id &&
-//                   loadingComplete !== null && <EditIcon />}
-//               </>
-//             </Link>
-//           )}
-//         </>
-//       ),
-//     },
-//   ];
-//   return hangingAdminsColumn;
-// };
 const pendingAdminsColumn = (columnObjData) => {
   const pendingAdminsColumn = [
     {
@@ -450,10 +254,19 @@ const pendingAdminsColumn = (columnObjData) => {
     },
     {
       name: "Date Processed",
-      selector: (row) =>
-        !row?.employment?.createdAt
-          ? "---"
-          : dateFormatter?.format(new Date(row?.employment?.createdAt)),
+      selector: (row) => (
+        <p
+          title={
+            row?.employment
+              ? dateFormatter.format(new Date(row?.employment?.createdAt))
+              : "---"
+          }
+        >
+          {row?.employment
+            ? dateFormatter.format(new Date(row?.employment?.createdAt))
+            : "---"}
+        </p>
+      ),
     },
     {
       name: "Update",
@@ -489,7 +302,7 @@ const pendingAdminsColumn = (columnObjData) => {
                           // display: "flex",
                           // justifyContent: "center",
                           // alignItems: "center",
-                          marginTop: "1rem",
+                          marginTop: ".5rem",
                         }}
                       >
                         <p>Processing</p>
@@ -581,7 +394,7 @@ const pendingAdminsColumn = (columnObjData) => {
                         // display: "flex",
                         // justifyContent: "center",
                         // alignItems: "center",
-                        marginTop: "1rem",
+                        marginTop: ".5rem",
                       }}
                     >
                       <p>Processing</p>
@@ -1311,12 +1124,7 @@ const studentsColumn = (
   ];
   return studentColumn;
 };
-const teachersColumn = (
-  setCurrentStudentId,
-  currentStudentId,
-  loadingComplete,
-  redirecting
-) => {
+const teachersColumn = (authAdmin) => {
   const teachersDataFormat = [
     {
       name: "Image",
@@ -1445,225 +1253,17 @@ const teachersColumn = (
     {
       name: "Update",
       selector: (row) => (
-        <>
-          {row?.employment?.employmentStatus === "approved" && (
-            <Link
-              className="editLink"
-              to={`/sensec/admin/Users/Lecturers/${row.personalInfo?.firstName}_${row.personalInfo?.lastName}/${row.uniqueId}/update`}
-            >
-              <EditIcon />
-            </Link>
-          )}
-          {row?.employment?.employmentStatus === "pending" && (
-            <Link
-              className="editLink"
-              to={`/sensec/admin/Users/Lecturers/${row.personalInfo?.firstName}_${row.personalInfo?.lastName}/${row.uniqueId}/update`}
-            >
-              <EditIcon />
-            </Link>
-          )}
-          {row?.employment?.employmentStatus === "in progress" && (
-            <Link
-              className="editLink"
-              onClick={async () => {
-                setCurrentStudentId(row);
-              }}
-            >
-              {currentStudentId && currentStudentId?._id === row?._id && (
-                <>
-                  {loadingComplete === false && (
-                    <Box
-                      className="promotionSpinner"
-                      sx={{
-                        // display: "flex",
-                        // justifyContent: "center",
-                        // alignItems: "center",
-                        marginTop: "1rem",
-                      }}
-                    >
-                      <p>Processing</p>
-                      {/* <CircularProgress style={{ color: "#555" }} size={"1.3em"} /> */}
-                      <span className="dot-ellipsis">
-                        <span className="dot">.</span>
-                        <span className="dot">.</span>
-                        <span className="dot">.</span>
-                      </span>
-                    </Box>
-                  )}
-                  {loadingComplete &&
-                    currentStudentId?._id === row?._id &&
-                    redirecting && <Redirection color={"#555"} size={"1rem"} />}
-                </>
-              )}
-              <>
-                {loadingComplete === null && <EditIcon />}
-                {row?._id !== currentStudentId?._id &&
-                  loadingComplete !== null && <EditIcon />}
-              </>
-            </Link>
-          )}
-        </>
+        <Link
+          className="editLink"
+          to={`/sensec/users/${authAdmin.uniqueId}/admin/Lecturers/${row.uniqueId}/lecturer_update`}
+        >
+          <EditIcon />
+        </Link>
       ),
     },
   ];
   return teachersDataFormat;
 };
-// const hangingTeachersColumn = (
-//   setCurrentStudentId,
-//   currentStudentId,
-//   loadingComplete,
-//   redirecting
-// ) => {
-//   const teachersDataFormat = [
-//     {
-//       name: "Image",
-//       selector: (row) =>
-//         row?.personalInfo?.profilePicture ? (
-//           <HashLink
-//             to={`/sensec/admin/Users/Lecturers/${row?.personalInfo?.firstName.replace(
-//               / /g,
-//               "_"
-//             )}_${row?.personalInfo?.lastName}/${
-//               row?.uniqueId
-//             }/lecturer_info#teacherInfo`}
-//             title="View Student Info"
-//           >
-//             {!row?.personalInfo?.profilePicture?.url && (
-//               <img
-//                 className="studentImg"
-//                 src={row?.personalInfo?.profilePicture}
-//                 alt=""
-//               />
-//             )}
-//             {row?.personalInfo?.profilePicture?.url && (
-//               <img
-//                 className="studentImg"
-//                 src={row?.personalInfo?.profilePicture?.url}
-//                 alt=""
-//               />
-//             )}
-//           </HashLink>
-//         ) : (
-//           <HashLink
-//             className="noImgLink"
-//             to={`/sensec/admin/Students/student_info/${row?.personalInfo?.firstName}_${row?.personalInfo?.lastName}/${row?.personalInfo?.uniqueId}#studentInfo`}
-//             title="View Student Info"
-//           >
-//             {row?.personalInfo?.gender === "Male" && (
-//               <img
-//                 className="studentImg"
-//                 src={"/assets/maleAvatar.png"}
-//                 alt=""
-//               />
-//             )}
-//             {row?.personalInfo?.gender === "Female" && (
-//               <img
-//                 className="studentImg"
-//                 src={"/assets/femaleAvatar.png"}
-//                 alt=""
-//               />
-//             )}
-//             {row?.personalInfo?.gender === "" && (
-//               <div className="noImg">
-//                 <p>No</p>
-//                 <p>Image</p>
-//               </div>
-//             )}
-//           </HashLink>
-//         ),
-//     },
-//     {
-//       name: "First Name",
-//       selector: (row) => row?.personalInfo?.firstName,
-//       sortable: true,
-//     },
-//     { name: "Surname", selector: (row) => row?.personalInfo?.lastName },
-//     {
-//       name: "Date Of Birth",
-//       selector: (row) =>
-//         dateFormatter.format(
-//           new Date(
-//             row?.personalInfo?.dateOfBirth
-//               ? row?.personalInfo?.dateOfBirth
-//               : "---"
-//           )
-//         ),
-//     },
-//     {
-//       name: "Unique-ID",
-//       selector: (row) => row?.uniqueId,
-//       sortable: true,
-//     },
-//     {
-//       name: "Email",
-//       selector: (row) =>
-//         row?.contactAddress?.email ? row?.contactAddress?.email : "---",
-//     },
-//     {
-//       name: "Update",
-//       selector: (row) => (
-//         <>
-//           {row?.employment?.employmentStatus === "approved" && (
-//             <Link
-//               className="editLink"
-//               to={`/sensec/admin/Users/Lecturers/${row.personalInfo?.firstName}_${row.personalInfo?.lastName}/${row.uniqueId}/update`}
-//             >
-//               <EditIcon />
-//             </Link>
-//           )}
-//           {row?.employment?.employmentStatus === "pending" && (
-//             <Link
-//               className="editLink"
-//               to={`/sensec/admin/Users/Lecturers/${row.personalInfo?.firstName}_${row.personalInfo?.lastName}/${row.uniqueId}/update`}
-//             >
-//               <EditIcon />
-//             </Link>
-//           )}
-//           {row?.employment?.employmentStatus === "in progress" && (
-//             <Link
-//               className="editLink"
-//               onClick={async () => {
-//                 setCurrentStudentId(row);
-//               }}
-//             >
-//               {currentStudentId && currentStudentId?._id === row?._id && (
-//                 <>
-//                   {loadingComplete === false &&
-// <Box
-//   className="promotionSpinner"
-//   sx={{
-//     // display: "flex",
-//     // justifyContent: "center",
-//     // alignItems: "center",
-//     marginTop: "1rem",
-//   }}
-// >
-//   <p>Processing</p>
-//   {/* <CircularProgress style={{ color: "#555" }} size={"1.3em"} /> */}
-//   <span className="dot-ellipsis">
-//     <span className="dot">.</span>
-//     <span className="dot">.</span>
-//     <span className="dot">.</span>
-//   </span>
-// </Box>}
-//                   {loadingComplete &&
-//                     currentStudentId?._id === row?._id &&
-//                     redirecting && <Redirection color={"#555"} size={"1rem"} />}
-//                 </>
-//               )}
-//               <>
-//                 {loadingComplete === null && <EditIcon />}
-//                 {row?._id !== currentStudentId?._id &&
-//                   loadingComplete !== null && <EditIcon />}
-//               </>
-//             </Link>
-//           )}
-//         </>
-//       ),
-//     },
-//   ];
-//   return teachersDataFormat;
-// };
 const pendingTeachersColumn = (columnObjData) => {
   const teachersDataFormat = [
     {
@@ -1765,6 +1365,22 @@ const pendingTeachersColumn = (columnObjData) => {
       ),
     },
     {
+      name: "Date Processed",
+      selector: (row) => (
+        <p
+          title={
+            row?.employment
+              ? dateFormatter.format(new Date(row?.employment?.createdAt))
+              : "---"
+          }
+        >
+          {row?.employment
+            ? dateFormatter.format(new Date(row?.employment?.createdAt))
+            : "---"}
+        </p>
+      ),
+    },
+    {
       name: "Update",
       selector: (row) => (
         <>
@@ -1799,7 +1415,7 @@ const pendingTeachersColumn = (columnObjData) => {
                       <Box
                         className="promotionSpinner"
                         sx={{
-                          marginTop: "1rem",
+                          marginTop: ".5rem",
                         }}
                       >
                         <p>Processing</p>
@@ -1887,7 +1503,7 @@ const pendingTeachersColumn = (columnObjData) => {
                     <Box
                       className="promotionSpinner"
                       sx={{
-                        marginTop: "1rem",
+                        marginTop: ".5rem",
                       }}
                     >
                       <p>Processing</p>
@@ -1934,7 +1550,9 @@ const nTStaffsColumn = (adminCurrentLink, authAdmin) => {
       selector: (row) =>
         row?.personalInfo?.profilePicture ? (
           <HashLink
-            to={`/sensec/admin/Users/${adminCurrentLink}/${row?.personalInfo?.firstName.replace(
+            to={`/sensec/admin/${
+              authAdmin?.uniqueId
+            }/Users/${adminCurrentLink}/${row?.personalInfo?.firstName.replace(
               / /g,
               "_"
             )}_${row?.personalInfo?.lastName}/${row?.uniqueId}/nt_staff_info`}
@@ -2037,24 +1655,18 @@ const nTStaffsColumn = (adminCurrentLink, authAdmin) => {
     {
       name: "Update",
       selector: (row) => (
-        <>
-          {row?.employment?.employmentStatus === "approved" && (
-            <Link
-              className="editLink"
-              to={`/sensec/users/${authAdmin?.uniqueId}/admin/NT-Staff/${row?.uniqueId}/nt-staff_update`}
-            >
-              <EditIcon />
-            </Link>
-          )}
-        </>
+        <Link
+          className="editLink"
+          to={`/sensec/users/${authAdmin?.uniqueId}/admin/NT-Staff/${row?.uniqueId}/nt-staff_update`}
+        >
+          <EditIcon />
+        </Link>
       ),
     },
   ];
   return nTStaffsDataFormat;
 };
 const pendingNTStaffsColumn = (columnObjData) => {
-  console.log(columnObjData);
-
   const nTStaffsDataFormat = [
     {
       name: "Image",
@@ -2159,17 +1771,13 @@ const pendingNTStaffsColumn = (columnObjData) => {
       selector: (row) => (
         <p
           title={
-            row?.employment?.employmentProcessedDate
-              ? dateFormatter.format(
-                  new Date(row?.employment.employmentProcessedDate)
-                )
+            row?.employment
+              ? dateFormatter.format(new Date(row?.employment?.createdAt))
               : "---"
           }
         >
-          {row?.employment?.employmentProcessedDate
-            ? dateFormatter.format(
-                new Date(row?.employment.employmentProcessedDate)
-              )
+          {row?.employment
+            ? dateFormatter.format(new Date(row?.employment?.createdAt))
             : "---"}
         </p>
       ),
@@ -2209,10 +1817,7 @@ const pendingNTStaffsColumn = (columnObjData) => {
                       <Box
                         className="promotionSpinner"
                         sx={{
-                          // display: "flex",
-                          // justifyContent: "center",
-                          // alignItems: "center",
-                          marginTop: "1rem",
+                          marginTop: ".5rem",
                         }}
                       >
                         <p>Processing</p>
@@ -2301,10 +1906,7 @@ const pendingNTStaffsColumn = (columnObjData) => {
                     <Box
                       className="promotionSpinner"
                       sx={{
-                        // display: "flex",
-                        // justifyContent: "center",
-                        // alignItems: "center",
-                        marginTop: "1rem",
+                        marginTop: ".5rem",
                       }}
                     >
                       <p>Processing</p>
@@ -2345,372 +1947,6 @@ const pendingNTStaffsColumn = (columnObjData) => {
   ];
   return nTStaffsDataFormat;
 };
-// const hangingNTStaffsColumn = (
-//   setCurrentStudentId,
-//   currentStudentId,
-//   loadingComplete,
-//   redirecting
-// ) => {
-//   const nTStaffsDataFormat = [
-//     {
-//       name: "Image",
-//       selector: (row) =>
-//         row?.personalInfo?.profilePicture ? (
-//           <HashLink
-//             to={`/sensec/admin/Users/Lecturers/${row?.personalInfo?.firstName.replace(
-//               / /g,
-//               "_"
-//             )}_${row?.personalInfo?.lastName}/${
-//               row?.uniqueId
-//             }/lecturer_info#teacherInfo`}
-//             title="View Student Info"
-//           >
-//             {!row?.personalInfo?.profilePicture?.url && (
-//               <img
-//                 className="studentImg"
-//                 src={row?.personalInfo?.profilePicture}
-//                 alt=""
-//               />
-//             )}
-//             {row?.personalInfo?.profilePicture?.url && (
-//               <img
-//                 className="studentImg"
-//                 src={row?.personalInfo?.profilePicture?.url}
-//                 alt=""
-//               />
-//             )}
-//           </HashLink>
-//         ) : (
-//           <HashLink
-//             className="noImgLink"
-//             to={`/sensec/admin/Students/student_info/${row?.personalInfo?.firstName}_${row?.personalInfo?.lastName}/${row?.personalInfo?.uniqueId}#studentInfo`}
-//             title="View Lecturer Info"
-//           >
-//             {row?.personalInfo?.gender === "Male" && (
-//               <img
-//                 className="studentImg"
-//                 src={"/assets/maleAvatar.png"}
-//                 alt=""
-//               />
-//             )}
-//             {row?.personalInfo?.gender === "Female" && (
-//               <img
-//                 className="studentImg"
-//                 src={"/assets/femaleAvatar.png"}
-//                 alt=""
-//               />
-//             )}
-//             {row?.personalInfo?.gender === "" && (
-//               <div className="noImg">
-//                 <p>No</p>
-//                 <p>Image</p>
-//               </div>
-//             )}
-//           </HashLink>
-//         ),
-//     },
-//     {
-//       name: "First Name",
-//       selector: (row) => row?.personalInfo?.firstName,
-//       sortable: true,
-//     },
-//     { name: "Surname", selector: (row) => row?.personalInfo?.lastName },
-//     {
-//       name: "Date Of Birth",
-//       selector: (row) =>
-//         dateFormatter.format(
-//           new Date(
-//             row?.personalInfo?.dateOfBirth
-//               ? row?.personalInfo?.dateOfBirth
-//               : "---"
-//           )
-//         ),
-//     },
-//     {
-//       name: "Unique-ID",
-//       selector: (row) => row?.uniqueId,
-//       sortable: true,
-//     },
-//     {
-//       name: "Email",
-//       selector: (row) =>
-//         row?.contactAddress?.email ? row?.contactAddress?.email : "---",
-//     },
-//     {
-//       name: "Update",
-//       selector: (row) => (
-//         <>
-//           {row?.employment?.employmentStatus === "approved" && (
-//             <Link
-//               className="editLink"
-//               to={`/sensec/admin/Users/Lecturers/${row.personalInfo?.firstName}_${row.personalInfo?.lastName}/${row.uniqueId}/update`}
-//             >
-//               <EditIcon />
-//             </Link>
-//           )}
-//           {row?.employment?.employmentStatus === "pending" && (
-//             <Link
-//               className="editLink"
-//               to={`/sensec/admin/Users/Lecturers/${row.personalInfo?.firstName}_${row.personalInfo?.lastName}/${row.uniqueId}/update`}
-//             >
-//               <EditIcon />
-//             </Link>
-//           )}
-//           {row?.employment?.employmentStatus === "in progress" && (
-//             <Link
-//               className="editLink"
-//               onClick={async () => {
-//                 setCurrentStudentId(row);
-//               }}
-//             >
-//               {currentStudentId && currentStudentId?._id === row?._id && (
-//                 <>
-//                   {loadingComplete === false &&
-// <Box
-//   className="promotionSpinner"
-//   sx={{
-//     // display: "flex",
-//     // justifyContent: "center",
-//     // alignItems: "center",
-//     marginTop: "1rem",
-//   }}
-// >
-//   <p>Processing</p>
-//   {/* <CircularProgress style={{ color: "#555" }} size={"1.3em"} /> */}
-//   <span className="dot-ellipsis">
-//     <span className="dot">.</span>
-//     <span className="dot">.</span>
-//     <span className="dot">.</span>
-//   </span>
-// </Box>}
-//                   {loadingComplete &&
-//                     currentStudentId?._id === row?._id &&
-//                     redirecting && <Redirection color={"#555"} size={"1rem"} />}
-//                 </>
-//               )}
-//               <>
-//                 {loadingComplete === null && <AssistantDirectionIcon />}
-//                 {row?._id !== currentStudentId?._id &&
-//                   loadingComplete !== null && <AssistantDirectionIcon />}
-//               </>
-//             </Link>
-//           )}
-//         </>
-//       ),
-//     },
-//   ];
-//   return nTStaffsDataFormat;
-// };
-// const hangingEmploymentsColumn = (
-//   setCurrentUser,
-//   currentUser,
-//   loadingComplete,
-//   setLoadingComplete,
-//   redirecting
-// ) => {
-//   const hangingEmploymentsColumn = [
-//     {
-//       name: "Image",
-//       selector: (row) => (
-//         <>
-//           {row?.role === "admin" && row?.personalInfo?.profilePicture ? (
-//             <HashLink
-//               to={`/sensec/admin/Users/Admins/${row?.personalInfo?.firstName.replace(
-//                 / /g,
-//                 "_"
-//               )}_${row?.personalInfo?.lastName}/${
-//                 row?.uniqueId
-//               }/admin_info#adminInfo`}
-//               title="View Admin Info"
-//             >
-//               <img
-//                 className="studentImg"
-//                 src={
-//                   row?.personalInfo
-//                     ? row?.personalInfo?.profilePicture?.url
-//                     : row?.personalInfo?.profilePicture
-//                 }
-//                 alt=""
-//               />
-//             </HashLink>
-//           ) : row?.role === "teacher" && row?.personalInfo?.profilePicture ? (
-//             <HashLink
-//               to={`/sensec/admin/Users/Lecturers/${row?.personalInfo?.firstName.replace(
-//                 / /g,
-//                 "_"
-//               )}_${row?.personalInfo?.lastName}/${
-//                 row?.uniqueId
-//               }/lecturer_info#teacherInfo`}
-//               title="View Teacher's Info"
-//             >
-//               {!row?.personalInfo?.profilePicture?.url && (
-//                 <img
-//                   className="studentImg"
-//                   src={row?.personalInfo?.profilePicture}
-//                   alt=""
-//                 />
-//               )}
-//               {row?.personalInfo?.profilePicture?.url && (
-//                 <img
-//                   className="studentImg"
-//                   src={row?.personalInfo?.profilePicture?.url}
-//                   alt=""
-//                 />
-//               )}
-//             </HashLink>
-//           ) : row?.role === "NT-Staff" && row?.personalInfo?.profilePicture ? (
-//             <HashLink
-//               to={`/sensec/admin/Users/NT-Staffs/${row?.personalInfo?.firstName.replace(
-//                 / /g,
-//                 "_"
-//               )}_${row?.personalInfo?.lastName}/${
-//                 row?.uniqueId
-//               }/nt_staff_info#teacherInfo`}
-//               title="View NT-Staff's Info"
-//             >
-//               {!row?.personalInfo?.profilePicture?.url && (
-//                 <img
-//                   className="studentImg"
-//                   src={row?.personalInfo?.profilePicture}
-//                   alt=""
-//                 />
-//               )}
-//               {row?.personalInfo?.profilePicture?.url && (
-//                 <img
-//                   className="studentImg"
-//                   src={row?.personalInfo?.profilePicture?.url}
-//                   alt=""
-//                 />
-//               )}
-//             </HashLink>
-//           ) : (
-//             <HashLink
-//               className="noImgLink"
-//               to={`/sensec/admin/Users/Admins/${row?.personalInfo?.firstName}_${row?.personalInfo?.lastName}/${row?.personalInfo?.uniqueId}/admin_info#studentInfo`}
-//               title="View Admin Info"
-//             >
-//               {row?.personalInfo?.gender === "Male" && (
-//                 <img
-//                   className="studentImg"
-//                   src={"/assets/maleAvatar.png"}
-//                   alt=""
-//                 />
-//               )}
-//               {row?.personalInfo?.gender === "Female" && (
-//                 <img
-//                   className="studentImg"
-//                   src={"/assets/femaleAvatar.png"}
-//                   alt=""
-//                 />
-//               )}
-//               {row?.personalInfo?.gender === "" && (
-//                 <div className="noImg">
-//                   <p>No</p>
-//                   <p>Image</p>
-//                 </div>
-//               )}
-//             </HashLink>
-//           )}
-//         </>
-//       ),
-//     },
-//     {
-//       name: "First Name",
-//       selector: (row) => row?.personalInfo?.firstName,
-//       sortable: true,
-//     },
-//     { name: "Surname", selector: (row) => row?.personalInfo?.lastName },
-//     {
-//       name: "Date Of Birth",
-//       selector: (row) => (
-//         <p
-//           title={dateFormatter.format(
-//             new Date(
-//               row?.personalInfo?.dateOfBirth
-//                 ? row?.personalInfo?.dateOfBirth
-//                 : "---"
-//             )
-//           )}
-//         >
-//           {dateFormatter.format(
-//             new Date(
-//               row?.personalInfo?.dateOfBirth
-//                 ? row?.personalInfo?.dateOfBirth
-//                 : "---"
-//             )
-//           )}
-//         </p>
-//       ),
-//     },
-//     {
-//       name: "Unique-ID",
-//       selector: (row) => <p title={row?.uniqueId}>{row?.uniqueId}</p>,
-//       sortable: true,
-//     },
-//     {
-//       name: "Email",
-//       selector: (row) => (
-//         <p title={row?.contactAddress?.email}>
-//           {row?.contactAddress?.email ? row?.contactAddress?.email : "---"}
-//         </p>
-//       ),
-//     },
-//     {
-//       name: "Redirect",
-//       selector: (row) => (
-//         <>
-//           {row?.employment?.employmentStatus === "in progress" && (
-//             <Link
-//               className="editLink"
-//               onClick={async () => {
-//                 setCurrentUser(row);
-//               }}
-//             >
-//               {currentUser && currentUser?._id === row?._id && (
-//                 <>
-//                   {loadingComplete === false &&
-// <Box
-//   className="promotionSpinner"
-//   sx={{
-//     // display: "flex",
-//     // justifyContent: "center",
-//     // alignItems: "center",
-//     marginTop: "1rem",
-//   }}
-// >
-//   <p>Processing</p>
-//   {/* <CircularProgress style={{ color: "#555" }} size={"1.3em"} /> */}
-//   <span className="dot-ellipsis">
-//     <span className="dot">.</span>
-//     <span className="dot">.</span>
-//     <span className="dot">.</span>
-//   </span>
-// </Box>}
-//                   {loadingComplete &&
-//                     currentUser?._id === row?._id &&
-//                     redirecting && <Redirection color={"#555"} size={"1rem"} />}
-//                 </>
-//               )}
-//               <>
-//                 {loadingComplete === null && (
-//                   <AssistantDirectionIcon
-//                     style={{ fontSize: "1.7rem", color: "#000" }}
-//                   />
-//                 )}
-//                 {row?._id !== currentUser?._id && loadingComplete !== null && (
-//                   <AssistantDirectionIcon
-//                     style={{ fontSize: "1.7rem", color: "#000" }}
-//                   />
-//                 )}
-//               </>
-//             </Link>
-//           )}
-//         </>
-//       ),
-//     },
-//   ];
-//   return hangingEmploymentsColumn;
-// };
 // const graduatesColumn = () => {
 //   const graduatesColumn = [
 //     {

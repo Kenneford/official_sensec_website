@@ -6,12 +6,16 @@ import tokenInterceptor from "../../apiEndPoint/interceptors";
 const initialState = {
   employeeInfo: "",
   allEmployees: [],
+  allApprovedEmployee: [],
+  allRejectedEmployee: [],
   approvedEmployee: "",
   rejectedEmployee: "",
   updatedEmployee: "",
   employmentStatus: "",
   approveEmploymentStatus: "",
+  approveMultiEmploymentStatus: "",
   rejectEmploymentStatus: "",
+  rejectMultiEmploymentStatus: "",
   updateStatus: "",
   successMessage: "",
   fetchSuccessMessage: "",
@@ -48,12 +52,42 @@ export const approveEmployee = createAsyncThunk(
     }
   }
 );
+export const approveMultiEmployees = createAsyncThunk(
+  "Employment/approveMultiEmployees",
+  async ({ employees, employmentApprovedBy }, { rejectWithValue }) => {
+    try {
+      const res = await tokenInterceptor.put(
+        `/employment/${employmentApprovedBy}/employees/multi_data/approve`,
+        { employees }
+      );
+      return res.data;
+    } catch (error) {
+      console.log(error.response.data);
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 export const rejectEmployee = createAsyncThunk(
   "Employment/rejectEmployee",
   async ({ employeeId, employmentRejectedBy }, { rejectWithValue }) => {
     try {
       const res = await tokenInterceptor.put(
         `/employment/${employeeId}/${employmentRejectedBy}/reject`
+      );
+      return res.data;
+    } catch (error) {
+      console.log(error.response.data);
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const rejectMultiEmployees = createAsyncThunk(
+  "Employment/rejectMultiEmployees",
+  async ({ employees, employmentRejectedBy }, { rejectWithValue }) => {
+    try {
+      const res = await tokenInterceptor.put(
+        `/employment/${employmentRejectedBy}/employees/multi_data/reject`,
+        { employees }
       );
       return res.data;
     } catch (error) {
@@ -71,6 +105,22 @@ const employmentSlice = createSlice({
       return {
         ...state,
         employmentStatus: "",
+        successMessage: "",
+        error: "",
+      };
+    },
+    resetMultiApprovalState(state) {
+      return {
+        ...state,
+        approveMultiEmploymentStatus: "",
+        successMessage: "",
+        error: "",
+      };
+    },
+    resetMultiRejectionState(state) {
+      return {
+        ...state,
+        rejectMultiEmploymentStatus: "",
         successMessage: "",
         error: "",
       };
@@ -119,6 +169,27 @@ const employmentSlice = createSlice({
         error: action.payload,
       };
     });
+    // Approve Multi Employments
+    builder.addCase(approveMultiEmployees.pending, (state) => {
+      return { ...state, approveMultiEmploymentStatus: "pending" };
+    });
+    builder.addCase(approveMultiEmployees.fulfilled, (state, action) => {
+      if (action.payload) {
+        return {
+          ...state,
+          allApprovedEmployee: action.payload.allApprovedEmployees,
+          successMessage: action.payload.successMessage,
+          approveMultiEmploymentStatus: "success",
+        };
+      } else return state;
+    });
+    builder.addCase(approveMultiEmployees.rejected, (state, action) => {
+      return {
+        ...state,
+        approveMultiEmploymentStatus: "rejected",
+        error: action.payload,
+      };
+    });
     // Reject Employment
     builder.addCase(rejectEmployee.pending, (state) => {
       return { ...state, rejectEmploymentStatus: "pending" };
@@ -140,8 +211,33 @@ const employmentSlice = createSlice({
         error: action.payload,
       };
     });
+    // Reject Multi Employments
+    builder.addCase(rejectMultiEmployees.pending, (state) => {
+      return { ...state, rejectMultiEmploymentStatus: "pending" };
+    });
+    builder.addCase(rejectMultiEmployees.fulfilled, (state, action) => {
+      if (action.payload) {
+        return {
+          ...state,
+          allRejectedEmployee: action.payload.allRejectedEmployees,
+          successMessage: action.payload.successMessage,
+          rejectMultiEmploymentStatus: "success",
+        };
+      } else return state;
+    });
+    builder.addCase(rejectMultiEmployees.rejected, (state, action) => {
+      return {
+        ...state,
+        rejectMultiEmploymentStatus: "rejected",
+        error: action.payload,
+      };
+    });
   },
 });
 
-export const { resetEmploymentState } = employmentSlice.actions;
+export const {
+  resetEmploymentState,
+  resetMultiApprovalState,
+  resetMultiRejectionState,
+} = employmentSlice.actions;
 export default employmentSlice.reducer;
