@@ -12,7 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { customUserTableStyle } from "../../../../../usersInfoDataFormat/usersInfoTableStyle";
 import { Box, Grid } from "@mui/material";
 import { AllStudentsPageQuickLinks } from "../../../../../linksFormat/LinksFormat";
-import ActionModal from "../../../../actionModal/ActionModal";
+import ActionModal from "../../../../actionModal/NewEmploymentModal";
 import { getAuthUser } from "../../../../../features/auth/authSlice";
 import { FetchAllApprovedStudents } from "../../../../../data/students/FetchAllStudents";
 import { studentsColumn } from "../../../../../usersInfoDataFormat/UsersInfoDataFormat";

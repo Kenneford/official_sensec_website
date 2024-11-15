@@ -10,7 +10,7 @@ import { HashLink } from "react-router-hash-link";
 import { toast } from "react-toastify";
 import UploadPlacementExcelData from "./placementExcelDataUpload/PlacementDataUpload";
 import { Box, Grid } from "@mui/material";
-import ActionModal from "../../../actionModal/ActionModal";
+import ActionModal from "../../../actionModal/NewEmploymentModal";
 import { FetchAllPlacementStudents } from "../../../../data/students/FetchPlacementStudents";
 import { customUserTableStyle } from "../../../../usersInfoDataFormat/usersInfoTableStyle";
 import { FetchAllStudents } from "../../../../data/students/FetchAllStudents";

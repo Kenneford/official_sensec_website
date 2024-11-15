@@ -4,7 +4,7 @@ import DataTable from "react-data-table-component";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import NewEmploymentModal from "../../../../actionModal/ActionModal";
+import NewEmploymentModal from "../../../../actionModal/NewEmploymentModal";
 import { customUserTableStyle } from "../../../../../usersInfoDataFormat/usersInfoTableStyle";
 import { AllEmployedNTStaffsPageQuickLinks } from "../../../../../linksFormat/LinksFormat";
 import { Box, Grid } from "@mui/material";
@@ -121,7 +121,7 @@ export function PendingNTStaffs() {
     setUncompletedEmploymentTask("You're being redirected");
     setTimeout(() => {
       navigate(
-        `/sensec/admin/${adminCurrentAction}/${adminCurrentLink}/new_employment/personal_info`
+        `/sensec/users/${authAdmin?.uniqueId}/admin/${adminCurrentAction}/new_employment`
       );
     }, 3000);
   };

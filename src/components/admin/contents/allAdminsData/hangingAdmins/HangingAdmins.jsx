@@ -6,7 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 // import { useDispatch, useSelector } from "react-redux";
 // import { fetchAllHangingEmployments } from "../../../features/admin/adminsSlice";
 // import { hangingEmploymentsColumn } from "../../usersInfoDataFormat/UsersInfoDataFormat";
-import NewEmploymentModal from "../../../../actionModal/ActionModal";
+import NewEmploymentModal from "../../../../actionModal/NewEmploymentModal";
 import { customUserTableStyle } from "../../../../../usersInfoDataFormat/usersInfoTableStyle";
 import { Box, Grid } from "@mui/material";
 import { AllEmployedAdminsPageQuickLinks } from "../../../../../linksFormat/LinksFormat";

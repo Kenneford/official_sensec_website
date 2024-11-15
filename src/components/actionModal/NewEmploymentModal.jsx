@@ -11,10 +11,10 @@ import {
 } from "@mui/material";
 import PropTypes from "prop-types";
 
-export default function ActionModal({
+export default function NewEmploymentModal({
   open,
   onClose,
-  handleNewEnrollment,
+  handleNewEmployment,
   redirecting,
   uncompletedEmploymentTask,
   question,
@@ -91,7 +91,7 @@ export default function ActionModal({
               <Button
                 variant="outlined"
                 color="success"
-                onClick={() => handleNewEnrollment()}
+                onClick={() => handleNewEmployment()}
                 sx={{
                   transition: ".5s ease-out",
                   "&:hover": {
@@ -127,10 +127,10 @@ export default function ActionModal({
     </Modal>
   );
 }
-ActionModal.propTypes = {
+NewEmploymentModal.propTypes = {
   open: PropTypes.bool,
   onClose: PropTypes.func,
-  handleNewEnrollment: PropTypes.func,
+  handleNewEmployment: PropTypes.func,
   redirecting: PropTypes.bool,
   uncompletedEmploymentTask: PropTypes.string,
   question: PropTypes.string,

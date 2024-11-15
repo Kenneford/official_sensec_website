@@ -5,7 +5,7 @@ import DataTable from "react-data-table-component";
 import { useNavigate, useParams } from "react-router-dom";
 import { customUserTableStyle } from "../../../../../usersInfoDataFormat/usersInfoTableStyle";
 import { Box, Grid } from "@mui/material";
-import ActionModal from "../../../../actionModal/ActionModal";
+import ActionModal from "../../../../actionModal/NewEmploymentModal";
 import { AllStudentsPageQuickLinks } from "../../../../../linksFormat/LinksFormat";
 import { useDispatch, useSelector } from "react-redux";
 import {

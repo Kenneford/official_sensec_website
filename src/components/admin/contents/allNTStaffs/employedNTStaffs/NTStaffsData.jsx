@@ -3,7 +3,7 @@ import "../ntStaffsData.scss";
 import SearchIcon from "@mui/icons-material/Search";
 import DataTable from "react-data-table-component";
 import { useNavigate, useParams } from "react-router-dom";
-import NewEmploymentModal from "../../../../actionModal/ActionModal";
+import NewEmploymentModal from "../../../../actionModal/NewEmploymentModal";
 import { customUserTableStyle } from "../../../../../usersInfoDataFormat/usersInfoTableStyle";
 import { Box, Grid } from "@mui/material";
 import { AllEmployedNTStaffsPageQuickLinks } from "../../../../../linksFormat/LinksFormat";
@@ -45,7 +45,7 @@ export function NTStaffsData() {
     setUncompletedEmploymentTask("You're being redirected");
     setTimeout(() => {
       navigate(
-        `/sensec/admin/${adminCurrentAction}/${adminCurrentLink}/new_employment/personal_info`
+        `/sensec/users/${authAdmin?.uniqueId}/admin/${adminCurrentAction}/new_employment`
       );
     }, 3000);
   };
