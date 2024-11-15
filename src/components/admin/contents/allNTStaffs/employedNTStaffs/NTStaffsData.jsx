@@ -19,18 +19,6 @@ export function NTStaffsData() {
   const navigate = useNavigate();
   const actionBtns = AllEmployedNTStaffsPageQuickLinks();
   const dispatch = useDispatch();
-  const allClassLevels = [
-    {
-      name: "Level 100",
-    },
-    {
-      name: "Level 200",
-    },
-    {
-      name: "Level 300",
-    },
-  ];
-  const ntStaffsData = nTStaffsColumn();
   const { adminCurrentAction, adminCurrentLink, class_level, employees_link } =
     useParams();
   const [searchTeacher, setSearchTeacher] = useState("");
@@ -48,6 +36,7 @@ export function NTStaffsData() {
   const [uncompletedEmploymentTask, setUncompletedEmploymentTask] =
     useState("");
 
+  const ntStaffsData = nTStaffsColumn(adminCurrentLink, authAdmin);
   const handleStudentSearch = (e) => {
     e.preventDefault();
   };
@@ -187,43 +176,6 @@ export function NTStaffsData() {
             />
           </Grid>
         </Box>
-        <Grid
-          container
-          spacing={3}
-          // className="addNewAdminBtnsWrap"
-          width={"100%"}
-          m={"0 auto"}
-          className="classLevelLecturers"
-        >
-          {allClassLevels.map((cLevel) => (
-            <Grid
-              component={"span"}
-              item
-              xs={2.9}
-              sm={2}
-              // md={2}
-              // lg={2}
-              key={cLevel._id}
-              onClick={() =>
-                navigate(
-                  `/sensec/users/${
-                    authAdmin?.uniqueId
-                  }/admin/${adminCurrentAction}/${adminCurrentLink}/employees/${employees_link}/${cLevel.name.replace(
-                    / /g,
-                    "_"
-                  )}`
-                )
-              }
-              className={
-                cLevel.name === class_level
-                  ? "classLevelLecturersBtn isActive"
-                  : "classLevelLecturersBtn"
-              }
-            >
-              {cLevel.name}
-            </Grid>
-          ))}
-        </Grid>
         <Box className="lecturerDataTable">
           <DataTable
             title={allStd}

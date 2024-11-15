@@ -32,7 +32,7 @@ export function LecturersData() {
       name: "Level 300",
     },
   ];
-  const teachersData = teachersColumn();
+  const teachersData = teachersColumn(authAdmin);
   const { adminCurrentAction, adminCurrentLink, class_level, employees_link } =
     useParams();
   console.log(employees_link);

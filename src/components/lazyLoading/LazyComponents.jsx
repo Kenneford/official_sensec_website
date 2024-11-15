@@ -155,6 +155,22 @@ export const SearchModal = lazyWithSuspense(
   <PageLoading />,
   "SearchModalComponent"
 );
+export const MultiApprovalBtn = lazyWithSuspense(
+  () =>
+    import("../../buttons/MultiApprovalBtn").then((module) => {
+      return { default: module.MultiApprovalBtn };
+    }),
+  <PageLoading />,
+  "MultiApprovalBtnComponent"
+);
+export const MultiRejectionBtn = lazyWithSuspense(
+  () =>
+    import("../../buttons/MultiRejectionBtn").then((module) => {
+      return { default: module.MultiRejectionBtn };
+    }),
+  <PageLoading />,
+  "MultiRejectionBtnComponent"
+);
 // For Admin
 export const AdminDashboard = lazyWithSuspense(
   () =>

@@ -16,6 +16,14 @@ import { pendingNTStaffsColumn } from "../../../../../usersInfoDataFormat/UsersI
 import { FetchAllPendingNTStaffs } from "../../../../../data/nt.staffs/FetchNT-Staffs";
 import SearchFilter from "../../../../searchForm/SearchFilter";
 import { FetchAllClassLevels } from "../../../../../data/class/FetchClassLevel";
+import {
+  resetMultiApprovalState,
+  resetMultiRejectionState,
+} from "../../../../../features/employments/employmentSlice";
+import {
+  MultiApprovalBtn,
+  MultiRejectionBtn,
+} from "../../../../lazyLoading/LazyComponents";
 
 export function PendingNTStaffs() {
   const authAdmin = useSelector(getAuthUser);
@@ -26,7 +34,9 @@ export function PendingNTStaffs() {
   const allClassLevels = FetchAllClassLevels();
   const {
     approveEmploymentStatus,
+    approveMultiEmploymentStatus,
     rejectEmploymentStatus,
+    rejectMultiEmploymentStatus,
     successMessage,
     error,
   } = useSelector((state) => state.employment);
@@ -38,6 +48,13 @@ export function PendingNTStaffs() {
   const [loadingComplete, setLoadingComplete] = useState(null);
   const [searchTeacher, setSearchTeacher] = useState("");
   const [rejectLoadingComplete, setRejectLoadingComplete] = useState(null);
+  const [approveMultiLoadingComplete, setApproveMultiLoadingComplete] =
+    useState(null);
+  const [multiApprovalInProgress, setMultiApprovalInProgress] = useState(false);
+  const [multiRejectionInProgress, setMultiRejectionInProgress] =
+    useState(false);
+  const [rejectMultiLoadingComplete, setRejectMultiLoadingComplete] =
+    useState(null);
 
   //Filter teacher during search
   const pendingLecturers = allPendingNTStaffs?.filter(
@@ -80,6 +97,24 @@ export function PendingNTStaffs() {
     setOpenRejectModal,
   };
   const teachersData = pendingNTStaffsColumn(columnObjData);
+
+  // handle multi approval or rejection
+  const [multiEmployees, setMultiEmployees] = useState([]);
+  const [toggleClearRows, setToggleClearRows] = useState(false);
+  console.log(multiEmployees);
+  const handleMultiSelect = (state) => {
+    if (state) {
+      const employeeObj = state?.selectedRows?.map((user) => {
+        const userId = {
+          uniqueId: user?.uniqueId,
+        };
+        return userId;
+      });
+      setMultiEmployees(employeeObj);
+    } else {
+      setMultiEmployees([]);
+    }
+  };
 
   const handleNewEmployment = () => {
     setRedirecting(true);
@@ -155,6 +190,91 @@ export function PendingNTStaffs() {
       }
     }
   }, [dispatch, rejectEmploymentStatus, error, nTStaffToReject, foundNTStaff]);
+
+  // Multi approval status check
+  useEffect(() => {
+    if (multiEmployees && approveMultiEmploymentStatus === "pending") {
+      setApproveMultiLoadingComplete(false);
+    }
+    if (multiEmployees && approveMultiEmploymentStatus === "rejected") {
+      setTimeout(() => {
+        setApproveMultiLoadingComplete(null);
+        setMultiApprovalInProgress(false);
+        dispatch(resetMultiApprovalState());
+      }, 3000);
+      setTimeout(() => {
+        error?.errorMessage?.message?.map((err) =>
+          toast.error(err, {
+            position: "top-right",
+            theme: "dark",
+            toastId: "multiApprovalError",
+          })
+        );
+      }, 2000);
+      return;
+    }
+    if (multiEmployees && approveMultiEmploymentStatus === "success") {
+      setTimeout(() => {
+        setApproveMultiLoadingComplete(true);
+      }, 3000);
+      setTimeout(() => {
+        //Fetch all users again when successfully approved
+        dispatch(fetchAllUsers());
+        setToggleClearRows(!toggleClearRows);
+        dispatch(resetMultiApprovalState());
+        setMultiApprovalInProgress(false);
+        setApproveMultiLoadingComplete(null);
+      }, 6000);
+    }
+  }, [
+    dispatch,
+    approveMultiEmploymentStatus,
+    error,
+    multiEmployees,
+    toggleClearRows,
+  ]);
+  // Multi rejection status check
+  useEffect(() => {
+    if (multiEmployees && rejectMultiEmploymentStatus === "pending") {
+      setRejectMultiLoadingComplete(false);
+    }
+    if (multiEmployees && rejectMultiEmploymentStatus === "rejected") {
+      setTimeout(() => {
+        setRejectMultiLoadingComplete(null);
+        setMultiRejectionInProgress(false);
+        dispatch(resetMultiRejectionState());
+      }, 3000);
+      setTimeout(() => {
+        error?.errorMessage?.message?.map((err) =>
+          toast.error(err, {
+            position: "top-right",
+            theme: "dark",
+            toastId: "multiRejectionError",
+          })
+        );
+      }, 2000);
+      return;
+    }
+    if (multiEmployees && rejectMultiEmploymentStatus === "success") {
+      setTimeout(() => {
+        setRejectMultiLoadingComplete(true);
+      }, 3000);
+      setTimeout(() => {
+        //Fetch all users again when successfully rejected
+        setRejectMultiLoadingComplete(null);
+        setToggleClearRows(!toggleClearRows);
+        dispatch(fetchAllUsers());
+        dispatch(resetMultiRejectionState());
+        setMultiRejectionInProgress(false);
+      }, 6000);
+    }
+  }, [
+    dispatch,
+    rejectMultiEmploymentStatus,
+    error,
+    multiEmployees,
+    toggleClearRows,
+  ]);
 
   const allStd = `All Pending NT-Staff / Total = ${pendingLecturers?.length}`;
   return (
@@ -277,42 +397,29 @@ export function PendingNTStaffs() {
             />
           </Grid>
         </Box>
-        <Box>
-          <Grid
-            container
-            spacing={3}
-            // className="addNewAdminBtnsWrap"
-            width={"100%"}
-            m={"0 auto"}
-            className="classLevelLecturers"
-          >
-            {allClassLevels.map((cLevel) => (
-              <Grid
-                component={"span"}
-                item
-                xs={2.9}
-                sm={2}
-                key={cLevel._id}
-                onClick={() =>
-                  navigate(
-                    `/sensec/users/${
-                      authAdmin?.uniqueId
-                    }/admin/${adminCurrentAction}/${adminCurrentLink}/employees/${employees_link}/${cLevel.name.replace(
-                      / /g,
-                      "_"
-                    )}`
-                  )
-                }
-                className={
-                  cLevel?.name === class_level?.replace(/_/g, " ")
-                    ? "classLevelLecturersBtn isActive"
-                    : "classLevelLecturersBtn"
-                }
-              >
-                {cLevel.name}
-              </Grid>
-            ))}
-          </Grid>
+        <Box
+          sx={{
+            display: "flex",
+            gap: 1,
+            fontSize: "calc(0.7rem + 1vmin)",
+          }}
+        >
+          <MultiApprovalBtn
+            employees={multiEmployees}
+            approveMultiEmploymentStatus={approveMultiEmploymentStatus}
+            approveMultiLoadingComplete={approveMultiLoadingComplete}
+            // setApproveMultiLoadingComplete={setApproveMultiLoadingComplete}
+            multiRejectionInProgress={multiRejectionInProgress}
+            setMultiApprovalInProgress={setMultiApprovalInProgress}
+          />
+          <MultiRejectionBtn
+            employees={multiEmployees}
+            rejectMultiEmploymentStatus={rejectMultiEmploymentStatus}
+            rejectMultiLoadingComplete={rejectMultiLoadingComplete}
+            // setRejectMultiLoadingComplete={setRejectMultiLoadingComplete}
+            multiApprovalInProgress={multiApprovalInProgress}
+            setMultiRejectionInProgress={setMultiRejectionInProgress}
+          />
         </Box>
         <Box className="lecturerDataTable">
           <DataTable
@@ -326,6 +433,8 @@ export function PendingNTStaffs() {
             selectableRowsHighlight
             highlightOnHover
             responsive
+            onSelectedRowsChange={handleMultiSelect}
+            clearSelectedRows={toggleClearRows}
           />
         </Box>
       </Box>
