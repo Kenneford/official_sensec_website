@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import "./subject.scss";
 import {
   Box,
@@ -17,7 +17,6 @@ export function CreateSubject() {
   const [select, setSelect] = useState({
     subjectType: "",
   });
-  console.log(select);
 
   const handleSubjectTypeValue = (e) => {
     setSelect({

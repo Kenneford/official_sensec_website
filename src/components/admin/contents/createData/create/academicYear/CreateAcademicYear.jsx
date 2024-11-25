@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./createAcademicYear.scss";
+import "../create.scss";
 import { Box, Button, CircularProgress, Grid } from "@mui/material";
 // import { createAcademicYear } from "../../../features/academics/academicYear/academicYearSlice";
 import { useNavigate } from "react-router-dom";
@@ -8,20 +8,24 @@ import TaskAltIcon from "@mui/icons-material/TaskAlt";
 // import { getUser } from "../../../features/allUsers/usersSlice";
 import { toast } from "react-toastify";
 import { CustomTextField } from "../../../../../../muiStyling/muiStyling";
+import { createAcademicYear } from "../../../../../../features/academics/academicYearSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { getAuthUser } from "../../../../../../features/auth/authSlice";
+import LoadingProgress from "../../../../../pageLoading/LoadingProgress";
 
 export function CreateAcademicYear() {
-  const authAdminInfo = {};
-  // const { createStatus, successMessage, academicYearError } = useSelector(
-  //   (state) => state.academicYear
-  // );
+  const authAdmin = useSelector(getAuthUser);
+  const { createStatus, successMessage, error } = useSelector(
+    (state) => state.academicYear
+  );
 
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const [loadingComplete, setLoadingComplete] = useState(null);
   const [academicYear, setAcademicYear] = useState({
     fromYear: "",
     toYear: "",
-    createdBy: `${authAdminInfo.id}`,
+    createdBy: `${authAdmin.id}`,
   });
   console.log(academicYear);
 
@@ -40,37 +44,43 @@ export function CreateAcademicYear() {
   const handleAcademicYear = (e) => {
     e.preventDefault();
     setLoadingComplete(false);
-    const formData = new FormData();
-    formData.append("fromYear", academicYear.fromYear);
-    formData.append("toYear", academicYear.toYear);
-    formData.append("createdBy", academicYear.createdBy);
-    // dispatch(createAcademicYear(academicYear));
+    dispatch(createAcademicYear({ academicYear }));
     setTimeout(() => {
       setLoadingComplete(true);
     }, 3000);
   };
-
-  // useEffect(() => {
-  //   if (createStatus === "rejected") {
-  //     setTimeout(() => {
-  //       setLoadingComplete(null);
-  //       academicYearError?.errorMessage?.message?.map((err) =>
-  //         toast.error(err, {
-  //           position: "top-right",
-  //           theme: "light",
-  //           // toastId: successId,
-  //         })
-  //       );
-  //     }, 3000);
-  //     return;
-  //   }
-  //   if (createStatus === "success") {
-  //     setTimeout(() => {
-  //       setLoadingComplete(null);
-  //       window.location.reload();
-  //     }, 6000);
-  //   }
-  // }, [academicYearError, successMessage, createStatus, navigate]);
+  // Create academic year status check
+  useEffect(() => {
+    if (createStatus === "pending") {
+      setLoadingComplete(false);
+    }
+    if (createStatus === "rejected") {
+      setTimeout(() => {
+        setLoadingComplete(null);
+        error?.errorMessage?.message?.map((err) =>
+          toast.error(err, {
+            position: "top-right",
+            theme: "light",
+            toastId: "createAcademicYearError",
+          })
+        );
+      }, 3000);
+      return;
+    }
+    if (createStatus === "success") {
+      setTimeout(() => {
+        setLoadingComplete(true);
+      }, 3000);
+      setTimeout(() => {
+        setLoadingComplete(null);
+        setAcademicYear({
+          fromYear: "",
+          toYear: "",
+          createdBy: `${authAdmin.id}`,
+        });
+      }, 6000);
+    }
+  }, [error, successMessage, createStatus, authAdmin]);
 
   return (
     <Box
@@ -81,7 +91,7 @@ export function CreateAcademicYear() {
         display: "flex",
         flexDirection: "column",
       }}
-      className="createAcademicYearWrap"
+      className="createDataWrap"
     >
       <Box
         component={"form"}
@@ -125,17 +135,15 @@ export function CreateAcademicYear() {
           </Grid>
         </Grid>
         <Button type="submit" disabled={!canSave}>
-          Create Academic Batch
-          {/* {loadingComplete === false && (
+          {loadingComplete === false && (
             <LoadingProgress color={"#fff"} size={"1.3rem"} />
           )}
-          {loadingComplete === true && createTermStatus === "success" && (
+          {loadingComplete === true && createStatus === "success" && (
             <>
-              <span> Academic Term Created Successfully...</span>{" "}
-              <TaskAltIcon />
+              <span>Successfully</span> <TaskAltIcon />
             </>
           )}
-          {loadingComplete === null && "Create Academic Term"} */}
+          {loadingComplete === null && "Create Academic Year"}
         </Button>
       </Box>
     </Box>

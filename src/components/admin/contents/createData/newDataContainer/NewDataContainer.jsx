@@ -16,6 +16,7 @@ import {
   CreateOldStudentsGroup,
   CreateSchoolInfoData,
   CreateTimeTable,
+  CreateDivisionProgram,
 } from "../../../../lazyLoading/admin/AdminLazyLoadingComponents";
 import { useSelector } from "react-redux";
 import { getAuthUser } from "../../../../../features/auth/authSlice";
@@ -153,6 +154,16 @@ export function NewDataContainer({
             Program
           </button>
           <button
+            className={data === "program" ? "activeCreateBtn" : "createBtn"}
+            onClick={() =>
+              navigate(
+                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/division_program/new`
+              )
+            }
+          >
+            Division Program
+          </button>
+          <button
             className={
               data === "class_section" ? "activeCreateBtn" : "createBtn"
             }
@@ -226,6 +237,7 @@ export function NewDataContainer({
       {data === "class_level" && <CreateClassLevel />}
       {data === "class_section" && <CreateClassLevelSection />}
       {data === "program" && <CreateProgram />}
+      {data === "division_program" && <CreateDivisionProgram />}
       {data === "house" && <CreateHouse />}
       {data === "subject" && <CreateSubject />}
       {data === "old_students_group" && <CreateOldStudentsGroup />}

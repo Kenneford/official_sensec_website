@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./createAcademicTerm.scss";
+import "../create.scss";
 import {
   Box,
   Button,
@@ -7,7 +7,7 @@ import {
   Grid,
   InputAdornment,
 } from "@mui/material";
-// import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 // import { academicYearOptions } from "../../../options/options";
 // import { getAdminInfo } from "../../../features/admin/adminsSlice";
 // import { createAcademicYear } from "../../../features/academics/academicYear/academicYearSlice";
@@ -17,14 +17,23 @@ import TaskAltIcon from "@mui/icons-material/TaskAlt";
 // import { getUser } from "../../../features/allUsers/usersSlice";
 // import LoadingProgress from "../../pageLoading/LoadingProgress";
 import { toast } from "react-toastify";
-import { CustomTextField } from "../../../../../../muiStyling/muiStyling";
+import {
+  CustomMobileDatePicker,
+  CustomTextField,
+} from "../../../../../../muiStyling/muiStyling";
+import { createAcademicTerm } from "../../../../../../features/academics/academicTermSlice";
+import { getAuthUser } from "../../../../../../features/auth/authSlice";
+import LoadingProgress from "../../../../../pageLoading/LoadingProgress";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { parseISO } from "date-fns";
 
 export function CreateAcademicTerm() {
-  const authAdminInfo = {};
-  // const { createTermStatus, successMessage, academicTermError } = useSelector(
-  //   (state) => state.academicTerm
-  // );
-  // const dispatch = useDispatch();
+  const authAdmin = useSelector(getAuthUser);
+  const { createStatus, successMessage, error } = useSelector(
+    (state) => state.academicTerm
+  );
+  const dispatch = useDispatch();
 
   const [loadingComplete, setLoadingComplete] = useState(null);
   const [academicTerm, setAcademicTerm] = useState({
@@ -32,8 +41,9 @@ export function CreateAcademicTerm() {
     from: "",
     to: "",
     duration: "",
-    createdBy: `${authAdminInfo.id}`,
+    createdBy: `${authAdmin.id}`,
   });
+  console.log(academicTerm);
 
   const navigate = useNavigate();
 
@@ -44,43 +54,68 @@ export function CreateAcademicTerm() {
     });
   };
 
+  const handleDateChange = (field, date) => {
+    setAcademicTerm((prev) => ({
+      ...prev,
+      [field]: date, // Store the Date object directly
+    }));
+  };
+
   const canSave = Boolean(academicTerm.name);
   const handleAcademicTerm = (e) => {
     e.preventDefault();
-    setLoadingComplete(false);
-    const formData = new FormData();
-    formData.append("name", academicTerm.name);
-    formData.append("from", academicTerm.from);
-    formData.append("to", academicTerm.to);
-    formData.append("duration", academicTerm.duration);
-    formData.append("createdBy", academicTerm.createdBy);
-    // dispatch(createAcademicTerm(academicTerm));
-    setTimeout(() => {
-      setLoadingComplete(true);
-    }, 3000);
+    let startDate =
+      typeof selectedDate === "string"
+        ? parseISO(academicTerm?.from)
+        : academicTerm?.from;
+    let endDate =
+      typeof selectedDate === "string"
+        ? parseISO(academicTerm?.to)
+        : academicTerm?.to;
+    const data = {
+      name: academicTerm?.name,
+      from: startDate,
+      to: endDate,
+      duration: academicTerm?.duration,
+      createdBy: `${authAdmin.id}`,
+    };
+    dispatch(createAcademicTerm({ academicTermData: data }));
   };
 
-  // useEffect(() => {
-  //   if (createTermStatus === "rejected") {
-  //     setTimeout(() => {
-  //       setLoadingComplete(null);
-  //       academicTermError?.errorMessage?.message?.map((err) =>
-  //         toast.error(err, {
-  //           position: "top-right",
-  //           theme: "light",
-  //           // toastId: successId,
-  //         })
-  //       );
-  //     }, 3000);
-  //     return;
-  //   }
-  //   if (createTermStatus === "success") {
-  //     setTimeout(() => {
-  //       setLoadingComplete(null);
-  //       window.location.reload();
-  //     }, 6000);
-  //   }
-  // }, [academicTermError, successMessage, createTermStatus, navigate]);
+  // Create academic year status check
+  useEffect(() => {
+    if (createStatus === "pending") {
+      setLoadingComplete(false);
+    }
+    if (createStatus === "rejected") {
+      setTimeout(() => {
+        setLoadingComplete(null);
+        error?.errorMessage?.message?.map((err) =>
+          toast.error(err, {
+            position: "top-right",
+            theme: "light",
+            // toastId: successId,
+          })
+        );
+      }, 3000);
+      return;
+    }
+    if (createStatus === "success") {
+      setTimeout(() => {
+        setLoadingComplete(true);
+      }, 3000);
+      setTimeout(() => {
+        setLoadingComplete(null);
+        setAcademicTerm({
+          name: "",
+          from: "",
+          to: "",
+          duration: "",
+          createdBy: `${authAdmin.id}`,
+        });
+      }, 6000);
+    }
+  }, [error, successMessage, createStatus, authAdmin]);
 
   return (
     <Box
@@ -91,7 +126,7 @@ export function CreateAcademicTerm() {
         display: "flex",
         flexDirection: "column",
       }}
-      className="createAcademicTermWrap"
+      className="createDataWrap"
     >
       <Box
         component={"form"}
@@ -118,7 +153,7 @@ export function CreateAcademicTerm() {
             />
           </Grid>
           <Grid item xs={12} sm={6} md={6} lg={6} className="inputCont">
-            <CustomTextField
+            {/* <CustomTextField
               fullWidth
               label="From"
               name="from"
@@ -131,10 +166,25 @@ export function CreateAcademicTerm() {
                   borderColor: "none",
                 },
               }}
-            />
+            /> */}
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <CustomMobileDatePicker
+                label="From"
+                name="from"
+                // inputFormat="MM/dd/yyyy"
+                value={academicTerm.from}
+                onChange={(date) => handleDateChange("from", date)}
+                renderInput={(params) => <CustomTextField {...params} />}
+                error={false} // Make sure this is false
+                helperText="" // Optionally clear helper text
+                sx={{
+                  width: "100%",
+                }}
+              />
+            </LocalizationProvider>
           </Grid>
           <Grid item xs={12} sm={6} md={6} lg={6} className="inputCont">
-            <CustomTextField
+            {/* <CustomTextField
               fullWidth
               label="To"
               name="to"
@@ -147,7 +197,22 @@ export function CreateAcademicTerm() {
                   borderColor: "none",
                 },
               }}
-            />
+            /> */}
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <CustomMobileDatePicker
+                label="To"
+                name="to"
+                // inputFormat="MM/dd/yyyy"
+                value={academicTerm.to}
+                onChange={(date) => handleDateChange("to", date)}
+                renderInput={(params) => <CustomTextField {...params} />}
+                error={false} // Make sure this is false
+                helperText="" // Optionally clear helper text
+                sx={{
+                  width: "100%",
+                }}
+              />
+            </LocalizationProvider>
           </Grid>
           <Grid item xs={12} sm={6} md={6} lg={6} className="inputCont">
             <CustomTextField
@@ -175,17 +240,15 @@ export function CreateAcademicTerm() {
           </Grid>
         </Grid>
         <Button type="submit" disabled={!canSave}>
-          Create Academic Term
-          {/* {loadingComplete === false && (
+          {loadingComplete === false && (
             <LoadingProgress color={"#fff"} size={"1.3rem"} />
           )}
-          {loadingComplete === true && createTermStatus === "success" && (
+          {loadingComplete === true && createStatus === "success" && (
             <>
-              <span> Academic Term Created Successfully...</span>{" "}
-              <TaskAltIcon />
+              <span>Successfully</span> <TaskAltIcon />
             </>
           )}
-          {loadingComplete === null && "Create Academic Term"} */}
+          {loadingComplete === null && "Create Academic Term"}
         </Button>
       </Box>
     </Box>

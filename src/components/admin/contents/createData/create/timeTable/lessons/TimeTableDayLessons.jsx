@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import "./timeTableLessons.scss";
+import "../../create.scss";
 import { Box, Button, CircularProgress, Grid, MenuItem } from "@mui/material";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -207,7 +207,7 @@ export function TimeTableDayLessons() {
         display: "flex",
         flexDirection: "column",
       }}
-      className="createTimeTableLessonsWrap"
+      className="createDataWrap"
     >
       <Box component={"form"} onSubmit={handleTimeTable} minHeight={220} p={2}>
         <h1>Time Table Day & Lessons</h1>

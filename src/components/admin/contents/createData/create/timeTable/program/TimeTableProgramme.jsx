@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import "./timeTableProgramme.scss";
+import "../../create.scss";
 import { Box, Button, CircularProgress, Grid, MenuItem } from "@mui/material";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -148,7 +148,7 @@ export function TimeTableProgramme() {
         display: "flex",
         flexDirection: "column",
       }}
-      className="createTimeTableProgrammeWrap"
+      className="createDataWrap"
     >
       <Box component={"form"} onSubmit={handleTimeTable} minHeight={220} p={2}>
         <h1>Time Table Programme</h1>
