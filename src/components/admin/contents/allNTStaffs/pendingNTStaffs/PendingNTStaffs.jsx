@@ -17,6 +17,8 @@ import { FetchAllPendingNTStaffs } from "../../../../../data/nt.staffs/FetchNT-S
 import SearchFilter from "../../../../searchForm/SearchFilter";
 import { FetchAllClassLevels } from "../../../../../data/class/FetchClassLevel";
 import {
+  approveMultiEmployees,
+  rejectMultiEmployees,
   resetMultiApprovalState,
   resetMultiRejectionState,
 } from "../../../../../features/employments/employmentSlice";
@@ -405,20 +407,24 @@ export function PendingNTStaffs() {
           }}
         >
           <MultiApprovalBtn
-            employees={multiEmployees}
-            approveMultiEmploymentStatus={approveMultiEmploymentStatus}
-            approveMultiLoadingComplete={approveMultiLoadingComplete}
-            // setApproveMultiLoadingComplete={setApproveMultiLoadingComplete}
-            multiRejectionInProgress={multiRejectionInProgress}
-            setMultiApprovalInProgress={setMultiApprovalInProgress}
+            approveMultiUsersDataStatus={approveMultiEmploymentStatus}
+            approveMultiUsersDataLoadingComplete={approveMultiLoadingComplete}
+            multiUsersDataRejectionInProgress={multiRejectionInProgress}
+            setMultiUsersDataApprovalInProgress={setMultiApprovalInProgress}
+            multiUsersDataApprovalFunction={approveMultiEmployees({
+              employees: multiEmployees,
+              employmentApprovedBy: `${authAdmin?.id}`,
+            })}
           />
           <MultiRejectionBtn
-            employees={multiEmployees}
-            rejectMultiEmploymentStatus={rejectMultiEmploymentStatus}
-            rejectMultiLoadingComplete={rejectMultiLoadingComplete}
-            // setRejectMultiLoadingComplete={setRejectMultiLoadingComplete}
-            multiApprovalInProgress={multiApprovalInProgress}
-            setMultiRejectionInProgress={setMultiRejectionInProgress}
+            rejectMultiUsersDataStatus={rejectMultiEmploymentStatus}
+            rejectMultiUsersDataLoadingComplete={rejectMultiLoadingComplete}
+            multiUsersDataApprovalInProgress={multiApprovalInProgress}
+            setMultiUsersDataRejectionInProgress={setMultiRejectionInProgress}
+            multiUsersDataApprovalFunction={rejectMultiEmployees({
+              employees: multiEmployees,
+              employmentRejectedBy: `${authAdmin?.id}`,
+            })}
           />
         </Box>
         <Box className="lecturerDataTable">

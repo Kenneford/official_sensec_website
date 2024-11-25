@@ -1,24 +1,25 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { SENSEC_API_ENDPOINT } from "../../apiEndPoint/api";
 import tokenInterceptor from "../../apiEndPoint/interceptors";
+import { SENSEC_API_ENDPOINT } from "../../apiEndPoint/api";
 
 const initialState = {
-  batchInfo: "",
-  allBatches: [],
+  houseInfo: "",
+  allHouses: [],
   successMessage: "",
   error: "",
   createStatus: "",
-  fetchStatus: "",
+  fetchingStatus: "",
 };
 
-export const createBatch = createAsyncThunk(
-  "Academics/createBatch",
+export const createHouse = createAsyncThunk(
+  "House/createHouse",
   async ({ data }, { rejectWithValue }) => {
     try {
-      const res = await tokenInterceptor.post(`/academics/batches/create`, {
+      const res = await tokenInterceptor.post(`/academics/houses/create`, {
         data,
       });
+      console.log(res.data);
       return res.data;
     } catch (error) {
       console.log(error.response.data);
@@ -27,36 +28,37 @@ export const createBatch = createAsyncThunk(
   }
 );
 
-export const fetchAllBatches = createAsyncThunk(
-  "Batch/fetchAllBatches",
+export const fetchAllHouses = createAsyncThunk(
+  "House/fetchAllHouses",
   async () => {
     const response = await axios.get(
-      `${SENSEC_API_ENDPOINT}/academics/batches/fetch_all`
+      `${SENSEC_API_ENDPOINT}/academics/houses/fetch_all`
     );
     // const students = response.data;
+    console.log(response.data);
     return response.data;
   }
 );
 
-const batchSlice = createSlice({
-  name: "Batch",
+const houseSlice = createSlice({
+  name: "House",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(createBatch.pending, (state) => {
+    builder.addCase(createHouse.pending, (state) => {
       return { ...state, createStatus: "pending" };
     });
-    builder.addCase(createBatch.fulfilled, (state, action) => {
+    builder.addCase(createHouse.fulfilled, (state, action) => {
       if (action.payload) {
         return {
           ...state,
-          batchInfo: action.payload.batch,
+          houseInfo: action.payload.house,
           successMessage: action.payload.successMessage,
           createStatus: "success",
         };
       } else return state;
     });
-    builder.addCase(createBatch.rejected, (state, action) => {
+    builder.addCase(createHouse.rejected, (state, action) => {
       return {
         ...state,
         createStatus: "rejected",
@@ -64,29 +66,29 @@ const batchSlice = createSlice({
       };
     });
 
-    builder.addCase(fetchAllBatches.pending, (state) => {
-      return { ...state, fetchStatus: "pending" };
+    builder.addCase(fetchAllHouses.pending, (state) => {
+      return { ...state, fetchingStatus: "pending" };
     });
-    builder.addCase(fetchAllBatches.fulfilled, (state, action) => {
+    builder.addCase(fetchAllHouses.fulfilled, (state, action) => {
       if (action.payload) {
         return {
           ...state,
-          allBatches: action.payload.batchesFound,
+          allHouses: action.payload.housesFound,
           successMessage: action.payload.successMessage,
-          fetchStatus: "success",
+          fetchingStatus: "success",
         };
       } else return state;
     });
-    builder.addCase(fetchAllBatches.rejected, (state, action) => {
+    builder.addCase(fetchAllHouses.rejected, (state, action) => {
       return {
         ...state,
-        fetchStatus: "rejected",
+        fetchingStatus: "rejected",
         error: action.payload,
       };
     });
   },
 });
 
-export const getAllBatches = (state) => state.batch.allBatches;
+export const getAllHouses = (state) => state.house.allHouses;
 
-export default batchSlice.reducer;
+export default houseSlice.reducer;

@@ -21,11 +21,11 @@ import LoadingProgress from "../../../../pageLoading/LoadingProgress";
 import { TaskAlt } from "@mui/icons-material";
 
 export default function UploadPlacementExcelData() {
-  const authUser = useSelector(getAuthUser);
+  const authAdmin = useSelector(getAuthUser);
   const { uploadExcelFileStatus, error, successMessage } = useSelector(
     (state) => state.placement
   );
-  console.log(authUser);
+  console.log(authAdmin);
 
   const [file, setFile] = useState(null);
   const [fileUploadErrorMsg, setFileUploadErrorMsg] = useState("");
@@ -35,7 +35,7 @@ export default function UploadPlacementExcelData() {
   const [data, setData] = useState({
     placementYear: "",
     students: [],
-    uploadedBy: authUser?.id,
+    uploadedBy: authAdmin?.id,
   });
 
   const handleFileUpload = (e) => {
@@ -44,6 +44,14 @@ export default function UploadPlacementExcelData() {
       setFile(file);
       processExcelFile(file, data, setData);
     }
+  };
+  // Handle input value change
+  const handleInputValue = (event) => {
+    const { name, value } = event.target;
+    setData({
+      ...data,
+      [name]: value,
+    });
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -75,11 +83,17 @@ export default function UploadPlacementExcelData() {
         dispatch(fetchAllPlacementStudents());
       }, 3000);
       setTimeout(() => {
+        setData({
+          placementYear: "",
+          students: [],
+          uploadedBy: authAdmin?.id,
+        });
+        setFile(null);
         setLoadingComplete(null);
         dispatch(resetPlacementUploadState());
       }, 6000);
     }
-  }, [error, uploadExcelFileStatus, successMessage, dispatch]);
+  }, [error, uploadExcelFileStatus, successMessage, dispatch, authAdmin]);
 
   return (
     <Box className="placementExcelFileUploadWrap">
@@ -176,9 +190,8 @@ export default function UploadPlacementExcelData() {
               type="text"
               name="placementYear"
               placeholder="Placement Year"
-              onChange={(e) =>
-                setData({ ...data, placementYear: e.target.value })
-              }
+              value={data?.placementYear}
+              onChange={handleInputValue}
               style={{
                 width: "100%",
                 textTransform: "capitalize",

@@ -1,13 +1,16 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { SENSEC_API_ENDPOINT } from "../../apiEndPoint/api";
+import tokenInterceptor from "../../apiEndPoint/interceptors";
 
 const initialState = {
   classSectionInfo: "",
+  assignedLecturer: "",
   allClassSections: [],
   createStatus: "",
   updateStatus: "",
   fetchStatus: "",
+  assignLecturerStatus: "",
   removeLecturerStatus: "",
   successMessage: "",
   error: "",
@@ -15,27 +18,12 @@ const initialState = {
 
 export const createClassLevelSection = createAsyncThunk(
   "ClassLevelSection/createClassLevelSection",
-  async (
-    {
-      sectionName,
-      classLevelId,
-      classLevelName,
-      program,
-      currentTeacher,
-      createdBy,
-    },
-    { rejectWithValue }
-  ) => {
+  async ({ data }, { rejectWithValue }) => {
     try {
-      const res = await axios.post(
-        `${SENSEC_API_ENDPOINT}/admin/academics/class_section/create`,
+      const res = await tokenInterceptor.post(
+        `/academics/class_section/create`,
         {
-          sectionName,
-          classLevelId,
-          classLevelName,
-          program,
-          currentTeacher,
-          createdBy,
+          data,
         }
       );
       return res.data;
@@ -103,12 +91,27 @@ export const updateClassLevelSection = createAsyncThunk(
   }
 );
 
+export const assignClassSectionLecturer = createAsyncThunk(
+  "ClassLevelSection/assignClassSectionLecturer",
+  async ({ data }, { rejectWithValue }) => {
+    try {
+      const res = await tokenInterceptor.put(
+        `/academics/class_section/lecturer/assign`,
+        { data }
+      );
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 export const removeClassSectionLecturer = createAsyncThunk(
   "ClassLevelSection/removeClassSectionLecturer",
-  async ({ lecturerId, adminId }, { rejectWithValue }) => {
+  async ({ data }, { rejectWithValue }) => {
     try {
-      const res = await axios.put(
-        `${SENSEC_API_ENDPOINT}/admin/${adminId}/academics/class_section/lecturer/${lecturerId}/remove`
+      const res = await tokenInterceptor.put(
+        `/academics/class_section/lecturer/remove`,
+        { data }
       );
       return res.data;
     } catch (error) {
@@ -120,35 +123,46 @@ export const removeClassSectionLecturer = createAsyncThunk(
 const classSectionsSlice = createSlice({
   name: "ClassSection",
   initialState,
-  reducers: {},
+  reducers: {
+    resetAssignLecturer(state) {
+      return {
+        ...state,
+        assignLecturerStatus: "",
+        successMessage: "",
+      };
+    },
+    resetRemoveLecturer(state) {
+      return {
+        ...state,
+        removeLecturerStatus: "",
+        successMessage: "",
+      };
+    },
+  },
   extraReducers: (builder) => {
-    builder.addCase(createClassLevelSection.pending, (state, action) => {
-      return { ...state, createClassSectionStatus: "pending" };
+    builder.addCase(createClassLevelSection.pending, (state) => {
+      return { ...state, createStatus: "pending" };
     });
     builder.addCase(createClassLevelSection.fulfilled, (state, action) => {
       if (action.payload) {
         return {
           ...state,
-          classLevelSectionInfo: action.payload.classLevelSection,
-          allClassLevelSections: [
-            state.allClassLevelSections,
-            action.payload.classLevelSection,
-          ],
-          createClassSectionSuccessMessage: action.payload.successMessage,
-          createClassSectionStatus: "success",
-          createClassSectionError: "",
+          classSectionInfo: action?.payload?.classLevelSection,
+          successMessage: action.payload.successMessage,
+          createStatus: "success",
+          error: "",
         };
       } else return state;
     });
     builder.addCase(createClassLevelSection.rejected, (state, action) => {
       return {
         ...state,
-        createClassSectionStatus: "rejected",
-        createClassSectionError: action.payload,
+        createStatus: "rejected",
+        error: action.payload,
       };
     });
 
-    builder.addCase(updateClassLevelSection.pending, (state, action) => {
+    builder.addCase(updateClassLevelSection.pending, (state) => {
       return { ...state, updateClassSectionStatus: "pending" };
     });
     builder.addCase(updateClassLevelSection.fulfilled, (state, action) => {
@@ -168,30 +182,50 @@ const classSectionsSlice = createSlice({
         updateClassSectionError: action.payload,
       };
     });
-
-    builder.addCase(removeClassSectionLecturer.pending, (state, action) => {
-      return { ...state, removeClassSectionLecturerStatus: "pending" };
+    // Assign Lecturer
+    builder.addCase(assignClassSectionLecturer.pending, (state) => {
+      return { ...state, assignLecturerStatus: "pending" };
+    });
+    builder.addCase(assignClassSectionLecturer.fulfilled, (state, action) => {
+      if (action.payload) {
+        return {
+          ...state,
+          classSectionInfo: action.payload.updatedClassSection,
+          successMessage: action.payload.successMessage,
+          assignLecturerStatus: "success",
+        };
+      } else return state;
+    });
+    builder.addCase(assignClassSectionLecturer.rejected, (state, action) => {
+      return {
+        ...state,
+        assignLecturerStatus: "rejected",
+        error: action.payload,
+      };
+    });
+    // Remove Lecturer
+    builder.addCase(removeClassSectionLecturer.pending, (state) => {
+      return { ...state, removeLecturerStatus: "pending" };
     });
     builder.addCase(removeClassSectionLecturer.fulfilled, (state, action) => {
       if (action.payload) {
         return {
           ...state,
-          removedLecturer: action.payload.removedLecturer,
-          removeClassSectionLecturerSuccessMessage:
-            action.payload.successMessage,
-          removeClassSectionLecturerStatus: "success",
+          classSectionInfo: action.payload.updatedClassSection,
+          successMessage: action.payload.successMessage,
+          removeLecturerStatus: "success",
         };
       } else return state;
     });
     builder.addCase(removeClassSectionLecturer.rejected, (state, action) => {
       return {
         ...state,
-        removeClassSectionLecturerStatus: "rejected",
-        removeClassSectionLecturerError: action.payload,
+        removeLecturerStatus: "rejected",
+        error: action.payload,
       };
     });
 
-    builder.addCase(fetchAllClassSections.pending, (state, action) => {
+    builder.addCase(fetchAllClassSections.pending, (state) => {
       return { ...state, fetchStatus: "pending" };
     });
     builder.addCase(fetchAllClassSections.fulfilled, (state, action) => {
@@ -212,7 +246,7 @@ const classSectionsSlice = createSlice({
       };
     });
 
-    builder.addCase(fetchSingleClassLevelSection.pending, (state, action) => {
+    builder.addCase(fetchSingleClassLevelSection.pending, (state) => {
       return { ...state, fetchSingleClassSectionStatus: "pending" };
     });
     builder.addCase(fetchSingleClassLevelSection.fulfilled, (state, action) => {
@@ -234,7 +268,8 @@ const classSectionsSlice = createSlice({
     });
   },
 });
-
+export const { resetAssignLecturer, resetRemoveLecturer } =
+  classSectionsSlice.actions;
 export const getAllClassSections = (state) =>
   state.classSection.allClassSections;
 export const getSingleClassSection = (state) =>

@@ -8,6 +8,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAuthUser, userLogout } from "../../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import {
+  FetchAllAcademicTerms,
+  FetchCurrentAcademicTerms,
+} from "../../data/term.year/FetchAcademicTerms";
+import { FetchCurrentAcademicYear } from "../../data/term.year/FetchAcademicYears";
 // import { AdminSidebar } from "../lazyLoading/admin/AdminLazyLoadingComponents";
 // import AdminSidebar from "./admin/AdminSidebar";
 
@@ -17,14 +22,17 @@ export function SideBar({
   toggleSidebar,
   setCurrentAction,
   setCurrentLink,
+  hovered,
+  setHovered,
+  drawerWidthCollapsed,
+  drawerWidthExpanded,
 }) {
   const authUser = useSelector(getAuthUser);
+  const currentTerm = FetchCurrentAcademicTerms();
+  const currentAcademicYear = FetchCurrentAcademicYear();
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [hovered, setHovered] = useState(false);
-
-  const drawerWidthCollapsed = 160; // Collapsed width
-  const drawerWidthExpanded = 300; // Expanded width
 
   // State to check if navbar is scrolling
   const [navbar, setNavbar] = useState(false);
@@ -56,29 +64,37 @@ export function SideBar({
   return (
     <Drawer
       variant="permanent"
+      anchor="left"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      component="div"
       className="sidebar"
+      // open={hovered}
+      // sx={{
+      //   width: hovered ? drawerWidthExpanded : drawerWidthCollapsed,
+      //   transition: "width 0.5s ease",
+      //   flexShrink: 1,
+      //   backgroundColor: "#292929",
+      //   padding: "3rem 0 5rem",
+      //   position: "relative",
+      //   "& .MuiDrawer-paper": {
+      //     width: hovered ? drawerWidthExpanded : drawerWidthCollapsed,
+      //     overflowX: "hidden",
+      //     boxSizing: "border-box",
+      //     transition: "width 0.5s ease", // Smooth transition when toggling
+      //     backgroundColor: "#292929",
+      //   },
+      // }}
       sx={{
-        width: hovered ? drawerWidthExpanded : drawerWidthCollapsed,
-        transition: "width 0.5s ease",
-        flexShrink: 0,
-        backgroundColor: "#292929",
-        padding: "3rem 0 5rem",
-        position: "relative",
         "& .MuiDrawer-paper": {
-          width: hovered ? drawerWidthExpanded : drawerWidthCollapsed,
-          overflowX: "hidden",
-          boxSizing: "border-box",
-          transition: "width 0.5s ease", // Smooth transition when toggling
-          backgroundColor: "#292929",
+          position: "fixed", // Fix the drawer to the viewport
+          top: 0,
+          left: 0,
+          height: "100vh",
+          width: hovered ? drawerWidthExpanded : drawerWidthCollapsed, // Expand on hover
+          transition: "width 0.3s", // Smooth width transition
+          overflowX: "hidden", // Prevent content from spilling
+          backgroundColor: "#292929", // Optional background color
         },
-        // Apply only when the device is in landscape and has a max-height (smaller screens)
-        // "@media screen and (max-width: 1024px) and (orientation: landscape)": {
-        //   backgroundColor: "lightgreen",
-        //   display: "none",
-        // },
       }}
     >
       {authUser?.roles?.includes("admin") && (
@@ -89,6 +105,8 @@ export function SideBar({
           setCurrentLink={setCurrentLink}
           navbar={navbar}
           hovered={hovered}
+          currentTerm={currentTerm}
+          currentAcademicYear={currentAcademicYear}
         />
       )}
       {authUser?.roles?.includes("student") && (
@@ -98,6 +116,7 @@ export function SideBar({
           setCurrentAction={setCurrentAction}
           setCurrentLink={setCurrentLink}
           navbar={navbar}
+          currentTerm={currentTerm}
         />
       )}
       <Box
@@ -197,4 +216,8 @@ SideBar.propTypes = {
   toggleSidebar: PropTypes.func,
   setCurrentAction: PropTypes.func,
   setCurrentLink: PropTypes.func,
+  hovered: PropTypes.bool,
+  setHovered: PropTypes.func,
+  drawerWidthCollapsed: PropTypes.number,
+  drawerWidthExpanded: PropTypes.number,
 };

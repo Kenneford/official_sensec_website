@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-// import "./studentEnrollment.scss";
+import "./assignLecturer.scss";
 import { ContainerBox, CustomTextField } from "../../muiStyling/muiStyling";
 import {
   MenuItem,
@@ -34,6 +34,7 @@ import { getAuthUser } from "../../features/auth/authSlice";
 import { newEmployee } from "../../features/employments/employmentSlice";
 import { FetchAllAdmins } from "../../data/admins/FetchAdmins";
 import { FetchAllEmployees } from "../../data/allUsers/FetchAllUsers";
+import { FetchAllClassSections } from "../../data/class/FetchClassSections";
 
 export function EmployeeDataUpdateForm() {
   const dispatch = useDispatch();
@@ -42,6 +43,7 @@ export function EmployeeDataUpdateForm() {
   const { studentIndexNo, adminCurrentAction, adminCurrentLink } = useParams();
   const allProgrammes = FetchAllProgrammes();
   const allEmployees = FetchAllEmployees();
+  const allClassSections = FetchAllClassSections();
   const allBatches = FetchAllBatches();
   const allDivisionProgrammes = useSelector(getAllDivisionProgrammes);
   const allPlacementStudents = useSelector(getAllPlacementStudents);
@@ -83,35 +85,42 @@ export function EmployeeDataUpdateForm() {
   // Get selected admin ID
   const employeeId = adminCurrentLink;
   const foundAdmin = allEmployees?.find((adm) => adm?.uniqueId === employeeId);
+  // Convert the birth date string to a JavaScript Date object
+  const dateObject = foundAdmin?.personalInfo?.dateOfBirth
+    ? new Date(foundAdmin?.personalInfo?.dateOfBirth).toISOString()
+    : "";
+  // Format the date to yyyy-MM-dd format
+  const formattedDate = dateObject?.split("T")[0];
 
   const [newEmployment, setNewEmployment] = useState({
-    uniqueId: "",
-    firstName: "",
-    lastName: "",
-    otherName: "",
-    dateOfBirth: "",
-    placeOfBirth: "",
-    nationality: "",
-    gender: "",
-    profilePicture: "",
+    uniqueId: foundAdmin?.uniqueId,
+    firstName: foundAdmin?.personalInfo?.firstName,
+    lastName: foundAdmin?.personalInfo?.lastName,
+    otherName: foundAdmin?.personalInfo?.otherName,
+    dateOfBirth: formattedDate,
+    placeOfBirth: foundAdmin?.personalInfo?.placeOfBirth,
+    nationality: foundAdmin?.personalInfo?.nationality,
+    gender: foundAdmin?.personalInfo?.gender,
+    profilePicture: foundAdmin?.personalInfo?.profilePicture?.url,
     // School Data
-    typeOfEmployment: "",
+    typeOfEmployment: foundAdmin?.employment?.employmentType,
+    classSection: foundAdmin?.lecturerSchoolData?.classLevelHandling?._id,
     // Status
-    height: "",
-    weight: "",
-    complexion: "",
-    motherTongue: "",
-    otherTongue: "",
-    residentialStatus: "",
+    height: foundAdmin?.status?.height,
+    weight: foundAdmin?.status?.weight,
+    complexion: foundAdmin?.status?.complexion,
+    motherTongue: foundAdmin?.status?.motherTongue,
+    otherTongue: foundAdmin?.status?.otherTongue,
+    residentialStatus: foundAdmin?.status?.residentialStatus,
     // Contact Address
-    homeTown: "",
-    district: "",
-    region: "",
-    currentCity: "",
-    residentialAddress: "",
-    gpsAddress: "",
-    mobile: "",
-    email: "",
+    homeTown: foundAdmin?.contactAddress?.homeTown,
+    district: foundAdmin?.contactAddress?.district,
+    region: foundAdmin?.contactAddress?.region,
+    currentCity: foundAdmin?.contactAddress?.currentCity,
+    residentialAddress: foundAdmin?.contactAddress?.residentialAddress,
+    gpsAddress: foundAdmin?.contactAddress?.gpsAddress,
+    mobile: foundAdmin?.contactAddress?.mobile,
+    email: foundAdmin?.contactAddress?.email,
   });
 
   const [imagePreview, setImagePreview] = useState(null);
@@ -184,12 +193,6 @@ export function EmployeeDataUpdateForm() {
     setUserID(newId);
   }, [newEmployment]); // Dependencies
 
-  // Convert the birth date string to a JavaScript Date object
-  const dateObject = foundAdmin?.personalInfo?.dateOfBirth
-    ? new Date(foundAdmin?.personalInfo?.dateOfBirth).toISOString()
-    : "";
-  // Format the date to yyyy-MM-dd format
-  const formattedDate = dateObject?.split("T")[0];
   // Persist admin update state
   useEffect(() => {
     setNewEmployment({
@@ -204,6 +207,7 @@ export function EmployeeDataUpdateForm() {
       profilePicture: foundAdmin?.personalInfo?.profilePicture?.url,
       // School Data
       typeOfEmployment: foundAdmin?.employment?.employmentType,
+      classSection: foundAdmin?.lecturerSchoolData?.classLevelHandling?._id,
       // Status
       height: foundAdmin?.status?.height,
       weight: foundAdmin?.status?.weight,
@@ -708,6 +712,23 @@ export function EmployeeDataUpdateForm() {
                   <MenuItem value="Non-Teaching Staff">
                     Non-Teaching Staff
                   </MenuItem>
+                </CustomTextField>
+              </Grid>
+              {/* Class Level Selection */}
+              <Grid item xs={12} sm={6} md={4} lg={4}>
+                <CustomTextField
+                  select
+                  fullWidth
+                  label="Assign Class"
+                  name="classSection"
+                  value={newEmployment?.classSection || ""}
+                  onChange={handleChange}
+                >
+                  {allClassSections?.map((cLevel) => (
+                    <MenuItem key={cLevel?._id} value={cLevel?._id}>
+                      {cLevel?.label} - {cLevel?.sectionName}
+                    </MenuItem>
+                  ))}
                 </CustomTextField>
               </Grid>
               {/* Residential Status Selection */}

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 // import "./adminsmodal.scss";
 import CloseIcon from "@mui/icons-material/Close";
 import { Box, CircularProgress } from "@mui/material";
@@ -7,15 +7,15 @@ import Redirection from "../pageLoading/Redirection";
 import PropTypes from "prop-types";
 import { useDispatch } from "react-redux";
 
-export default function ApproveEmploymentModal({
+export default function EnrollmentRejectionModal({
   open,
   onClose,
-  approveEmploymentFunction,
+  //   rejectionFunction,
   setLoadingComplete,
-  setCurrentUser,
-  currentUserId,
-  employeeToApprove,
-  employeeToReject,
+  setUserToReject,
+  currentStudentId,
+  studentToApprove,
+  studentToReject,
 }) {
   const dispatch = useDispatch();
   if (!open) return null;
@@ -29,15 +29,16 @@ export default function ApproveEmploymentModal({
           }}
         >
           <Box className="previewCont">
-            <p>Approve Employment</p>
+            <p>Reject Enrollment</p>
             <Box className="modalActionBtns">
               <button
                 className="employLectBtn"
-                onClick={() => {
-                  setCurrentUser(currentUserId);
-                  if (employeeToApprove && !employeeToReject) {
-                    dispatch(approveEmploymentFunction);
-                    // setLoadingComplete(false);
+                onClick={(e) => {
+                  e.preventDefault();
+                  setUserToReject(currentStudentId);
+                  if (studentToReject && !studentToApprove) {
+                    // dispatch(rejectionFunction);
+                    setLoadingComplete(false);
                   }
                   onClose();
                 }}
@@ -46,7 +47,8 @@ export default function ApproveEmploymentModal({
               </button>
               <button
                 className="employLectBtn"
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault();
                   setLoadingComplete(null);
                   onClose();
                 }}
@@ -61,14 +63,14 @@ export default function ApproveEmploymentModal({
   );
 }
 
-ApproveEmploymentModal.propTypes = {
+EnrollmentRejectionModal.propTypes = {
   open: PropTypes.bool,
   onClose: PropTypes.func,
-  approveEmploymentFunction: PropTypes.func,
+  rejectionFunction: PropTypes.func,
   setLoadingComplete: PropTypes.func,
   dispatch: PropTypes.func,
-  setCurrentUser: PropTypes.func,
-  currentUserId: PropTypes.string,
-  employeeToApprove: PropTypes.object,
-  employeeToReject: PropTypes.object,
+  setUserToReject: PropTypes.func,
+  currentStudentId: PropTypes.string,
+  studentToApprove: PropTypes.object,
+  studentToReject: PropTypes.object,
 };

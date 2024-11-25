@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { SENSEC_API_ENDPOINT } from "../../apiEndPoint/api";
+import tokenInterceptor from "../../apiEndPoint/interceptors";
 
 const initialState = {
   classLevelInfo: "",
@@ -15,12 +16,11 @@ const initialState = {
 
 export const createClassLevel = createAsyncThunk(
   "ClassLevel/createClassLevel",
-  async (data, { rejectWithValue }) => {
+  async ({ classLevelData }, { rejectWithValue }) => {
     try {
-      const res = await axios.post(
-        `${SENSEC_API_ENDPOINT}/admin/academics/class_level/create`,
-        data
-      );
+      const res = await tokenInterceptor.post(`/academics/class_level/create`, {
+        classLevelData,
+      });
       return res.data;
     } catch (error) {
       console.log(error.response.data);
@@ -88,7 +88,7 @@ const classLevelsSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(createClassLevel.pending, (state, action) => {
-      return { ...state, createLevelStatus: "pending" };
+      return { ...state, createStatus: "pending" };
     });
     builder.addCase(createClassLevel.fulfilled, (state, action) => {
       if (action.payload) {
@@ -97,7 +97,7 @@ const classLevelsSlice = createSlice({
           classLevelInfo: action.payload.classLevel,
           allClassLevels: [...state.allClassLevels, action.payload.classLevel],
           successMessage: action.payload.successMessage,
-          createLevelStatus: "success",
+          createStatus: "success",
           error: "",
           authenticated: false,
         };
@@ -106,7 +106,7 @@ const classLevelsSlice = createSlice({
     builder.addCase(createClassLevel.rejected, (state, action) => {
       return {
         ...state,
-        createLevelStatus: "rejected",
+        createStatus: "rejected",
         error: action.payload,
       };
     });

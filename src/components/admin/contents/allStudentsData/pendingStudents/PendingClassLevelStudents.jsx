@@ -1,48 +1,35 @@
 import "../allStudentsData.scss";
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { Link } from "react-router-dom";
-import { HashLink } from "react-router-hash-link";
 import { customUserTableStyle } from "../../../../../usersInfoDataFormat/usersInfoTableStyle";
 import { Box, Grid } from "@mui/material";
 import { AllStudentsPageQuickLinks } from "../../../../../linksFormat/LinksFormat";
-import { getAuthUser } from "../../../../../features/auth/authSlice";
+import {
+  fetchAllUsers,
+  getAuthUser,
+} from "../../../../../features/auth/authSlice";
 import { FetchAllClassLevels } from "../../../../../data/class/FetchClassLevel";
 import { FetchPendingClassLevelStudents } from "../../../../../data/students/FetchAllStudents";
 import { pendingStudentsColumn } from "../../../../../usersInfoDataFormat/UsersInfoDataFormat";
 import NewEnrollmentModal from "../../../../modals/NewEnrollmentModal";
+import SearchFilter from "../../../../searchForm/SearchFilter";
+import {
+  MultiApprovalBtn,
+  MultiRejectionBtn,
+} from "../../../../lazyLoading/LazyComponents";
+import {
+  approvedMultiStudentEnrollment,
+  rejectMultiStudentEnrollment,
+  resetMultiApprovalState,
+  resetMultiRejectionState,
+} from "../../../../../features/students/studentsSlice";
 
 export function PendingClassLevelStudents() {
   const authAdmin = useSelector(getAuthUser);
   const actionBtns = AllStudentsPageQuickLinks();
-  // console.log(userInfo);
-  // const {
-  //   fetchingStudentStatus,
-  //   searchStatus,
-  //   searchStudentStatus,
-  //   studentError,
-  //   studentSuccessMessage,
-  // } = useSelector((state) => state.student);
-  // const {
-  //   level100PromotionStatus,
-  //   level200PromotionStatus,
-  //   level300PromotionStatus,
-  //   level100Error,
-  //   level200Error,
-  //   level300Error,
-  //   level100SuccessMessage,
-  //   level200SuccessMessage,
-  //   level300SuccessMessage,
-  //   level100MultiPromotionStatus,
-  //   level100MultiSuccessMessage,
-  // } = useSelector((state) => state.promotion);
-  // const { fetchingSingleStatus, error, successMessage } = useSelector(
-  //   (state) => state.classLevel
-  // );
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const {
@@ -55,8 +42,9 @@ export function PendingClassLevelStudents() {
     enrollmentApprovalStatus,
     successMessage,
     error,
-    // approveMultiEnrollmentStatus,
+    approveMultiEnrollmentStatus,
     rejectEnrollmentStatus,
+    rejectMultiEnrollmentStatus,
   } = useSelector((state) => state.student);
   const [loadingComplete, setLoadingComplete] = useState(null);
   const [openApproveEnrollmentModal, setOpenApproveEnrollmentModal] =
@@ -70,7 +58,15 @@ export function PendingClassLevelStudents() {
   const [classLevel, setClassLevel] = useState(false);
   const [uncompletedEmploymentTask, setUncompletedEmploymentTask] =
     useState("");
-  const userInfo = {};
+  const [rejectLoadingComplete, setRejectLoadingComplete] = useState(null);
+  const [approveMultiLoadingComplete, setApproveMultiLoadingComplete] =
+    useState(null);
+  const [multiApprovalInProgress, setMultiApprovalInProgress] = useState(false);
+  const [multiRejectionInProgress, setMultiRejectionInProgress] =
+    useState(false);
+  const [rejectMultiLoadingComplete, setRejectMultiLoadingComplete] =
+    useState(null);
+
   const allClassLevels = FetchAllClassLevels();
   const pendingClassLevelStudents = FetchPendingClassLevelStudents(
     classLevel?._id
@@ -82,9 +78,6 @@ export function PendingClassLevelStudents() {
   console.log(singleClassLevel);
   console.log(allClassLevelSections);
 
-  const [level100loadingComplete, setLevel100LoadingComplete] = useState(null);
-  const [level200loadingComplete, setLevel200LoadingComplete] = useState(null);
-  const [level300loadingComplete, setLevel300LoadingComplete] = useState(null);
   const [searchStudent, setSearchStudent] = useState("");
 
   const filteredStudents = pendingClassLevelStudents?.filter(
@@ -100,7 +93,6 @@ export function PendingClassLevelStudents() {
   const studentToReject = pendingClassLevelStudents?.find(
     (std) => std._id === rejectStudent
   );
-  console.log(filteredStudents);
 
   const handleNewEnrollment = () => {
     setRedirecting(true);
@@ -116,6 +108,8 @@ export function PendingClassLevelStudents() {
     setCurrentStudent,
     loadingComplete,
     setLoadingComplete,
+    rejectLoadingComplete,
+    setRejectLoadingComplete,
     toast,
     dispatch,
     foundStudent,
@@ -131,134 +125,24 @@ export function PendingClassLevelStudents() {
     adminCurrentLink
   );
 
-  //Student Promotion Level 100 Status Check
-  // useEffect(() => {
-  //   if (level100PromotionStatus === "pending") {
-  //     setTimeout(() => {
-  //       setLevel100LoadingComplete(true);
-  //     }, 3000);
-  //   }
-  //   if (level100PromotionStatus === "rejected") {
-  //     setTimeout(() => {
-  //       setLevel100LoadingComplete(null);
-  //     }, 3000);
-  //     setTimeout(() => {
-  //       level100Error?.errorMessage?.message?.map((err) =>
-  //         toast.error(err, {
-  //           position: "top-right",
-  //           theme: "light",
-  //         })
-  //       );
-  //     }, 2000);
-  //     return;
-  //   }
-  //   if (level100loadingComplete && level100PromotionStatus === "success") {
-  //     setTimeout(() => {
-  //       toast.success(level100SuccessMessage, {
-  //         position: "top-right",
-  //         theme: "dark",
-  //       });
-  //     }, 1000);
-  //     setTimeout(() => {
-  //       dispatch(fetchAllClassLevelSections());
-  //       dispatch(fetchClassLevels());
-  //     }, 6000);
-  //   }
-  // }, [
-  //   level100PromotionStatus,
-  //   level100SuccessMessage,
-  //   level100Error,
-  //   level100loadingComplete,
-  //   class_level,
-  //   dispatch,
-  // ]);
-
-  //Student Promotion Level 200 Status Check
-  // useEffect(() => {
-  //   if (level200PromotionStatus === "pending") {
-  //     setTimeout(() => {
-  //       setLevel200LoadingComplete(true);
-  //     }, 3000);
-  //   }
-  //   if (level200PromotionStatus === "rejected") {
-  //     setTimeout(() => {
-  //       setLevel200LoadingComplete(null);
-  //     }, 3000);
-  //     setTimeout(() => {
-  //       level200Error?.errorMessage?.message?.map((err) =>
-  //         toast.error(err, {
-  //           position: "top-right",
-  //           theme: "light",
-  //           // toastId: successId,
-  //         })
-  //       );
-  //     }, 2000);
-  //     return;
-  //   }
-  //   if (level200loadingComplete && level200PromotionStatus === "success") {
-  //     setTimeout(() => {
-  //       toast.success(level200SuccessMessage, {
-  //         position: "top-right",
-  //         theme: "dark",
-  //       });
-  //     }, 1000);
-  //     setTimeout(() => {
-  //       dispatch(fetchAllClassLevelSections());
-  //       dispatch(fetchClassLevels());
-  //     }, 6000);
-  //   }
-  // }, [
-  //   level200PromotionStatus,
-  //   level200SuccessMessage,
-  //   class_level,
-  //   level200Error,
-  //   level200loadingComplete,
-  //   dispatch,
-  // ]);
-
-  //Student Promotion Level 300 Status Check
-  // useEffect(() => {
-  //   if (level300PromotionStatus === "pending") {
-  //     setTimeout(() => {
-  //       setLevel300LoadingComplete(true);
-  //     }, 3000);
-  //   }
-  //   if (level300PromotionStatus === "rejected") {
-  //     setTimeout(() => {
-  //       setLevel300LoadingComplete(null);
-  //     }, 3000);
-  //     setTimeout(() => {
-  //       level300Error?.errorMessage?.message?.map((err) =>
-  //         toast.error(err, {
-  //           position: "top-right",
-  //           theme: "light",
-  //           // toastId: successId,
-  //         })
-  //       );
-  //     }, 2000);
-  //     return;
-  //   }
-  //   if (level300loadingComplete && level300PromotionStatus === "success") {
-  //     setTimeout(() => {
-  //       toast.success(level300SuccessMessage, {
-  //         position: "top-right",
-  //         theme: "dark",
-  //       });
-  //     }, 1000);
-  //     setTimeout(() => {
-  //       dispatch(fetchAllClassLevelSections());
-  //       dispatch(fetchClassLevels());
-  //     }, 6000);
-  //   }
-  // }, [
-  //   level300PromotionStatus,
-  //   level300SuccessMessage,
-  //   level300Error,
-  //   level300loadingComplete,
-  //   class_level,
-  //   dispatch,
-  // ]);
-
+  // handle multi approval or rejection
+  const [multiStudents, setMultiStudents] = useState([]);
+  const [toggleClearRows, setToggleClearRows] = useState(false);
+  console.log(multiStudents);
+  const handleMultiSelect = (state) => {
+    if (state) {
+      const studentObj = state?.selectedRows?.map((user) => {
+        const userId = {
+          uniqueId: user?.uniqueId,
+        };
+        return userId;
+      });
+      setMultiStudents(studentObj);
+    } else {
+      setMultiStudents([]);
+    }
+  };
+  // Find class-level via params
   useLayoutEffect(() => {
     const classLevelFound = allClassLevels?.find(
       (cLevel) => cLevel?.name === class_level?.replace(/_/g, " ")
@@ -268,6 +152,178 @@ export function PendingClassLevelStudents() {
     // );
     setClassLevel(classLevelFound);
   }, [allClassLevels, class_level]);
+
+  //Student Enrolment Approval Status Check
+  useEffect(() => {
+    if (foundStudent) {
+      if (enrollmentApprovalStatus === "pending") {
+        setLoadingComplete(false);
+        setTimeout(() => {
+          setLoadingComplete(true);
+        }, 3000);
+      }
+      if (enrollmentApprovalStatus === "rejected") {
+        setTimeout(() => {
+          setLoadingComplete(null);
+        }, 3000);
+        setTimeout(() => {
+          error?.errorMessage?.message?.map((err) =>
+            toast.error(err, {
+              position: "top-right",
+              theme: "light",
+              toastId: err,
+            })
+          );
+        }, 2000);
+        return;
+      }
+      if (enrollmentApprovalStatus === "success") {
+        setTimeout(() => {
+          toast.success(successMessage, {
+            position: "top-right",
+            theme: "dark",
+            toastId: successMessage,
+          });
+        }, 1000);
+        setTimeout(() => {
+          //Fetch all users again when successfully approved
+          dispatch(fetchAllUsers());
+        }, 6000);
+      }
+    }
+    if (studentToReject) {
+      if (rejectEnrollmentStatus === "pending") {
+        setLoadingComplete(false);
+        setTimeout(() => {
+          setLoadingComplete(true);
+        }, 3000);
+      }
+      if (rejectEnrollmentStatus === "rejected") {
+        setTimeout(() => {
+          setLoadingComplete(null);
+        }, 3000);
+        setTimeout(() => {
+          error?.errorMessage?.message?.map((err) =>
+            toast.error(err, {
+              position: "top-right",
+              theme: "light",
+              // toastId: successId,
+            })
+          );
+        }, 2000);
+        return;
+      }
+      if (rejectEnrollmentStatus === "success") {
+        setTimeout(() => {
+          toast.success(successMessage, {
+            position: "top-right",
+            theme: "dark",
+          });
+        }, 1000);
+        setTimeout(() => {
+          //Fetch all users again when successfully approved
+          dispatch(fetchAllUsers());
+        }, 6000);
+      }
+    }
+  }, [
+    enrollmentApprovalStatus,
+    successMessage,
+    error,
+    dispatch,
+    loadingComplete,
+    foundStudent,
+    rejectEnrollmentStatus,
+    studentToReject,
+  ]);
+
+  // Multi approval status check
+  useEffect(() => {
+    if (multiStudents && approveMultiEnrollmentStatus === "pending") {
+      setApproveMultiLoadingComplete(false);
+    }
+    if (multiStudents && approveMultiEnrollmentStatus === "rejected") {
+      setTimeout(() => {
+        setApproveMultiLoadingComplete(null);
+        setMultiApprovalInProgress(false);
+        dispatch(resetMultiApprovalState());
+      }, 3000);
+      setTimeout(() => {
+        error?.errorMessage?.message?.map((err) =>
+          toast.error(err, {
+            position: "top-right",
+            theme: "dark",
+            toastId: "multiStudentApprovalError",
+          })
+        );
+      }, 2000);
+      return;
+    }
+    if (multiStudents && approveMultiEnrollmentStatus === "success") {
+      setTimeout(() => {
+        setApproveMultiLoadingComplete(true);
+      }, 3000);
+      setTimeout(() => {
+        //Fetch all users again when successfully approved
+        dispatch(fetchAllUsers());
+        dispatch(fetchAllUsers());
+        setToggleClearRows(!toggleClearRows);
+        dispatch(resetMultiApprovalState());
+        setMultiApprovalInProgress(false);
+        setApproveMultiLoadingComplete(null);
+      }, 6000);
+    }
+  }, [
+    dispatch,
+    approveMultiEnrollmentStatus,
+    error,
+    multiStudents,
+    toggleClearRows,
+  ]);
+  // Multi rejection status check
+  useEffect(() => {
+    if (multiStudents && rejectMultiEnrollmentStatus === "pending") {
+      setRejectMultiLoadingComplete(false);
+    }
+    if (multiStudents && rejectMultiEnrollmentStatus === "rejected") {
+      setTimeout(() => {
+        setRejectMultiLoadingComplete(null);
+        setMultiApprovalInProgress(false);
+        dispatch(resetMultiRejectionState());
+      }, 3000);
+      setTimeout(() => {
+        error?.errorMessage?.message?.map((err) =>
+          toast.error(err, {
+            position: "top-right",
+            theme: "dark",
+            toastId: "multiStudentRejectionError",
+          })
+        );
+      }, 2000);
+      return;
+    }
+    if (multiStudents && rejectMultiEnrollmentStatus === "success") {
+      setTimeout(() => {
+        setRejectMultiLoadingComplete(true);
+      }, 3000);
+      setTimeout(() => {
+        //Fetch all users again when successfully approved
+        dispatch(fetchAllUsers());
+        dispatch(fetchAllUsers());
+        setToggleClearRows(!toggleClearRows);
+        dispatch(resetMultiRejectionState());
+        setMultiApprovalInProgress(false);
+        setRejectMultiLoadingComplete(null);
+      }, 6000);
+    }
+  }, [
+    dispatch,
+    approveMultiEnrollmentStatus,
+    error,
+    multiStudents,
+    toggleClearRows,
+    rejectMultiEnrollmentStatus,
+  ]);
 
   const currentClassLevelStd = `${class_level?.replace(
     /_/g,
@@ -294,13 +350,13 @@ export function PendingClassLevelStudents() {
           <span>{adminCurrentLink?.replace(/_/g, " ")}</span>
         </h1>
         {/* Main search bar */}
-        {/* <Box sx={{ display: { xs: "none", sm: "block" } }}>
-          <SearchForm
-            value={searchedBlog}
-            onChange={handleOnChange}
+        <Box sx={{ display: { xs: "none", sm: "block" } }}>
+          <SearchFilter
+            value={searchStudent}
+            onChange={setSearchStudent}
             placeholder={"Search"}
           />
-        </Box> */}
+        </Box>
       </Box>
       <Box
         className="allStudentsData"
@@ -310,7 +366,7 @@ export function PendingClassLevelStudents() {
         <Box className="searchDetails">
           {filteredStudents?.length === 0 && searchStudent !== "" && (
             <p className="searchInfo">
-              We couldn't find any matches for "{searchStudent}"
+              We couldn&apos;t find any matches for &quot;{searchStudent}&quot;
             </p>
           )}
           {filteredStudents?.length === 0 && searchStudent !== "" && (
@@ -327,7 +383,7 @@ export function PendingClassLevelStudents() {
           )}
           {searchStudent && (
             <p className="searchInfo">
-              Total Enrolled Students Found = {filteredStudents?.length}
+              Total Pending Students Found = {filteredStudents?.length}
             </p>
           )}
           {!searchStudent && (
@@ -336,6 +392,7 @@ export function PendingClassLevelStudents() {
             </p>
           )}
         </Box>
+        {/* Student types selection buttons */}
         <Box>
           <Grid
             container
@@ -390,6 +447,7 @@ export function PendingClassLevelStudents() {
             />
           </Grid>
         </Box>
+        {/* Class-level buttons */}
         <Box>
           <Grid
             container
@@ -427,6 +485,35 @@ export function PendingClassLevelStudents() {
             ))}
           </Grid>
         </Box>
+        {/* Approval buttons */}
+        <Box
+          sx={{
+            display: "flex",
+            gap: 1,
+            fontSize: "calc(0.7rem + 1vmin)",
+          }}
+        >
+          <MultiApprovalBtn
+            approveMultiUsersDataStatus={approveMultiEnrollmentStatus}
+            approveMultiUsersDataLoadingComplete={approveMultiLoadingComplete}
+            multiUsersDataRejectionInProgress={multiRejectionInProgress}
+            setMultiUsersDataApprovalInProgress={setMultiApprovalInProgress}
+            multiUsersDataApprovalFunction={approvedMultiStudentEnrollment({
+              students: multiStudents,
+              enrollmentApprovedBy: `${authAdmin?.id}`,
+            })}
+          />
+          <MultiRejectionBtn
+            rejectMultiUsersDataStatus={rejectMultiEnrollmentStatus}
+            rejectMultiUsersDataLoadingComplete={rejectMultiLoadingComplete}
+            multiUsersDataApprovalInProgress={multiApprovalInProgress}
+            setMultiUsersDataRejectionInProgress={setMultiRejectionInProgress}
+            multiUsersDataApprovalFunction={rejectMultiStudentEnrollment({
+              students: multiStudents,
+              enrollmentRejectedBy: `${authAdmin?.id}`,
+            })}
+          />
+        </Box>
         <Box className="studentDataTable">
           <DataTable
             title={currentClassLevelStd}
@@ -437,6 +524,8 @@ export function PendingClassLevelStudents() {
             selectableRows
             selectableRowsHighlight
             highlightOnHover
+            onSelectedRowsChange={handleMultiSelect}
+            clearSelectedRows={toggleClearRows}
           />
         </Box>
       </Box>

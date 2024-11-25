@@ -45,6 +45,10 @@ export function AdminDashboard() {
     isSidebarOpen,
     openSearchModal,
     setOpenSearchModal,
+    hovered,
+    setHovered,
+    drawerWidthCollapsed,
+    drawerWidthExpanded,
   } = useOutletContext();
   const { adminCurrentLink, adminCurrentAction, studentId } = useParams();
   const navigate = useNavigate();
@@ -73,9 +77,8 @@ export function AdminDashboard() {
 
   return (
     <Box
-      flexGrow={1}
-      overflow={"hidden"}
-      component="main"
+      // overflow={"hidden"}
+      // component="main"
       // sx={{
       //   // flex: 5,
       //   // marginLeft: { xs: "0", sm: "20%" }, // The sidebar width
@@ -162,80 +165,6 @@ export function AdminDashboard() {
           setOpenSearchModal={setOpenSearchModal}
         />
       </Box>
-      {/* <Box
-        component={"div"}
-        id="adminDashboardHeaderWrap"
-        sx={{
-          position: "sticky",
-          top: 0,
-          backgroundColor: "#fff",
-          padding: 0,
-          // zIndex: 1,
-        }}
-        minHeight={"4rem"}
-        // sx={{
-        //   // width: "100%",
-        //   position: fixedNavbar ? "fixed" : "",
-        //   top: 0,
-        //   // marginTop: fixedNavbar && !pageScrolled ? "4.5rem" : "",
-        //   width:
-        //     isSidebarOpen && !fixedNavbar
-        //       ? "100%"
-        //       : !isSidebarOpen && fixedNavbar
-        //       ? "94.5%"
-        //       : isSidebarOpen && fixedNavbar
-        //       ? "80%"
-        //       : "100%",
-        //   "@media screen and (max-width: 1024px) and (orientation: landscape)":
-        //     {
-        //       marginLeft: "0%", // Adjust margin based on sidebar state,
-        //       width: "100%",
-        //     },
-
-        //   // Apply only when the device is in portrait and has a max-height (smaller screens)
-        //   "@media screen and (max-width: 1024px) and (orientation: portrait)": {
-        //     marginLeft: "0%", // Adjust margin based on sidebar state,
-        //     width: "100%",
-        //   },
-        //   "@media screen and (min-width: 1024px) (max-width: 1200px) and (orientation: landscape)":
-        //     {
-        //       marginLeft: isSidebarOpen ? "20%" : "8.5rem", // Adjust margin based on sidebar state,
-        //     },
-        // }}
-      >
-        <h1 className="dashAction">
-          {adminCurrentAction?.replace(/_/g, "-")} /{" "}
-          <span>{adminCurrentLink?.replace(/_/g, " ")}</span>
-        </h1>
-        {window?.innerWidth >= 900 && (
-          <SearchForm
-            value={""}
-            onChange={""}
-            placeholder={"Search attendance by title"}
-          />
-        )}
-      </Box> */}
-      {/* <Box
-        id="adminDashboardHeaderWrap"
-        sx={{
-          position: fixedNavbar ? "fixed" : "relative",
-          // left: 0,
-        }}
-        width={
-          fixedNavbar && isSidebarOpen
-            ? "80%"
-            : !isSidebarOpen && fixedNavbar
-            ? window?.innerWidth - 136
-            : "100%"
-        }
-        // width={fixedNavbar && !isSidebarOpen ? window?.innerWidth - 136 : "100%"}
-      >
-        <h1 className="dashAction">
-          {adminCurrentAction?.replace(/_/g, "-")} /{" "}
-          <span>{adminCurrentLink?.replace(/_/g, " ")}</span>
-        </h1>
-        <SearchForm value={""} onChange={""} />
-      </Box> */}
       {/* Show component based on current dashboard link */}
       <Box
         sx={{
@@ -268,7 +197,6 @@ export function AdminDashboard() {
         )} */}
       </Box>
       <Outlet />
-      {/* <DashBoardFooter /> */}
     </Box>
   );
 }

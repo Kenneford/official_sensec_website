@@ -50,7 +50,7 @@ export function StudentPlacementVerification() {
   // Check if student has verified but not done enrolling
   const verifiedButNotDoneEnrolling = allStudents?.find(
     (std) =>
-      std?.uniqueId === foundPlacementStudent?.enrollmentId &&
+      // std?.uniqueId === foundPlacementStudent?.enrollmentId &&
       std?.studentStatusExtend?.enrollmentStatus === "in progress"
   );
   // Check if student has enrolled already
@@ -85,11 +85,7 @@ export function StudentPlacementVerification() {
       }, 3000);
     }
     //If no enrolled student but placement student seems to be enrolled, navigate student to enrolment page
-    else if (
-      !enrolledStudent &&
-      // foundPlacementStudent?.placementVerified &&
-      foundPlacementStudent?.enrolled
-    ) {
+    else if (!enrolledStudent && foundPlacementStudent?.enrolled) {
       setTimeout(() => {
         setLoadingComplete(true);
         setIsVerified(true);
@@ -99,9 +95,15 @@ export function StudentPlacementVerification() {
         setIsVerified(false);
       }, 5000);
       setTimeout(() => {
-        navigate(
-          `/sensec/students/enrollment/online/${foundPlacementStudent?.jhsIndexNo}`
-        );
+        if (adminCurrentAction) {
+          navigate(
+            `/sensec/users/${authUser?.uniqueId}/admin/User-Types/Students/${foundPlacementStudent?.jhsIndexNo}/new_enrollment`
+          );
+        } else {
+          navigate(
+            `/sensec/students/enrollment/online/${foundPlacementStudent?.jhsIndexNo}`
+          );
+        }
       }, 7000);
     }
     //If placement verified and enrolled, navigate student to enrolment success page
@@ -119,11 +121,16 @@ export function StudentPlacementVerification() {
         setIsVerified(false);
         setHasEnrolled(false);
       }, 5000);
-      // setCurrentEnrolmentSuccessLink("DASHBOARD");
       setTimeout(() => {
-        navigate(
-          `/sensec/students/${foundPlacementStudent?.enrollmentId}/enrollment/online/success`
-        );
+        if (adminCurrentAction) {
+          navigate(
+            `/sensec/users/${authUser?.uniqueId}/admin/User-Types/Students/${foundPlacementStudent?.enrollmentId}/enrollment/online/success`
+          );
+        } else {
+          navigate(
+            `/sensec/students/${foundPlacementStudent?.enrollmentId}/enrollment/online/success`
+          );
+        }
       }, 7000);
     }
     //If placement verified but enrollment is in progress, navigate to add parent page
@@ -132,7 +139,6 @@ export function StudentPlacementVerification() {
       !foundPlacementStudent?.enrolled &&
       verifiedButNotDoneEnrolling
     ) {
-      localStorage.setItem("indexNumber", formData?.jhsIndexNo);
       setTimeout(() => {
         setLoadingComplete(true);
         setIsVerified(true);
@@ -144,11 +150,11 @@ export function StudentPlacementVerification() {
       setTimeout(() => {
         if (adminCurrentAction) {
           navigate(
-            `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/new_enrollment/parent/add`
+            `/sensec/users/${authUser?.uniqueId}/admin/User-Types/Students/${foundPlacementStudent?.enrollmentId}/new_enrollment/parent/add`
           );
         } else {
           navigate(
-            `/sensec/students/enrollment/online/${foundPlacementStudent?.jhsIndexNo}/parent/add`
+            `/sensec/students/enrollment/online/${foundPlacementStudent?.enrollmentId}/parent/add`
           );
         }
       }, 7000);
@@ -161,7 +167,6 @@ export function StudentPlacementVerification() {
         "in progress" &&
       !enrolledStudent?.parent
     ) {
-      // localStorage.setItem("indexNumber", formData?.jhsIndexNo);
       setTimeout(() => {
         setLoadingComplete(true);
         setIsVerified(true);
@@ -173,7 +178,7 @@ export function StudentPlacementVerification() {
       setTimeout(() => {
         if (adminCurrentAction) {
           navigate(
-            `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/new_enrollment`
+            `/sensec/users/${authUser?.uniqueId}/admin/User-Types/Students/${foundPlacementStudent?.jhsIndexNo}/new_enrollment`
           );
         } else {
           navigate(
@@ -196,9 +201,15 @@ export function StudentPlacementVerification() {
         setHasEnrolled(false);
       }, 5000);
       setTimeout(() => {
-        navigate(
-          `/sensec/students/${enrolledStudent?.uniqueId}/enrollment/online/success`
-        );
+        if (adminCurrentAction) {
+          navigate(
+            `/sensec/users/${authUser?.uniqueId}/admin/User-Types/Students/${enrolledStudent?.uniqueId}/enrollment/online/success`
+          );
+        } else {
+          navigate(
+            `/sensec/students/${enrolledStudent?.uniqueId}/enrollment/online/success`
+          );
+        }
       }, 7000);
     }
     //If placement not verified and not enrolled, then verify student and begin the enrolment process
@@ -262,11 +273,10 @@ export function StudentPlacementVerification() {
         setRedirecting(true);
       }, 6000);
       setTimeout(() => {
-        localStorage.setItem("indexNumber", formData?.jhsIndexNo);
         dispatch(resetPlacementState()); // Reset Verification State
         if (adminCurrentAction) {
           navigate(
-            `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/new_enrollment`
+            `/sensec/users/${authUser?.uniqueId}/admin/User-Types/Students/${foundPlacementStudent?.jhsIndexNo}/new_enrollment`
           );
         } else {
           navigate(

@@ -184,11 +184,15 @@ export default function PageNavigation() {
                       element: <EmploymentForm />,
                     },
                     {
-                      path: "new_enrollment/parent/add",
+                      path: ":studentIndexNo/new_enrollment",
+                      element: <EnrollmentForm />,
+                    },
+                    {
+                      path: ":studentId/new_enrollment/parent/add",
                       element: <ParentForm />,
                     },
                     {
-                      path: "employees/:employees_link",
+                      path: ":employees/:employees_link",
                       element: <UserTypesContainer />,
                     },
                     {

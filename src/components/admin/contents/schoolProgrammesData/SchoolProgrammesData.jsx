@@ -9,12 +9,44 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Box } from "@mui/material";
+import { FetchAllProgrammes } from "../../../../data/programme/FetchProgrammeData";
+import { FetchProgrammeStudents } from "../../../../data/students/FetchAllStudents";
+import { FetchProgrammeLecturers } from "../../../../data/lecturers/FetchLecturers";
+import {
+  FetchAllCoreSubjects,
+  FetchAllElectiveSubjects,
+  FetchAllSubjects,
+} from "../../../../data/subjects/FetchSubjects";
 // import DeleteProgramDataModal from "./deleteProgramData/DeleteProgramDataModal";
 
 export function SchoolProgrammesData() {
   const { adminCurrentAction, adminCurrentLink } = useParams();
   const [openModal, setOpenModal] = useState(false);
+  const [loadingComplete, setLoadingComplete] = useState(null);
+  const [program, setProgram] = useState(false);
+  const [electiveSub, setElectiveSub] = useState(false);
+  const [coreSub, setCoreSub] = useState(false);
+  const [currentRowId, setCurrentRowId] = useState("");
+  const [itemToDelete, setItemToDelete] = useState("");
+  const [electiveSubProgram, setElectiveSubProgram] = useState("");
+  const [electiveSubClassLevel, setElectiveSubClassLevel] = useState("");
+  const deleteProgramStatus = "";
+  const allProgrammes = FetchAllProgrammes();
+  const allSubjectsData = FetchAllSubjects();
+  const allElectiveSubjectsData = FetchAllElectiveSubjects();
+  const allCoreSubjectsData = FetchAllCoreSubjects();
+  const foundProgram = allProgrammes.find(
+    (program) => program._id === currentRowId
+  );
+  const foundElectiveSubject = allElectiveSubjectsData.find(
+    (eSubj) => eSubj._id === currentRowId
+  );
+
+  const foundCoreSubject = allCoreSubjectsData.find(
+    (cSubj) => cSubj._id === currentRowId
+  );
   const subjects = 34;
+  const deleteSubjectStatus = "";
 
   const customStyle = {
     headRow: {
@@ -64,12 +96,24 @@ export function SchoolProgrammesData() {
       sortable: true,
     },
     {
+      name: "Divisions",
+      selector: (row) =>
+        row?.programDivisions ? row?.programDivisions?.length : "---",
+      sortable: true,
+    },
+    {
       name: "Students",
-      selector: (row) => (row?.students ? row?.students?.length : "---"),
+      selector: (row) => {
+        const allApprovedStudents = FetchProgrammeStudents(row?._id);
+        return <p>{allApprovedStudents?.length}</p>;
+      },
     },
     {
       name: "Teachers",
-      selector: (row) => (row?.teachers ? row?.teachers?.length : "---"),
+      selector: (row) => {
+        const allApprovedStudents = FetchProgrammeLecturers(row?._id);
+        return <p>{allApprovedStudents?.length}</p>;
+      },
       sortable: true,
     },
     {
@@ -151,9 +195,7 @@ export function SchoolProgrammesData() {
     {
       name: "Programme",
       selector: (row) =>
-        row?.electiveSubInfo?.nameOfProgram
-          ? row?.electiveSubInfo?.nameOfProgram
-          : "---",
+        row?.electiveSubInfo ? row?.electiveSubInfo?.programId?.name : "---",
       sortable: true,
     },
     // {
@@ -344,10 +386,10 @@ export function SchoolProgrammesData() {
     },
   ];
 
-  const allPrograms = `All Programmes / Total = ${23}`;
-  const allSubjects = `All Subjects / Total = ${subjects}`;
-  const allESubjects = `Elective Subjects / Total = ${14}`;
-  const allCSubjects = `Core Subjects / Total = ${20}`;
+  const allPrograms = `All Programmes / Total = ${allProgrammes?.length}`;
+  const allSubjects = `All Subjects / Total = ${allSubjectsData?.length}`;
+  const allESubjects = `Elective Subjects / Total = ${allElectiveSubjectsData?.length}`;
+  const allCSubjects = `Core Subjects / Total = ${allCoreSubjectsData?.length}`;
 
   const handleProgramDeletion = () => {
     // if (program) {
@@ -537,7 +579,7 @@ export function SchoolProgrammesData() {
           <DataTable
             // title={allCLevels}
             columns={programmesColumn}
-            // data={allProgrammes}
+            data={allProgrammes}
             customStyles={customStyle}
             pagination
             // selectableRows
@@ -553,7 +595,7 @@ export function SchoolProgrammesData() {
           <DataTable
             // title={allCLevels}
             columns={coreSubColumn}
-            // data={allCoreSubjects}
+            data={allCoreSubjectsData}
             customStyles={customStyle}
             pagination
             // selectableRows
@@ -568,7 +610,7 @@ export function SchoolProgrammesData() {
           <DataTable
             // title={allCLevels}
             columns={electiveSubColumn}
-            // data={allElectiveSubjects}
+            data={allElectiveSubjectsData}
             customStyles={customStyle}
             pagination
             // selectableRows

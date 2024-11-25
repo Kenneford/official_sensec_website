@@ -13,13 +13,16 @@ import { getAuthUser } from "../../../../../features/auth/authSlice";
 import {
   FetchAllApprovedStudents,
   FetchApprovedClassLevelStudents,
-  FetchClassLevelProgrammeStudents,
+  FetchClassSectionStudents,
 } from "../../../../../data/students/FetchAllStudents";
 import { FetchAllClassLevels } from "../../../../../data/class/FetchClassLevel";
 import { studentsColumn } from "../../../../../usersInfoDataFormat/UsersInfoDataFormat";
 import SearchFilter from "../../../../searchForm/SearchFilter";
 import { FetchAllClassSections } from "../../../../../data/class/FetchClassSections";
-import { FetchAllProgrammes } from "../../../../../data/programme/FetchProgrammeData";
+import {
+  FetchAllDivisionProgrammes,
+  FetchAllProgrammes,
+} from "../../../../../data/programme/FetchProgrammeData";
 import NewEnrollmentModal from "../../../../modals/NewEnrollmentModal";
 
 export function ClassLevelProgrammeStudents() {
@@ -61,28 +64,22 @@ export function ClassLevelProgrammeStudents() {
     programme,
   } = useParams();
   console.log(adminCurrentAction, adminCurrentLink);
-  console.log(class_level, program);
+  console.log(class_level, programme);
   const [openModal, setOpenModal] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
-  const [classLevel, setClassLevel] = useState("");
-  const [programmeFound, setProgrammeFound] = useState("");
   const [uncompletedEmploymentTask, setUncompletedEmploymentTask] =
     useState("");
   const allProgrammes = FetchAllProgrammes();
   const allClassLevels = FetchAllClassLevels();
   const approvedStudents = FetchAllApprovedStudents();
-  const classLevelStudents = FetchApprovedClassLevelStudents(classLevel?._id);
-  const programmeStudents = FetchClassLevelProgrammeStudents(
-    classLevel?._id,
-    programmeFound?._id
-  );
   const allClassLevelSections = FetchAllClassSections();
-  const singleClassLevel = {
-    students: [],
-  };
+  // Find class section and pass its _id in FetchClassSectionStudents to get students
+  const foundClassSection = allClassLevelSections?.find(
+    (section) => section?.sectionName === programme?.replace(/_/g, " ")
+  );
+  const programmeStudents = FetchClassSectionStudents(foundClassSection?._id);
 
-  console.log(programmeStudents);
-  console.log(allClassLevelSections);
+  // console.log(allClassLevelSections);
 
   const [currentStudentId, setCurrentStudentId] = useState("");
   const [level100loadingComplete, setLevel100LoadingComplete] = useState(null);
@@ -100,7 +97,7 @@ export function ClassLevelProgrammeStudents() {
   const foundStudent = programmeStudents?.find(
     (std) => std._id === currentStudentId
   );
-  console.log(filteredStudents);
+  console.log(foundClassSection);
 
   const handleNewEnrollment = () => {
     setRedirecting(true);
@@ -257,16 +254,16 @@ export function ClassLevelProgrammeStudents() {
   //   dispatch,
   // ]);
 
-  useLayoutEffect(() => {
-    const classLevelFound = allClassLevels?.find(
-      (cLevel) => cLevel?.name === class_level?.replace(/_/g, " ")
-    );
-    const studentProgramme = allProgrammes?.find(
-      (program) => program?.name === programme?.replace(/_/g, " ")
-    );
-    setClassLevel(classLevelFound);
-    setProgrammeFound(studentProgramme);
-  }, [allClassLevels, class_level, allProgrammes, programme]);
+  // useLayoutEffect(() => {
+  //   const classLevelFound = allClassLevels?.find(
+  //     (cLevel) => cLevel?.name === class_level?.replace(/_/g, " ")
+  //   );
+  //   const studentProgramme = allProgrammes?.find(
+  //     (program) => program?.name === programme?.replace(/_/g, " ")
+  //   );
+  //   setClassLevel(classLevelFound);
+  //   setProgrammeFound(studentProgramme);
+  // }, [allClassLevels, class_level, allProgrammes, programme]);
 
   const currentClassLevelStd = `${class_level?.replace(
     /_/g,
@@ -309,7 +306,7 @@ export function ClassLevelProgrammeStudents() {
         <Box className="searchDetails">
           {filteredStudents?.length === 0 && searchStudent !== "" && (
             <p className="searchInfo">
-              We couldn't find any matches for "{searchStudent}"
+              We couldn&apos;t find any matches for &quot;{searchStudent}&quot;
             </p>
           )}
           {filteredStudents?.length === 0 && searchStudent !== "" && (
@@ -427,8 +424,8 @@ export function ClassLevelProgrammeStudents() {
             ))}
           </Grid>
         </Box>
-        <div className="classLeveSections">
-          <div className="levelSections">
+        <Box className="classLeveSections">
+          <Box className="levelSections">
             {allClassLevelSections?.map((cLevel) => (
               <span key={cLevel?._id}>
                 {cLevel?.classLevelName?.replace(/ /g, "_") === class_level && (
@@ -452,8 +449,8 @@ export function ClassLevelProgrammeStudents() {
                 )}
               </span>
             ))}
-          </div>
-        </div>
+          </Box>
+        </Box>
         <Box className="studentDataTable">
           <DataTable
             title={currentClassLevelStd}

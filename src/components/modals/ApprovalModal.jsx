@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 // import "./adminsmodal.scss";
 import CloseIcon from "@mui/icons-material/Close";
 import { Box, CircularProgress } from "@mui/material";
@@ -7,17 +7,20 @@ import Redirection from "../pageLoading/Redirection";
 import PropTypes from "prop-types";
 import { useDispatch } from "react-redux";
 
-export default function RejectionModal({
+export default function ApprovalModal({
   open,
   onClose,
-  rejectionFunction,
+  approvalFunction,
   setLoadingComplete,
-  setSelectedUserToReject,
-  selectedUserToRejectId,
+  setSelectedUserToApprove,
+  selectedUserToApproveId,
   userDataToApprove,
   userDataToReject,
 }) {
   const dispatch = useDispatch();
+  console.log(userDataToApprove);
+  console.log(userDataToReject);
+
   if (!open) return null;
   return (
     <Box className="employmentModalOverlay">
@@ -29,15 +32,14 @@ export default function RejectionModal({
           }}
         >
           <Box className="previewCont">
-            <p>Reject Employment</p>
+            <p>Approve Employment</p>
             <Box className="modalActionBtns">
               <button
                 className="employLectBtn"
-                onClick={async (e) => {
-                  e.preventDefault();
-                  setSelectedUserToReject(selectedUserToRejectId);
-                  if (userDataToReject && !userDataToApprove) {
-                    dispatch(rejectionFunction);
+                onClick={async () => {
+                  setSelectedUserToApprove(selectedUserToApproveId);
+                  if (userDataToApprove && !userDataToReject) {
+                    dispatch(approvalFunction);
                   }
                   onClose();
                 }}
@@ -46,8 +48,7 @@ export default function RejectionModal({
               </button>
               <button
                 className="employLectBtn"
-                onClick={async (e) => {
-                  e.preventDefault();
+                onClick={async () => {
                   setLoadingComplete(null);
                   onClose();
                 }}
@@ -62,14 +63,14 @@ export default function RejectionModal({
   );
 }
 
-RejectionModal.propTypes = {
+ApprovalModal.propTypes = {
   open: PropTypes.bool,
   onClose: PropTypes.func,
-  rejectionFunction: PropTypes.func,
+  approvalFunction: PropTypes.func,
   setLoadingComplete: PropTypes.func,
   dispatch: PropTypes.func,
-  setSelectedUserToReject: PropTypes.func,
-  selectedUserToRejectId: PropTypes.string,
+  setSelectedUserToApprove: PropTypes.func,
+  selectedUserToApproveId: PropTypes.string,
   userDataToApprove: PropTypes.object,
   userDataToReject: PropTypes.object,
 };

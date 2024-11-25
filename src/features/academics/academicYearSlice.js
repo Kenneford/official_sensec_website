@@ -4,20 +4,20 @@ import { SENSEC_API_ENDPOINT } from "../../apiEndPoint/api";
 import tokenInterceptor from "../../apiEndPoint/interceptors";
 
 const initialState = {
-  batchInfo: "",
-  allBatches: [],
+  academicYearInfo: "",
+  allAcademicYears: [],
   successMessage: "",
   error: "",
   createStatus: "",
   fetchStatus: "",
 };
 
-export const createBatch = createAsyncThunk(
-  "Academics/createBatch",
-  async ({ data }, { rejectWithValue }) => {
+export const createAcademicYear = createAsyncThunk(
+  "AcademicYear/createAcademicYear",
+  async ({ academicYear }, { rejectWithValue }) => {
     try {
-      const res = await tokenInterceptor.post(`/academics/batches/create`, {
-        data,
+      const res = await tokenInterceptor.post(`/academics/year/create`, {
+        academicYear,
       });
       return res.data;
     } catch (error) {
@@ -27,36 +27,36 @@ export const createBatch = createAsyncThunk(
   }
 );
 
-export const fetchAllBatches = createAsyncThunk(
-  "Batch/fetchAllBatches",
+export const fetchAllAcademicYears = createAsyncThunk(
+  "AcademicYear/fetchAllAcademicYears",
   async () => {
     const response = await axios.get(
-      `${SENSEC_API_ENDPOINT}/academics/batches/fetch_all`
+      `${SENSEC_API_ENDPOINT}/academics/year/fetch_all`
     );
     // const students = response.data;
     return response.data;
   }
 );
 
-const batchSlice = createSlice({
-  name: "Batch",
+const academicYearSlice = createSlice({
+  name: "AcademicYear",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(createBatch.pending, (state) => {
+    builder.addCase(createAcademicYear.pending, (state) => {
       return { ...state, createStatus: "pending" };
     });
-    builder.addCase(createBatch.fulfilled, (state, action) => {
+    builder.addCase(createAcademicYear.fulfilled, (state, action) => {
       if (action.payload) {
         return {
           ...state,
-          batchInfo: action.payload.batch,
+          academicYearInfo: action.payload.academicYear,
           successMessage: action.payload.successMessage,
           createStatus: "success",
         };
       } else return state;
     });
-    builder.addCase(createBatch.rejected, (state, action) => {
+    builder.addCase(createAcademicYear.rejected, (state, action) => {
       return {
         ...state,
         createStatus: "rejected",
@@ -64,20 +64,20 @@ const batchSlice = createSlice({
       };
     });
 
-    builder.addCase(fetchAllBatches.pending, (state) => {
+    builder.addCase(fetchAllAcademicYears.pending, (state) => {
       return { ...state, fetchStatus: "pending" };
     });
-    builder.addCase(fetchAllBatches.fulfilled, (state, action) => {
+    builder.addCase(fetchAllAcademicYears.fulfilled, (state, action) => {
       if (action.payload) {
         return {
           ...state,
-          allBatches: action.payload.batchesFound,
+          allAcademicYears: action.payload.academicYears,
           successMessage: action.payload.successMessage,
           fetchStatus: "success",
         };
       } else return state;
     });
-    builder.addCase(fetchAllBatches.rejected, (state, action) => {
+    builder.addCase(fetchAllAcademicYears.rejected, (state, action) => {
       return {
         ...state,
         fetchStatus: "rejected",
@@ -87,6 +87,7 @@ const batchSlice = createSlice({
   },
 });
 
-export const getAllBatches = (state) => state.batch.allBatches;
+export const getAllAcademicYears = (state) =>
+  state.academicYear.allAcademicYears;
 
-export default batchSlice.reducer;
+export default academicYearSlice.reducer;

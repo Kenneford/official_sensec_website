@@ -5,16 +5,19 @@ import { CircularProgress } from "@mui/material";
 import Parser from "html-react-parser";
 import Redirection from "../pageLoading/Redirection";
 import PropTypes from "prop-types";
+import { useDispatch } from "react-redux";
 
 export default function ApproveEnrollmentModal({
   open,
   onClose,
   approveEnrollmentFunction,
   setLoadingComplete,
-  dispatch,
   setCurrentStudent,
   currentStudentId,
+  studentToApprove,
+  studentToReject,
 }) {
+  const dispatch = useDispatch();
   if (!open) return null;
   return (
     <div className="employmentModalOverlay">
@@ -32,7 +35,10 @@ export default function ApproveEnrollmentModal({
                 className="employLectBtn"
                 onClick={() => {
                   setCurrentStudent(currentStudentId);
-                  dispatch(approveEnrollmentFunction);
+                  if (studentToApprove && !studentToReject) {
+                    dispatch(approveEnrollmentFunction);
+                    setLoadingComplete(false);
+                  }
                   onClose();
                 }}
               >
@@ -63,4 +69,6 @@ ApproveEnrollmentModal.propTypes = {
   dispatch: PropTypes.func,
   setCurrentStudent: PropTypes.func,
   currentStudentId: PropTypes.string,
+  studentToApprove: PropTypes.object,
+  studentToReject: PropTypes.object,
 };

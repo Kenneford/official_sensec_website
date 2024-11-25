@@ -19,3 +19,14 @@
     }
   }
 }
+
+h1.dashAction {
+  color: #696969;
+  padding: unset;
+  text-transform: uppercase;
+  font-size: 1em;
+  span {
+    color: #a09f9f;
+    font-size: 0.8em;
+  }
+}

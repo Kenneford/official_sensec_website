@@ -102,7 +102,7 @@ export function AdminDashboardOverview() {
   });
 
   return (
-    <>
+    <Box>
       {/* Current dashboard title */}
       <Box
         component={"div"}
@@ -414,6 +414,6 @@ export function AdminDashboardOverview() {
           </div>
         </Box>
       </Box>
-    </>
+    </Box>
   );
 }

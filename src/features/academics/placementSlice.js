@@ -1,10 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { SENSEC_API_ENDPOINT } from "../../apiEndPoint/api";
+import tokenInterceptor from "../../apiEndPoint/interceptors";
 
 const initialState = {
-  placementInfo: {},
-  placementStudentInfo: {},
+  placementBatchInfo: "",
+  placementInfo: "",
+  placementStudentInfo: "",
   allPlacementBatches: [],
   allPlacementStudents: [],
   uploadExcelFileStatus: "",
@@ -18,19 +20,38 @@ const initialState = {
   error: "",
 };
 
-export const uploadPlacementFile = createAsyncThunk(
-  "Placement/uploadPlacementFile",
-  async (data, { rejectWithValue }) => {
+export const createPlacementBatch = createAsyncThunk(
+  "Placement/createPlacementBatch",
+  async ({ placementBatch }, { rejectWithValue }) => {
+    console.log(placementBatch);
+
     try {
       const accessToken = localStorage.getItem("userToken");
       // console.log(accessToken);
 
-      const res = await axios.post(
-        `${SENSEC_API_ENDPOINT}/students/placement/excel_file/upload`,
+      const res = await tokenInterceptor.post(
+        `/placement/batches/create`,
         {
-          data,
+          placementBatch,
         },
         { headers: { Authorization: `Bearer ${accessToken}` } }
+      );
+      console.log(res);
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const uploadPlacementFile = createAsyncThunk(
+  "Placement/uploadPlacementFile",
+  async (data, { rejectWithValue }) => {
+    try {
+      const res = await tokenInterceptor.post(
+        `/students/placement/excel_file/upload`,
+        {
+          data,
+        }
       );
       console.log(res);
       return res.data;
@@ -147,6 +168,27 @@ const placementSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    // Create Placement Batch
+    builder.addCase(createPlacementBatch.pending, (state) => {
+      return { ...state, createStatus: "pending" };
+    });
+    builder.addCase(createPlacementBatch.fulfilled, (state, action) => {
+      if (action.payload) {
+        return {
+          ...state,
+          placementBatchInfo: action.payload.placementBatch,
+          successMessage: action.payload.successMessage,
+          createStatus: "success",
+        };
+      } else return state;
+    });
+    builder.addCase(createPlacementBatch.rejected, (state, action) => {
+      return {
+        ...state,
+        createStatus: "rejected",
+        error: action.payload,
+      };
+    });
     //   Upload Excel File
     builder.addCase(uploadPlacementFile.pending, (state) => {
       return { ...state, uploadExcelFileStatus: "pending" };

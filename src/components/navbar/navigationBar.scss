@@ -2,7 +2,7 @@
 @use "../../utilities/sizes";
 
 .navbarWrap {
-  // z-index: 3;
+  // z-index: 0;
   .expandMoreIcon {
   }
   #navLinksWrap {
@@ -39,7 +39,7 @@
           align-items: center;
         }
       }
-      .otherLinksWrap.active {
+      .otherLinksWrap.selected {
         color: yellow;
         &:hover {
           color: yellow;
@@ -123,7 +123,7 @@
               border-top: 1px solid #ccc;
             }
           }
-          .otherLinkSelected.active {
+          .otherLinkSelected.selected {
             color: yellow;
             border-bottom: 1px solid transparent;
           }
@@ -154,9 +154,9 @@
     // margin-left: 1rem;
     border-radius: 0.4rem;
     transition: 0.4s ease;
-    z-index: 3;
+    z-index: 5;
     // opacity: 0.9;
-    .menuListSelected {
+    .menuList {
       display: flex;
       flex-direction: column;
       min-width: inherit;
@@ -226,7 +226,7 @@
         border-top: 1px solid #ccc;
       }
     }
-    .menuListSelected.active {
+    .menuList.selected {
       color: yellow;
       border-bottom: 1px solid transparent;
     }

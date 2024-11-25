@@ -51,7 +51,6 @@ export function EnrollmentForm() {
   const { enrollmentStatus, error, successMessage } = useSelector(
     (state) => state.student
   );
-  console.log(studentIndexNo);
 
   //Get current year and random number for student's unique-Id
   const currentYear = new Date().getFullYear();
@@ -90,8 +89,11 @@ export function EnrollmentForm() {
   const [jhsIndexNoError, setJhsIndexNoError] = useState(false);
 
   // New Student state
+  const [studentId, setStudentId] = useState("");
+  console.log(studentId);
+
   const [newStudent, setNewStudent] = useState({
-    uniqueId: "",
+    uniqueId: studentId ? studentId : "",
     firstName: "",
     lastName: "",
     otherName: "",
@@ -127,6 +129,24 @@ export function EnrollmentForm() {
     mobile: "",
     email: "",
   });
+  console.log(newStudent);
+
+  // Helper function to generate new unique-Id for new student
+  const generateUniqueId = (fName, lName) => {
+    // Get current year
+    const currentYear = new Date().getFullYear();
+    // Get initials from the first and last names
+    const firstNameInitial = fName ? fName?.charAt(0)?.toUpperCase() : "";
+    const lastNameInitial = lName ? lName?.charAt(0)?.toUpperCase() : "";
+    // Generate a unique suffix using current timestamp or random number
+    const uniqueSuffix = Date.now().toString().slice(-5); // Take last 5 digits for brevity
+    return `STD-${uniqueSuffix}${firstNameInitial}${lastNameInitial}-${currentYear}`;
+  };
+  // Use useEffect to automatically update the userID when any of the dependencies change
+  useEffect(() => {
+    const newId = generateUniqueId(newStudent?.firstName, newStudent?.lastName);
+    setStudentId(newId);
+  }, [newStudent]);
 
   // Find student's programme
   const studentProgramme = allProgrammes?.find(
@@ -186,18 +206,20 @@ export function EnrollmentForm() {
   };
 
   // Generate new unique-Id for old student
-  useMemo(() => {
-    const studentUniqueId = `STD-${num}${newStudent?.firstName.charAt(
-      0
-    )}${newStudent?.lastName.charAt(0)}-${currentYear}`;
-    if (newStudent?.uniqueId === "") {
-      setNewStudent({
-        ...newStudent,
-        uniqueId: studentUniqueId,
-      });
-    }
-    // return studentUniqueId;
-  }, [newStudent, currentYear, num]);
+  // useMemo(() => {
+  //   if (newStudent?.firstName && newStudent?.lastName) {
+  //     const studentUniqueId = `STD-${num}${newStudent?.firstName.charAt(
+  //       0
+  //     )}${newStudent?.lastName.charAt(0)}-${currentYear}`;
+  //     if (newStudent?.uniqueId === "") {
+  //       setNewStudent({
+  //         ...newStudent,
+  //         uniqueId: studentUniqueId,
+  //       });
+  //     }
+  //   }
+  //   // return studentUniqueId;
+  // }, [newStudent, currentYear, num]);
 
   // memoizedStudentUniqueId();
   // Update student unique ID
@@ -214,6 +236,7 @@ export function EnrollmentForm() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = {
+      studentId,
       newStudent,
       dateOfBirth: psDOB,
     };
@@ -328,15 +351,16 @@ export function EnrollmentForm() {
       }, 3000);
       setTimeout(() => {
         setRedirecting(true);
+        dispatch(resetEnrolmentState());
       }, 6000);
       setTimeout(() => {
         if (authUser?.roles?.includes("admin")) {
           navigate(
-            `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/new_enrollment/parent/add`
+            `/sensec/users/${authUser?.uniqueId}/admin/User-Types/Students/${studentId}/new_enrollment/parent/add`
           );
         } else {
           navigate(
-            `/sensec/students/enrollment/online/${newStudent?.uniqueId}/parent/add`
+            `/sensec/students/enrollment/online/${studentId}/parent/add`
           );
         }
       }, 9000);
@@ -352,6 +376,7 @@ export function EnrollmentForm() {
     adminCurrentAction,
     adminCurrentLink,
     authUser,
+    studentId,
   ]);
 
   return (
@@ -388,7 +413,14 @@ export function EnrollmentForm() {
           position: "relative",
         }}
       >
-        <h1>Student Online Enrollment</h1>
+        <Typography
+          variant="h6"
+          fontSize={{ xs: "1.2rem", sm: "1.2rem", md: "1.4rem", lg: "1.7rem" }}
+          textAlign={"center"}
+          color="#696969"
+        >
+          Student Online Enrollment
+        </Typography>
         <Typography textAlign={"center"} color="#696969">
           ({" "}
           <span style={{ fontWeight: "500" }}>

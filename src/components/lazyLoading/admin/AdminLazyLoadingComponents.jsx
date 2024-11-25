@@ -138,6 +138,16 @@ export const CreateProgram = lazyWithSuspense(
   <PageLoading />,
   "CreateProgramComponent"
 );
+export const CreateDivisionProgram = lazyWithSuspense(
+  () =>
+    import(
+      "../../admin/contents/createData/create/programme/CreateDivisionProgram"
+    ).then((module) => {
+      return { default: module.CreateDivisionProgram };
+    }),
+  <PageLoading />,
+  "CreateDivisionProgramComponent"
+);
 export const CreateClassLevelSection = lazyWithSuspense(
   () =>
     import(
@@ -289,6 +299,16 @@ export const EmployeeDataUpdateForm = lazyWithSuspense(
     ),
   <PageLoading />,
   "EmployeeDataUpdateFormComponent"
+);
+export const AssignLectureClassForm = lazyWithSuspense(
+  () =>
+    import("../../../pages/employment/AssignLectureClassForm").then(
+      (module) => {
+        return { default: module.AssignLectureClassForm };
+      }
+    ),
+  <PageLoading />,
+  "AssignLectureClassFormComponent"
 );
 export const HangingAdmins = lazyWithSuspense(
   () =>

@@ -12,12 +12,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { customUserTableStyle } from "../../../../../usersInfoDataFormat/usersInfoTableStyle";
 import { Box, Grid } from "@mui/material";
 import { AllStudentsPageQuickLinks } from "../../../../../linksFormat/LinksFormat";
-import { getAuthUser } from "../../../../../features/auth/authSlice";
+import {
+  fetchAllUsers,
+  getAuthUser,
+} from "../../../../../features/auth/authSlice";
 import { FetchAllApprovedStudents } from "../../../../../data/students/FetchAllStudents";
 import { studentsColumn } from "../../../../../usersInfoDataFormat/UsersInfoDataFormat";
 import SearchFilter from "../../../../searchForm/SearchFilter";
 import { FetchAllClassLevels } from "../../../../../data/class/FetchClassLevel";
 import NewEnrollmentModal from "../../../../modals/NewEnrollmentModal";
+import { resetPromotionState } from "../../../../../features/students/promotionSlice";
+import { toast } from "react-toastify";
 
 export function AllEnrolledStudents() {
   const authAdmin = useSelector(getAuthUser);
@@ -26,6 +31,9 @@ export function AllEnrolledStudents() {
   //Get state data
   const allClassLevels = FetchAllClassLevels();
   console.log(allClassLevels);
+  const { promotionStatus, successMessage, error } = useSelector(
+    (state) => state.promotion
+  );
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -53,10 +61,14 @@ export function AllEnrolledStudents() {
   // } = useSelector((state) => state.promotion);
 
   //State hooks
-  const [currentStudentId, setCurrentStudentId] = useState("");
-  const [level100loadingComplete, setLevel100LoadingComplete] = useState(null);
-  const [level200loadingComplete, setLevel200LoadingComplete] = useState(null);
-  const [level300loadingComplete, setLevel300LoadingComplete] = useState(null);
+  const [currentStudent, setCurrentStudent] = useState("");
+  const [demoteStudent, setDemoteStudent] = useState("");
+  const [openPromotionModal, setOpenPromotionModal] = useState(false);
+  const [openDemotionModal, setOpenDemotionModal] = useState(false);
+  const [promotionInProgress, setPromotionInProgress] = useState(false);
+  const [demotionInProgress, setDemotionInProgress] = useState(false);
+  const [loadingComplete, setLoadingComplete] = useState(null);
+  const [demotionLoadingComplete, setDemotionLoadingComplete] = useState(null);
   const [searchStudent, setSearchStudent] = useState("");
   const [multiStudents, setMultiStudents] = useState([]);
   const [openModal, setOpenModal] = useState(false);
@@ -64,9 +76,15 @@ export function AllEnrolledStudents() {
   const [uncompletedEmploymentTask, setUncompletedEmploymentTask] =
     useState("");
 
-  //Find selected student to approve/promote/reject
-  const foundStudent = approvedStudents?.find(
-    (std) => std?._id === currentStudentId
+  //Find selected student to promote
+  const studentToPromote = approvedStudents?.find(
+    (std) => std?._id === currentStudent
+  );
+  console.log(studentToPromote);
+
+  //Find selected student to demote
+  const studentToDemote = approvedStudents?.find(
+    (std) => std?._id === demoteStudent
   );
 
   //Filter students during search
@@ -83,21 +101,25 @@ export function AllEnrolledStudents() {
 
   const studentDataFormat = studentsColumn(
     authAdmin,
-    foundStudent,
+    studentToPromote,
     adminCurrentAction,
     adminCurrentLink,
-    setCurrentStudentId,
-    setLevel100LoadingComplete,
-    setLevel200LoadingComplete,
-    setLevel300LoadingComplete,
-    level100loadingComplete,
-    level200loadingComplete,
-    level300loadingComplete,
-    // level100PromotionStatus,
-    // level200PromotionStatus,
-    // level300PromotionStatus,
-    dispatch
+    setOpenPromotionModal,
+    openPromotionModal,
+    setCurrentStudent,
+    setDemoteStudent,
+    setLoadingComplete,
+    loadingComplete,
+    setDemotionLoadingComplete,
+    demotionLoadingComplete,
+    demotionInProgress,
+    promotionInProgress,
+    setOpenDemotionModal,
+    openDemotionModal,
+    promotionStatus,
+    studentToDemote
   );
+  console.log(studentToDemote);
 
   const handleMultiSelect = (state) => {
     setMultiStudents(state.selectedRows);
@@ -113,173 +135,52 @@ export function AllEnrolledStudents() {
       );
     }, 3000);
   };
-  //Student Promotion Level 100 Status Check
-  // useEffect(() => {
-  //   if (level100PromotionStatus === "pending") {
-  //     setTimeout(() => {
-  //       setLevel100LoadingComplete(true);
-  //     }, 3000);
-  //   }
-  //   if (level100PromotionStatus === "rejected") {
-  //     setTimeout(() => {
-  //       setLevel100LoadingComplete(null);
-  //     }, 3000);
-  //     setTimeout(() => {
-  //       level100Error?.errorMessage?.message?.map((err) =>
-  //         toast.error(err, {
-  //           position: "top-right",
-  //           theme: "light",
-  //         })
-  //       );
-  //     }, 2000);
-  //     return;
-  //   }
-  //   if (level100loadingComplete && level100PromotionStatus === "success") {
-  //     setTimeout(() => {
-  //       toast.success(level100SuccessMessage, {
-  //         position: "top-right",
-  //         theme: "dark",
-  //       });
-  //     }, 1000);
-  //     setTimeout(() => {
-  //       dispatch(fetchAllUsers());
-  //       dispatch(fetchClassLevels());
-  //     }, 6000);
-  //   }
-  // }, [
-  //   level100PromotionStatus,
-  //   level100SuccessMessage,
-  //   level100Error,
-  //   level100loadingComplete,
-  //   dispatch,
-  // ]);
 
-  //Multi Students Promotion Level 100 Status Check
-  // useEffect(() => {
-  //   if (level100MultiPromotionStatus === "pending") {
-  //     setTimeout(() => {
-  //       setLevel100LoadingComplete(true);
-  //     }, 3000);
-  //   }
-  //   if (level100MultiPromotionStatus === "rejected") {
-  //     setTimeout(() => {
-  //       setLevel100LoadingComplete(null);
-  //     }, 3000);
-  //     setTimeout(() => {
-  //       level100Error?.errorMessage?.message?.map((err) =>
-  //         toast.error(err, {
-  //           position: "top-right",
-  //           theme: "light",
-  //         })
-  //       );
-  //     }, 2000);
-  //     return;
-  //   }
-  //   if (level100loadingComplete && level100MultiPromotionStatus === "success") {
-  //     setTimeout(() => {
-  //       toast.success(level100MultiSuccessMessage, {
-  //         position: "top-right",
-  //         theme: "dark",
-  //       });
-  //     }, 1000);
-  //     setTimeout(() => {
-  //       dispatch(fetchAllUsers());
-  //       dispatch(fetchClassLevels());
-  //     }, 6000);
-  //   }
-  // }, [
-  //   level100PromotionStatus,
-  //   level100SuccessMessage,
-  //   level100Error,
-  //   level100loadingComplete,
-  //   level100MultiSuccessMessage,
-  //   level100MultiPromotionStatus,
-  //   dispatch,
-  // ]);
-
-  //Student Promotion Level 200 Status Check
-  // useEffect(() => {
-  //   if (level200PromotionStatus === "pending") {
-  //     setTimeout(() => {
-  //       setLevel200LoadingComplete(true);
-  //     }, 3000);
-  //   }
-  //   if (level200PromotionStatus === "rejected") {
-  //     setTimeout(() => {
-  //       setLevel200LoadingComplete(null);
-  //     }, 3000);
-  //     setTimeout(() => {
-  //       level200Error?.errorMessage?.message?.map((err) =>
-  //         toast.error(err, {
-  //           position: "top-right",
-  //           theme: "light",
-  //           // toastId: successId,
-  //         })
-  //       );
-  //     }, 2000);
-  //     return;
-  //   }
-  //   if (level200loadingComplete && level200PromotionStatus === "success") {
-  //     setTimeout(() => {
-  //       toast.success(level200SuccessMessage, {
-  //         position: "top-right",
-  //         theme: "dark",
-  //       });
-  //     }, 1000);
-  //     setTimeout(() => {
-  //       dispatch(fetchAllUsers());
-  //       dispatch(fetchClassLevels());
-  //     }, 6000);
-  //   }
-  // }, [
-  //   level200PromotionStatus,
-  //   level200SuccessMessage,
-  //   level200Error,
-  //   level200loadingComplete,
-  //   dispatch,
-  // ]);
-
-  //Student Promotion Level 300 Status Check
-  // useEffect(() => {
-  //   if (level300PromotionStatus === "pending") {
-  //     setTimeout(() => {
-  //       setLevel300LoadingComplete(true);
-  //     }, 3000);
-  //   }
-  //   if (level300PromotionStatus === "rejected") {
-  //     setTimeout(() => {
-  //       setLevel300LoadingComplete(null);
-  //     }, 3000);
-  //     setTimeout(() => {
-  //       level300Error?.errorMessage?.message?.map((err) =>
-  //         toast.error(err, {
-  //           position: "top-right",
-  //           theme: "light",
-  //           // toastId: successId,
-  //         })
-  //       );
-  //     }, 2000);
-  //     return;
-  //   }
-  //   if (level300loadingComplete && level300PromotionStatus === "success") {
-  //     setTimeout(() => {
-  //       toast.success(level300SuccessMessage, {
-  //         position: "top-right",
-  //         theme: "dark",
-  //       });
-  //     }, 1000);
-  //     setTimeout(() => {
-  //       dispatch(fetchAllUsers());
-  //       dispatch(fetchClassLevels());
-  //     }, 6000);
-  //   }
-  // }, [
-  //   level300PromotionStatus,
-  //   level300SuccessMessage,
-  //   level300Error,
-  //   level300loadingComplete,
-  //   dispatch,
-  // ]);
+  //Student Promotion Status Check
+  useEffect(() => {
+    if (studentToPromote) {
+      if (promotionStatus === "pending") {
+        setLoadingComplete(false);
+        setPromotionInProgress(false);
+      }
+      if (promotionStatus === "rejected") {
+        setTimeout(() => {
+          setLoadingComplete(null);
+          setPromotionInProgress(false);
+          dispatch(resetPromotionState());
+        }, 3000);
+        setTimeout(() => {
+          error?.errorMessage?.message?.map((err) =>
+            toast.error(err, {
+              position: "top-right",
+              theme: "light",
+              toastId: err,
+            })
+          );
+        }, 2000);
+        return;
+      }
+      if (promotionStatus === "success") {
+        setTimeout(() => {
+          setLoadingComplete(true);
+        }, 3000);
+        setTimeout(() => {
+          toast.success(successMessage, {
+            position: "top-right",
+            theme: "dark",
+            toastId: successMessage,
+          });
+        }, 1000);
+        setTimeout(() => {
+          //Fetch all users again when successfully approved
+          dispatch(fetchAllUsers());
+          dispatch(resetPromotionState());
+          setPromotionInProgress(false);
+          setLoadingComplete(null);
+        }, 6000);
+      }
+    }
+  }, [promotionStatus, successMessage, error, dispatch, studentToPromote]);
 
   const allStd = `All Enrolled Students / Total = ${approvedStudents?.length}`;
   return (

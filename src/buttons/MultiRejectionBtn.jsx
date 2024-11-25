@@ -1,21 +1,15 @@
-import React from "react";
-// import "./multiApprovalBtn.scss";
-import { toast } from "react-toastify";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Box, Button } from "@mui/material";
-import { rejectMultiEmployees } from "../features/employments/employmentSlice";
-import { getAuthUser } from "../features/auth/authSlice";
 import PropTypes from "prop-types";
 
 export function MultiRejectionBtn({
-  employees,
-  rejectMultiEmploymentStatus,
-  rejectMultiLoadingComplete,
-  multiApprovalInProgress,
-  setMultiRejectionInProgress,
+  rejectMultiUsersDataStatus,
+  rejectMultiUsersDataLoadingComplete,
+  multiUsersDataApprovalInProgress,
+  setMultiUsersDataRejectionInProgress,
+  multiUsersDataApprovalFunction,
 }) {
-  const authAdmin = useSelector(getAuthUser);
   const dispatch = useDispatch();
   return (
     <Button
@@ -23,33 +17,22 @@ export function MultiRejectionBtn({
       sx={{
         mb: 1,
         bgcolor: "red",
-        fontSize: { xs: ".8rem", sm: "1rem" },
+        minWidth: "7.5rem",
+        fontSize: "1rem",
         textTransform: "capitalize",
         lineHeight: "1.2rem",
-        minHeight: "3rem",
+        minHeight: "2.5rem",
       }}
       onClick={async (e) => {
         e.preventDefault();
-        if (!multiApprovalInProgress) {
-          setMultiRejectionInProgress(true);
-          dispatch(
-            rejectMultiEmployees({
-              employees,
-              employmentRejectedBy: `${authAdmin?.id}`,
-            })
-          );
+        if (!multiUsersDataApprovalInProgress) {
+          setMultiUsersDataRejectionInProgress(true);
+          dispatch(multiUsersDataApprovalFunction);
         }
       }}
     >
-      {rejectMultiLoadingComplete === false && (
-        <Box
-          className="promotionSpinner"
-          sx={
-            {
-              // marginTop: "1rem",
-            }
-          }
-        >
+      {rejectMultiUsersDataLoadingComplete === false && (
+        <Box className="promotionSpinner">
           <p>Processing</p>
           <span className="dot-ellipsis">
             <span className="dot">.</span>
@@ -58,21 +41,21 @@ export function MultiRejectionBtn({
           </span>
         </Box>
       )}
-      {rejectMultiLoadingComplete === true &&
-        rejectMultiEmploymentStatus === "success" && (
+      {rejectMultiUsersDataLoadingComplete === true &&
+        rejectMultiUsersDataStatus === "success" && (
           <>
             <span>All Rejected</span> <TaskAltIcon />
           </>
         )}
-      {rejectMultiLoadingComplete === null && "Reject All"}
+      {rejectMultiUsersDataLoadingComplete === null && "Reject All"}
     </Button>
   );
 }
 
 MultiRejectionBtn.propTypes = {
-  employees: PropTypes.array,
-  rejectMultiLoadingComplete: PropTypes.bool,
-  multiApprovalInProgress: PropTypes.bool,
-  rejectMultiEmploymentStatus: PropTypes.string,
-  setMultiRejectionInProgress: PropTypes.func,
+  rejectMultiUsersDataLoadingComplete: PropTypes.bool,
+  multiUsersDataApprovalInProgress: PropTypes.bool,
+  rejectMultiUsersDataStatus: PropTypes.string,
+  setMultiUsersDataRejectionInProgress: PropTypes.func,
+  multiUsersDataApprovalFunction: PropTypes.func,
 };

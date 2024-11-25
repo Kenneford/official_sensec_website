@@ -171,6 +171,22 @@ export const MultiRejectionBtn = lazyWithSuspense(
   <PageLoading />,
   "MultiRejectionBtnComponent"
 );
+export const MultiStudentsPromotionBtn = lazyWithSuspense(
+  () =>
+    import("../../buttons/MultiStudentsPromotionBtn").then((module) => {
+      return { default: module.MultiStudentsPromotionBtn };
+    }),
+  <PageLoading />,
+  "MultiStudentsPromotionBtnComponent"
+);
+export const MultiStudentsDemotionBtn = lazyWithSuspense(
+  () =>
+    import("../../buttons/MultiStudentsDemotionBtn").then((module) => {
+      return { default: module.MultiStudentsDemotionBtn };
+    }),
+  <PageLoading />,
+  "MultiStudentsDemotionBtnComponent"
+);
 // For Admin
 export const AdminDashboard = lazyWithSuspense(
   () =>

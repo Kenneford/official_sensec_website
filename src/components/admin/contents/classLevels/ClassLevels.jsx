@@ -4,35 +4,17 @@ import { useParams } from "react-router-dom";
 import { DeleteForever, Edit } from "@mui/icons-material";
 import DataTable from "react-data-table-component";
 import { Box } from "@mui/material";
-
-const allClassLevels = [
-  {
-    name: "Level 100",
-    sections: { length: 4 },
-    students: { length: 76 },
-    pendingStudents: {
-      length: 27,
-    },
-    teachers: {
-      length: 30,
-    },
-    createdBy: {
-      personalInfo: {
-        fullName: "Patrick Kenneford Annan",
-      },
-      gender: "Male",
-    },
-    lastUpdatedBy: {
-      personalInfo: {
-        fullName: "Patrick Kenneford Annan",
-      },
-      gender: "Male",
-    },
-  },
-];
+import { FetchAllClassLevels } from "../../../../data/class/FetchClassLevel";
+import {
+  FetchApprovedClassLevelStudents,
+  FetchPendingClassLevelStudents,
+} from "../../../../data/students/FetchAllStudents";
+import { FetchAllClassLevelLecturers } from "../../../../data/lecturers/FetchLecturers";
 
 export function ClassLevels() {
   const { adminCurrentAction, adminCurrentLink } = useParams();
+
+  const allClassLevels = FetchAllClassLevels();
 
   const customStyle = {
     headRow: {
@@ -80,17 +62,25 @@ export function ClassLevels() {
     },
     {
       name: "Students",
-      selector: (row) => (row?.students ? row?.students?.length : "---"),
+      selector: (row) => {
+        const allApprovedStudents = FetchApprovedClassLevelStudents(row?._id);
+        return <p>{allApprovedStudents?.length}</p>;
+      },
     },
     {
       name: "Pending Students",
-      selector: (row) =>
-        row?.pendingStudents ? row?.pendingStudents?.length : "---",
+      selector: (row) => {
+        const allPendingStudents = FetchPendingClassLevelStudents(row?._id);
+        return <p>{allPendingStudents?.length}</p>;
+      },
     },
     { name: "Sections", selector: (row) => row?.sections?.length },
     {
       name: "Teachers",
-      selector: (row) => (row?.teachers ? row?.teachers?.length : "---"),
+      selector: (row) => {
+        const allPendingStudents = FetchAllClassLevelLecturers(row?._id);
+        return <p>{allPendingStudents?.length}</p>;
+      },
       sortable: true,
     },
     {
@@ -159,7 +149,7 @@ export function ClassLevels() {
     },
   ];
 
-  const allCLevels = `All Class Levels / Total = ${3}`;
+  const allCLevels = `All Class Levels / Total = ${allClassLevels?.length}`;
   return (
     <>
       {/* Current dashboard title */}

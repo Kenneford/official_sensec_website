@@ -109,6 +109,22 @@ const employmentSlice = createSlice({
         error: "",
       };
     },
+    resetEmploymentApprovalState(state) {
+      return {
+        ...state,
+        approveEmploymentStatus: "",
+        successMessage: "",
+        error: "",
+      };
+    },
+    resetEmploymentRejectionState(state) {
+      return {
+        ...state,
+        rejectEmploymentStatus: "",
+        successMessage: "",
+        error: "",
+      };
+    },
     resetMultiApprovalState(state) {
       return {
         ...state,
@@ -237,6 +253,8 @@ const employmentSlice = createSlice({
 
 export const {
   resetEmploymentState,
+  resetEmploymentApprovalState,
+  resetEmploymentRejectionState,
   resetMultiApprovalState,
   resetMultiRejectionState,
 } = employmentSlice.actions;

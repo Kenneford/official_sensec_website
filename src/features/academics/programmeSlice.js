@@ -1,10 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { SENSEC_API_ENDPOINT } from "../../apiEndPoint/api";
+import tokenInterceptor from "../../apiEndPoint/interceptors";
 
 const initialState = {
   selectedProgramme: null,
   programInfo: "",
+  divisionProgramInfo: "",
   allProgrammes: [],
   allDivisionProgrammes: [],
   error: "",
@@ -19,9 +21,26 @@ export const createProgramme = createAsyncThunk(
   "Programme/createProgramme",
   async (program, { rejectWithValue }) => {
     try {
-      const res = await axios.post(
-        `${SENSEC_API_ENDPOINT}/academics/programme/create`,
+      const res = await tokenInterceptor.post(
+        `/academics/programme/create`,
         program
+      );
+      return res.data;
+    } catch (error) {
+      console.log(error.response.data);
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const createDivisionProgramme = createAsyncThunk(
+  "Programme/createDivisionProgramme",
+  async ({ data }, { rejectWithValue }) => {
+    try {
+      const res = await tokenInterceptor.post(
+        `/academics/program/division/create`,
+        {
+          data,
+        }
       );
       return res.data;
     } catch (error) {
@@ -140,6 +159,27 @@ const programmeSlice = createSlice({
       } else return state;
     });
     builder.addCase(createProgramme.rejected, (state, action) => {
+      return {
+        ...state,
+        createStatus: "rejected",
+        error: action.payload,
+      };
+    });
+    builder.addCase(createDivisionProgramme.pending, (state) => {
+      return { ...state, createStatus: "pending" };
+    });
+    builder.addCase(createDivisionProgramme.fulfilled, (state, action) => {
+      if (action.payload) {
+        return {
+          ...state,
+          divisionProgramInfo: action.payload.newDivisionProgram,
+          successMessage: action.payload.successMessage,
+          createStatus: "success",
+          error: "",
+        };
+      } else return state;
+    });
+    builder.addCase(createDivisionProgramme.rejected, (state, action) => {
       return {
         ...state,
         createStatus: "rejected",
