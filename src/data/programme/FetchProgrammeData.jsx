@@ -17,5 +17,15 @@ const FetchAllProgrammes = () => {
 
   return allProgrammes;
 };
+const FetchAllDivisionProgrammes = () => {
+  const allProgrammes = useSelector(getAllDivisionProgrammes);
+  const dispatch = useDispatch();
 
-export { FetchAllProgrammes };
+  useEffect(() => {
+    dispatch(fetchAllDivisionProgrammes());
+  }, [dispatch]);
+
+  return allProgrammes;
+};
+
+export { FetchAllProgrammes, FetchAllDivisionProgrammes };

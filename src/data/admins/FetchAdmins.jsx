@@ -19,7 +19,10 @@ const FetchAllAdmins = () => {
 const FetchAllEmployedAdmins = () => {
   const allAdmins = FetchAllAdmins();
   const allEmployedAdmins = allAdmins?.filter(
-    (user) => user?.employment?.employmentStatus === "approved" && user
+    (user) =>
+      user?.employment?.employmentStatus === "approved" &&
+      user?.adminStatusExtend.isAdmin &&
+      user
   );
 
   return allEmployedAdmins;
@@ -27,7 +30,10 @@ const FetchAllEmployedAdmins = () => {
 const FetchAllPendingAdmins = () => {
   const allAdmins = FetchAllAdmins();
   const allPendingAdmins = allAdmins?.filter(
-    (user) => user?.employment?.employmentStatus === "pending" && user
+    (user) =>
+      user?.employment?.employmentStatus === "pending" &&
+      !user?.adminStatusExtend.isAdmin &&
+      user
   );
 
   return allPendingAdmins;

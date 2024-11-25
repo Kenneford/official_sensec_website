@@ -32,9 +32,38 @@ const FetchAllPendingLecturers = () => {
 
   return allPendingLecturers;
 };
+const FetchAllClassLevelLecturers = (class_Level) => {
+  const allLecturers = FetchAllEmployedLecturers();
+  const allClassLevelLecturers = allLecturers?.filter(
+    (user) =>
+      user?.lecturerSchoolData?.classLevels?.includes(class_Level) && user
+  );
+
+  return allClassLevelLecturers;
+};
+const FetchAllClassSectionLecturers = (class_Level) => {
+  const allLecturers = FetchAllEmployedLecturers();
+  const allClassSectionLecturers = allLecturers?.filter(
+    (user) =>
+      user?.lecturerSchoolData?.classLevelHandling?._id === class_Level && user
+  );
+
+  return allClassSectionLecturers;
+};
+const FetchProgrammeLecturers = (programmeFound) => {
+  const allLecturers = FetchAllEmployedLecturers();
+  const allClassSectionLecturers = allLecturers?.filter(
+    (user) => user?.lecturerSchoolData?.program?._id === programmeFound
+  );
+
+  return allClassSectionLecturers;
+};
 
 export {
   FetchAllLecturers,
   FetchAllEmployedLecturers,
   FetchAllPendingLecturers,
+  FetchAllClassLevelLecturers,
+  FetchAllClassSectionLecturers,
+  FetchProgrammeLecturers,
 };
