@@ -7,17 +7,20 @@ import Redirection from "../pageLoading/Redirection";
 import PropTypes from "prop-types";
 import { useDispatch } from "react-redux";
 
-export default function ApproveEmploymentModal({
+export default function ApprovalModal({
   open,
   onClose,
-  approveEmploymentFunction,
+  approvalFunction,
   setLoadingComplete,
-  setCurrentUser,
-  currentUserId,
-  employeeToApprove,
-  employeeToReject,
+  setSelectedUserToApprove,
+  selectedUserToApproveId,
+  userDataToApprove,
+  userDataToReject,
 }) {
   const dispatch = useDispatch();
+  console.log(userDataToApprove);
+  console.log(userDataToReject);
+
   if (!open) return null;
   return (
     <Box className="employmentModalOverlay">
@@ -33,11 +36,10 @@ export default function ApproveEmploymentModal({
             <Box className="modalActionBtns">
               <button
                 className="employLectBtn"
-                onClick={() => {
-                  setCurrentUser(currentUserId);
-                  if (employeeToApprove && !employeeToReject) {
-                    dispatch(approveEmploymentFunction);
-                    // setLoadingComplete(false);
+                onClick={async () => {
+                  setSelectedUserToApprove(selectedUserToApproveId);
+                  if (userDataToApprove && !userDataToReject) {
+                    dispatch(approvalFunction);
                   }
                   onClose();
                 }}
@@ -46,7 +48,7 @@ export default function ApproveEmploymentModal({
               </button>
               <button
                 className="employLectBtn"
-                onClick={() => {
+                onClick={async () => {
                   setLoadingComplete(null);
                   onClose();
                 }}
@@ -61,14 +63,14 @@ export default function ApproveEmploymentModal({
   );
 }
 
-ApproveEmploymentModal.propTypes = {
+ApprovalModal.propTypes = {
   open: PropTypes.bool,
   onClose: PropTypes.func,
-  approveEmploymentFunction: PropTypes.func,
+  approvalFunction: PropTypes.func,
   setLoadingComplete: PropTypes.func,
   dispatch: PropTypes.func,
-  setCurrentUser: PropTypes.func,
-  currentUserId: PropTypes.string,
-  employeeToApprove: PropTypes.object,
-  employeeToReject: PropTypes.object,
+  setSelectedUserToApprove: PropTypes.func,
+  selectedUserToApproveId: PropTypes.string,
+  userDataToApprove: PropTypes.object,
+  userDataToReject: PropTypes.object,
 };

@@ -1,33 +1,5 @@
-import { Box, Collapse, IconButton, Typography } from "@mui/material";
+import { Box, Collapse, Typography } from "@mui/material";
 import PropTypes from "prop-types";
-import {
-  AdminPanelSettings,
-  AppRegistration,
-  ArrowBack,
-  ArrowForward,
-  Assessment,
-  AutoStories,
-  Class,
-  Construction,
-  Diversity2,
-  Diversity3,
-  DryCleaning,
-  Edit,
-  EmojiPeople,
-  Equalizer,
-  ExpandLess,
-  ExpandMore,
-  Help,
-  ListAltOutlined,
-  Person,
-  PersonRemoveAlt1,
-  RssFeed,
-  SchoolOutlined,
-  Search,
-  Settings,
-  SupervisedUserCircle,
-  Tv,
-} from "@mui/icons-material";
 import "./adminSidebar.scss";
 import {
   AccountLinks,
@@ -52,6 +24,8 @@ export function AdminSidebar({
   setCurrentLink,
   navbar,
   hovered,
+  currentTerm,
+  currentAcademicYear,
 }) {
   const dispatch = useDispatch();
   const authUser = useSelector(getAuthUser);
@@ -81,6 +55,17 @@ export function AdminSidebar({
           borderBottom: "2px solid #02b202",
         }}
       >
+        <Box
+          sx={{
+            textAlign: "center",
+            color: "#696969",
+            pt: 1,
+            fontSize: "1rem",
+          }}
+        >
+          <span>{currentTerm?.name}</span>-
+          <span>{currentAcademicYear?.yearRange}</span>
+        </Box>
         {/* <IconButton
           sx={{
             position: "absolute",
@@ -212,4 +197,6 @@ AdminSidebar.propTypes = {
   setCurrentLink: PropTypes.func,
   navbar: PropTypes.bool,
   hovered: PropTypes.bool,
+  currentTerm: PropTypes.object,
+  currentAcademicYear: PropTypes.object,
 };

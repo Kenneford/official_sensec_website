@@ -14,18 +14,19 @@ import Redirection from "../../../components/pageLoading/Redirection";
 import { ContainerBox, CustomTextField } from "../../../muiStyling/muiStyling";
 import { Box, Button, Grid, Typography } from "@mui/material";
 import { AddStudentParent } from "../../../features/students/parentSlice";
+import { FetchAllStudents } from "../../../data/students/FetchAllStudents";
 
 export function ParentForm() {
-  const authAdminInfo = useSelector(getAuthUser);
-  const { studentId } = useParams();
-  console.log(studentId);
-
+  const authAdmin = useSelector(getAuthUser);
+  const allStudents = FetchAllStudents();
   const allPlacementStudents = useSelector(getAllPlacementStudents);
-  // const studentId = localStorage.getItem("studentId");
-  const indexNumber = localStorage.getItem("indexNumber");
+  const { studentId } = useParams();
+  // Find student
+  const foundStudent = allStudents?.find((std) => std?.uniqueId === studentId);
+
   // Find placement student
-  const foundPlacementStudent = allPlacementStudents.find(
-    (std) => std.enrollmentId === studentId
+  const foundPlacementStudent = allPlacementStudents?.find(
+    (std) => std.jhsIndexNo === foundStudent?.studentSchoolData?.jhsIndexNo
   );
 
   const { createStatus, error, successMessage } = useSelector(
@@ -91,24 +92,7 @@ export function ParentForm() {
 
   useEffect(() => {
     dispatch(fetchAllPlacementStudents());
-    // dispatch(fetchSingleStudent({ uniqueId: studentId }));
   }, [dispatch]);
-
-  //   useEffect(() => {
-  //     if (foundStudent?.placementVerified && singleStudentFound?.parent) {
-  //       setCurrentEnrolmentSuccessLink("DASHBOARD");
-  //       localStorage.setItem("indexNumber", foundStudent?.generatedIndexNumber);
-  //       localStorage.setItem("studentUniqueId", foundStudent?.uniqueId);
-  //       navigate(
-  //         `/sensec/students/enrollment/online/success/${singleStudentFound?.uniqueId}`
-  //       );
-  //     }
-  //   }, [
-  //     foundStudent,
-  //     navigate,
-  //     singleStudentFound,
-  //     setCurrentEnrolmentSuccessLink,
-  //   ]);
 
   useEffect(() => {
     if (createStatus === "pending") {
@@ -130,7 +114,6 @@ export function ParentForm() {
       return;
     }
     if (createStatus === "success") {
-      // setCurrentEnrolmentSuccessLink("DASHBOARD");
       setTimeout(() => {
         setLoadingComplete(true);
       }, 3000);
@@ -138,9 +121,13 @@ export function ParentForm() {
         setRedirecting(true);
       }, 6000);
       setTimeout(() => {
-        // localStorage.removeItem("studentUniqueId");
-        // localStorage.removeItem("indexNumber");
-        navigate(`/sensec/students/${studentId}/enrollment/online/success`);
+        if (adminCurrentAction) {
+          navigate(
+            `/sensec/users/${authAdmin?.uniqueId}/admin/User-Types/Students/${studentId}/enrollment/online/success`
+          );
+        } else {
+          navigate(`/sensec/students/${studentId}/enrollment/online/success`);
+        }
       }, 9000);
     }
   }, [
@@ -152,6 +139,8 @@ export function ParentForm() {
     loadingComplete,
     foundPlacementStudent,
     studentId,
+    authAdmin,
+    adminCurrentAction,
   ]);
 
   //   useEffect(() => {

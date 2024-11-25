@@ -1,6 +1,7 @@
 import { Outlet, useParams } from "react-router-dom";
 import {
   AllAdmins,
+  AssignLectureClassForm,
   HangingAdmins,
   HangingLecturers,
   LecturersData,
@@ -13,6 +14,8 @@ import { Box } from "@mui/material";
 
 export function UserTypesContainer() {
   const { employees_link, adminCurrentLink } = useParams();
+  console.log(employees_link);
+
   return (
     <Box>
       <Box>
@@ -30,6 +33,8 @@ export function UserTypesContainer() {
           employees_link === "Hanging_Employments" && <HangingLecturers />}
         {adminCurrentLink === "Lecturers" &&
           employees_link === "Pending_Lecturers" && <PendingLecturers />}
+        {adminCurrentLink === "Lecturers" &&
+          employees_link === "assign_class" && <AssignLectureClassForm />}
         {/* {adminCurrentLink === "Hanging_Employments" &&
           employees_link === "All" && <AllHangingEmploymentsData />} */}
         {/* {adminCurrentLink === "Hanging_Employments" &&

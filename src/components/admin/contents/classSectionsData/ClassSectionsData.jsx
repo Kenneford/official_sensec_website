@@ -4,6 +4,9 @@ import EditIcon from "@mui/icons-material/Edit";
 import DataTable from "react-data-table-component";
 import { ContainerBox } from "../../../../muiStyling/muiStyling";
 import { Box } from "@mui/material";
+import { FetchAllClassSections } from "../../../../data/class/FetchClassSections";
+import { FetchAllClassSectionLecturers } from "../../../../data/lecturers/FetchLecturers";
+import { FetchClassSectionStudents } from "../../../../data/students/FetchAllStudents";
 // import { FetchClassSections } from "../../../dataFetching/fetchClassSections/FetchAllClassSections";
 
 const allClassLevels = [
@@ -33,7 +36,7 @@ const allClassLevels = [
 ];
 
 export function ClassSectionsData() {
-  const allClassLevelSections = [];
+  const allClassLevelSections = FetchAllClassSections();
 
   const { adminCurrentLink, adminCurrentAction } = useParams();
 
@@ -48,9 +51,6 @@ export function ClassSectionsData() {
   const level300Section = allClassLevelSections?.filter(
     (section) => section?.classLevelName === "Level 300"
   );
-  console.log(level100Section);
-  console.log(level200Section);
-  console.log(level300Section);
 
   const customStyle = {
     headRow: {
@@ -102,27 +102,32 @@ export function ClassSectionsData() {
     },
     {
       name: "Students",
-      selector: (row) => (row?.students ? row?.students?.length : "---"),
+      selector: (row) => {
+        const allApprovedStudents = FetchClassSectionStudents(row?._id);
+        return <p>{allApprovedStudents?.length}</p>;
+      },
     },
     {
       name: "Programme",
-      selector: (row) => (row?.program ? row?.program?.name : "---"),
+      selector: (row) =>
+        row?.program ? (
+          <p title={row?.program?.name}>{row?.program?.name}</p>
+        ) : (
+          <p>---</p>
+        ),
     },
     {
       name: "Teachers",
-      selector: (row) => <p>{row?.teachers ? row?.teachers?.length : "---"}</p>,
+      selector: (row) => {
+        const allApprovedStudents = FetchAllClassSectionLecturers(row?._id);
+        return <p>{allApprovedStudents?.length}</p>;
+      },
       sortable: true,
     },
     {
       name: "Current Teacher",
       selector: (row) => (
-        <p
-          title={
-            row?.currentTeacher?.personalInfo?.fullName?.length > 10
-              ? row?.currentTeacher?.personalInfo?.fullName
-              : ""
-          }
-        >
+        <p title={row?.currentTeacher?.personalInfo?.fullName}>
           {row?.currentTeacher &&
             row?.currentTeacher?.personalInfo?.gender === "Male" &&
             "Mr."}{" "}
@@ -232,7 +237,7 @@ export function ClassSectionsData() {
         <DataTable
           title={allCLevel100Sections}
           columns={classLevelsColumn}
-          data={allClassLevels}
+          data={level100Section}
           customStyles={customStyle}
           pagination
           // selectableRows

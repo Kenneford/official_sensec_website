@@ -34,7 +34,6 @@ export function Login() {
   // Getting data from redux state
   const authUser = useSelector(getAuthUser);
   const allUsers = useSelector(getAllUsers);
-  console.log(allUsers);
 
   const [loadingComplete, setLoadingComplete] = useState(null);
   const [redirecting, setRedirecting] = useState(false);

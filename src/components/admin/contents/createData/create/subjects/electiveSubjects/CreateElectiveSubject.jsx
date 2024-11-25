@@ -1,9 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
-import "./electiveSubject.scss";
+import { useEffect, useState } from "react";
+import "../../create.scss";
 import {
   Box,
   Button,
-  CircularProgress,
   FormControl,
   FormControlLabel,
   FormLabel,
@@ -12,95 +11,41 @@ import {
   Radio,
   RadioGroup,
 } from "@mui/material";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import TaskAltIcon from "@mui/icons-material/TaskAlt";
-// import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-// import LoadingProgress from "../../../pageLoading/LoadingProgress";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { CustomTextField } from "../../../../../../../muiStyling/muiStyling";
+import { FetchAllClassLevels } from "../../../../../../../data/class/FetchClassLevel";
+import { FetchAllProgrammes } from "../../../../../../../data/programme/FetchProgrammeData";
+import { getAuthUser } from "../../../../../../../features/auth/authSlice";
+import {
+  createElectiveSubject,
+  resetCreateSubjectState,
+} from "../../../../../../../features/academics/subjectsSlice";
+import { TaskAlt } from "@mui/icons-material";
+import LoadingProgress from "../../../../../../pageLoading/LoadingProgress";
+import {
+  fetchAllDivisionProgrammes,
+  getAllDivisionProgrammes,
+} from "../../../../../../../features/academics/programmeSlice";
 
 export function CreateElectiveSubject() {
-  const authAdminInfo = {};
-  const allClassLevels = [];
-  const allProgrammes = [];
-  const allDivisionProgrammes = [];
-  const allTeachers = [];
-  console.log(allTeachers);
-  console.log(allClassLevels);
-  console.log(allProgrammes);
-  console.log(allDivisionProgrammes);
+  const authAdmin = useSelector(getAuthUser);
+  const allProgrammes = FetchAllProgrammes();
+  const allDivisionProgrammes = useSelector(getAllDivisionProgrammes);
 
-  // const dispatch = useDispatch();
-  const [userInfo, setUserInfo] = useState(authAdminInfo);
-  console.log(userInfo.id);
+  const dispatch = useDispatch();
   const [loadingComplete, setLoadingComplete] = useState(null);
-  const [hasDivisions, setHasDivisions] = useState(false);
-  console.log(hasDivisions);
 
-  const [openLevelList, setOpenLevelList] = useState(false);
-  const [openProgramList, setOpenProgramList] = useState(false);
-  const [openIsElectiveList, setOpenIsElectiveList] = useState(false);
-  const [openProgramNameList, setOpenProgramNameList] = useState(false);
-  const [openCurrentTeacherList, setOpenCurrentTeacherList] = useState(false);
-  const [openSectionNameList, setOpenSectionNameList] = useState(false);
-  const [openLevelNameList, setOpenLevelNameList] = useState(false);
-
-  const [getProgrammeLabel, setGetProgrammeLabel] = useState("");
-  const [getProgrammeNameLabel, setGetProgrammeNameLabel] = useState("");
-  const [getIsElectiveLabel, setGetIsElectiveLabel] = useState("");
-  const [getLevelLabel, setGetLevelLabel] = useState("");
-  const [getCurrentTeacherLabel, setGetCurrentTeacherLabel] = useState("");
-  const [teachersGender, setTeachersGender] = useState("");
-
-  const [sectionNameValue, setSectionNameValue] = useState("");
-  const [currentClassLevelValue, setCurrentClassLevelValue] = useState("");
-  const [programValue, setProgramValue] = useState("");
-  const [isElectiveValue, setisElectiveValue] = useState("");
-  const [currentTeacherValue, setCurrentTeacherValue] = useState("");
-  const [levelNameValue, setLevelNameValue] = useState("");
-  console.log(currentTeacherValue);
-  console.log(programValue);
-
-  const navigate = useNavigate();
-
-  const outSideClickRef = useRef(null);
-  const hideOnClickOutside = (e) => {
-    // console.log(outSideClickRef.current);
-    if (
-      outSideClickRef.current &&
-      !outSideClickRef.current.contains(e.target)
-    ) {
-      setOpenSectionNameList(false);
-      setOpenLevelList(false);
-      setOpenProgramList(false);
-      setOpenCurrentTeacherList(false);
-      setOpenLevelNameList(false);
-      setOpenProgramNameList(false);
-      setOpenIsElectiveList(false);
-    }
-  };
-  useEffect(() => {
-    document.addEventListener("click", hideOnClickOutside, true);
-  }, []);
-
-  // const {
-  //   createElectiveSubjectStatus,
-  //   electiveSubjectSuccessMessage,
-  //   electiveSubjectError,
-  // } = useSelector((state) => state.electiveSubject);
-  // const allAcademicTerms = useSelector(getAllAcademicTerms);
-  // const allAllClassLevels = useSelector(getAllClassLevels);
+  const { createStatus, successMessage, error } = useSelector(
+    (state) => state.subject
+  );
 
   const [electiveSubject, setElectiveSubject] = useState({
     subjectName: "",
-    nameOfProgram: "",
     programId: "",
-    nameOfDivisionProgram: "",
     divisionProgramId: "",
     isOptional: false,
-    createdBy: `${userInfo.id}`,
+    createdBy: `${authAdmin.id}`,
   });
   console.log(electiveSubject);
 
@@ -111,101 +56,75 @@ export function CreateElectiveSubject() {
     });
   };
 
-  const canSave = Boolean(electiveSubject.subjectName);
-  // Boolean(currentClassLevelValue) &&
-  // Boolean(programValue) &&
-  // Boolean(getProgrammeLabel);
-  // Boolean(currentTeacherValue);
+  const canSave =
+    Boolean(electiveSubject.subjectName) && Boolean(electiveSubject?.programId);
 
   const handleElectiveSubject = (e) => {
     e.preventDefault();
-    setLoadingComplete(false);
     const data = {
       subjectName: electiveSubject?.subjectName,
-      nameOfProgram: electiveSubject?.nameOfProgram,
+      isCore: false,
       programId: electiveSubject?.programId,
       divisionProgramId: electiveSubject?.divisionProgramId,
       isOptional: electiveSubject?.isOptional,
-      createdBy: userInfo?.id,
+      createdBy: authAdmin?.id,
     };
-    // dispatch(createElectiveSubject(data));
+    dispatch(createElectiveSubject({ data }));
   };
 
-  // useEffect(() => {
-  //   if (createElectiveSubjectStatus === "pending") {
-  //     setTimeout(() => {
-  //       setLoadingComplete(true);
-  //     }, 3000);
-  //   }
-  //   if (createElectiveSubjectStatus === "rejected") {
-  //     setTimeout(() => {
-  //       setLoadingComplete(null);
-  //     }, 3000);
-  //     setTimeout(() => {
-  //       electiveSubjectError?.errorMessage?.message?.map((err) =>
-  //         toast.error(err, {
-  //           position: "top-right",
-  //           theme: "light",
-  //           // toastId: successId,
-  //         })
-  //       );
-  //       dispatch(resetCreateElectiveSubjState());
-  //     }, 2000);
-  //     return;
-  //   }
-  //   if (createElectiveSubjectStatus === "success") {
-  //     setTimeout(() => {
-  //       toast.success(electiveSubjectSuccessMessage, {
-  //         position: "top-right",
-  //         theme: "dark",
-  //         // toastId: successId,
-  //       });
-  //     }, 2000);
-  //     setTimeout(() => {
-  //       setLoadingComplete(null);
-  //       setElectiveSubject({
-  //         subjectName: "",
-  //         nameOfProgram: "",
-  //         programId: "",
-  //         nameOfDivisionProgram: "",
-  //         divisionProgramId: "",
-  //         isOptional: false,
-  //         createdBy: `${userInfo.id}`,
-  //       });
-  //       setGetLevelLabel("");
-  //       setGetCurrentTeacherLabel("");
-  //       setGetProgrammeLabel("");
-  //       setGetProgrammeNameLabel("");
-  //       dispatch(resetCreateElectiveSubjState());
-  //       // window.location.reload();
-  //       setHasDivisions(false);
-  //     }, 6000);
-  //   }
-  // }, [
-  //   electiveSubjectError,
-  //   electiveSubjectSuccessMessage,
-  //   createElectiveSubjectStatus,
-  //   toastOptions,
-  //   navigate,
-  //   dispatch,
-  //   userInfo,
-  // ]);
+  // Create subject status check
+  useEffect(() => {
+    if (createStatus === "pending") {
+      setLoadingComplete(false);
+    }
+    if (createStatus === "rejected") {
+      setTimeout(() => {
+        error?.errorMessage?.message?.map((err) =>
+          toast.error(err, {
+            position: "top-right",
+            theme: "light",
+            toastId: "createSubjectError",
+          })
+        );
+      }, 2000);
+      setTimeout(() => {
+        setLoadingComplete(null);
+        dispatch(resetCreateSubjectState());
+      }, 3000);
+      return;
+    }
+    if (createStatus === "success") {
+      setTimeout(() => {
+        setLoadingComplete(true);
+      }, 3000);
+      setTimeout(() => {
+        toast.success(successMessage, {
+          position: "top-right",
+          theme: "dark",
+          toastId: successMessage,
+        });
+      }, 1000);
+      setTimeout(() => {
+        setElectiveSubject({
+          subjectName: "",
+          programId: "",
+          divisionProgramId: "",
+          isOptional: "",
+          createdBy: `${authAdmin.id}`,
+        });
+        dispatch(resetCreateSubjectState());
+        setLoadingComplete(null);
+      }, 6000);
+    }
+  }, [error, successMessage, createStatus, authAdmin, dispatch]);
 
-  // useEffect(() => {
-  //   dispatch(fetchTeachers());
-  //   dispatch(fetchAllProgrammes());
-  //   if (electiveSubject?.programId) {
-  //     dispatch(
-  //       fetchAllDivisionProgrammes({ programId: electiveSubject?.programId })
-  //     );
-  //   }
-  //   dispatch(fetchAllAcademicTerms());
-  //   dispatch(fetchClassLevels());
-  // }, [dispatch, electiveSubject?.programId]);
-
-  // useEffect(() => {
-  //   setUserInfo(userInfo);
-  // }, [userInfo]);
+  useEffect(() => {
+    if (electiveSubject?.programId) {
+      dispatch(
+        fetchAllDivisionProgrammes({ programId: electiveSubject?.programId })
+      );
+    }
+  }, [dispatch, electiveSubject?.programId]);
 
   return (
     <div className="electiveSubjectWrap">
@@ -217,7 +136,7 @@ export function CreateElectiveSubject() {
           display: "flex",
           flexDirection: "column",
         }}
-        className="createElectiveSubjectWrap"
+        className="createDataWrap"
       >
         <Box
           component={"form"}
@@ -249,52 +168,41 @@ export function CreateElectiveSubject() {
                 select
                 fullWidth
                 label="Select Programme"
-                name="nameOfProgram"
-                value={electiveSubject?.nameOfProgram}
+                name="programId"
+                value={electiveSubject?.programId}
                 onChange={handleInputValues}
                 required
               >
-                <MenuItem value="Agric Science">Agric Science</MenuItem>
-                <MenuItem value="Business">Business</MenuItem>
-                <MenuItem value="General Science">General Science</MenuItem>
-                <MenuItem value="General Arts">General Arts</MenuItem>
-                <MenuItem value="Visual Arts">Visual Arts</MenuItem>
-                <MenuItem value="Home Economics">Home Economics</MenuItem>
+                {allProgrammes?.map((programme) => (
+                  <MenuItem key={programme?._id} value={programme?._id}>
+                    {programme?.name}
+                  </MenuItem>
+                ))}
               </CustomTextField>
             </Grid>
-            {/* Division Program (conditional) */}
-            {electiveSubject &&
-              electiveSubject?.nameOfProgram === "General Arts" && (
-                <Grid item xs={12} sm={6} md={6} lg={6}>
-                  <CustomTextField
-                    select
-                    fullWidth
-                    label="Division Program"
-                    name="nameOfDivisionProgram"
-                    value={electiveSubject?.nameOfDivisionProgram}
-                    onChange={handleInputValues}
-                    required
-                  >
-                    <MenuItem value="General Arts 1">General Arts 1</MenuItem>
-                    <MenuItem value="General Arts 2">General Arts 2</MenuItem>
-                    <MenuItem value="General Arts 3">General Arts 3</MenuItem>
-                  </CustomTextField>
-                </Grid>
-              )}
+            {/* Division Program Selection (conditional) */}
+            {allDivisionProgrammes && allDivisionProgrammes?.length > 0 && (
+              <Grid item xs={12} sm={6} md={6} lg={6}>
+                <CustomTextField
+                  select
+                  fullWidth
+                  label="Division Program"
+                  name="divisionProgramId"
+                  value={electiveSubject?.divisionProgramId}
+                  onChange={handleInputValues}
+                  //   required
+                >
+                  {allDivisionProgrammes?.map((programme) => (
+                    <MenuItem key={programme?._id} value={programme?._id}>
+                      {programme?.divisionName}
+                    </MenuItem>
+                  ))}
+                </CustomTextField>
+              </Grid>
+            )}
             <Grid item xs={12} sm={6} md={6} lg={6} className="inputCont">
               <FormControl component="fieldset">
-                <Box
-                  sx={
-                    {
-                      // display: "flex",
-                      // flexWrap: "wrap",
-                      // justifyContent: "center",
-                      // alignItems: "flex-start",
-                      // textAlign: "left",
-                      // gap: { xs: "0", sm: "1rem" },
-                    }
-                  }
-                >
+                <Box>
                   <FormLabel
                     component="legend"
                     // className="title"
@@ -310,10 +218,11 @@ export function CreateElectiveSubject() {
                     row
                     aria-label="options"
                     name="isOptional"
+                    value={electiveSubject?.isOptional}
                     onChange={handleInputValues}
                   >
                     <FormControlLabel
-                      value="true"
+                      value={true}
                       control={
                         <Radio
                           sx={{
@@ -327,13 +236,11 @@ export function CreateElectiveSubject() {
                       label="True"
                       sx={{
                         color:
-                          electiveSubject.isOptional === "true"
-                            ? "#04a214"
-                            : "",
+                          electiveSubject.isOptional === true ? "#04a214" : "",
                       }}
                     />
                     <FormControlLabel
-                      value="false"
+                      value={false}
                       control={
                         <Radio
                           sx={{
@@ -347,9 +254,7 @@ export function CreateElectiveSubject() {
                       label="False"
                       sx={{
                         color:
-                          electiveSubject.isOptional === "false"
-                            ? "#f00808"
-                            : "",
+                          electiveSubject.isOptional === false ? "#f00808" : "",
                       }}
                     />
                   </RadioGroup>
@@ -358,17 +263,15 @@ export function CreateElectiveSubject() {
             </Grid>
           </Grid>
           <Button type="submit" disabled={!canSave}>
-            Create Elective Subject
-            {/* {loadingComplete === false && (
-            <LoadingProgress color={"#fff"} size={"1.3rem"} />
-          )}
-          {loadingComplete === true && createTermStatus === "success" && (
-            <>
-              <span> Academic Term Created Successfully...</span>{" "}
-              <TaskAltIcon />
-            </>
-          )}
-          {loadingComplete === null && "Create Academic Term"} */}
+            {loadingComplete === false && (
+              <LoadingProgress color={"#fff"} size={"1.3rem"} />
+            )}
+            {loadingComplete === true && createStatus === "success" && (
+              <>
+                <span>Successfully</span> <TaskAlt />
+              </>
+            )}
+            {loadingComplete === null && "Create Elective Subject"}
           </Button>
         </Box>
       </Box>

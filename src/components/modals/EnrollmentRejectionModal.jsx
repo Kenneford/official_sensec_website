@@ -7,15 +7,15 @@ import Redirection from "../pageLoading/Redirection";
 import PropTypes from "prop-types";
 import { useDispatch } from "react-redux";
 
-export default function RejectEnrollmentModal({
+export default function EnrollmentRejectionModal({
   open,
   onClose,
-  rejectionFunction,
+  //   rejectionFunction,
   setLoadingComplete,
   setUserToReject,
-  currentUserId,
-  employeeToApprove,
-  employeeToReject,
+  currentStudentId,
+  studentToApprove,
+  studentToReject,
 }) {
   const dispatch = useDispatch();
   if (!open) return null;
@@ -29,16 +29,16 @@ export default function RejectEnrollmentModal({
           }}
         >
           <Box className="previewCont">
-            <p>Reject Employment</p>
+            <p>Reject Enrollment</p>
             <Box className="modalActionBtns">
               <button
                 className="employLectBtn"
                 onClick={(e) => {
                   e.preventDefault();
-                  setUserToReject(currentUserId);
-                  if (employeeToReject && !employeeToApprove) {
-                    dispatch(rejectionFunction);
-                    // setLoadingComplete(false);
+                  setUserToReject(currentStudentId);
+                  if (studentToReject && !studentToApprove) {
+                    // dispatch(rejectionFunction);
+                    setLoadingComplete(false);
                   }
                   onClose();
                 }}
@@ -63,14 +63,14 @@ export default function RejectEnrollmentModal({
   );
 }
 
-RejectEnrollmentModal.propTypes = {
+EnrollmentRejectionModal.propTypes = {
   open: PropTypes.bool,
   onClose: PropTypes.func,
   rejectionFunction: PropTypes.func,
   setLoadingComplete: PropTypes.func,
   dispatch: PropTypes.func,
   setUserToReject: PropTypes.func,
-  currentUserId: PropTypes.string,
-  employeeToApprove: PropTypes.object,
-  employeeToReject: PropTypes.object,
+  currentStudentId: PropTypes.string,
+  studentToApprove: PropTypes.object,
+  studentToReject: PropTypes.object,
 };

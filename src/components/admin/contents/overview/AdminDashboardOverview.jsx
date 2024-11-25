@@ -102,7 +102,7 @@ export function AdminDashboardOverview() {
   });
 
   return (
-    <>
+    <Box>
       {/* Current dashboard title */}
       <Box
         component={"div"}
@@ -141,7 +141,7 @@ export function AdminDashboardOverview() {
               <div className="card">
                 <h3>Total Admins</h3>
                 <HashLink
-                  to={`/sensec/users/${authAdmin?.uniqueId}/admin/Users/Admins/employees/All`}
+                  to={`/sensec/users/${authAdmin?.uniqueId}/admin/User-Types/Admins/employees/All`}
                   className="cardInfo"
                 >
                   <div className="cardInfoIcons">
@@ -155,7 +155,7 @@ export function AdminDashboardOverview() {
                   <div className="cardTotal">{allEmployedAdmins?.length}</div>
                 </HashLink>
                 <HashLink
-                  to={`/sensec/users/${authAdmin?.uniqueId}/admin/Users/Admins/employees/Pending_Admins`}
+                  to={`/sensec/users/${authAdmin?.uniqueId}/admin/User-Types/Admins/employees/Pending_Admins`}
                   className="pending"
                 >
                   <h4>Pending Admin(s)</h4>
@@ -165,11 +165,11 @@ export function AdminDashboardOverview() {
               <div className="card">
                 <h3>Total Lecturers</h3>
                 <HashLink
-                  to={`/sensec/users/${authAdmin?.uniqueId}/admin/Users/Lecturers/employees/All`}
+                  to={`/sensec/users/${authAdmin?.uniqueId}/admin/User-Types/Lecturers/employees/All`}
                   className="cardInfo"
                 >
                   <div
-                    to={`/sensec/users/${authAdmin?.uniqueId}/admin/Users/Lecturers`}
+                    to={`/sensec/users/${authAdmin?.uniqueId}/admin/User-Types/Lecturers`}
                     className="cardInfoIcons"
                   >
                     <SupervisedUserCircle
@@ -184,7 +184,7 @@ export function AdminDashboardOverview() {
                   </div>
                 </HashLink>
                 <HashLink
-                  to={`/sensec/users/${authAdmin?.uniqueId}/admin/Users/Lecturers/employees/Pending_Lecturers`}
+                  to={`/sensec/users/${authAdmin?.uniqueId}/admin/User-Types/Lecturers/employees/Pending_Lecturers`}
                   className="pending"
                 >
                   <h4>Pending Lecturer(s)</h4>
@@ -222,7 +222,7 @@ export function AdminDashboardOverview() {
               <div className="card">
                 <h3>Total NT-Staffs</h3>
                 <HashLink
-                  to={`/sensec/users/${authAdmin?.uniqueId}/admin/Users/NT-Staffs/employees/All`}
+                  to={`/sensec/users/${authAdmin?.uniqueId}/admin/User-Types/NT-Staffs/employees/All`}
                   className="cardInfo"
                 >
                   <div className="cardInfoIcons">
@@ -236,7 +236,7 @@ export function AdminDashboardOverview() {
                   <div className="cardTotal">{allEmployedNTStaffs?.length}</div>
                 </HashLink>
                 <HashLink
-                  to={`/sensec/users/${authAdmin?.uniqueId}/admin/Users/NT-Staffs/employees/Pending_NT-Staffs`}
+                  to={`/sensec/users/${authAdmin?.uniqueId}/admin/User-Types/NT-Staffs/employees/Pending_NT-Staffs`}
                   className="pending"
                 >
                   <h4>Pending Staff(s)</h4>
@@ -247,7 +247,7 @@ export function AdminDashboardOverview() {
               </div>
               <div className="card">
                 <HashLink
-                  to={`/sensec/users/${authAdmin?.uniqueId}/admin/Users/Blogs`}
+                  to={`/sensec/users/${authAdmin?.uniqueId}/admin/Dashboard/Blogs`}
                 >
                   <div className="titleFlex">
                     <h3>Blogs</h3>
@@ -414,6 +414,6 @@ export function AdminDashboardOverview() {
           </div>
         </Box>
       </Box>
-    </>
+    </Box>
   );
 }

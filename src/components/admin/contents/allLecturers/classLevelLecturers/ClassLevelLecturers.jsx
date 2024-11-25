@@ -3,7 +3,7 @@ import "../lecturersData.scss";
 import DataTable from "react-data-table-component";
 import SearchIcon from "@mui/icons-material/Search";
 import { useNavigate, useParams } from "react-router-dom";
-import NewEmploymentModal from "../../../../actionModal/ActionModal";
+import NewEmploymentModal from "../../../../modals/NewEmploymentModal";
 import { customUserTableStyle } from "../../../../../usersInfoDataFormat/usersInfoTableStyle";
 import { Box, Grid } from "@mui/material";
 import { AllEmployedLecturersPageQuickLinks } from "../../../../../linksFormat/LinksFormat";

@@ -3,15 +3,21 @@ import "../lecturersData.scss";
 import SearchIcon from "@mui/icons-material/Search";
 import DataTable from "react-data-table-component";
 import { useNavigate, useParams } from "react-router-dom";
-import NewEmploymentModal from "../../../../actionModal/ActionModal";
+import NewEmploymentModal from "../../../../modals/NewEmploymentModal";
 import { customUserTableStyle } from "../../../../../usersInfoDataFormat/usersInfoTableStyle";
 import { Box, Grid } from "@mui/material";
 import { AllEmployedLecturersPageQuickLinks } from "../../../../../linksFormat/LinksFormat";
 import { useDispatch, useSelector } from "react-redux";
-import { getAuthUser } from "../../../../../features/auth/authSlice";
+import {
+  fetchAllUsers,
+  getAuthUser,
+} from "../../../../../features/auth/authSlice";
 import { FetchAllEmployedLecturers } from "../../../../../data/lecturers/FetchLecturers";
 import { teachersColumn } from "../../../../../usersInfoDataFormat/UsersInfoDataFormat";
 import SearchFilter from "../../../../searchForm/SearchFilter";
+import { FetchAllClassLevels } from "../../../../../data/class/FetchClassLevel";
+import { toast } from "react-toastify";
+import { resetRemoveLecturer } from "../../../../../features/academics/classSectionSlice";
 
 export function LecturersData() {
   const authAdmin = useSelector(getAuthUser);
@@ -20,19 +26,23 @@ export function LecturersData() {
   const navigate = useNavigate();
   const actionBtns = AllEmployedLecturersPageQuickLinks();
   const dispatch = useDispatch();
+  const { removeLecturerStatus, error, successMessage } = useSelector(
+    (state) => state.classSection
+  );
+  const [redirect, setRedirect] = useState(false);
+  const [removingLecturer, setRemovingLecturer] = useState(null);
   console.log(allEmployedLecturers);
-  const allClassLevels = [
-    {
-      name: "Level 100",
-    },
-    {
-      name: "Level 200",
-    },
-    {
-      name: "Level 300",
-    },
-  ];
-  const teachersData = teachersColumn(authAdmin);
+  const allClassLevels = FetchAllClassLevels();
+  const teachersData = teachersColumn(
+    authAdmin,
+    redirect,
+    setRedirect,
+    navigate,
+    removeLecturerStatus,
+    setRemovingLecturer,
+    removingLecturer,
+    dispatch
+  );
   const { adminCurrentAction, adminCurrentLink, class_level, employees_link } =
     useParams();
   console.log(employees_link);
@@ -53,23 +63,64 @@ export function LecturersData() {
   const [uncompletedEmploymentTask, setUncompletedEmploymentTask] =
     useState("");
 
-  const handleStudentSearch = (e) => {
-    e.preventDefault();
-  };
   const handleNewEmployment = () => {
     setRedirecting(true);
     setUncompletedEmploymentTask("You're being redirected");
     setTimeout(() => {
       navigate(
-        `/sensec/admin/${adminCurrentAction}/${adminCurrentLink}/new_employment/personal_info`
+        `/sensec/users/${authAdmin?.uniqueId}/admin/${adminCurrentAction}/new_employment`
       );
     }, 3000);
   };
 
-  // useEffect(() => {
-  //   dispatch(fetchClassLevels());
-  //   dispatch(fetchTeachers());
-  // }, [dispatch]);
+  //   // Handle enrollment status check
+  useEffect(() => {
+    if (removeLecturerStatus === "pending") {
+      setRemovingLecturer(false);
+    }
+    if (removeLecturerStatus === "rejected") {
+      setTimeout(() => {
+        error?.errorMessage?.message?.map((err) =>
+          toast.error(err, {
+            position: "top-right",
+            theme: "light",
+            toastId: err,
+          })
+        );
+      }, 2000);
+      setTimeout(() => {
+        setRemovingLecturer(null);
+        dispatch(resetRemoveLecturer());
+      }, 3000);
+      return;
+    }
+    if (removeLecturerStatus === "success") {
+      setTimeout(() => {
+        setRemovingLecturer(true);
+      }, 3000);
+      setTimeout(() => {
+        dispatch(fetchAllUsers());
+        setRemovingLecturer(null);
+      }, 6000);
+    }
+  }, [
+    navigate,
+    dispatch,
+    removeLecturerStatus,
+    error,
+    successMessage,
+    adminCurrentAction,
+    adminCurrentLink,
+    authAdmin,
+  ]);
+
+  useEffect(() => {
+    if (redirect) {
+      setTimeout(() => {
+        setRedirect(false);
+      }, 3000);
+    }
+  }, [redirect]);
 
   const allStd = `All Employed Lecturers / Total = ${teachersEmployed?.length}`;
   return (

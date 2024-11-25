@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import "./createOldStudentsGroup.scss";
+import "../create.scss";
 import { Box, Button, CircularProgress, Grid } from "@mui/material";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -102,7 +102,7 @@ export function CreateOldStudentsGroup() {
           display: "flex",
           flexDirection: "column",
         }}
-        className="createOldStudentsWrap"
+        className="createDataWrap"
       >
         <Box
           component={"form"}

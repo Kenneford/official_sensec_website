@@ -271,542 +271,532 @@ export function NavigationBar({
 
   return (
     <Box width={"100%"} className="navbarWrap">
-      <Box>
-        <StyledNavbar.Navbar>
-          {/* Menu Icons */}
-          <Box
-            sx={{
-              flex: "1",
-              display: {
-                sm: "none",
-                md: "block",
-                lg: "block",
-              },
-              color: "#fff",
-            }}
-          >
-            {!openMenuLinks ? (
-              <Box display={"flex"} alignItems={"center"}>
-                <MenuIcon
-                  onClick={() => setOpenMenuLinks(!openMenuLinks)}
-                  sx={{
-                    display: { xs: "block", sm: "none" },
-                    fontSize: { xs: "1.5", md: "2rem" },
-                  }}
-                />
-                {authUser ? (
-                  <Box
-                    component={"button"}
-                    onClick={() => setOpenSearchModal(true)}
-                    bgcolor={"transparent"}
-                    sx={{ cursor: "pointer" }}
-                    mt={".3rem"}
-                  >
-                    <Search
-                      sx={{
-                        display: { xs: "block", sm: "none" },
-                        color: "#fff",
-                        fontSize: "1.6rem",
-                        marginLeft: "1rem",
-                      }}
-                    />
-                    <SearchModal
-                      open={openSearchModal}
-                      onClose={() => setOpenSearchModal(false)}
-                      handleEscapeKey={handleEscapeKey}
-                    />
-                  </Box>
-                ) : (
-                  <Box
-                    component={"button"}
-                    onClick={() => setOpenSearchModal(true)}
-                    bgcolor={"transparent"}
-                    sx={{ cursor: "pointer" }}
-                    mt={".3rem"}
-                  >
-                    <Search
-                      sx={{
-                        display: { xs: "block", sm: "none" },
-                        color: "#fff",
-                        fontSize: "1.6rem",
-                        marginLeft: "1rem",
-                      }}
-                    />
-                    <SearchModal
-                      open={openSearchModal}
-                      onClose={() => setOpenSearchModal(false)}
-                      handleEscapeKey={handleEscapeKey}
-                    />
-                  </Box>
-                )}
-              </Box>
-            ) : (
-              <Box display={"flex"} alignItems={"center"}>
-                <CloseIcon
-                  onClick={() => setOpenMenuLinks(!openMenuLinks)}
-                  sx={{
-                    display: { xs: "block", sm: "none" },
-                    fontSize: { xs: "1.5", md: "2rem" },
-                  }}
-                />
-                {!authUser ? (
-                  <Box
-                    component={"button"}
-                    onClick={() => setOpenSearchModal(true)}
-                    bgcolor={"transparent"}
-                    sx={{ cursor: "pointer" }}
-                    mt={".3rem"}
-                  >
-                    <Search
-                      sx={{
-                        display: { xs: "block", sm: "none" },
-                        color: "#fff",
-                        fontSize: "1.6rem",
-                        marginLeft: "1rem",
-                      }}
-                    />
-                    <SearchModal
-                      open={openSearchModal}
-                      onClose={() => setOpenSearchModal(false)}
-                      handleEscapeKey={handleEscapeKey}
-                    />
-                  </Box>
-                ) : (
-                  <Box
-                    component={"button"}
-                    onClick={() => setOpenSearchModal(true)}
-                    bgcolor={"transparent"}
-                    sx={{ cursor: "pointer" }}
-                    mt={".3rem"}
-                  >
-                    <Search
-                      sx={{
-                        display: { xs: "block", sm: "none" },
-                        color: "#fff",
-                        fontSize: "1.6rem",
-                        marginLeft: "1rem",
-                      }}
-                    />
-                    <SearchModal
-                      open={openSearchModal}
-                      onClose={() => setOpenSearchModal(false)}
-                      handleEscapeKey={handleEscapeKey}
-                    />
-                  </Box>
-                )}
-              </Box>
-            )}
-            {openMenuLinks && (
-              <Box id="smallScreenMenu">
-                <li>
-                  {userInfo &&
-                    menuLinks?.map((link) => (
-                      <HashLink
-                        key={link?.name}
-                        className={
-                          currentNavLink && link?.name === currentNavLink
-                            ? "menuListSelected active"
-                            : "menuListSelected"
-                        }
-                        to={
-                          link?.name === "Dashboard" &&
-                          userInfo?.adminStatusExtend?.isAdmin
-                            ? link?.path?.admin
-                            : link?.name === "Dashboard" &&
-                              userInfo?.teacherStatusExtend?.isTeacher
-                            ? link?.path?.teacher
-                            : link?.name === "Dashboard" &&
-                              userInfo?.nTStaffStatusExtend?.isNTStaff
-                            ? link?.path?.nt_Staff
-                            : link?.name === "Dashboard" &&
-                              userInfo?.studentStatusExtend?.isStudent
-                            ? link?.path?.student
-                            : link?.name === "Employment" &&
-                              userInfo?.adminStatusExtend?.isAdmin
-                            ? link?.path?.admin
-                            : link?.name === "Employment" && !userInfo
-                            ? link?.path?.others
-                            : link?.path
-                        }
-                        onClick={() => {
-                          localStorage.setItem("currentNavLink", link?.name);
-                        }}
-                      >
-                        {link?.name}
-                      </HashLink>
-                    ))}
-                  {!userInfo &&
-                    filteredMenuLinks?.map((link) => (
-                      <NavHashLink
-                        key={link?.name}
-                        className={
-                          currentNavLink && link?.name === currentNavLink
-                            ? "menuListSelected active"
-                            : "menuListSelected"
-                        }
-                        to={
-                          link?.name === "Dashboard" &&
-                          userInfo?.adminStatusExtend?.isAdmin
-                            ? link?.path?.admin
-                            : link?.name === "Dashboard" &&
-                              userInfo?.teacherStatusExtend?.isTeacher
-                            ? link?.path?.teacher
-                            : link?.name === "Dashboard" &&
-                              userInfo?.nTStaffStatusExtend?.isNTStaff
-                            ? link?.path?.nt_Staff
-                            : link?.name === "Dashboard" &&
-                              userInfo?.studentStatusExtend?.isStudent
-                            ? link?.path?.student
-                            : link?.name === "Employment" &&
-                              userInfo?.adminStatusExtend?.isAdmin
-                            ? link?.path?.admin
-                            : link?.name === "Employment" && !userInfo
-                            ? link?.path?.others
-                            : link?.path
-                        }
-                        onClick={() =>
-                          localStorage.setItem("currentNavLink", link?.name)
-                        }
-                      >
-                        {link?.name}
-                      </NavHashLink>
-                    ))}
-                </li>
-              </Box>
-            )}
-          </Box>
-          {/* Navbar Link */}
-          <Box
-            sx={{
-              display: {
-                xs: "none",
-                sm: "block",
-              },
-              flex: "2.5",
-            }}
-          >
-            <Box
-              component={"div"}
-              id="navLinksWrap"
-              sx={{
-                display: { xs: "none", sm: "flex" },
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <>
-                {navbarLinks.map((link) => (
-                  <Box
-                    component={"div"}
-                    key={link?.name}
-                    // sx={{
-                    //   display: "flex",
-                    //   justifyContent: "center",
-                    //   alignItems: "center",
-                    // }}
-                  >
-                    <Button
-                      id="navLinks"
-                      key={link?.name}
-                      // onClick={handleCloseNavMenu}
-                      sx={{
-                        // my: 2,
-                        color: `${
-                          currentGuestPage && link?.name === currentGuestPage
-                            ? "yellow"
-                            : "white"
-                        }`,
-                      }}
-                      onClick={() => {
-                        // Click handler
-                        localStorage.setItem("currentNavLink", link?.name);
-                        if (link?.name === "others") {
-                          setOpenUserLinks(
-                            !openUserLinks,
-                            setOpenSubNavLinks(!openSubNavLinks)
-                          );
-                        } else {
-                          localStorage.removeItem("currentOtherNavLink");
-                        }
-                        navigate(link?.path);
-                      }}
-                    >
-                      {link?.name === "homepage" ? "Home" : link?.name}
-                      {link?.name == "others" && (
-                        <>
-                          {!openUserLinks ? (
-                            <ExpandMoreIcon className="expandMoreIcon" />
-                          ) : (
-                            <ExpandLessIcon className="expandMoreIcon" />
-                          )}
-                        </>
-                      )}
-                    </Button>
-                    {link?.name === "others" && (
-                      <div id="otherLinks">
-                        <button
-                          className={
-                            //   Change text color on button click
-                            openUserLinks
-                              ? "otherLinksWrap active"
-                              : "otherLinksWrap"
-                          }
-                          onClick={() => setOpenSubNavLinks(!openSubNavLinks)}
-                        >
-                          {/* <span className="otherLinksText">Others</span>{" "} */}
-                          {/* {!openUserLinks ? (
-                            <ExpandMoreIcon className="expandMoreIcon" />
-                          ) : (
-                            <ExpandLessIcon className="expandMoreIcon" />
-                          )} */}
-                        </button>
-                        <div className="subNav" style={{ zIndex: 3 }}>
-                          {openSubNavLinks && (
-                            <div
-                              className={
-                                openSubNavLinks
-                                  ? "openSubNavLinks"
-                                  : "closeSubNavLinks"
-                              }
-                            >
-                              {userInfo &&
-                                otherLinks?.map((link) => (
-                                  <HashLink
-                                    key={link?.name}
-                                    className={
-                                      currentOtherNavLink &&
-                                      link?.name === currentOtherNavLink
-                                        ? "otherLinkSelected active"
-                                        : "otherLinkSelected"
-                                    }
-                                    to={
-                                      link?.name === "Dashboard" &&
-                                      userInfo?.adminStatusExtend?.isAdmin
-                                        ? link?.path?.admin
-                                        : link?.name === "Dashboard" &&
-                                          userInfo?.teacherStatusExtend
-                                            ?.isTeacher
-                                        ? link?.path?.teacher
-                                        : link?.name === "Dashboard" &&
-                                          userInfo?.nTStaffStatusExtend
-                                            ?.isNTStaff
-                                        ? link?.path?.nt_Staff
-                                        : link?.name === "Dashboard" &&
-                                          userInfo?.studentStatusExtend
-                                            ?.isStudent
-                                        ? link?.path?.student
-                                        : link?.name === "Employment" &&
-                                          userInfo?.adminStatusExtend?.isAdmin
-                                        ? link?.path?.admin
-                                        : link?.name === "Employment" &&
-                                          !userInfo
-                                        ? link?.path?.others
-                                        : link?.path
-                                    }
-                                    onClick={() => {
-                                      localStorage.setItem(
-                                        "currentOtherNavLink",
-                                        link?.name
-                                      );
-                                      if (
-                                        link?.name === "Dashboard" &&
-                                        userInfo?.adminStatusExtend?.isAdmin
-                                      ) {
-                                        setCurrentAction("Dashboard");
-                                        setCurrentLink("Overview");
-                                      }
-                                    }}
-                                  >
-                                    {link?.name}
-                                  </HashLink>
-                                ))}
-                              {!userInfo &&
-                                filteredOtherLinks?.map((link) => (
-                                  <NavHashLink
-                                    key={link?.name}
-                                    className={
-                                      currentOtherNavLink &&
-                                      link?.name === currentOtherNavLink
-                                        ? "otherLinkSelected active"
-                                        : "otherLinkSelected"
-                                    }
-                                    to={
-                                      link?.name === "Dashboard" &&
-                                      userInfo?.adminStatusExtend?.isAdmin
-                                        ? link?.path?.admin
-                                        : link?.name === "Dashboard" &&
-                                          userInfo?.teacherStatusExtend
-                                            ?.isTeacher
-                                        ? link?.path?.teacher
-                                        : link?.name === "Dashboard" &&
-                                          userInfo?.nTStaffStatusExtend
-                                            ?.isNTStaff
-                                        ? link?.path?.nt_Staff
-                                        : link?.name === "Dashboard" &&
-                                          userInfo?.studentStatusExtend
-                                            ?.isStudent
-                                        ? link?.path?.student
-                                        : link?.name === "Employment" &&
-                                          userInfo?.adminStatusExtend?.isAdmin
-                                        ? link?.path?.admin
-                                        : link?.name === "Employment" &&
-                                          !userInfo
-                                        ? link?.path?.others
-                                        : link?.path
-                                    }
-                                    onClick={() =>
-                                      localStorage.setItem(
-                                        "currentOtherNavLink",
-                                        link?.name
-                                      )
-                                    }
-                                  >
-                                    {link?.name}
-                                  </NavHashLink>
-                                ))}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    )}
-                  </Box>
-                ))}
+      <StyledNavbar.Navbar>
+        {/* Menu Icons */}
+        <Box
+          sx={{
+            flex: "1",
+            display: {
+              sm: "none",
+              md: "block",
+              lg: "block",
+            },
+            color: "#fff",
+          }}
+        >
+          {!openMenuLinks ? (
+            <Box display={"flex"} alignItems={"center"}>
+              <MenuIcon
+                onClick={() => setOpenMenuLinks(!openMenuLinks)}
+                sx={{
+                  display: { xs: "block", sm: "none" },
+                  fontSize: { xs: "1.5", md: "2rem" },
+                }}
+              />
+              {authUser ? (
                 <Box
                   component={"button"}
                   onClick={() => setOpenSearchModal(true)}
                   bgcolor={"transparent"}
                   sx={{ cursor: "pointer" }}
+                  mt={".3rem"}
                 >
                   <Search
                     sx={{
+                      display: { xs: "block", sm: "none" },
                       color: "#fff",
                       fontSize: "1.6rem",
                       marginLeft: "1rem",
                     }}
                   />
+                  <SearchModal
+                    open={openSearchModal}
+                    onClose={() => setOpenSearchModal(false)}
+                    handleEscapeKey={handleEscapeKey}
+                  />
                 </Box>
-                <SearchModal
-                  open={openSearchModal}
-                  onClose={() => setOpenSearchModal(false)}
-                  handleEscapeKey={handleEscapeKey}
-                />
-              </>
+              ) : (
+                <Box
+                  component={"button"}
+                  onClick={() => setOpenSearchModal(true)}
+                  bgcolor={"transparent"}
+                  sx={{ cursor: "pointer" }}
+                  mt={".3rem"}
+                >
+                  <Search
+                    sx={{
+                      display: { xs: "block", sm: "none" },
+                      color: "#fff",
+                      fontSize: "1.6rem",
+                      marginLeft: "1rem",
+                    }}
+                  />
+                  <SearchModal
+                    open={openSearchModal}
+                    onClose={() => setOpenSearchModal(false)}
+                    handleEscapeKey={handleEscapeKey}
+                  />
+                </Box>
+              )}
             </Box>
-          </Box>
-          {/* Current User */}
+          ) : (
+            <Box display={"flex"} alignItems={"center"}>
+              <CloseIcon
+                onClick={() => setOpenMenuLinks(!openMenuLinks)}
+                sx={{
+                  display: { xs: "block", sm: "none" },
+                  fontSize: { xs: "1.5", md: "2rem" },
+                }}
+              />
+              {!authUser ? (
+                <Box
+                  component={"button"}
+                  onClick={() => setOpenSearchModal(true)}
+                  bgcolor={"transparent"}
+                  sx={{ cursor: "pointer" }}
+                  mt={".3rem"}
+                >
+                  <Search
+                    sx={{
+                      display: { xs: "block", sm: "none" },
+                      color: "#fff",
+                      fontSize: "1.6rem",
+                      marginLeft: "1rem",
+                    }}
+                  />
+                  <SearchModal
+                    open={openSearchModal}
+                    onClose={() => setOpenSearchModal(false)}
+                    handleEscapeKey={handleEscapeKey}
+                  />
+                </Box>
+              ) : (
+                <Box
+                  component={"button"}
+                  onClick={() => setOpenSearchModal(true)}
+                  bgcolor={"transparent"}
+                  sx={{ cursor: "pointer" }}
+                  mt={".3rem"}
+                >
+                  <Search
+                    sx={{
+                      display: { xs: "block", sm: "none" },
+                      color: "#fff",
+                      fontSize: "1.6rem",
+                      marginLeft: "1rem",
+                    }}
+                  />
+                  <SearchModal
+                    open={openSearchModal}
+                    onClose={() => setOpenSearchModal(false)}
+                    handleEscapeKey={handleEscapeKey}
+                  />
+                </Box>
+              )}
+            </Box>
+          )}
+          {openMenuLinks && (
+            <Box id="smallScreenMenu">
+              <li>
+                {userInfo &&
+                  menuLinks?.map((link) => (
+                    <HashLink
+                      key={link?.name}
+                      className={
+                        currentNavLink && link?.name === currentNavLink
+                          ? "menuList selected"
+                          : "menuList"
+                      }
+                      to={
+                        link?.name === "Dashboard" &&
+                        userInfo?.adminStatusExtend?.isAdmin
+                          ? link?.path?.admin
+                          : link?.name === "Dashboard" &&
+                            userInfo?.teacherStatusExtend?.isTeacher
+                          ? link?.path?.teacher
+                          : link?.name === "Dashboard" &&
+                            userInfo?.nTStaffStatusExtend?.isNTStaff
+                          ? link?.path?.nt_Staff
+                          : link?.name === "Dashboard" &&
+                            userInfo?.studentStatusExtend?.isStudent
+                          ? link?.path?.student
+                          : link?.name === "Employment" &&
+                            userInfo?.adminStatusExtend?.isAdmin
+                          ? link?.path?.admin
+                          : link?.name === "Employment" && !userInfo
+                          ? link?.path?.others
+                          : link?.path
+                      }
+                      onClick={() => {
+                        localStorage.setItem("currentNavLink", link?.name);
+                      }}
+                    >
+                      {link?.name}
+                    </HashLink>
+                  ))}
+                {!userInfo &&
+                  filteredMenuLinks?.map((link) => (
+                    <NavHashLink
+                      key={link?.name}
+                      className={
+                        currentNavLink && link?.name === currentNavLink
+                          ? "menuList selected"
+                          : "menuList"
+                      }
+                      to={
+                        link?.name === "Dashboard" &&
+                        userInfo?.adminStatusExtend?.isAdmin
+                          ? link?.path?.admin
+                          : link?.name === "Dashboard" &&
+                            userInfo?.teacherStatusExtend?.isTeacher
+                          ? link?.path?.teacher
+                          : link?.name === "Dashboard" &&
+                            userInfo?.nTStaffStatusExtend?.isNTStaff
+                          ? link?.path?.nt_Staff
+                          : link?.name === "Dashboard" &&
+                            userInfo?.studentStatusExtend?.isStudent
+                          ? link?.path?.student
+                          : link?.name === "Employment" &&
+                            userInfo?.adminStatusExtend?.isAdmin
+                          ? link?.path?.admin
+                          : link?.name === "Employment" && !userInfo
+                          ? link?.path?.others
+                          : link?.path
+                      }
+                      onClick={() =>
+                        localStorage.setItem("currentNavLink", link?.name)
+                      }
+                    >
+                      {link?.name}
+                    </NavHashLink>
+                  ))}
+              </li>
+            </Box>
+          )}
+        </Box>
+        {/* Navbar Link */}
+        <Box
+          sx={{
+            display: {
+              xs: "none",
+              sm: "block",
+            },
+            flex: "2.5",
+          }}
+        >
           <Box
+            component={"div"}
+            id="navLinksWrap"
             sx={{
-              flex: "1",
-              xs: { paddingLeft: "0", paddingRight: "0" },
+              display: { xs: "none", sm: "flex" },
+              justifyContent: "center",
+              alignItems: "center",
             }}
           >
-            {authUser && (
-              <StyledNavbar.CurrentUser>
-                <Typography
-                  sx={{ display: { xs: "none", md: "block" }, color: "#fff" }}
+            <>
+              {navbarLinks.map((link) => (
+                <Box
+                  component={"div"}
+                  key={link?.name}
+                  // sx={{
+                  //   display: "flex",
+                  //   justifyContent: "center",
+                  //   alignItems: "center",
+                  // }}
                 >
-                  @{authUser?.userSignUpDetails?.userName}
-                </Typography>
-                <Box>
-                  {authUser?.personalInfo?.profilePicture ? (
-                    <Avatar
-                      onClick={() => setOpenUserActions(!openUserActions)}
-                      src={authUser?.personalInfo?.profilePicture?.url}
-                      alt=""
-                      sx={{
-                        cursor: "pointer",
-                      }}
-                    />
-                  ) : (
-                    <Avatar
-                      onClick={() => setOpenUserActions(!openUserActions)}
-                      src={
-                        authUser?.personalInfo?.gender === "Male"
-                          ? "/assets/maleAvatar.png"
-                          : "/assets/femaleAvatar.png"
+                  <Button
+                    id="navLinks"
+                    key={link?.name}
+                    // onClick={handleCloseNavMenu}
+                    sx={{
+                      // my: 2,
+                      color: `${
+                        currentGuestPage && link?.name === currentGuestPage
+                          ? "yellow"
+                          : "white"
+                      }`,
+                    }}
+                    onClick={() => {
+                      // Click handler
+                      localStorage.setItem("currentNavLink", link?.name);
+                      if (link?.name === "others") {
+                        setOpenUserLinks(
+                          !openUserLinks,
+                          setOpenSubNavLinks(!openSubNavLinks)
+                        );
+                      } else {
+                        localStorage.removeItem("currentOtherNavLink");
                       }
-                      alt=""
-                      sx={{
-                        cursor: "pointer",
-                      }}
-                    />
+                      navigate(link?.path);
+                    }}
+                  >
+                    {link?.name === "homepage" ? "Home" : link?.name}
+                    {link?.name == "others" && (
+                      <>
+                        {!openUserLinks ? (
+                          <ExpandMoreIcon className="expandMoreIcon" />
+                        ) : (
+                          <ExpandLessIcon className="expandMoreIcon" />
+                        )}
+                      </>
+                    )}
+                  </Button>
+                  {link?.name === "others" && (
+                    <div id="otherLinks">
+                      <button
+                        className={
+                          //   Change text color on button click
+                          openUserLinks
+                            ? "otherLinksWrap selected"
+                            : "otherLinksWrap"
+                        }
+                        onClick={() => setOpenSubNavLinks(!openSubNavLinks)}
+                      >
+                        {/* <span className="otherLinksText">Others</span>{" "} */}
+                        {/* {!openUserLinks ? (
+                            <ExpandMoreIcon className="expandMoreIcon" />
+                          ) : (
+                            <ExpandLessIcon className="expandMoreIcon" />
+                          )} */}
+                      </button>
+                      <div className="subNav" style={{ zIndex: 3 }}>
+                        {openSubNavLinks && (
+                          <div
+                            className={
+                              openSubNavLinks
+                                ? "openSubNavLinks"
+                                : "closeSubNavLinks"
+                            }
+                          >
+                            {userInfo &&
+                              otherLinks?.map((link) => (
+                                <HashLink
+                                  key={link?.name}
+                                  className={
+                                    currentOtherNavLink &&
+                                    link?.name === currentOtherNavLink
+                                      ? "otherLinkSelected selected"
+                                      : "otherLinkSelected"
+                                  }
+                                  to={
+                                    link?.name === "Dashboard" &&
+                                    userInfo?.adminStatusExtend?.isAdmin
+                                      ? link?.path?.admin
+                                      : link?.name === "Dashboard" &&
+                                        userInfo?.teacherStatusExtend?.isTeacher
+                                      ? link?.path?.teacher
+                                      : link?.name === "Dashboard" &&
+                                        userInfo?.nTStaffStatusExtend?.isNTStaff
+                                      ? link?.path?.nt_Staff
+                                      : link?.name === "Dashboard" &&
+                                        userInfo?.studentStatusExtend?.isStudent
+                                      ? link?.path?.student
+                                      : link?.name === "Employment" &&
+                                        userInfo?.adminStatusExtend?.isAdmin
+                                      ? link?.path?.admin
+                                      : link?.name === "Employment" && !userInfo
+                                      ? link?.path?.others
+                                      : link?.path
+                                  }
+                                  onClick={() => {
+                                    localStorage.setItem(
+                                      "currentOtherNavLink",
+                                      link?.name
+                                    );
+                                    if (
+                                      link?.name === "Dashboard" &&
+                                      userInfo?.adminStatusExtend?.isAdmin
+                                    ) {
+                                      setCurrentAction("Dashboard");
+                                      setCurrentLink("Overview");
+                                    }
+                                  }}
+                                >
+                                  {link?.name}
+                                </HashLink>
+                              ))}
+                            {!userInfo &&
+                              filteredOtherLinks?.map((link) => (
+                                <NavHashLink
+                                  key={link?.name}
+                                  className={
+                                    currentOtherNavLink &&
+                                    link?.name === currentOtherNavLink
+                                      ? "otherLinkSelected selected"
+                                      : "otherLinkSelected"
+                                  }
+                                  to={
+                                    link?.name === "Dashboard" &&
+                                    userInfo?.adminStatusExtend?.isAdmin
+                                      ? link?.path?.admin
+                                      : link?.name === "Dashboard" &&
+                                        userInfo?.teacherStatusExtend?.isTeacher
+                                      ? link?.path?.teacher
+                                      : link?.name === "Dashboard" &&
+                                        userInfo?.nTStaffStatusExtend?.isNTStaff
+                                      ? link?.path?.nt_Staff
+                                      : link?.name === "Dashboard" &&
+                                        userInfo?.studentStatusExtend?.isStudent
+                                      ? link?.path?.student
+                                      : link?.name === "Employment" &&
+                                        userInfo?.adminStatusExtend?.isAdmin
+                                      ? link?.path?.admin
+                                      : link?.name === "Employment" && !userInfo
+                                      ? link?.path?.others
+                                      : link?.path
+                                  }
+                                  onClick={() =>
+                                    localStorage.setItem(
+                                      "currentOtherNavLink",
+                                      link?.name
+                                    )
+                                  }
+                                >
+                                  {link?.name}
+                                </NavHashLink>
+                              ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   )}
                 </Box>
-                {openUserActions && (
-                  <div id="navLogout">
-                    {userActions?.map((action) => (
-                      <Box key={action?.label} className="profileOptions">
-                        {action?.value !== "Logout" && (
-                          <Box key={action?.label}>{action?.value}</Box>
-                        )}
-                        {action?.label === "Logout" && (
-                          <Box className="logUserOutWrap">
-                            <p className="logUserOut" onClick={handleLogout}>
-                              Logout
-                            </p>
-                            <LogoutIcon className="logoutIcon" />
-                          </Box>
-                        )}
-                      </Box>
-                    ))}
-                  </div>
-                )}
-              </StyledNavbar.CurrentUser>
-            )}
-            {!authUser && (
-              // <StyledNavbar.CurrentUser>
-              <div className="login">
-                <button onClick={() => setOpenUserActions(!openUserActions)}>
-                  Login
-                </button>
-                <button
-                  // onClick={() => navigate("/sensec/sign_up")}
-                  onClick={() => setOpenSignUpActions(!openSignUpActions)}
-                >
-                  Sign-Up
-                </button>
-                {openUserActions && (
-                  <div className="loginOptions" style={{ zIndex: 3 }}>
-                    {loginOptions?.map((option) => (
-                      <div
-                        key={option?.name}
-                        className="loginWrap"
-                        onClick={() => {
-                          localStorage.setItem("loginAction", option?.name),
-                            localStorage.removeItem("currentOtherNavLink"),
-                            navigate(option?.path);
-                        }}
-                      >
-                        <p>{option?.name}</p>
-                        <Login className="loginIcon" />
-                      </div>
-                    ))}
-                  </div>
-                )}
-                {openSignUpActions && (
-                  <div className="signUpOptions" style={{ zIndex: 3 }}>
-                    {signUpOptions?.map((option) => (
-                      <div
-                        key={option?.name}
-                        className="signUpWrap"
-                        onClick={() => {
-                          localStorage.setItem("signUpAction", option?.name),
-                            localStorage.removeItem("currentOtherNavLink"),
-                            navigate(option?.path);
-                        }}
-                      >
-                        <p>{option?.name}</p>
-                        <PersonAddAlt className="signUpIcon" />
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-              // </StyledNavbar.CurrentUser>
-            )}
+              ))}
+              <Box
+                component={"button"}
+                onClick={() => setOpenSearchModal(true)}
+                bgcolor={"transparent"}
+                sx={{ cursor: "pointer" }}
+              >
+                <Search
+                  sx={{
+                    color: "#fff",
+                    fontSize: "1.6rem",
+                    marginLeft: "1rem",
+                  }}
+                />
+              </Box>
+              <SearchModal
+                open={openSearchModal}
+                onClose={() => setOpenSearchModal(false)}
+                handleEscapeKey={handleEscapeKey}
+              />
+            </>
           </Box>
-        </StyledNavbar.Navbar>
-      </Box>
+        </Box>
+        {/* Current User */}
+        <Box
+          sx={{
+            flex: "1",
+            xs: { paddingLeft: "0", paddingRight: "0" },
+          }}
+        >
+          {authUser && (
+            <StyledNavbar.CurrentUser>
+              <Typography
+                sx={{ display: { xs: "none", md: "block" }, color: "#fff" }}
+              >
+                @{authUser?.userSignUpDetails?.userName}
+              </Typography>
+              <Box>
+                {authUser?.personalInfo?.profilePicture ? (
+                  <Avatar
+                    onClick={() => setOpenUserActions(!openUserActions)}
+                    src={authUser?.personalInfo?.profilePicture?.url}
+                    alt=""
+                    sx={{
+                      cursor: "pointer",
+                    }}
+                  />
+                ) : (
+                  <Avatar
+                    onClick={() => setOpenUserActions(!openUserActions)}
+                    src={
+                      authUser?.personalInfo?.gender === "Male"
+                        ? "/assets/maleAvatar.png"
+                        : "/assets/femaleAvatar.png"
+                    }
+                    alt=""
+                    sx={{
+                      cursor: "pointer",
+                    }}
+                  />
+                )}
+              </Box>
+              {openUserActions && (
+                <div id="navLogout">
+                  {userActions?.map((action) => (
+                    <Box key={action?.label} className="profileOptions">
+                      {action?.value !== "Logout" && (
+                        <Box key={action?.label}>{action?.value}</Box>
+                      )}
+                      {action?.label === "Logout" && (
+                        <Box className="logUserOutWrap">
+                          <p className="logUserOut" onClick={handleLogout}>
+                            Logout
+                          </p>
+                          <LogoutIcon className="logoutIcon" />
+                        </Box>
+                      )}
+                    </Box>
+                  ))}
+                </div>
+              )}
+            </StyledNavbar.CurrentUser>
+          )}
+          {!authUser && (
+            // <StyledNavbar.CurrentUser>
+            <div className="login">
+              <button onClick={() => setOpenUserActions(!openUserActions)}>
+                Login
+              </button>
+              <button
+                // onClick={() => navigate("/sensec/sign_up")}
+                onClick={() => setOpenSignUpActions(!openSignUpActions)}
+              >
+                Sign-Up
+              </button>
+              {openUserActions && (
+                <div className="loginOptions" style={{ zIndex: 3 }}>
+                  {loginOptions?.map((option) => (
+                    <div
+                      key={option?.name}
+                      className="loginWrap"
+                      onClick={() => {
+                        localStorage.setItem("loginAction", option?.name),
+                          localStorage.removeItem("currentOtherNavLink"),
+                          navigate(option?.path);
+                      }}
+                    >
+                      <p>{option?.name}</p>
+                      <Login className="loginIcon" />
+                    </div>
+                  ))}
+                </div>
+              )}
+              {openSignUpActions && (
+                <div className="signUpOptions" style={{ zIndex: 3 }}>
+                  {signUpOptions?.map((option) => (
+                    <div
+                      key={option?.name}
+                      className="signUpWrap"
+                      onClick={() => {
+                        localStorage.setItem("signUpAction", option?.name),
+                          localStorage.removeItem("currentOtherNavLink"),
+                          navigate(option?.path);
+                      }}
+                    >
+                      <p>{option?.name}</p>
+                      <PersonAddAlt className="signUpIcon" />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            // </StyledNavbar.CurrentUser>
+          )}
+        </Box>
+      </StyledNavbar.Navbar>
     </Box>
   );
 }

@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
-import "./createClassLevelSection.scss";
+import "../create.scss";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
-// import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 // import LoadingProgress from "../../pageLoading/LoadingProgress";
 import { toast } from "react-toastify";
@@ -17,114 +17,62 @@ import {
   Select,
 } from "@mui/material";
 import { CustomTextField } from "../../../../../../muiStyling/muiStyling";
+import { FetchAllClassLevels } from "../../../../../../data/class/FetchClassLevel";
+import { getAuthUser } from "../../../../../../features/auth/authSlice";
+import { FetchAllProgrammes } from "../../../../../../data/programme/FetchProgrammeData";
+import { createClassLevelSection } from "../../../../../../features/academics/classSectionSlice";
+import {
+  fetchAllDivisionProgrammes,
+  getAllDivisionProgrammes,
+} from "../../../../../../features/academics/programmeSlice";
+import LoadingProgress from "../../../../../pageLoading/LoadingProgress";
 
 export function CreateClassLevelSection() {
-  const authAdminInfo = {};
-  const allClassLevels = [];
-  const allProgrammes = [];
-  // const {
-  //   createClassSectionError,
-  //   createClassSectionSuccessMessage,
-  //   createClassSectionStatus,
-  // } = useSelector((state) => state.classLevelSection);
+  const authAdmin = useSelector(getAuthUser);
+  const allClassLevels = FetchAllClassLevels();
+  const allProgrammes = FetchAllProgrammes();
+  const allDivisionProgrammes = useSelector(getAllDivisionProgrammes);
+  const { error, successMessage, createStatus } = useSelector(
+    (state) => state.classSection
+  );
   const allTeachers = [];
   console.log(allTeachers);
   console.log(allClassLevels);
   console.log(allProgrammes);
 
-  const teachersEmployed = allTeachers?.filter(
-    (tch) => tch && tch?.employment?.employmentStatus === "approved"
-  );
-  console.log(teachersEmployed);
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const [loadingComplete, setLoadingComplete] = useState(null);
-
-  const [openLevelList, setOpenLevelList] = useState(false);
-  const [openProgramList, setOpenProgramList] = useState(false);
-  const [openCurrentTeacherList, setOpenCurrentTeacherList] = useState(false);
-  const [openSectionNameList, setOpenSectionNameList] = useState(false);
-  const [openLevelNameList, setOpenLevelNameList] = useState(false);
-
-  const [getProgrammeLabel, setGetProgrammeLabel] = useState("");
-  const [getLevelLabel, setGetLevelLabel] = useState("");
-  const [getCurrentTeacherLabel, setGetCurrentTeacherLabel] = useState("");
-  const [teachersGender, setTeachersGender] = useState("");
-
-  const [sectionNameValue, setSectionNameValue] = useState("");
-  const [currentClassLevelValue, setCurrentClassLevelValue] = useState("");
-  const [programValue, setProgramValue] = useState("");
-  const [currentTeacherValue, setCurrentTeacherValue] = useState("");
-  const [levelNameValue, setLevelNameValue] = useState("");
-  console.log(currentTeacherValue);
 
   const [classSection, setClassSection] = useState({
     sectionName: "",
     classLevelId: "",
-    classLevelName: "",
-    program: "",
     programId: "",
     divisionProgramId: "",
-    createdBy: `${authAdminInfo.id}`,
+    createdBy: `${authAdmin.id}`,
   });
   console.log(classSection);
-
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    document.addEventListener("click", hideOnClickOutside, true);
-  }, []);
-  const outSideClickRef = useRef(null);
-  const hideOnClickOutside = (e) => {
-    // console.log(outSideClickRef.current);
-    if (
-      outSideClickRef.current &&
-      !outSideClickRef.current.contains(e.target)
-    ) {
-      setOpenSectionNameList(false);
-      setOpenLevelList(false);
-      setOpenProgramList(false);
-      setOpenCurrentTeacherList(false);
-      setOpenLevelNameList(false);
-    }
-  };
+  // Find class-level
+  const classLevelFound = allClassLevels?.find(
+    (cLevel) => cLevel && cLevel?._id === classSection?.classLevelId
+  );
 
   const canSave =
     Boolean(classSection.sectionName) &&
-    Boolean(classSection.classLevelName) &&
-    Boolean(classSection.program);
+    Boolean(classSection.classLevelId) &&
+    Boolean(classSection.programId);
   // Boolean(currentTeacherValue);
 
   const handleClassSection = (e) => {
     e.preventDefault();
-    setLoadingComplete(false);
-    // dispatch(
-    //   createClassLevelSection({
-    //     sectionName: sectionNameValue,
-    //     classLevelId: currentClassLevelValue,
-    //     classLevelName: levelNameValue,
-    //     program: programValue,
-    //     currentTeacher: currentTeacherValue,
-    //     createdBy: classSection.createdBy,
-    //   })
-    // );
-    setTimeout(() => {
-      setLoadingComplete(true);
-    }, 3000);
-    setTimeout(() => {
-      setLoadingComplete(null);
-      setClassSection({
-        sectionName: "",
-        classLevelId: "",
-        classLevelName: "",
-        program: "",
-        programId: "",
-        divisionProgramId: "",
-      });
-      setSectionNameValue("");
-      setCurrentClassLevelValue("");
-      setProgramValue("");
-      setCurrentTeacherValue("");
-    }, 6000);
+    const data = {
+      sectionName: classSection?.sectionName,
+      classLevelId: classSection?.classLevelId,
+      classLevelName: classLevelFound?.name,
+      programId: classSection?.programId,
+      divisionProgramId: classSection?.divisionProgramId,
+      createdBy: classSection.createdBy,
+    };
+    dispatch(createClassLevelSection({ data }));
   };
   const handleInputValues = (e) => {
     const { name, value } = e.target;
@@ -134,43 +82,48 @@ export function CreateClassLevelSection() {
     });
   };
 
-  // useEffect(() => {
-  //   if (createClassSectionStatus === "rejected") {
-  //     setTimeout(() => {
-  //       setLoadingComplete(null);
-  //       createClassSectionError?.errorMessage?.message?.map((err) =>
-  //         toast.error(err, {
-  //           position: "top-right",
-  //           theme: "dark",
-  //         })
-  //       );
-  //     }, 3000);
-  //     return;
-  //   }
-  //   if (createClassSectionStatus === "success") {
-  //     setTimeout(() => {
-  //       toast.success(createClassSectionSuccessMessage, {
-  //         position: "top-right",
-  //         theme: "dark",
-  //       });
-  //     }, 1000);
-  //     setTimeout(() => {
-  //       window.location.reload();
-  //     }, 6000);
-  //   }
-  // }, [
-  //   createClassSectionError,
-  //   createClassSectionSuccessMessage,
-  //   createClassSectionStatus,
-  //   toastOptions,
-  //   navigate,
-  // ]);
-
-  // useEffect(() => {
-  //   dispatch(fetchTeachers());
-  //   dispatch(fetchClassLevels());
-  //   dispatch(fetchAllProgrammes());
-  // }, [dispatch]);
+  // Fetch needed data
+  useEffect(() => {
+    if (classSection?.programId) {
+      dispatch(
+        fetchAllDivisionProgrammes({ programId: classSection?.programId })
+      );
+    }
+  }, [dispatch, classSection]);
+  // Create academic year status check
+  useEffect(() => {
+    if (createStatus === "pending") {
+      setLoadingComplete(false);
+    }
+    if (createStatus === "rejected") {
+      setTimeout(() => {
+        setLoadingComplete(null);
+        error?.errorMessage?.message?.map((err) =>
+          toast.error(err, {
+            position: "top-right",
+            theme: "light",
+            toastId: "createClassSectionError",
+          })
+        );
+      }, 3000);
+      return;
+    }
+    if (createStatus === "success") {
+      setTimeout(() => {
+        setLoadingComplete(true);
+      }, 3000);
+      setTimeout(() => {
+        setLoadingComplete(null);
+        setClassSection({
+          sectionName: "",
+          classLevelId: "",
+          programId: "",
+          divisionProgramId: "",
+          createdBy: `${authAdmin.id}`,
+        });
+      }, 6000);
+    }
+  }, [error, successMessage, createStatus, authAdmin]);
 
   return (
     <Box
@@ -181,7 +134,7 @@ export function CreateClassLevelSection() {
         display: "flex",
         flexDirection: "column",
       }}
-      className="createAcademicClassSectionWrap"
+      className="createDataWrap"
     >
       <Box
         component={"form"}
@@ -213,14 +166,16 @@ export function CreateClassLevelSection() {
               select
               fullWidth
               label="Class Level"
-              name="classLevelName"
-              value={classSection?.classLevelName}
+              name="classLevelId"
+              value={classSection?.classLevelId}
               onChange={handleInputValues}
               required
             >
-              <MenuItem value="Level 100">Level 100</MenuItem>
-              <MenuItem value="Level 200">Level 200</MenuItem>
-              <MenuItem value="Level 300">Level 300</MenuItem>
+              {allClassLevels?.map((cLevel) => (
+                <MenuItem key={cLevel?._id} value={cLevel?._id}>
+                  {cLevel?.name}
+                </MenuItem>
+              ))}
             </CustomTextField>
           </Grid>
           {/* Programme Selection */}
@@ -229,21 +184,20 @@ export function CreateClassLevelSection() {
               select
               fullWidth
               label="Select Programme"
-              name="program"
-              value={classSection?.program}
+              name="programId"
+              value={classSection?.programId}
               onChange={handleInputValues}
               required
             >
-              <MenuItem value="Agric Science">Agric Science</MenuItem>
-              <MenuItem value="Business">Business</MenuItem>
-              <MenuItem value="General Science">General Science</MenuItem>
-              <MenuItem value="General Arts">General Arts</MenuItem>
-              <MenuItem value="Visual Arts">Visual Arts</MenuItem>
-              <MenuItem value="Home Economics">Home Economics</MenuItem>
+              {allProgrammes?.map((programme) => (
+                <MenuItem key={programme?._id} value={programme?._id}>
+                  {programme?.name}
+                </MenuItem>
+              ))}
             </CustomTextField>
           </Grid>
           {/* Division Program (conditional) */}
-          {classSection && classSection?.program === "General Arts" && (
+          {allDivisionProgrammes && allDivisionProgrammes?.length > 0 && (
             <Grid item xs={12} sm={6} md={6} lg={6}>
               <CustomTextField
                 select
@@ -252,27 +206,26 @@ export function CreateClassLevelSection() {
                 name="divisionProgramId"
                 value={classSection?.divisionProgramId}
                 onChange={handleInputValues}
-                required
               >
-                <MenuItem value="General Arts 1">General Arts 1</MenuItem>
-                <MenuItem value="General Arts 2">General Arts 2</MenuItem>
-                <MenuItem value="General Arts 3">General Arts 3</MenuItem>
+                {allDivisionProgrammes?.map((programme) => (
+                  <MenuItem key={programme?._id} value={programme?._id}>
+                    {programme?.divisionName}
+                  </MenuItem>
+                ))}
               </CustomTextField>
             </Grid>
           )}
         </Grid>
         <Button type="submit" disabled={!canSave}>
-          Create Academic Batch
-          {/* {loadingComplete === false && (
+          {loadingComplete === false && (
             <LoadingProgress color={"#fff"} size={"1.3rem"} />
           )}
-          {loadingComplete === true && createTermStatus === "success" && (
+          {loadingComplete === true && createStatus === "success" && (
             <>
-              <span> Academic Term Created Successfully...</span>{" "}
-              <TaskAltIcon />
+              <span>Successful</span> <TaskAltIcon />
             </>
           )}
-          {loadingComplete === null && "Create Academic Term"} */}
+          {loadingComplete === null && "Create Class Section"}
         </Button>
       </Box>
     </Box>

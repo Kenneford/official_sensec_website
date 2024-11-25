@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { SENSEC_API_ENDPOINT } from "../../apiEndPoint/api";
+import tokenInterceptor from "../../apiEndPoint/interceptors";
 
 const initialState = {
   batchInfo: "",
@@ -13,12 +14,11 @@ const initialState = {
 
 export const createBatch = createAsyncThunk(
   "Academics/createBatch",
-  async (data, { rejectWithValue }) => {
+  async ({ data }, { rejectWithValue }) => {
     try {
-      const res = await axios.post(
-        `${SENSEC_API_ENDPOINT}/admin/academics/batches/create`,
-        data
-      );
+      const res = await tokenInterceptor.post(`/academics/batches/create`, {
+        data,
+      });
       return res.data;
     } catch (error) {
       console.log(error.response.data);
@@ -43,7 +43,7 @@ const batchSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(createBatch.pending, (state, action) => {
+    builder.addCase(createBatch.pending, (state) => {
       return { ...state, createStatus: "pending" };
     });
     builder.addCase(createBatch.fulfilled, (state, action) => {
@@ -51,7 +51,6 @@ const batchSlice = createSlice({
         return {
           ...state,
           batchInfo: action.payload.batch,
-          allBatches: [...state.allBatches, action.payload.batch],
           successMessage: action.payload.successMessage,
           createStatus: "success",
         };
@@ -61,11 +60,11 @@ const batchSlice = createSlice({
       return {
         ...state,
         createStatus: "rejected",
-        batchError: action.payload,
+        error: action.payload,
       };
     });
 
-    builder.addCase(fetchAllBatches.pending, (state, action) => {
+    builder.addCase(fetchAllBatches.pending, (state) => {
       return { ...state, fetchStatus: "pending" };
     });
     builder.addCase(fetchAllBatches.fulfilled, (state, action) => {

@@ -404,6 +404,13 @@ export function PlacementCheckOverview() {
                           autoComplete="off"
                           required
                           className="textField"
+                          sx={{
+                            "& .MuiInputLabel-asterisk": {
+                              color: placementStudent?.firstName
+                                ? "green"
+                                : "red", // Change the asterisk color to red
+                            },
+                          }}
                         />
                       </Grid>
                       <Grid item xs={12} sm={6} md={4} lg={4}>
@@ -416,6 +423,13 @@ export function PlacementCheckOverview() {
                           autoComplete="off"
                           required
                           className="textField"
+                          sx={{
+                            "& .MuiInputLabel-asterisk": {
+                              color: placementStudent?.lastName
+                                ? "green"
+                                : "red", // Change the asterisk color to red
+                            },
+                          }}
                         />
                       </Grid>
                       <Grid item xs={12} sm={6} md={4} lg={4}>
@@ -426,7 +440,7 @@ export function PlacementCheckOverview() {
                           value={placementStudent?.otherName}
                           onChange={handleInputValues}
                           autoComplete="off"
-                          required
+                          // required
                           className="textField"
                         />
                       </Grid>
@@ -495,6 +509,13 @@ export function PlacementCheckOverview() {
                           autoComplete="off"
                           required
                           className="textField"
+                          sx={{
+                            "& .MuiInputLabel-asterisk": {
+                              color: placementStudent?.jhsAttended
+                                ? "green"
+                                : "red", // Change the asterisk color to red
+                            },
+                          }}
                         />
                       </Grid>
                       <Grid item xs={12} sm={6} md={4} lg={4}>
@@ -507,6 +528,13 @@ export function PlacementCheckOverview() {
                           autoComplete="off"
                           required
                           className="textField"
+                          sx={{
+                            "& .MuiInputLabel-asterisk": {
+                              color: placementStudent?.yearGraduated
+                                ? "green"
+                                : "red", // Change the asterisk color to red
+                            },
+                          }}
                         />
                       </Grid>
                       <Grid item xs={12} sm={6} md={4} lg={4}>

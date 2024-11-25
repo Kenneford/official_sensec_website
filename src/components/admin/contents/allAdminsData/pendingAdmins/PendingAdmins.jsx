@@ -4,7 +4,7 @@ import DataTable from "react-data-table-component";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import NewEmploymentModal from "../../../../actionModal/ActionModal";
+import NewEmploymentModal from "../../../../modals/NewEmploymentModal";
 import { customUserTableStyle } from "../../../../../usersInfoDataFormat/usersInfoTableStyle";
 import { AllEmployedAdminsPageQuickLinks } from "../../../../../linksFormat/LinksFormat";
 import { Box, Grid } from "@mui/material";
@@ -20,6 +20,10 @@ import {
   MultiRejectionBtn,
 } from "../../../../lazyLoading/LazyComponents";
 import {
+  approveMultiEmployees,
+  rejectMultiEmployees,
+  resetEmploymentApprovalState,
+  resetEmploymentRejectionState,
   resetMultiApprovalState,
   resetMultiRejectionState,
 } from "../../../../../features/employments/employmentSlice";
@@ -43,6 +47,10 @@ export function PendingAdmins() {
   const [rejectLoadingComplete, setRejectLoadingComplete] = useState(null);
   const [approveMultiLoadingComplete, setApproveMultiLoadingComplete] =
     useState(null);
+  const [approvalInProgress, setApprovalInProgress] = useState(false);
+  const [rejectionInProgress, setRejectionInProgress] = useState(false);
+  console.log(approvalInProgress);
+
   const [multiApprovalInProgress, setMultiApprovalInProgress] = useState(false);
   const [multiRejectionInProgress, setMultiRejectionInProgress] =
     useState(false);
@@ -110,6 +118,10 @@ export function PendingAdmins() {
     adminToReject,
     setOpenRejectModal,
     openRejectModal,
+    setApprovalInProgress,
+    approvalInProgress,
+    rejectionInProgress,
+    setRejectionInProgress,
   };
   const adminsData = pendingAdminsColumn(columnObjData);
 
@@ -123,7 +135,7 @@ export function PendingAdmins() {
     setUncompletedEmploymentTask("You're being redirected");
     setTimeout(() => {
       navigate(
-        `/sensec/users/${authAdmin?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/new_employment`
+        `/sensec/users/${authAdmin?.uniqueId}/admin/${adminCurrentAction}/new_employment`
       );
     }, 3000);
   };
@@ -133,10 +145,13 @@ export function PendingAdmins() {
     if (foundAdmin && !adminToReject) {
       if (approveEmploymentStatus === "pending") {
         setLoadingComplete(false);
+        setApprovalInProgress(true);
       }
       if (approveEmploymentStatus === "rejected") {
         setTimeout(() => {
           setLoadingComplete(null);
+          setApprovalInProgress(false);
+          dispatch(resetEmploymentApprovalState());
         }, 3000);
         setTimeout(() => {
           error.errorMessage.message.map((err) =>
@@ -155,7 +170,10 @@ export function PendingAdmins() {
         }, 3000);
         setTimeout(() => {
           //Fetch all users again when successfully approved
+          dispatch(resetEmploymentApprovalState());
           dispatch(fetchAllUsers());
+          setApprovalInProgress(false);
+          setLoadingComplete(null);
         }, 6000);
       }
     }
@@ -165,10 +183,13 @@ export function PendingAdmins() {
     if (adminToReject && !foundAdmin) {
       if (rejectEmploymentStatus === "pending") {
         setRejectLoadingComplete(false);
+        setRejectionInProgress(true);
       }
       if (rejectEmploymentStatus === "rejected") {
         setTimeout(() => {
           setRejectLoadingComplete(null);
+          setRejectionInProgress(false);
+          dispatch(resetEmploymentRejectionState());
         }, 3000);
         setTimeout(() => {
           error.errorMessage.message.map((err) =>
@@ -187,17 +208,20 @@ export function PendingAdmins() {
         }, 3000);
         setTimeout(() => {
           //Fetch all users again when successfully rejected
+          setRejectLoadingComplete(null);
+          setRejectionInProgress(false);
           dispatch(fetchAllUsers());
+          dispatch(resetEmploymentRejectionState());
         }, 6000);
       }
     }
   }, [dispatch, rejectEmploymentStatus, error, adminToReject, foundAdmin]);
   // Multi approval status check
   useEffect(() => {
-    if (multiEmployees && approveMultiEmploymentStatus === "pending") {
+    if (approveMultiEmploymentStatus === "pending") {
       setApproveMultiLoadingComplete(false);
     }
-    if (multiEmployees && approveMultiEmploymentStatus === "rejected") {
+    if (approveMultiEmploymentStatus === "rejected") {
       setTimeout(() => {
         setApproveMultiLoadingComplete(null);
         setMultiApprovalInProgress(false);
@@ -214,9 +238,10 @@ export function PendingAdmins() {
       }, 2000);
       return;
     }
-    if (multiEmployees && approveMultiEmploymentStatus === "success") {
+    if (approveMultiEmploymentStatus === "success") {
       setTimeout(() => {
         setApproveMultiLoadingComplete(true);
+        setMultiEmployees([]);
       }, 3000);
       setTimeout(() => {
         //Fetch all users again when successfully approved
@@ -260,6 +285,7 @@ export function PendingAdmins() {
     if (rejectMultiEmploymentStatus === "success") {
       setTimeout(() => {
         setRejectMultiLoadingComplete(true);
+        setMultiEmployees([]);
       }, 3000);
       setTimeout(() => {
         //Fetch all users again when successfully rejected
@@ -402,20 +428,24 @@ export function PendingAdmins() {
           }}
         >
           <MultiApprovalBtn
-            employees={multiEmployees}
-            approveMultiEmploymentStatus={approveMultiEmploymentStatus}
-            approveMultiLoadingComplete={approveMultiLoadingComplete}
-            // setApproveMultiLoadingComplete={setApproveMultiLoadingComplete}
-            multiRejectionInProgress={multiRejectionInProgress}
-            setMultiApprovalInProgress={setMultiApprovalInProgress}
+            approveMultiUsersDataStatus={approveMultiEmploymentStatus}
+            approveMultiUsersDataLoadingComplete={approveMultiLoadingComplete}
+            multiUsersDataRejectionInProgress={multiRejectionInProgress}
+            setMultiUsersDataApprovalInProgress={setMultiApprovalInProgress}
+            multiUsersDataApprovalFunction={approveMultiEmployees({
+              employees: multiEmployees,
+              employmentApprovedBy: `${authAdmin?.id}`,
+            })}
           />
           <MultiRejectionBtn
-            employees={multiEmployees}
-            rejectMultiEmploymentStatus={rejectMultiEmploymentStatus}
-            rejectMultiLoadingComplete={rejectMultiLoadingComplete}
-            // setRejectMultiLoadingComplete={setRejectMultiLoadingComplete}
-            multiApprovalInProgress={multiApprovalInProgress}
-            setMultiRejectionInProgress={setMultiRejectionInProgress}
+            rejectMultiUsersDataStatus={rejectMultiEmploymentStatus}
+            rejectMultiUsersDataLoadingComplete={rejectMultiLoadingComplete}
+            multiUsersDataApprovalInProgress={multiApprovalInProgress}
+            setMultiUsersDataRejectionInProgress={setMultiRejectionInProgress}
+            multiUsersDataApprovalFunction={rejectMultiEmployees({
+              employees: multiEmployees,
+              employmentRejectedBy: `${authAdmin?.id}`,
+            })}
           />
         </Box>
         <Box className="adminDataTable">

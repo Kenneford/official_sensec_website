@@ -1,25 +1,27 @@
 import React, { useEffect, useState } from "react";
-import "./createClassLevel.scss";
+import "../create.scss";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
-// import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Box, Button, Grid } from "@mui/material";
 import { CustomTextField } from "../../../../../../muiStyling/muiStyling";
+import { createClassLevel } from "../../../../../../features/academics/classLevelsSlice";
+import { getAuthUser } from "../../../../../../features/auth/authSlice";
+import LoadingProgress from "../../../../../pageLoading/LoadingProgress";
 
 export function CreateClassLevel() {
-  const authAdminInfo = {};
-  // const { createLevelStatus, successMessage, error } = useSelector(
-  //   (state) => state.classLevel
-  // );
+  const authAdmin = useSelector(getAuthUser);
+  const { createStatus, successMessage, error } = useSelector(
+    (state) => state.classLevel
+  );
 
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const [loadingComplete, setLoadingComplete] = useState(null);
   const [classLevel, setClassLevel] = useState({
     name: "",
-    createdBy: `${authAdminInfo.id}`,
-    // adminId: authAdminInfo.uniqueId,
+    createdBy: `${authAdmin.id}`,
   });
   console.log(classLevel);
 
@@ -36,38 +38,40 @@ export function CreateClassLevel() {
 
   const handleClassLevel = (e) => {
     e.preventDefault();
-    setLoadingComplete(false);
-    const formData = new FormData();
-    formData.append("name", classLevel.name);
-    formData.append("createdBy", classLevel.createdBy);
-    // formData.append("adminId", classLevel.adminId);
-    // dispatch(createClassLevel(classLevel));
-    setTimeout(() => {
-      setLoadingComplete(true);
-    }, 3000);
+    dispatch(createClassLevel({ classLevelData: classLevel }));
   };
 
-  // useEffect(() => {
-  //   if (createLevelStatus === "rejected") {
-  //     setTimeout(() => {
-  //       setLoadingComplete(null);
-  //       error?.errorMessage?.message?.map((err) =>
-  //         toast.error(err, {
-  //           position: "top-right",
-  //           theme: "light",
-  //           // toastId: successId,
-  //         })
-  //       );
-  //     }, 3000);
-  //     return;
-  //   }
-  //   if (createLevelStatus === "success") {
-  //     setTimeout(() => {
-  //       setLoadingComplete(null);
-  //       window.location.reload();
-  //     }, 6000);
-  //   }
-  // }, [error, successMessage, createLevelStatus, navigate]);
+  // Create academic year status check
+  useEffect(() => {
+    if (createStatus === "pending") {
+      setLoadingComplete(false);
+    }
+    if (createStatus === "rejected") {
+      setTimeout(() => {
+        setLoadingComplete(null);
+        error?.errorMessage?.message?.map((err) =>
+          toast.error(err, {
+            position: "top-right",
+            theme: "light",
+            // toastId: successId,
+          })
+        );
+      }, 3000);
+      return;
+    }
+    if (createStatus === "success") {
+      setTimeout(() => {
+        setLoadingComplete(true);
+      }, 3000);
+      setTimeout(() => {
+        setLoadingComplete(null);
+        setClassLevel({
+          name: "",
+          createdBy: `${authAdmin.id}`,
+        });
+      }, 6000);
+    }
+  }, [error, successMessage, createStatus, authAdmin]);
 
   return (
     <Box
@@ -78,7 +82,7 @@ export function CreateClassLevel() {
         display: "flex",
         flexDirection: "column",
       }}
-      className="createAcademicClassLevelWrap"
+      className="createDataWrap"
     >
       <Box component={"form"} onSubmit={handleClassLevel} minHeight={220} p={2}>
         <h1>Class Level Form</h1>
@@ -101,17 +105,15 @@ export function CreateClassLevel() {
           </Grid>
         </Grid>
         <Button type="submit" disabled={!canSave}>
-          Create Academic Batch
-          {/* {loadingComplete === false && (
+          {loadingComplete === false && (
             <LoadingProgress color={"#fff"} size={"1.3rem"} />
           )}
-          {loadingComplete === true && createTermStatus === "success" && (
+          {loadingComplete === true && createStatus === "success" && (
             <>
-              <span> Academic Term Created Successfully...</span>{" "}
-              <TaskAltIcon />
+              <span>Successfully</span> <TaskAltIcon />
             </>
           )}
-          {loadingComplete === null && "Create Academic Term"} */}
+          {loadingComplete === null && "Create Class Level"}
         </Button>
       </Box>
     </Box>

@@ -5,23 +5,41 @@ import DataTable from "react-data-table-component";
 import { useNavigate, useParams } from "react-router-dom";
 import { customUserTableStyle } from "../../../../../usersInfoDataFormat/usersInfoTableStyle";
 import { Box, Grid } from "@mui/material";
-import ActionModal from "../../../../actionModal/ActionModal";
 import { AllStudentsPageQuickLinks } from "../../../../../linksFormat/LinksFormat";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchAllUsers,
   getAuthUser,
 } from "../../../../../features/auth/authSlice";
-import { FetchAllPendingStudents } from "../../../../../data/students/FetchAllStudents";
+import {
+  FetchAllApprovedStudents,
+  FetchAllPendingStudents,
+} from "../../../../../data/students/FetchAllStudents";
 import { FetchAllClassLevels } from "../../../../../data/class/FetchClassLevel";
 import { pendingStudentsColumn } from "../../../../../usersInfoDataFormat/UsersInfoDataFormat";
 import { toast } from "react-toastify";
+import NewEnrollmentModal from "../../../../modals/NewEnrollmentModal";
+import {
+  MultiApprovalBtn,
+  MultiRejectionBtn,
+} from "../../../../lazyLoading/LazyComponents";
+import { MultiStudentsApprovalBtn } from "../../../../../buttons/MultiStudentsApprovalBtn";
+import {
+  approvedMultiStudentEnrollment,
+  rejectMultiStudentEnrollment,
+  resetEnrolmentApprovalState,
+  resetEnrolmentRejectionState,
+  resetMultiApprovalState,
+  resetMultiRejectionState,
+} from "../../../../../features/students/studentsSlice";
+import SearchFilter from "../../../../searchForm/SearchFilter";
 // import { toast } from "react-toastify";
 
 export function PendingStudents() {
   const authAdmin = useSelector(getAuthUser);
   const actionBtns = AllStudentsPageQuickLinks();
   const allPendingStudents = FetchAllPendingStudents();
+  const allApprovedStudents = FetchAllApprovedStudents();
   const navigate = useNavigate();
   const {
     class_level,
@@ -33,11 +51,23 @@ export function PendingStudents() {
     enrollmentApprovalStatus,
     successMessage,
     error,
-    // approveMultiEnrollmentStatus,
+    approveMultiEnrollmentStatus,
     rejectEnrollmentStatus,
+    rejectMultiEnrollmentStatus,
   } = useSelector((state) => state.student);
   const [searchStudent, setSearchStudent] = useState("");
   const [loadingComplete, setLoadingComplete] = useState(null);
+  const [approvalInProgress, setApprovalInProgress] = useState(false);
+  const [rejectionInProgress, setRejectionInProgress] = useState(false);
+  const [rejectLoadingComplete, setRejectLoadingComplete] = useState(null);
+  const [approveMultiLoadingComplete, setApproveMultiLoadingComplete] =
+    useState(null);
+  const [multiApprovalInProgress, setMultiApprovalInProgress] = useState(false);
+  const [multiRejectionInProgress, setMultiRejectionInProgress] =
+    useState(false);
+  const [rejectMultiLoadingComplete, setRejectMultiLoadingComplete] =
+    useState(null);
+
   const [openApproveEnrollmentModal, setOpenApproveEnrollmentModal] =
     useState(false);
   const [openRejectModal, setOpenRejectModal] = useState(false);
@@ -65,20 +95,36 @@ export function PendingStudents() {
   const foundStudent = allPendingStudents?.find(
     (std) => std._id === currentStudent
   );
-  console.log(foundStudent);
 
   const studentToReject = allPendingStudents?.find(
     (std) => std._id === rejectStudent
   );
-  console.log(studentToReject);
 
-  const pendingStudentsDataFormat = pendingStudentsColumn(
+  // handle multi approval or rejection
+  const [multiStudents, setMultiStudents] = useState([]);
+  const [toggleClearRows, setToggleClearRows] = useState(false);
+  console.log(multiStudents);
+  const handleMultiSelect = (state) => {
+    if (state) {
+      const studentObj = state?.selectedRows?.map((user) => {
+        const userId = {
+          uniqueId: user?.uniqueId,
+        };
+        return userId;
+      });
+      setMultiStudents(studentObj);
+    } else {
+      setMultiStudents([]);
+    }
+  };
+
+  const columnData = {
     authAdmin,
     setCurrentStudent,
     loadingComplete,
     setLoadingComplete,
-    toast,
-    dispatch,
+    rejectLoadingComplete,
+    setRejectLoadingComplete,
     foundStudent,
     enrollmentApprovalStatus,
     openApproveEnrollmentModal,
@@ -89,8 +135,12 @@ export function PendingStudents() {
     setOpenRejectModal,
     rejectEnrollmentStatus,
     adminCurrentAction,
-    adminCurrentLink
-  );
+    adminCurrentLink,
+    approvalInProgress,
+    rejectionInProgress,
+  };
+
+  const pendingStudentsDataFormat = pendingStudentsColumn(columnData);
 
   //THIS REMOVES THE HASHLINK TAG FROM THE URL
   if (window.location.hash) {
@@ -106,15 +156,13 @@ export function PendingStudents() {
       );
     }, 3000);
   };
-  const handleStudentSearch = (e) => {
-    e.preventDefault();
-  };
 
   //Student Enrolment Approval Status Check
   useEffect(() => {
     if (foundStudent) {
       if (enrollmentApprovalStatus === "pending") {
         setLoadingComplete(false);
+        setApprovalInProgress(false);
         setTimeout(() => {
           setLoadingComplete(true);
         }, 3000);
@@ -122,75 +170,161 @@ export function PendingStudents() {
       if (enrollmentApprovalStatus === "rejected") {
         setTimeout(() => {
           setLoadingComplete(null);
+          setApprovalInProgress(false);
+          dispatch(resetEnrolmentApprovalState());
         }, 3000);
         setTimeout(() => {
           error?.errorMessage?.message?.map((err) =>
             toast.error(err, {
               position: "top-right",
               theme: "light",
-              // toastId: successId,
+              toastId: err,
             })
           );
         }, 2000);
         return;
       }
-      if (loadingComplete && enrollmentApprovalStatus === "success") {
+      if (enrollmentApprovalStatus === "success") {
         setTimeout(() => {
           toast.success(successMessage, {
             position: "top-right",
             theme: "dark",
+            toastId: successMessage,
           });
         }, 1000);
         setTimeout(() => {
           //Fetch all users again when successfully approved
           dispatch(fetchAllUsers());
+          dispatch(resetEnrolmentApprovalState());
+          setApprovalInProgress(false);
+          setLoadingComplete(null);
         }, 6000);
       }
     }
+  }, [enrollmentApprovalStatus, successMessage, error, dispatch, foundStudent]);
+  // Rejection status check
+  useEffect(() => {
     if (studentToReject) {
       if (rejectEnrollmentStatus === "pending") {
-        setLoadingComplete(false);
-        setTimeout(() => {
-          setLoadingComplete(true);
-        }, 3000);
+        setRejectLoadingComplete(false);
+        setRejectionInProgress(true);
       }
       if (rejectEnrollmentStatus === "rejected") {
         setTimeout(() => {
-          setLoadingComplete(null);
+          setRejectLoadingComplete(null);
+          setRejectionInProgress(false);
+          dispatch(resetEnrolmentRejectionState());
         }, 3000);
         setTimeout(() => {
-          error?.errorMessage?.message?.map((err) =>
+          error.errorMessage.message.map((err) =>
             toast.error(err, {
               position: "top-right",
-              theme: "light",
+              theme: "dark",
               // toastId: successId,
             })
           );
         }, 2000);
         return;
       }
-      if (loadingComplete && rejectEnrollmentStatus === "success") {
+      if (rejectEnrollmentStatus === "success") {
         setTimeout(() => {
-          toast.success(successMessage, {
-            position: "top-right",
-            theme: "dark",
-          });
-        }, 1000);
+          setRejectLoadingComplete(true);
+        }, 3000);
         setTimeout(() => {
-          //Fetch all users again when successfully approved
+          //Fetch all users again when successfully rejected
+          setRejectLoadingComplete(null);
+          setRejectionInProgress(false);
           dispatch(fetchAllUsers());
+          dispatch(resetEnrolmentRejectionState());
         }, 6000);
       }
     }
+  }, [dispatch, rejectEnrollmentStatus, error, studentToReject]);
+
+  // Multi approval status check
+  useEffect(() => {
+    if (multiStudents && approveMultiEnrollmentStatus === "pending") {
+      setApproveMultiLoadingComplete(false);
+    }
+    if (multiStudents && approveMultiEnrollmentStatus === "rejected") {
+      setTimeout(() => {
+        setApproveMultiLoadingComplete(null);
+        setMultiApprovalInProgress(false);
+        dispatch(resetMultiApprovalState());
+      }, 3000);
+      setTimeout(() => {
+        error?.errorMessage?.message?.map((err) =>
+          toast.error(err, {
+            position: "top-right",
+            theme: "dark",
+            toastId: "multiStudentApprovalError",
+          })
+        );
+      }, 2000);
+      return;
+    }
+    if (multiStudents && approveMultiEnrollmentStatus === "success") {
+      setTimeout(() => {
+        setApproveMultiLoadingComplete(true);
+      }, 3000);
+      setTimeout(() => {
+        //Fetch all users again when successfully approved
+        dispatch(fetchAllUsers());
+        setToggleClearRows(!toggleClearRows);
+        dispatch(resetMultiApprovalState());
+        setMultiApprovalInProgress(false);
+        setApproveMultiLoadingComplete(null);
+      }, 6000);
+    }
   }, [
-    enrollmentApprovalStatus,
-    successMessage,
-    error,
     dispatch,
-    loadingComplete,
-    foundStudent,
-    rejectEnrollmentStatus,
-    studentToReject,
+    approveMultiEnrollmentStatus,
+    error,
+    multiStudents,
+    toggleClearRows,
+  ]);
+  // Multi rejection status check
+  useEffect(() => {
+    if (multiStudents && rejectMultiEnrollmentStatus === "pending") {
+      setRejectMultiLoadingComplete(false);
+    }
+    if (multiStudents && rejectMultiEnrollmentStatus === "rejected") {
+      setTimeout(() => {
+        setRejectMultiLoadingComplete(null);
+        setMultiApprovalInProgress(false);
+        dispatch(resetMultiRejectionState());
+      }, 3000);
+      setTimeout(() => {
+        error?.errorMessage?.message?.map((err) =>
+          toast.error(err, {
+            position: "top-right",
+            theme: "dark",
+            toastId: "multiStudentRejectionError",
+          })
+        );
+      }, 2000);
+      return;
+    }
+    if (multiStudents && rejectMultiEnrollmentStatus === "success") {
+      setTimeout(() => {
+        setRejectMultiLoadingComplete(true);
+      }, 3000);
+      setTimeout(() => {
+        //Fetch all users again when successfully approved
+        dispatch(fetchAllUsers());
+        setToggleClearRows(!toggleClearRows);
+        dispatch(resetMultiRejectionState());
+        setMultiApprovalInProgress(false);
+        setRejectMultiLoadingComplete(null);
+      }, 6000);
+    }
+  }, [
+    dispatch,
+    approveMultiEnrollmentStatus,
+    error,
+    multiStudents,
+    toggleClearRows,
+    rejectMultiEnrollmentStatus,
   ]);
 
   const title = `All Pending Students / Total = ${allPendingStudents?.length}`;
@@ -215,26 +349,26 @@ export function PendingStudents() {
           <span>{adminCurrentLink?.replace(/_/g, " ")}</span>
         </h1>
         {/* Main search bar */}
-        {/* <Box sx={{ display: { xs: "none", sm: "block" } }}>
-          <SearchForm
-            value={searchedBlog}
-            onChange={handleOnChange}
+        <Box sx={{ display: { xs: "none", sm: "block" } }}>
+          <SearchFilter
+            value={searchStudent}
+            onChange={setSearchStudent}
             placeholder={"Search"}
           />
-        </Box> */}
+        </Box>
       </Box>
       <Box
         className="allStudentsData"
         id="allStudents"
         padding={{ xs: " 1rem .5rem", sm: " 1rem" }}
       >
-        <Box className="searchDetails">
-          {allPendingStudents?.length === 0 && searchStudent !== "" && (
+        <Box className="searchDetails" justifyItems={"flex-start"}>
+          {pendingStudents?.length === 0 && searchStudent !== "" && (
             <p className="searchInfo">
-              We couldn't find any matches for "{searchStudent}"
+              We couldn&apos;t find any matches for &quot;{searchStudent}&quot;
             </p>
           )}
-          {allPendingStudents?.length === 0 && searchStudent !== "" && (
+          {pendingStudents?.length === 0 && searchStudent !== "" && (
             <p
               style={{
                 paddingLeft: "1.5rem",
@@ -248,15 +382,16 @@ export function PendingStudents() {
           )}
           {searchStudent && (
             <p className="searchInfo">
-              Search Result = {pendingStudents.length}
+              Total Pending Students Found = {pendingStudents?.length}
             </p>
           )}
           {!searchStudent && (
             <p className="searchInfo">
-              Total Pending Students = {allPendingStudents?.length}
+              Total Students = {allApprovedStudents?.length}
             </p>
           )}
         </Box>
+        {/* Student types selection buttons */}
         <Box>
           <Grid
             container
@@ -271,6 +406,8 @@ export function PendingStudents() {
                 item
                 xs={2.9}
                 sm={2}
+                // minWidth={"5.5rem"}
+                // mb={".2rem"}
                 // md={2}
                 // lg={2}
                 key={action.label}
@@ -307,7 +444,7 @@ export function PendingStudents() {
                   : action.label}
               </Grid>
             ))}
-            <ActionModal
+            <NewEnrollmentModal
               open={openModal}
               onClose={() => setOpenModal(false)}
               handleNewEnrollment={handleNewEnrollment}
@@ -317,6 +454,7 @@ export function PendingStudents() {
             />
           </Grid>
         </Box>
+        {/* Class-level buttons */}
         <Box>
           <Grid
             container
@@ -332,6 +470,8 @@ export function PendingStudents() {
                 item
                 xs={2.9}
                 sm={2}
+                // minWidth={"5.5rem"}
+                mb={".2rem"}
                 key={cLevel.name}
                 onClick={() =>
                   navigate(
@@ -354,6 +494,30 @@ export function PendingStudents() {
             ))}
           </Grid>
         </Box>
+        {/* Approval buttons */}
+        <Box sx={{ display: "flex", gap: 1 }}>
+          <MultiApprovalBtn
+            approveMultiUsersDataStatus={approveMultiEnrollmentStatus}
+            approveMultiUsersDataLoadingComplete={approveMultiLoadingComplete}
+            multiUsersDataRejectionInProgress={multiRejectionInProgress}
+            setMultiUsersDataApprovalInProgress={setMultiApprovalInProgress}
+            multiUsersDataApprovalFunction={approvedMultiStudentEnrollment({
+              students: multiStudents,
+              enrollmentApprovedBy: `${authAdmin?.id}`,
+            })}
+          />
+          <MultiRejectionBtn
+            rejectMultiUsersDataStatus={rejectMultiEnrollmentStatus}
+            rejectMultiUsersDataLoadingComplete={rejectMultiLoadingComplete}
+            multiUsersDataApprovalInProgress={multiApprovalInProgress}
+            setMultiUsersDataRejectionInProgress={setMultiRejectionInProgress}
+            multiUsersDataApprovalFunction={rejectMultiStudentEnrollment({
+              students: multiStudents,
+              enrollmentRejectedBy: `${authAdmin?.id}`,
+            })}
+          />
+        </Box>
+        {/* Table data */}
         <Box className="studentDataTable">
           <DataTable
             title={title}
@@ -364,6 +528,8 @@ export function PendingStudents() {
             selectableRows
             selectableRowsHighlight
             highlightOnHover
+            onSelectedRowsChange={handleMultiSelect}
+            clearSelectedRows={toggleClearRows}
           />
         </Box>
       </Box>

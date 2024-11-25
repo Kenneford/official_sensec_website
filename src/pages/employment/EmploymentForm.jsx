@@ -1,6 +1,10 @@
 import { useEffect, useMemo, useState } from "react";
 // import "./studentEnrollment.scss";
-import { ContainerBox, CustomTextField } from "../../muiStyling/muiStyling";
+import {
+  ContainerBox,
+  CustomMobileDatePicker,
+  CustomTextField,
+} from "../../muiStyling/muiStyling";
 import {
   MenuItem,
   Button,
@@ -9,6 +13,7 @@ import {
   Avatar,
   InputAdornment,
   Typography,
+  TextField,
 } from "@mui/material";
 import {
   resetEnrolmentState,
@@ -35,6 +40,8 @@ import {
   newEmployee,
   resetEmploymentState,
 } from "../../features/employments/employmentSlice";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 export function EmploymentForm() {
   const dispatch = useDispatch();
@@ -169,15 +176,6 @@ export function EmploymentForm() {
     const uniqueSuffix = Date.now().toString().slice(-5); // Take last 5 digits for brevity
     return `${prefix}-${uniqueSuffix}${firstNameInitial}${lastNameInitial}-${currentYear}`;
   };
-  // Handle input value change
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setNewEmployment({
-      ...newEmployment,
-      [name]: value,
-    });
-  };
-
   // Use useEffect to automatically update the userID when any of the dependencies change
   useEffect(() => {
     const newId = generateUniqueId(
@@ -186,7 +184,22 @@ export function EmploymentForm() {
       newEmployment?.lastName
     );
     setUserID(newId);
-  }, [newEmployment]); // Dependencies
+  }, [newEmployment]);
+
+  const handleDateChange = (field, date) => {
+    setNewEmployment((prev) => ({
+      ...prev,
+      [field]: date, // Store the Date object directly
+    }));
+  };
+  // Handle input value change
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setNewEmployment({
+      ...newEmployment,
+      [name]: value,
+    });
+  };
 
   // Handle employment
   const handleSubmit = (event) => {
@@ -263,37 +276,37 @@ export function EmploymentForm() {
       setTimeout(() => {
         setLoadingComplete(null);
         dispatch(resetEmploymentState());
-        // setNewEmployment({
-        //   uniqueId: userID ? userID : "",
-        //   firstName: "",
-        //   lastName: "",
-        //   otherName: "",
-        //   dateOfBirth: "",
-        //   placeOfBirth: "",
-        //   nationality: "",
-        //   gender: "",
-        //   profilePicture: "",
-        //   // School Data
-        //   program: "",
-        //   typeOfEmployment: "",
-        //   // Status
-        //   height: "",
-        //   weight: "",
-        //   complexion: "",
-        //   motherTongue: "",
-        //   otherTongue: "",
-        //   residentialStatus: "",
-        //   // Contact Address
-        //   homeTown: "",
-        //   district: "",
-        //   region: "",
-        //   currentCity: "",
-        //   residentialAddress: "",
-        //   gpsAddress: "",
-        //   mobile: "",
-        //   email: "",
-        // });
-        // setImagePreview(null);
+        setNewEmployment({
+          uniqueId: userID ? userID : "",
+          firstName: "",
+          lastName: "",
+          otherName: "",
+          dateOfBirth: "",
+          placeOfBirth: "",
+          nationality: "",
+          gender: "",
+          profilePicture: "",
+          // School Data
+          program: "",
+          typeOfEmployment: "",
+          // Status
+          height: "",
+          weight: "",
+          complexion: "",
+          motherTongue: "",
+          otherTongue: "",
+          residentialStatus: "",
+          // Contact Address
+          homeTown: "",
+          district: "",
+          region: "",
+          currentCity: "",
+          residentialAddress: "",
+          gpsAddress: "",
+          mobile: "",
+          email: "",
+        });
+        setImagePreview(null);
       }, 6000);
       // setTimeout(() => {
       //   dispatch(resetEmploymentState());
@@ -458,15 +471,20 @@ export function EmploymentForm() {
               </Grid>
               {/* Date Of Birth */}
               <Grid item xs={12} sm={6} md={4} lg={4}>
-                <CustomTextField
-                  fullWidth
-                  // label="DD/MM/YYYY"
-                  name="dateOfBirth"
-                  type="date"
-                  value={newEmployment?.dateOfBirth || ""}
-                  onChange={handleChange}
-                  required
-                />
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <CustomMobileDatePicker
+                    label="Date of Birth"
+                    // inputFormat="MM/dd/yyyy"
+                    value={newEmployment?.dateOfBirth || ""}
+                    onChange={(date) => handleDateChange("dateOfBirth", date)}
+                    renderInput={(params) => <CustomTextField {...params} />}
+                    error={false} // Make sure this is false
+                    helperText="" // Optionally clear helper text
+                    sx={{
+                      width: "100%",
+                    }}
+                  />
+                </LocalizationProvider>
               </Grid>
               {/* Nationality */}
               <Grid item xs={12} sm={6} md={4} lg={4}>

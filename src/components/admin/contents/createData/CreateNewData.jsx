@@ -123,7 +123,17 @@ export function CreateNewData({ setCurrentAction, setCurrentLink }) {
               )
             }
           >
-            Program
+            Programme
+          </button>
+          <button
+            className="createBtn"
+            onClick={() =>
+              navigate(
+                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/division_program/new`
+              )
+            }
+          >
+            Division Programme
           </button>
           <button
             className="createBtn"

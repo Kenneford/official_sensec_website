@@ -1,30 +1,23 @@
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import "../allStudentsData.scss";
-// import SearchIcon from "@mui/icons-material/Search";
 import DataTable from "react-data-table-component";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
-// import {
-//   promotingMultipleStudentsToLevel200,
-//   promotingToLevel200,
-//   promotingToLevel300,
-// } from "../../../../features/student/promotionSlice";
-import { HashLink } from "react-router-hash-link";
 import { customUserTableStyle } from "../../../../../usersInfoDataFormat/usersInfoTableStyle";
 import { Box, Grid } from "@mui/material";
-import NewEmploymentModal from "../../../../actionModal/ActionModal";
 import { AllStudentsPageQuickLinks } from "../../../../../linksFormat/LinksFormat";
-import ActionModal from "../../../../actionModal/ActionModal";
+import ActionModal from "../../../../modals/NewEmploymentModal";
 import { getAuthUser } from "../../../../../features/auth/authSlice";
 import { FetchAllClassLevels } from "../../../../../data/class/FetchClassLevel";
+import { FetchAllGraduatedStudents } from "../../../../../data/students/FetchAllStudents";
+import { graduatesColumn } from "../../../../../usersInfoDataFormat/UsersInfoDataFormat";
+import SearchFilter from "../../../../searchForm/SearchFilter";
 
 export function AllGraduatedStudents() {
   const authAdmin = useSelector(getAuthUser);
   const actionBtns = AllStudentsPageQuickLinks();
   //Get state data
-  const userInfo = {};
-  const allStudents = [];
+  const allStudents = FetchAllGraduatedStudents();
   console.log(allStudents);
   const allClassLevels = FetchAllClassLevels();
   console.log(allClassLevels);
@@ -39,37 +32,12 @@ export function AllGraduatedStudents() {
   } = useParams();
   console.log(class_level);
 
-  //Promotion status values
-  // const {
-  //   level100PromotionStatus,
-  //   level200PromotionStatus,
-  //   level300PromotionStatus,
-  //   level100Error,
-  //   level200Error,
-  //   level300Error,
-  //   level100SuccessMessage,
-  //   level200SuccessMessage,
-  //   level300SuccessMessage,
-  //   level100MultiPromotionStatus,
-  //   level100MultiSuccessMessage,
-  // } = useSelector((state) => state.promotion);
-
-  //State hooks
-  const [currentStudentId, setCurrentStudentId] = useState("");
-  const [level100loadingComplete, setLevel100LoadingComplete] = useState(null);
-  const [level200loadingComplete, setLevel200LoadingComplete] = useState(null);
-  const [level300loadingComplete, setLevel300LoadingComplete] = useState(null);
   const [searchStudent, setSearchStudent] = useState("");
   const [multiStudents, setMultiStudents] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
   const [uncompletedEmploymentTask, setUncompletedEmploymentTask] =
     useState("");
-
-  //Find selected student to approve/promote/reject
-  const foundStudent = allStudents?.find(
-    (std) => std?._id === currentStudentId
-  );
 
   //Filter students during search
   const filteredStudents = allStudents?.filter(
@@ -84,23 +52,7 @@ export function AllGraduatedStudents() {
   console.log(allStudents);
   console.log(allClassLevels);
 
-  // const studentDataFormat = studentsColumn(
-  //   userInfo,
-  //   foundStudent,
-  //   adminCurrentAction,
-  //   adminCurrentLink,
-  //   setCurrentStudentId,
-  //   setLevel100LoadingComplete,
-  //   setLevel200LoadingComplete,
-  //   setLevel300LoadingComplete,
-  //   level100loadingComplete,
-  //   level200loadingComplete,
-  //   level300loadingComplete,
-  //   level100PromotionStatus,
-  //   level200PromotionStatus,
-  //   level300PromotionStatus,
-  //   dispatch
-  // );
+  const studentDataFormat = graduatesColumn();
 
   const handleMultiSelect = (state) => {
     setMultiStudents(state.selectedRows);
@@ -115,173 +67,6 @@ export function AllGraduatedStudents() {
       );
     }, 3000);
   };
-  //Student Promotion Level 100 Status Check
-  // useEffect(() => {
-  //   if (level100PromotionStatus === "pending") {
-  //     setTimeout(() => {
-  //       setLevel100LoadingComplete(true);
-  //     }, 3000);
-  //   }
-  //   if (level100PromotionStatus === "rejected") {
-  //     setTimeout(() => {
-  //       setLevel100LoadingComplete(null);
-  //     }, 3000);
-  //     setTimeout(() => {
-  //       level100Error?.errorMessage?.message?.map((err) =>
-  //         toast.error(err, {
-  //           position: "top-right",
-  //           theme: "light",
-  //         })
-  //       );
-  //     }, 2000);
-  //     return;
-  //   }
-  //   if (level100loadingComplete && level100PromotionStatus === "success") {
-  //     setTimeout(() => {
-  //       toast.success(level100SuccessMessage, {
-  //         position: "top-right",
-  //         theme: "dark",
-  //       });
-  //     }, 1000);
-  //     setTimeout(() => {
-  //       dispatch(fetchAllUsers());
-  //       dispatch(fetchClassLevels());
-  //     }, 6000);
-  //   }
-  // }, [
-  //   level100PromotionStatus,
-  //   level100SuccessMessage,
-  //   level100Error,
-  //   level100loadingComplete,
-  //   dispatch,
-  // ]);
-
-  //Multi Students Promotion Level 100 Status Check
-  // useEffect(() => {
-  //   if (level100MultiPromotionStatus === "pending") {
-  //     setTimeout(() => {
-  //       setLevel100LoadingComplete(true);
-  //     }, 3000);
-  //   }
-  //   if (level100MultiPromotionStatus === "rejected") {
-  //     setTimeout(() => {
-  //       setLevel100LoadingComplete(null);
-  //     }, 3000);
-  //     setTimeout(() => {
-  //       level100Error?.errorMessage?.message?.map((err) =>
-  //         toast.error(err, {
-  //           position: "top-right",
-  //           theme: "light",
-  //         })
-  //       );
-  //     }, 2000);
-  //     return;
-  //   }
-  //   if (level100loadingComplete && level100MultiPromotionStatus === "success") {
-  //     setTimeout(() => {
-  //       toast.success(level100MultiSuccessMessage, {
-  //         position: "top-right",
-  //         theme: "dark",
-  //       });
-  //     }, 1000);
-  //     setTimeout(() => {
-  //       dispatch(fetchAllUsers());
-  //       dispatch(fetchClassLevels());
-  //     }, 6000);
-  //   }
-  // }, [
-  //   level100PromotionStatus,
-  //   level100SuccessMessage,
-  //   level100Error,
-  //   level100loadingComplete,
-  //   level100MultiSuccessMessage,
-  //   level100MultiPromotionStatus,
-  //   dispatch,
-  // ]);
-
-  //Student Promotion Level 200 Status Check
-  // useEffect(() => {
-  //   if (level200PromotionStatus === "pending") {
-  //     setTimeout(() => {
-  //       setLevel200LoadingComplete(true);
-  //     }, 3000);
-  //   }
-  //   if (level200PromotionStatus === "rejected") {
-  //     setTimeout(() => {
-  //       setLevel200LoadingComplete(null);
-  //     }, 3000);
-  //     setTimeout(() => {
-  //       level200Error?.errorMessage?.message?.map((err) =>
-  //         toast.error(err, {
-  //           position: "top-right",
-  //           theme: "light",
-  //           // toastId: successId,
-  //         })
-  //       );
-  //     }, 2000);
-  //     return;
-  //   }
-  //   if (level200loadingComplete && level200PromotionStatus === "success") {
-  //     setTimeout(() => {
-  //       toast.success(level200SuccessMessage, {
-  //         position: "top-right",
-  //         theme: "dark",
-  //       });
-  //     }, 1000);
-  //     setTimeout(() => {
-  //       dispatch(fetchAllUsers());
-  //       dispatch(fetchClassLevels());
-  //     }, 6000);
-  //   }
-  // }, [
-  //   level200PromotionStatus,
-  //   level200SuccessMessage,
-  //   level200Error,
-  //   level200loadingComplete,
-  //   dispatch,
-  // ]);
-
-  //Student Promotion Level 300 Status Check
-  // useEffect(() => {
-  //   if (level300PromotionStatus === "pending") {
-  //     setTimeout(() => {
-  //       setLevel300LoadingComplete(true);
-  //     }, 3000);
-  //   }
-  //   if (level300PromotionStatus === "rejected") {
-  //     setTimeout(() => {
-  //       setLevel300LoadingComplete(null);
-  //     }, 3000);
-  //     setTimeout(() => {
-  //       level300Error?.errorMessage?.message?.map((err) =>
-  //         toast.error(err, {
-  //           position: "top-right",
-  //           theme: "light",
-  //           // toastId: successId,
-  //         })
-  //       );
-  //     }, 2000);
-  //     return;
-  //   }
-  //   if (level300loadingComplete && level300PromotionStatus === "success") {
-  //     setTimeout(() => {
-  //       toast.success(level300SuccessMessage, {
-  //         position: "top-right",
-  //         theme: "dark",
-  //       });
-  //     }, 1000);
-  //     setTimeout(() => {
-  //       dispatch(fetchAllUsers());
-  //       dispatch(fetchClassLevels());
-  //     }, 6000);
-  //   }
-  // }, [
-  //   level300PromotionStatus,
-  //   level300SuccessMessage,
-  //   level300Error,
-  //   level300loadingComplete,
-  //   dispatch,
-  // ]);
 
   const allStd = `All Graduated Students / Total = ${allStudents?.length}`;
   return (
@@ -304,13 +89,13 @@ export function AllGraduatedStudents() {
           <span>{adminCurrentLink?.replace(/_/g, " ")}</span>
         </h1>
         {/* Main search bar */}
-        {/* <Box sx={{ display: { xs: "none", sm: "block" } }}>
-          <SearchForm
-            value={searchedBlog}
-            onChange={handleOnChange}
+        <Box sx={{ display: { xs: "none", sm: "block" } }}>
+          <SearchFilter
+            value={searchStudent}
+            onChange={setSearchStudent}
             placeholder={"Search"}
           />
-        </Box> */}
+        </Box>
       </Box>
       <Box
         className="allStudentsData"
@@ -320,7 +105,7 @@ export function AllGraduatedStudents() {
         <Box className="searchDetails">
           {filteredStudents?.length === 0 && searchStudent !== "" && (
             <p className="searchInfo">
-              We couldn't find any matches for "{searchStudent}"
+              We couldn&apos;t find any matches for &quot;{searchStudent}&quot;
             </p>
           )}
           {filteredStudents?.length === 0 && searchStudent !== "" && (
@@ -461,14 +246,14 @@ export function AllGraduatedStudents() {
             </>
           </Grid>
         </Box>
-        <Box>
+        <Box className="studentDataTable">
           <DataTable
             title={allStd}
-            // columns={studentDataFormat}
+            columns={studentDataFormat}
             data={filteredStudents}
             customStyles={customUserTableStyle}
             pagination
-            selectableRows
+            // selectableRows
             fixedHeader
             selectableRowsHighlight
             highlightOnHover

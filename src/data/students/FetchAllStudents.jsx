@@ -22,6 +22,7 @@ const FetchAllApprovedStudents = () => {
     (user) =>
       user?.roles?.includes("student") &&
       user?.studentStatusExtend?.enrollmentStatus === "approved" &&
+      user?.studentStatusExtend?.isStudent &&
       user
   );
 
@@ -31,6 +32,17 @@ const FetchAllApprovedStudents = () => {
 
   return allApprovedStudents;
 };
+const FetchAllGraduatedStudents = () => {
+  const allStudents = FetchAllStudents();
+  const allGraduatedStudents = allStudents?.filter(
+    (user) =>
+      user?.studentStatusExtend?.isGraduated &&
+      !user?.studentStatusExtend?.isStudent &&
+      user
+  );
+
+  return allGraduatedStudents;
+};
 const FetchAllPendingStudents = () => {
   const dispatch = useDispatch();
   const allUsers = useSelector(getAllUsers);
@@ -38,6 +50,7 @@ const FetchAllPendingStudents = () => {
     (user) =>
       user?.roles?.includes("student") &&
       user?.studentStatusExtend?.enrollmentStatus === "pending" &&
+      !user?.studentStatusExtend?.isStudent &&
       user
   );
 
@@ -68,14 +81,23 @@ const FetchApprovedClassLevelStudents = (class_level) => {
   return classLevelStudents;
 };
 //Fetch ClassLevel Students
-const FetchClassLevelProgrammeStudents = (class_level, programmeFound) => {
+const FetchProgrammeStudents = (programmeFound) => {
+  const allApprovedStudents = FetchAllApprovedStudents();
+
+  const classLevelStudents = allApprovedStudents?.filter(
+    (std) => std && std?.studentSchoolData?.program?._id === programmeFound
+  );
+
+  return classLevelStudents;
+};
+//Fetch ClassLevel Students
+const FetchClassSectionStudents = (class_section) => {
   const allApprovedStudents = FetchAllApprovedStudents();
 
   const classLevelStudents = allApprovedStudents?.filter(
     (std) =>
       std &&
-      std?.studentSchoolData?.currentClassLevel?._id === class_level &&
-      std?.studentSchoolData?.program?._id === programmeFound
+      std?.studentSchoolData?.currentClassLevelSection?._id === class_section
   );
 
   return classLevelStudents;
@@ -87,5 +109,7 @@ export {
   FetchAllPendingStudents,
   FetchPendingClassLevelStudents,
   FetchApprovedClassLevelStudents,
-  FetchClassLevelProgrammeStudents,
+  FetchProgrammeStudents,
+  FetchAllGraduatedStudents,
+  FetchClassSectionStudents,
 };

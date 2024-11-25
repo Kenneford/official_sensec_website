@@ -37,7 +37,7 @@ export function StudentDataUpdateForm() {
   const authUser = useSelector(getAuthUser);
   const { studentIndexNo, adminCurrentAction, adminCurrentLink } = useParams();
   const studentId = adminCurrentLink;
-  const allStudents = FetchAllApprovedStudents();
+  const allStudents = FetchAllStudents();
   const allProgrammes = FetchAllProgrammes();
   const allClassLevels = FetchAllClassLevels();
   const allBatches = FetchAllBatches();
@@ -53,42 +53,47 @@ export function StudentDataUpdateForm() {
   //   console.log(foundStudent);
   const foundStudent = allStudents?.find((std) => std?.uniqueId === studentId);
 
-  // New Student state
+  // Convert the birth date string to a JavaScript Date object
+  const dateObject = foundStudent?.personalInfo?.dateOfBirth
+    ? new Date(foundStudent?.personalInfo?.dateOfBirth).toISOString()
+    : "";
+  // Format the date to yyyy-MM-dd format
+  const formattedDate = dateObject?.split("T")[0];
+
+  // Student update state
   const [newStudent, setNewStudent] = useState({
-    uniqueId: "",
-    firstName: "",
-    lastName: "",
-    otherName: "",
-    dateOfBirth: "",
-    placeOfBirth: "",
-    nationality: "",
-    gender: "",
-    profilePicture: "",
+    uniqueId: foundStudent?.uniqueId,
+    firstName: foundStudent?.personalInfo?.firstName,
+    lastName: foundStudent?.personalInfo?.lastName,
+    otherName: foundStudent?.personalInfo?.otherName,
+    dateOfBirth: formattedDate,
+    placeOfBirth: foundStudent?.personalInfo?.placeOfBirth,
+    nationality: foundStudent?.personalInfo?.nationality,
+    gender: foundStudent?.personalInfo?.gender,
+    profilePicture: foundStudent?.personalInfo?.profilePicture?.url,
     // School Data
-    jhsAttended: "",
-    completedJhs: "",
-    jhsIndexNo: "",
-    program: "",
-    divisionProgram: "",
-    optionalElectiveSubject: "",
-    currentClassLevel: "",
-    batch: "",
+    jhsAttended: foundStudent?.studentSchoolData?.jhsAttended,
+    completedJhs: foundStudent?.studentSchoolData?.completedJhs,
+    jhsIndexNo: foundStudent?.studentSchoolData?.jhsIndexNo,
+    program: foundStudent?.studentSchoolData?.program?._id,
+    currentClassLevel: foundStudent?.studentSchoolData?.currentClassLevel?._id,
+    batch: foundStudent?.studentSchoolData?.batch?._id,
     // Status
-    height: "",
-    weight: "",
-    complexion: "",
-    motherTongue: "",
-    otherTongue: "",
-    residentialStatus: "",
+    height: foundStudent?.status?.height,
+    weight: foundStudent?.status?.weight,
+    complexion: foundStudent?.status?.complexion,
+    motherTongue: foundStudent?.status?.motherTongue,
+    otherTongue: foundStudent?.status?.otherTongue,
+    residentialStatus: foundStudent?.status?.residentialStatus,
     // Contact Address
-    homeTown: "",
-    district: "",
-    region: "",
-    currentCity: "",
-    residentialAddress: "",
-    gpsAddress: "",
-    mobile: "",
-    email: "",
+    homeTown: foundStudent?.contactAddress?.homeTown,
+    district: foundStudent?.contactAddress?.district,
+    region: foundStudent?.contactAddress?.region,
+    currentCity: foundStudent?.contactAddress?.currentCity,
+    residentialAddress: foundStudent?.contactAddress?.residentialAddress,
+    gpsAddress: foundStudent?.contactAddress?.gpsAddress,
+    mobile: foundStudent?.contactAddress?.mobile,
+    email: foundStudent?.contactAddress?.email,
   });
 
   // Find student's programme
@@ -125,12 +130,6 @@ export function StudentDataUpdateForm() {
     };
   };
 
-  // Convert the birth date string to a JavaScript Date object
-  const dateObject = foundStudent?.personalInfo?.dateOfBirth
-    ? new Date(foundStudent?.personalInfo?.dateOfBirth).toISOString()
-    : "";
-  // Format the date to yyyy-MM-dd format
-  const formattedDate = dateObject?.split("T")[0];
   // Find student to update
   useEffect(() => {
     setNewStudent({
@@ -308,7 +307,7 @@ export function StudentDataUpdateForm() {
                   fullWidth
                   label="First Name"
                   name="firstName"
-                  value={newStudent?.firstName}
+                  value={newStudent?.firstName || ""}
                   onChange={handleChange}
                   className="textField"
                 />
@@ -350,7 +349,7 @@ export function StudentDataUpdateForm() {
                   // label="DD/MM/YYYY"
                   name="dateOfBirth"
                   type="date"
-                  value={newStudent?.dateOfBirth}
+                  value={newStudent?.dateOfBirth || ""}
                   onChange={handleChange}
                 />
               </Grid>
@@ -600,6 +599,7 @@ export function StudentDataUpdateForm() {
                   label="JHS Index No."
                   name="jhsIndexNo"
                   value={newStudent?.jhsIndexNo || ""}
+                  onChange={handleChange}
                   disabled
                 />
               </Grid>

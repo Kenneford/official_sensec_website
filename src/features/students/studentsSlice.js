@@ -1,15 +1,20 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { SENSEC_API_ENDPOINT } from "../../apiEndPoint/api";
+import tokenInterceptor from "../../apiEndPoint/interceptors";
 
 const initialState = {
   studentInfo: "",
   updatedStudent: "",
   allStudents: [],
+  allApprovedStudents: [],
+  allRejectedStudents: [],
   successMessage: "",
   error: "",
   enrollmentStatus: "",
   enrollmentApprovalStatus: "",
+  approveMultiEnrollmentStatus: "",
+  rejectMultiEnrollmentStatus: "",
   rejectEnrollmentStatus: "",
   updateStatus: "",
   fetchStatus: "",
@@ -29,15 +34,55 @@ export const studentEnrollment = createAsyncThunk(
     }
   }
 );
-export const approvedStudentEnrollment = createAsyncThunk(
-  "Student/approvedStudentEnrollment",
-  async ({ studentId, enrolmentApprovedBy }, { rejectWithValue }) => {
+export const approveStudentEnrollment = createAsyncThunk(
+  "Student/approveStudentEnrollment",
+  async ({ studentId, enrollmentApprovedBy }, { rejectWithValue }) => {
     try {
-      const accessToken = localStorage.getItem("userToken");
-      const res = await axios.put(
-        `${SENSEC_API_ENDPOINT}/students/enrolment/${studentId}/approve`,
-        { enrolmentApprovedBy },
-        { headers: { Authorization: `Bearer ${accessToken}` } }
+      const res = await tokenInterceptor.put(
+        `/students/${studentId}/enrolment/approve`,
+        { enrollmentApprovedBy }
+      );
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const rejectStudentEnrollment = createAsyncThunk(
+  "Student/rejectStudentEnrollment",
+  async ({ studentId, enrollmentRejectedBy }, { rejectWithValue }) => {
+    try {
+      const res = await tokenInterceptor.put(
+        `/students/${studentId}/enrolment/reject`,
+        { enrollmentRejectedBy }
+      );
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const approvedMultiStudentEnrollment = createAsyncThunk(
+  "Student/approvedMultiStudentEnrollment",
+  async ({ students, enrollmentApprovedBy }, { rejectWithValue }) => {
+    try {
+      const res = await tokenInterceptor.put(
+        `students/enrolment/multi_data/approve/all`,
+        { students, enrollmentApprovedBy }
+      );
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const rejectMultiStudentEnrollment = createAsyncThunk(
+  "Student/rejectMultiStudentEnrollment",
+  async ({ students, enrollmentRejectedBy }, { rejectWithValue }) => {
+    try {
+      const res = await tokenInterceptor.put(
+        `students/enrolment/multi_data/reject/all`,
+        { students, enrollmentRejectedBy }
       );
       return res.data;
     } catch (error) {
@@ -66,6 +111,29 @@ const studentSlice = createSlice({
         error: "",
       };
     },
+    resetEnrolmentRejectionState(state) {
+      return {
+        ...state,
+        rejectEnrollmentStatus: "",
+        successMessage: "",
+        error: "",
+      };
+    },
+    resetMultiApprovalState(state) {
+      return {
+        ...state,
+        approveMultiEnrollmentStatus: "",
+        successMessage: "",
+        error: "",
+      };
+    },
+    resetMultiRejectionState(state) {
+      return {
+        ...state,
+        rejectMultiEnrollmentStatus: "",
+        error: "",
+      };
+    },
   },
   extraReducers: (builder) => {
     // Student Enrollment
@@ -90,10 +158,10 @@ const studentSlice = createSlice({
       };
     });
     // Approve Student Enrollment
-    builder.addCase(approvedStudentEnrollment.pending, (state) => {
+    builder.addCase(approveStudentEnrollment.pending, (state) => {
       return { ...state, enrollmentApprovalStatus: "pending" };
     });
-    builder.addCase(approvedStudentEnrollment.fulfilled, (state, action) => {
+    builder.addCase(approveStudentEnrollment.fulfilled, (state, action) => {
       if (action.payload) {
         return {
           ...state,
@@ -103,17 +171,91 @@ const studentSlice = createSlice({
         };
       } else return state;
     });
-    builder.addCase(approvedStudentEnrollment.rejected, (state, action) => {
+    builder.addCase(approveStudentEnrollment.rejected, (state, action) => {
       return {
         ...state,
         enrollmentApprovalStatus: "rejected",
         error: action.payload,
       };
     });
+    // Reject Student Enrollment
+    builder.addCase(rejectStudentEnrollment.pending, (state) => {
+      return { ...state, rejectEnrollmentStatus: "pending" };
+    });
+    builder.addCase(rejectStudentEnrollment.fulfilled, (state, action) => {
+      if (action.payload) {
+        return {
+          ...state,
+          studentInfo: action.payload.studentRejected,
+          successMessage: action.payload.successMessage,
+          rejectEnrollmentStatus: "success",
+        };
+      } else return state;
+    });
+    builder.addCase(rejectStudentEnrollment.rejected, (state, action) => {
+      return {
+        ...state,
+        rejectEnrollmentStatus: "rejected",
+        error: action.payload,
+      };
+    });
+    // Approve Multi Students Enrollment
+    builder.addCase(approvedMultiStudentEnrollment.pending, (state) => {
+      return { ...state, approveMultiEnrollmentStatus: "pending" };
+    });
+    builder.addCase(
+      approvedMultiStudentEnrollment.fulfilled,
+      (state, action) => {
+        if (action.payload) {
+          return {
+            ...state,
+            allApprovedStudents: action.payload.allApprovedStudents,
+            successMessage: action.payload.successMessage,
+            approveMultiEnrollmentStatus: "success",
+          };
+        } else return state;
+      }
+    );
+    builder.addCase(
+      approvedMultiStudentEnrollment.rejected,
+      (state, action) => {
+        return {
+          ...state,
+          approveMultiEnrollmentStatus: "rejected",
+          error: action.payload,
+        };
+      }
+    );
+    // Reject Multi Students Enrollment
+    builder.addCase(rejectMultiStudentEnrollment.pending, (state) => {
+      return { ...state, rejectMultiEnrollmentStatus: "pending" };
+    });
+    builder.addCase(rejectMultiStudentEnrollment.fulfilled, (state, action) => {
+      if (action.payload) {
+        return {
+          ...state,
+          allRejectedStudents: action.payload.allRejectedStudents,
+          successMessage: action.payload.successMessage,
+          rejectMultiEnrollmentStatus: "success",
+        };
+      } else return state;
+    });
+    builder.addCase(rejectMultiStudentEnrollment.rejected, (state, action) => {
+      return {
+        ...state,
+        rejectMultiEnrollmentStatus: "rejected",
+        error: action.payload,
+      };
+    });
   },
 });
 
-export const { resetEnrolmentState, resetEnrolmentApprovalState } =
-  studentSlice.actions;
+export const {
+  resetEnrolmentState,
+  resetEnrolmentApprovalState,
+  resetMultiApprovalState,
+  resetMultiRejectionState,
+  resetEnrolmentRejectionState,
+} = studentSlice.actions;
 
 export default studentSlice.reducer;

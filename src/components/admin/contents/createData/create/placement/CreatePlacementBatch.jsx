@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import "./placementBatch.scss";
-// import { useDispatch, useSelector } from "react-redux";
+import "../create.scss";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 // import LoadingProgress from "../../pageLoading/LoadingProgress";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
@@ -9,21 +9,22 @@ import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import { toast } from "react-toastify";
 import { Box, Button, Grid } from "@mui/material";
 import { CustomTextField } from "../../../../../../muiStyling/muiStyling";
+import { createPlacementBatch } from "../../../../../../features/academics/placementSlice";
+import { getAuthUser } from "../../../../../../features/auth/authSlice";
+import LoadingProgress from "../../../../../pageLoading/LoadingProgress";
 
 export function CreatePlacementBatch() {
-  const authAdminInfo = {};
-  // const {
-  //   placementBatchStatus,
-  //   placementBatchSuccessMessage,
-  //   placementBatchError,
-  // } = useSelector((state) => state.placement);
+  const authAdmin = useSelector(getAuthUser);
+  const { createStatus, successMessage, error } = useSelector(
+    (state) => state.placement
+  );
   // console.log(authAdminInfo);
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const [loadingComplete, setLoadingComplete] = useState(null);
   const [placementBatch, setPlacementBatch] = useState({
     year: "",
-    createdBy: `${authAdminInfo.id}`,
+    createdBy: `${authAdmin.id}`,
   });
   console.log(placementBatch);
 
@@ -39,41 +40,40 @@ export function CreatePlacementBatch() {
   const canSave = Boolean(placementBatch.year);
   const handleBatch = (e) => {
     e.preventDefault();
-    setLoadingComplete(false);
-    const formData = new FormData();
-    formData.append("year", placementBatch.year);
-    formData.append("createdBy", placementBatch.createdBy);
-    // dispatch(createPlacementBatch(placementBatch));
-    setTimeout(() => {
-      setLoadingComplete(true);
-    }, 3000);
+    dispatch(createPlacementBatch({ placementBatch }));
   };
 
-  // useEffect(() => {
-  //   if (placementBatchStatus === "rejected") {
-  //     setTimeout(() => {
-  //       setLoadingComplete(null);
-  //       return placementBatchError?.errorMessage?.message?.map((err) =>
-  //         toast.error(err, {
-  //           position: "top-right",
-  //           theme: "light",
-  //           // toastId: successId,
-  //         })
-  //       );
-  //     }, 3000);
-  //   }
-  //   if (placementBatchStatus === "success") {
-  //     setTimeout(() => {
-  //       setLoadingComplete(null);
-  //       window.location.reload();
-  //     }, 6000);
-  //   }
-  // }, [
-  //   placementBatchError,
-  //   placementBatchSuccessMessage,
-  //   placementBatchStatus,
-  //   navigate,
-  // ]);
+  useEffect(() => {
+    if (createStatus === "pending") {
+      setLoadingComplete(false);
+    }
+    if (createStatus === "rejected") {
+      setTimeout(() => {
+        return error?.errorMessage?.message?.map((err) =>
+          toast.error(err, {
+            position: "top-right",
+            theme: "light",
+            // toastId: successId,
+          })
+        );
+      }, 2000);
+      setTimeout(() => {
+        setLoadingComplete(null);
+      }, 3000);
+    }
+    if (createStatus === "success") {
+      setTimeout(() => {
+        setLoadingComplete(true);
+      }, 3000);
+      setTimeout(() => {
+        setLoadingComplete(null);
+        setPlacementBatch({
+          year: "",
+          createdBy: `${authAdmin.id}`,
+        });
+      }, 6000);
+    }
+  }, [error, successMessage, createStatus, navigate, authAdmin]);
 
   return (
     <Box
@@ -84,7 +84,7 @@ export function CreatePlacementBatch() {
         display: "flex",
         flexDirection: "column",
       }}
-      className="createAcademicPlacementWrap"
+      className="createDataWrap"
     >
       <Box component={"form"} onSubmit={handleBatch} minHeight={220} p={2}>
         <h1>Placement Batch Form</h1>
@@ -107,17 +107,15 @@ export function CreatePlacementBatch() {
           </Grid>
         </Grid>
         <Button type="submit" disabled={!canSave}>
-          Create Academic Batch
-          {/* {loadingComplete === false && (
+          {loadingComplete === false && (
             <LoadingProgress color={"#fff"} size={"1.3rem"} />
           )}
-          {loadingComplete === true && createTermStatus === "success" && (
+          {loadingComplete === true && createStatus === "success" && (
             <>
-              <span> Academic Term Created Successfully...</span>{" "}
-              <TaskAltIcon />
+              <span>Successful</span> <TaskAltIcon />
             </>
           )}
-          {loadingComplete === null && "Create Academic Term"} */}
+          {loadingComplete === null && "Create Academic Term"}
         </Button>
       </Box>
     </Box>

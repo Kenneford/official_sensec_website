@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./createProgramme.scss";
+import "../create.scss";
 import { Box, Button, CircularProgress, Grid } from "@mui/material";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
 // import { useDispatch, useSelector } from "react-redux";
@@ -12,9 +12,10 @@ import {
   resetCreateProgrammeState,
 } from "../../../../../../features/academics/programmeSlice";
 import LoadingProgress from "../../../../../pageLoading/LoadingProgress";
+import { getAuthUser } from "../../../../../../features/auth/authSlice";
 
 export function CreateProgram() {
-  const authAdminInfo = {};
+  const authAdmin = useSelector(getAuthUser);
   const { createStatus, successMessage, error } = useSelector(
     (state) => state.programme
   );
@@ -23,7 +24,7 @@ export function CreateProgram() {
   const [loadingComplete, setLoadingComplete] = useState(null);
   const [program, setProgram] = useState({
     name: "",
-    createdBy: "662a791d6a2ae49988b350c0",
+    createdBy: `${authAdmin?.id}`,
   });
   console.log(program);
 
@@ -56,7 +57,7 @@ export function CreateProgram() {
           toast.error(err, {
             position: "top-right",
             theme: "dark",
-            toastId: "programmeRejected",
+            toastId: "createProgrammeError",
           })
         );
         resetCreateProgrammeState();
@@ -77,13 +78,13 @@ export function CreateProgram() {
       setTimeout(() => {
         setProgram({
           name: "",
-          createdBy: "662a791d6a2ae49988b350c0",
+          createdBy: `${authAdmin?.id}`,
         });
         resetCreateProgrammeState();
         setLoadingComplete(null);
       }, 6000);
     }
-  }, [error, successMessage, createStatus, navigate]);
+  }, [error, successMessage, createStatus, authAdmin]);
 
   return (
     <Box
@@ -94,7 +95,7 @@ export function CreateProgram() {
         display: "flex",
         flexDirection: "column",
       }}
-      className="createAcademicProgrammeWrap"
+      className="createDataWrap"
     >
       <Box component={"form"} onSubmit={handleProgram} minHeight={220} p={2}>
         <h1>Programme Form</h1>
@@ -122,7 +123,7 @@ export function CreateProgram() {
           )}
           {loadingComplete === true && createStatus === "success" && (
             <>
-              <span>Success</span> <TaskAltIcon />
+              <span>Successful</span> <TaskAltIcon />
             </>
           )}
           {loadingComplete === null && "Create Programme"}

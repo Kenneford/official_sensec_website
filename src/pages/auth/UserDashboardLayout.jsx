@@ -22,6 +22,9 @@ export function UserDashboardLayout() {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [currentAction, setCurrentAction] = useState("");
   const [currentLink, setCurrentLink] = useState("");
+  const [hovered, setHovered] = useState(false);
+  const drawerWidthCollapsed = 160; // Collapsed width
+  const drawerWidthExpanded = 300; // Expanded width
 
   // Media query to detect screen size (breakpoint for tablet is 900px)
   const theme = useTheme();
@@ -40,37 +43,53 @@ export function UserDashboardLayout() {
 
   return (
     <Box id="userDashboardWrap" display={"flex"}>
-      {!isMobile && (
-        <SideBar
-          isSidebarOpen={isSidebarOpen}
-          setSidebarOpen={setSidebarOpen}
-          toggleSidebar={toggleSidebar}
-          currentAction={currentAction}
-          setCurrentAction={setCurrentAction}
-          currentLink={currentLink}
-          setCurrentLink={setCurrentLink}
+      <Box>
+        {!isMobile && (
+          <SideBar
+            isSidebarOpen={isSidebarOpen}
+            setSidebarOpen={setSidebarOpen}
+            toggleSidebar={toggleSidebar}
+            currentAction={currentAction}
+            setCurrentAction={setCurrentAction}
+            currentLink={currentLink}
+            setCurrentLink={setCurrentLink}
+            hovered={hovered}
+            setHovered={setHovered}
+            drawerWidthCollapsed={drawerWidthCollapsed}
+            drawerWidthExpanded={drawerWidthExpanded}
+          />
+        )}
+      </Box>
+      <Box
+        width={!isMobile ? "calc(100% - 160px)" : "100%"}
+        ml={!isMobile ? "160px" : 0}
+        flexShrink={1}
+      >
+        <Outlet
+          context={{
+            isSidebarOpen,
+            isMobile,
+            currentAction,
+            setCurrentAction,
+            postOptions,
+            setPostOptions,
+            setOpenSubNavLinks,
+            openSubNavLinks,
+            setOpenUserActions,
+            openUserActions,
+            setOpenSignUpActions,
+            openSignUpActions,
+            setOpenMenuLinks,
+            openMenuLinks,
+            openSearchModal,
+            setOpenSearchModal,
+            hovered,
+            setHovered,
+            drawerWidthCollapsed,
+            drawerWidthExpanded,
+          }}
         />
-      )}
-      <Outlet
-        context={{
-          isSidebarOpen,
-          isMobile,
-          currentAction,
-          setCurrentAction,
-          postOptions,
-          setPostOptions,
-          setOpenSubNavLinks,
-          openSubNavLinks,
-          setOpenUserActions,
-          openUserActions,
-          setOpenSignUpActions,
-          openSignUpActions,
-          setOpenMenuLinks,
-          openMenuLinks,
-          openSearchModal,
-          setOpenSearchModal,
-        }}
-      />
+      </Box>
     </Box>
   );
 }
