@@ -2,8 +2,9 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [react()],
+  base: mode === "production" ? "/official_sensec_website/" : "/",
   optimizeDeps: {
     include: [
       "@mui/x-date-pickers",
@@ -11,5 +12,4 @@ export default defineConfig({
       "date-fns",
     ],
   },
-  base: "/official_sensec_website/",
-});
+}));
