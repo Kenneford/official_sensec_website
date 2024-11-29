@@ -10,7 +10,6 @@ import { AllGraduatedStudents } from "../graduatedStudents/AllGraduatedStudents"
 
 export function StudentsCategories() {
   const { adminCurrentLink, class_level, student_category } = useParams();
-  console.log(student_category, class_level);
 
   return (
     <Box>

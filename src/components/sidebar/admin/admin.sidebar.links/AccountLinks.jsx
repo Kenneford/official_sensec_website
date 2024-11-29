@@ -3,7 +3,7 @@ import "../../sidebar.scss";
 import PropTypes from "prop-types";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import { NavHashLink } from "react-router-hash-link";
+import { HashLink, NavHashLink } from "react-router-hash-link";
 import { useParams } from "react-router-dom";
 import { Box } from "@mui/material";
 import { SidebarSubLinksContainer } from "../../../../muiStyling/muiStyling";
@@ -18,12 +18,7 @@ const quickLinks = [
   { name: "Help" },
 ];
 
-export function AccountLinks({
-  isSidebarOpen,
-  setCurrentAction,
-  setCurrentLink,
-  hovered,
-}) {
+export function AccountLinks({ hovered }) {
   const authAdmin = useSelector(getAuthUser);
   const { adminCurrentLink } = useParams();
 
@@ -81,7 +76,7 @@ export function AccountLinks({
       >
         <div ref={contentRef} className="allSidebarLinksWrap">
           {quickLinks.map((Qlink) => (
-            <NavHashLink
+            <HashLink
               key={Qlink.name}
               to={`/sensec/users/${
                 authAdmin?.uniqueId
@@ -94,17 +89,13 @@ export function AccountLinks({
               }
               smooth
               title={!hovered ? Qlink.name : ""}
-              onClick={() => {
-                setCurrentAction("Dashboard");
-                setCurrentLink(Qlink.name);
-              }}
             >
               {Qlink.name === "Profile" && <Person className="icon" />}
               {Qlink.name === "Edit" && <Edit className="icon" />}
               {Qlink.name === "Settings" && <Settings className="icon" />}
               {Qlink.name === "Help" && <Help className="icon" />}
               {hovered && <h4>{Qlink.name}</h4>}
-            </NavHashLink>
+            </HashLink>
           ))}
         </div>
       </SidebarSubLinksContainer>
@@ -113,7 +104,5 @@ export function AccountLinks({
 }
 
 AccountLinks.propTypes = {
-  isSidebarOpen: PropTypes.bool,
-  setCurrentAction: PropTypes.func,
-  setCurrentLink: PropTypes.func,
+  hovered: PropTypes.bool,
 };

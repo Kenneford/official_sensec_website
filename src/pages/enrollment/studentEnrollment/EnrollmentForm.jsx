@@ -36,6 +36,7 @@ import { TaskAlt } from "@mui/icons-material";
 import Redirection from "../../../components/pageLoading/Redirection";
 import { useNavigate, useParams } from "react-router-dom";
 import { getAuthUser } from "../../../features/auth/authSlice";
+import { FetchAllStudents } from "../../../data/students/FetchAllStudents";
 
 export function EnrollmentForm() {
   const dispatch = useDispatch();
@@ -44,6 +45,7 @@ export function EnrollmentForm() {
   const { studentIndexNo, adminCurrentAction, adminCurrentLink } = useParams();
   const indexNumber = localStorage.getItem("indexNumber");
   const allProgrammes = FetchAllProgrammes();
+  const allStudents = FetchAllStudents();
   const allClassLevels = FetchAllClassLevels();
   const allBatches = FetchAllBatches();
   const allDivisionProgrammes = useSelector(getAllDivisionProgrammes);
@@ -147,6 +149,12 @@ export function EnrollmentForm() {
     const newId = generateUniqueId(newStudent?.firstName, newStudent?.lastName);
     setStudentId(newId);
   }, [newStudent]);
+
+  // Find student's programme
+  const studentFound = allStudents?.find(
+    (student) => student?.studentSchoolData?.jhsIndexNo === studentIndexNo
+  );
+  console.log(studentFound);
 
   // Find student's programme
   const studentProgramme = allProgrammes?.find(
@@ -399,6 +407,14 @@ export function EnrollmentForm() {
             {adminCurrentAction?.replace(/_/g, "-")} /{" "}
             <span>{adminCurrentLink?.replace(/_/g, " ")}</span>
           </h1>
+          {/* {studentFound && (
+            <Box textAlign={"right"} mt={1} fontSize={"1em"} color={"red"}>
+              <p>
+                An existing student found with your index number &quot;
+                {studentFound?.studentSchoolData?.jhsIndexNo}&quot;
+              </p>
+            </Box>
+          )} */}
         </Box>
       )}
       <ContainerBox

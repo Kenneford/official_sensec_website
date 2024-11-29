@@ -30,7 +30,6 @@ export function AllEnrolledStudents() {
   const approvedStudents = FetchAllApprovedStudents();
   //Get state data
   const allClassLevels = FetchAllClassLevels();
-  console.log(allClassLevels);
   const { promotionStatus, successMessage, error } = useSelector(
     (state) => state.promotion
   );
@@ -43,7 +42,6 @@ export function AllEnrolledStudents() {
     class_level,
     student_category,
   } = useParams();
-  console.log(class_level);
 
   //Promotion status values
   // const {
@@ -80,7 +78,6 @@ export function AllEnrolledStudents() {
   const studentToPromote = approvedStudents?.find(
     (std) => std?._id === currentStudent
   );
-  console.log(studentToPromote);
 
   //Find selected student to demote
   const studentToDemote = approvedStudents?.find(
@@ -96,10 +93,7 @@ export function AllEnrolledStudents() {
       std?.personalInfo?.lastName?.includes(searchStudent)
   );
 
-  console.log(multiStudents);
-  console.log(allClassLevels);
-
-  const studentDataFormat = studentsColumn(
+  const columnData = {
     authAdmin,
     studentToPromote,
     adminCurrentAction,
@@ -117,9 +111,9 @@ export function AllEnrolledStudents() {
     setOpenDemotionModal,
     openDemotionModal,
     promotionStatus,
-    studentToDemote
-  );
-  console.log(studentToDemote);
+    studentToDemote,
+  };
+  const studentDataFormat = studentsColumn(columnData);
 
   const handleMultiSelect = (state) => {
     setMultiStudents(state.selectedRows);

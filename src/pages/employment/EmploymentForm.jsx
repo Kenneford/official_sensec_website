@@ -478,8 +478,8 @@ export function EmploymentForm() {
                     value={newEmployment?.dateOfBirth || ""}
                     onChange={(date) => handleDateChange("dateOfBirth", date)}
                     renderInput={(params) => <CustomTextField {...params} />}
-                    error={false} // Make sure this is false
-                    helperText="" // Optionally clear helper text
+                    // error={false} // Make sure this is false
+                    // helperText="" // Optionally clear helper text
                     sx={{
                       width: "100%",
                     }}

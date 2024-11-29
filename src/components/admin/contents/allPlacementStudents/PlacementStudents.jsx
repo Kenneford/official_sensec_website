@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./placementStudentsData.scss";
 import SearchIcon from "@mui/icons-material/Search";
 import EditIcon from "@mui/icons-material/Edit";
@@ -9,28 +9,76 @@ import { Link } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
 import { toast } from "react-toastify";
 import UploadPlacementExcelData from "./placementExcelDataUpload/PlacementDataUpload";
-import { Box, Grid } from "@mui/material";
+import { Avatar, Box, Grid, MenuItem, TextField } from "@mui/material";
 import ActionModal from "../../../modals/NewEmploymentModal";
-import { FetchAllPlacementStudents } from "../../../../data/students/FetchPlacementStudents";
-import { customUserTableStyle } from "../../../../usersInfoDataFormat/usersInfoTableStyle";
-import { FetchAllStudents } from "../../../../data/students/FetchAllStudents";
+import {
+  FetchAllPlacementSBatches,
+  FetchAllPlacementStudents,
+  FetchPlacementBatchByYear,
+  FetchPlacementStudentsByYear,
+} from "../../../../data/students/FetchPlacementStudents";
+import {
+  conditionalRowStyles,
+  customUserTableStyle,
+} from "../../../../usersInfoDataFormat/usersInfoTableStyle";
+import {
+  FetchAllApprovedStudents,
+  FetchAllGraduatedStudents,
+  FetchAllStudents,
+} from "../../../../data/students/FetchAllStudents";
 import SearchFilter from "../../../searchForm/SearchFilter";
+import { CustomTextField } from "../../../../muiStyling/muiStyling";
 
 export function PlacementStudents() {
   const navigate = useNavigate();
   // const dispatch = useDispatch();
   const userInfo = {};
+  const currentYear = new Date().getFullYear();
   const allPlacementStudents = FetchAllPlacementStudents();
+  const allApprovedStudents = FetchAllApprovedStudents();
+  const allGraduatedStudents = FetchAllGraduatedStudents();
+  const allPlacementSBatches = FetchAllPlacementSBatches();
   const allStudents = FetchAllStudents();
-  const placementStudents = [];
+  // console.log(placementStudentsByYear);
+
   // const { uploadExcelFileStatus, uploadExcelFileError } = useSelector(
   //   (state) => state.placement
   // );
   const { adminCurrentAction, adminCurrentLink } = useParams();
   const [searchStudent, setSearchStudent] = useState("");
 
+  const [yearSelected, setYearSelected] = useState(false); // State to manage filter
+  const [filter, setFilter] = useState(""); // State to manage filter
+  const placementStudentsByYear = FetchPlacementBatchByYear(filter);
+  // const placementStudentsByYear = FetchPlacementStudentsByYear(filter);
+  const currentPlacementData = allPlacementSBatches?.find(
+    (batch) => batch?.year === currentYear?.toString()
+  );
+  // Filter out current year placement batch
+  const filteredPlacementBatches = allPlacementSBatches?.filter(
+    (batch) => batch?.year !== currentYear?.toString()
+  );
+  const sortedCurrentPlacementData = useMemo(() => {
+    if (currentPlacementData) {
+      const data = [...currentPlacementData.students]?.sort(
+        (newData, oldData) => oldData?.updatedAt - newData?.updatedAt
+      );
+      return data;
+    }
+  }, [currentPlacementData]);
+  console.log(sortedCurrentPlacementData);
+
   //Filter students during search
-  const filteredStudents = allPlacementStudents?.filter(
+  const filteredStudents = currentPlacementData?.students?.filter(
+    (std) =>
+      std?.firstName?.toLowerCase()?.includes(searchStudent) ||
+      std?.firstName?.includes(searchStudent) ||
+      std?.lastName?.toLowerCase()?.includes(searchStudent) ||
+      std?.lastName?.includes(searchStudent) ||
+      std?.fullName?.toLowerCase()?.includes(searchStudent) ||
+      std?.fullName?.includes(searchStudent)
+  );
+  const filteredStudentsByYear = placementStudentsByYear?.students?.filter(
     (std) =>
       std?.firstName?.toLowerCase()?.includes(searchStudent) ||
       std?.firstName?.includes(searchStudent) ||
@@ -40,48 +88,9 @@ export function PlacementStudents() {
       std?.fullName?.includes(searchStudent)
   );
 
-  const customStyle = {
-    headRow: {
-      style: {
-        backgroundColor: "#555",
-        color: "#fff",
-      },
-    },
-    headColumn: {
-      style: {
-        border: "1rem solid red",
-        // color: "#fff",
-      },
-    },
-    headCells: {
-      style: {
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        fontSize: "1.2rem",
-        // borderLeft: ".2rem solid red",
-        // backgroundColor: "blue",
-        // color: "#fff",
-      },
-    },
-    cells: {
-      style: {
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        // backgroundColor: "#cccc",
-        // color: "#fff",
-        // paddingTop: ".5rem",
-        // paddingBottom: ".5rem",
-        fontSize: ".9rem",
-        // marginTop: ".5rem",
-        // marginBottom: ".5rem",
-      },
-    },
-  };
-
+  const placementDataToDisplay = yearSelected
+    ? filteredStudentsByYear
+    : filteredStudents;
   //THIS REMOVES THE HASHLINK TAG FROM THE URL
   if (window.location.hash) {
     window.history.replaceState("", document.title, window.location.pathname);
@@ -112,77 +121,143 @@ export function PlacementStudents() {
       });
     }
   };
-  const studentColumn = (data) => {
+  const placementStudentColumn = (data) => {
     const baseColumn = [
       {
         name: "Image",
-        selector: (row) =>
-          row?.profilePicture ? (
-            <HashLink
-              scroll={scrollWithOffset}
-              smooth
-              to={`/sensec/admin/Students/info/${row?.fullName?.replace(
-                / /g,
-                "_"
-              )}/${row?.jhsIndexNo}/overview#studentInfo`}
-              title="View Student Info"
-            >
-              {!row?.profilePicture?.url && (
-                <img className="studentImg" src={row?.profilePicture} alt="" />
-              )}
-              {row?.profilePicture?.url && (
-                <img
-                  className="studentImg"
-                  src={row?.profilePicture?.url}
+        selector: (row) => {
+          const foundStudent = allApprovedStudents?.find(
+            (std) => std?.uniqueId === row?.enrollmentId
+          );
+          const foundGraduate = allGraduatedStudents?.find(
+            (std) => std?.uniqueId === row?.enrollmentId
+          );
+          if (foundStudent) {
+            return (
+              <HashLink
+                scroll={scrollWithOffset}
+                smooth
+                to={`/sensec/admin/Students/info/${row?.fullName?.replace(
+                  / /g,
+                  "_"
+                )}/${row?.jhsIndexNo}/overview#studentInfo`}
+                title="View Student Info"
+              >
+                <Avatar
+                  // className="studentImg"
+                  src={foundStudent?.personalInfo?.profilePicture?.url}
+                  sx={{ borderRadius: ".4rem" }}
                   alt=""
                 />
-              )}
-            </HashLink>
-          ) : (
-            <HashLink
-              scroll={scrollWithOffset}
-              smooth
-              className="noImgLink"
-              to={`/sensec/admin/Students/info/${row?.fullName?.replace(
-                / /g,
-                "_"
-              )}/${row?.jhsIndexNo}/overview`}
-              title="View Student Info"
-            >
-              {row?.gender && row?.gender === "Male" && (
-                <img
-                  className="studentImg"
-                  src={"/assets/maleAvatar.png"}
+              </HashLink>
+            );
+          }
+          if (foundGraduate) {
+            return (
+              <HashLink
+                scroll={scrollWithOffset}
+                smooth
+                to={`/sensec/admin/Students/info/${row?.fullName?.replace(
+                  / /g,
+                  "_"
+                )}/${row?.jhsIndexNo}/overview#studentInfo`}
+                title="View Student Info"
+              >
+                <Avatar
+                  // className="studentImg"
+                  src={foundGraduate?.personalInfo?.profilePicture?.url}
+                  sx={{ borderRadius: ".4rem" }}
                   alt=""
                 />
-              )}
-              {row?.gender === "Female" && (
-                <img
-                  className="studentImg"
-                  src={"/assets/femaleAvatar.png"}
-                  alt=""
-                />
-              )}
-              {row?.gender === "" && (
-                <div className="noImg">
-                  <p>No</p>
-                  <p>Image</p>
-                </div>
-              )}
-            </HashLink>
-          ),
+              </HashLink>
+            );
+          }
+          if (!foundStudent && !foundGraduate) {
+            return (
+              <HashLink
+                scroll={scrollWithOffset}
+                smooth
+                to={`/sensec/admin/Students/info/${row?.fullName?.replace(
+                  / /g,
+                  "_"
+                )}/${row?.jhsIndexNo}/overview#studentInfo`}
+                title="View Student Info"
+              >
+                <Avatar sx={{ borderRadius: ".4rem" }} alt="" />
+              </HashLink>
+            );
+          }
+        },
+        // row?.profilePicture ? (
+        //   <HashLink
+        //     scroll={scrollWithOffset}
+        //     smooth
+        //     to={`/sensec/admin/Students/info/${row?.fullName?.replace(
+        //       / /g,
+        //       "_"
+        //     )}/${row?.jhsIndexNo}/overview#studentInfo`}
+        //     title="View Student Info"
+        //   >
+        //     {!row?.profilePicture?.url && (
+        //       <img
+        //         className="studentImg"
+        //         src={row?.profilePicture?.url}
+        //         alt=""
+        //       />
+        //     )}
+        //     {row?.profilePicture?.url && (
+        //       <img
+        //         className="studentImg"
+        //         src={row?.profilePicture?.url}
+        //         alt=""
+        //       />
+        //     )}
+        //   </HashLink>
+        // ) : (
+        //   <HashLink
+        //     scroll={scrollWithOffset}
+        //     smooth
+        //     className="noImgLink"
+        //     to={`/sensec/admin/Students/info/${row?.fullName?.replace(
+        //       / /g,
+        //       "_"
+        //     )}/${row?.jhsIndexNo}/overview`}
+        //     title="View Student Info"
+        //   >
+        //     {row?.gender && row?.gender === "Male" && (
+        //       <img
+        //         className="studentImg"
+        //         src={"/assets/maleAvatar.png"}
+        //         alt=""
+        //       />
+        //     )}
+        //     {row?.gender === "Female" && (
+        //       <img
+        //         className="studentImg"
+        //         src={"/assets/femaleAvatar.png"}
+        //         alt=""
+        //       />
+        //     )}
+        //     {row?.gender === "" && (
+        //       <div className="noImg">
+        //         <p>No</p>
+        //         <p>Image</p>
+        //       </div>
+        //     )}
+        //   </HashLink>
+        // ),
       },
-      {
-        name: "First Name",
-        selector: (row) => <p title={row?.firstName}>{row?.firstName}</p>,
-        sortable: true,
-        omit: data.some((user) => user.fullName),
-      },
-      {
-        name: "Surname",
-        selector: (row) => <p title={row?.lastName}>{row?.lastName}</p>,
-        omit: data.some((user) => user.fullName),
-      },
+      // {
+      //   name: "First Name",
+      //   selector: (row) => <p title={row?.firstName}>{row?.firstName}</p>,
+      //   sortable: true,
+      //   omit: data.some((user) => user.fullName),
+      // },
+      // {
+      //   name: "Surname",
+      //   selector: (row) => <p title={row?.lastName}>{row?.lastName}</p>,
+      //   omit: data.some((user) => user.fullName),
+      // },
       {
         name: "Full Name",
         selector: (row) => <p title={row?.fullName}>{row?.fullName}</p>,
@@ -195,12 +270,22 @@ export function PlacementStudents() {
       },
       {
         name: "JHS Attended",
-        selector: (row) => (row?.jhsAttended ? row?.jhsAttended : "---"),
+        selector: (row) =>
+          row?.jhsAttended ? (
+            <p title={row?.jhsAttended}>{row?.jhsAttended}</p>
+          ) : (
+            <p>---</p>
+          ),
         sortable: true,
       },
       {
         name: "Index Number",
-        selector: (row) => (row?.jhsIndexNo ? row?.jhsIndexNo : "---"),
+        selector: (row) =>
+          row?.jhsIndexNo ? (
+            <p title={`Index No: ${row?.jhsIndexNo}`}>{row?.jhsIndexNo}</p>
+          ) : (
+            <p>---</p>
+          ),
       },
       {
         name: "Year",
@@ -232,7 +317,7 @@ export function PlacementStudents() {
               row?.jhsIndexNo
             }/edit`}
           >
-            <EditIcon />
+            <EditIcon sx={{ color: "#fff" }} />
           </Link>
         ),
       },
@@ -240,6 +325,41 @@ export function PlacementStudents() {
     return baseColumn;
   };
 
+  // Handle change in TextField
+  const handleFilterChange = (event) => {
+    const value = event.target.value;
+    // Filter data based on selection
+    if (value === "Current Year") {
+      setYearSelected(false);
+      setFilter("");
+    } else {
+      setFilter(value);
+    }
+  };
+  // Define subHeaderComponent with MUI TextField
+  const subHeaderComponent = (
+    <CustomTextField
+      label="Filter by Year"
+      select
+      value={filter ? filter : "Current Year"}
+      onChange={handleFilterChange}
+      variant="outlined"
+      size="small"
+      style={{ width: "200px" }}
+    >
+      <MenuItem value="Current Year">Current Year</MenuItem>
+      {filteredPlacementBatches?.map((batch) => (
+        <MenuItem
+          value={batch?.year}
+          key={batch?._id}
+          onClick={() => setYearSelected(true)}
+        >
+          {batch?.year}
+        </MenuItem>
+      ))}
+      {/* <MenuItem value="not_enrolled">Not Enrolled</MenuItem> */}
+    </CustomTextField>
+  );
   // useEffect(() => {
   //   dispatch(fetchAllPlacementStudents());
   // }, [dispatch]);
@@ -257,7 +377,7 @@ export function PlacementStudents() {
 
   const [inFocus, setInFocus] = useState(false);
   const [searchStudentStatus, setSearchStudentStatus] = useState("");
-  const allStd = `All Placement Students / Total = ${allPlacementStudents?.length}`;
+  const allStd = `All Placement Students / Total = ${placementDataToDisplay?.length}`;
   return (
     <>
       {/* Current dashboard title */}
@@ -293,12 +413,12 @@ export function PlacementStudents() {
       >
         <UploadPlacementExcelData />
         <Box className="searchDetails">
-          {allPlacementStudents?.length === 0 && searchStudent !== "" && (
+          {placementDataToDisplay?.length === 0 && searchStudent !== "" && (
             <p className="searchInfo">
-              We couldn't find any matches for "{searchStudent}"
+              We couldn&apos;t find any matches for &quot;{searchStudent}&quot;
             </p>
           )}
-          {allPlacementStudents?.length === 0 && searchStudent !== "" && (
+          {placementDataToDisplay?.length === 0 && searchStudent !== "" && (
             <p
               style={{
                 paddingLeft: "1.5rem",
@@ -312,20 +432,20 @@ export function PlacementStudents() {
           )}
           {searchStudent && (
             <p className="searchInfo">
-              Search Result = {placementStudents.length}
+              Search Result = {placementDataToDisplay.length}
             </p>
           )}
           {!searchStudent && (
             <p className="searchInfo">
-              Total Placement Students = {allPlacementStudents?.length}
+              Total Placement Students = {placementDataToDisplay?.length}
             </p>
           )}
         </Box>
         <Box className="studentDataTable">
           <DataTable
             title={allStd}
-            columns={studentColumn(allPlacementStudents)}
-            data={filteredStudents}
+            columns={placementStudentColumn(placementDataToDisplay)}
+            data={placementDataToDisplay}
             customStyles={customUserTableStyle}
             pagination
             selectableRows
@@ -333,7 +453,9 @@ export function PlacementStudents() {
             selectableRowsHighlight
             highlightOnHover
             responsive
-            actions={<button>Export PDF</button>}
+            conditionalRowStyles={conditionalRowStyles}
+            subHeader
+            subHeaderComponent={subHeaderComponent} // Add MUI TextField as sub-header
           />
         </Box>
       </Box>

@@ -1,0 +1,56 @@
+@use "../../../utilities/sizes";
+@use "../../../utilities/colors";
+
+.weWrap {
+  font-size: calc(0.7rem + 1vmin);
+  .weCont {
+    h1 {
+      font-size: 1.2em;
+      padding-bottom: 1.5rem;
+      color: #696969;
+    }
+    p {
+      line-height: sizes.$line_height;
+      padding: 0 0 1rem;
+      font-size: 0.9em;
+    }
+    .aboutContent {
+      color: #696969;
+      .aboutRight {
+        .aboutSectionImg {
+          max-width: 50%;
+          height: auto;
+          float: right;
+          border: 5px solid #fff;
+          border-radius: 0.4rem;
+          -webkit-box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+          box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+          margin-left: 1rem;
+          margin-right: 0;
+          transition: 0.8s;
+          margin-bottom: 0;
+          &:hover {
+            transform: scale(0.95);
+          }
+        }
+      }
+      .aboutUsLeft {
+        h4 {
+          padding-bottom: 1rem;
+        }
+        .salutation {
+          padding-bottom: 1rem;
+          color: #28a48a;
+          .title {
+            // margin-bottom: -0.5rem;
+            font-size: 1em;
+          }
+          span {
+            font-weight: 600;
+            // margin-bottom: 1rem;
+          }
+        }
+      }
+    }
+  }
+}

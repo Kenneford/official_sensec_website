@@ -17,16 +17,7 @@ import {
 } from "../../../features/auth/authSlice";
 import { useEffect } from "react";
 
-export function AdminSidebar({
-  isSidebarOpen,
-  toggleSidebar,
-  setCurrentAction,
-  setCurrentLink,
-  navbar,
-  hovered,
-  currentTerm,
-  currentAcademicYear,
-}) {
+export function AdminSidebar({ hovered, currentTerm, currentAcademicYear }) {
   const dispatch = useDispatch();
   const authUser = useSelector(getAuthUser);
   const allUsers = useSelector(getAllUsers);
@@ -94,7 +85,7 @@ export function AdminSidebar({
           <img src={authUser?.personalInfo?.profilePicture?.url} alt="" />
           {hovered && (
             <Collapse
-              in={isSidebarOpen}
+              in={hovered}
               className="infoText"
               //   sx={{
               //     transition: "0.5s ease", // Smooth transition when toggling
@@ -131,57 +122,27 @@ export function AdminSidebar({
           <div className="sidebarContentLinksWrap">
             {/* Dashboard */}
             <>
-              <AdminDashboardLinks
-                isSidebarOpen={isSidebarOpen}
-                setCurrentAction={setCurrentAction}
-                setCurrentLink={setCurrentLink}
-                hovered={hovered}
-              />
+              <AdminDashboardLinks hovered={hovered} />
             </>
             {/* Actions */}
             <>
-              <ActionsLinks
-                isSidebarOpen={isSidebarOpen}
-                setCurrentAction={setCurrentAction}
-                setCurrentLink={setCurrentLink}
-                hovered={hovered}
-              />
+              <ActionsLinks hovered={hovered} />
             </>
             {/* Users */}
             <>
-              <UsersLinks
-                isSidebarOpen={isSidebarOpen}
-                setCurrentAction={setCurrentAction}
-                setCurrentLink={setCurrentLink}
-                hovered={hovered}
-              />
+              <UsersLinks hovered={hovered} />
             </>
             {/* Attendance */}
             <>
-              <AdminAttendanceLinks
-                isSidebarOpen={isSidebarOpen}
-                setCurrentAction={setCurrentAction}
-                setCurrentLink={setCurrentLink}
-                hovered={hovered}
-              />
+              <AdminAttendanceLinks hovered={hovered} />
             </>
             {/* Assessment */}
             <>
-              <AssessmentLinks
-                isSidebarOpen={isSidebarOpen}
-                setCurrentAction={setCurrentAction}
-                setCurrentLink={setCurrentLink}
-                hovered={hovered}
-              />
+              <AssessmentLinks hovered={hovered} />
             </>
             {/* Account */}
             <>
-              <AccountLinks
-                isSidebarOpen={isSidebarOpen}
-                setCurrentAction={setCurrentAction}
-                setCurrentLink={setCurrentLink}
-                hovered={hovered}
-              />
+              <AccountLinks hovered={hovered} />
             </>
           </div>
         </Box>
@@ -191,11 +152,6 @@ export function AdminSidebar({
 }
 
 AdminSidebar.propTypes = {
-  isSidebarOpen: PropTypes.bool,
-  toggleSidebar: PropTypes.func,
-  setCurrentAction: PropTypes.func,
-  setCurrentLink: PropTypes.func,
-  navbar: PropTypes.bool,
   hovered: PropTypes.bool,
   currentTerm: PropTypes.object,
   currentAcademicYear: PropTypes.object,

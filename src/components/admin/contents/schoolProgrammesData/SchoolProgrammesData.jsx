@@ -190,7 +190,12 @@ export function SchoolProgrammesData() {
   const electiveSubColumn = [
     {
       name: "Subject",
-      selector: (row) => (row?.subjectName ? row?.subjectName : "---"),
+      selector: (row) =>
+        row?.subjectName ? (
+          <p title={row?.subjectName}>{row?.subjectName}</p>
+        ) : (
+          <p>---</p>
+        ),
     },
     {
       name: "Programme",
@@ -294,7 +299,12 @@ export function SchoolProgrammesData() {
   const coreSubColumn = [
     {
       name: "Subject",
-      selector: (row) => (row?.subjectName ? row?.subjectName : "---"),
+      selector: (row) =>
+        row?.subjectName ? (
+          <p title={row?.subjectName}>{row?.subjectName}</p>
+        ) : (
+          <p>---</p>
+        ),
     },
     // {
     //   name: "Class Level",

@@ -27,7 +27,6 @@ export function CreateCoreSubject() {
     isCore: true,
     createdBy: authAdmin?.id,
   });
-  console.log(coreSubject);
 
   const handleInputValues = (e) => {
     setCoreSubject({

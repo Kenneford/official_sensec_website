@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import "../../sidebar.scss";
 import PropTypes from "prop-types";
-import { NavHashLink } from "react-router-hash-link";
+import { HashLink, NavHashLink } from "react-router-hash-link";
 import { useParams } from "react-router-dom";
 import {
   ExpandLess,
@@ -16,12 +16,7 @@ import { getAuthUser } from "../../../../features/auth/authSlice";
 
 const quickLinks = [{ name: "View Attendance" }, { name: "Search Attendance" }];
 
-export function AdminAttendanceLinks({
-  isSidebarOpen,
-  setCurrentAction,
-  setCurrentLink,
-  hovered,
-}) {
+export function AdminAttendanceLinks({ hovered }) {
   const authAdmin = useSelector(getAuthUser);
   const { adminCurrentLink } = useParams();
 
@@ -79,7 +74,7 @@ export function AdminAttendanceLinks({
       >
         <div ref={contentRef} className="allSidebarLinksWrap">
           {quickLinks.map((Qlink) => (
-            <NavHashLink
+            <HashLink
               key={Qlink.name}
               to={`/sensec/users/${
                 authAdmin?.uniqueId
@@ -92,10 +87,6 @@ export function AdminAttendanceLinks({
               }
               smooth
               title={!hovered ? Qlink.name : ""}
-              onClick={() => {
-                setCurrentAction("Dashboard");
-                setCurrentLink(Qlink.name);
-              }}
             >
               {Qlink.name === "View Attendance" && (
                 <ListAltOutlined className="icon" />
@@ -104,7 +95,7 @@ export function AdminAttendanceLinks({
                 <Search className="icon" />
               )}
               {hovered && <h4>{Qlink.name}</h4>}
-            </NavHashLink>
+            </HashLink>
           ))}
         </div>
       </SidebarSubLinksContainer>
@@ -113,7 +104,5 @@ export function AdminAttendanceLinks({
 }
 
 AdminAttendanceLinks.propTypes = {
-  isSidebarOpen: PropTypes.bool,
-  setCurrentAction: PropTypes.func,
-  setCurrentLink: PropTypes.func,
+  hovered: PropTypes.bool,
 };

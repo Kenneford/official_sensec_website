@@ -32,6 +32,7 @@ import {
   promoteMultiStudents,
   resetMultiDemotionsState,
   resetMultiPromotionsState,
+  resetPromotionState,
 } from "../../../../../features/students/promotionSlice";
 
 export function ClassLevelStudents() {
@@ -39,6 +40,7 @@ export function ClassLevelStudents() {
   const actionBtns = AllStudentsPageQuickLinks();
   // console.log(userInfo);
   const {
+    promotionStatus,
     multiStudentsPromotionStatus,
     multiStudentsDemotionStatus,
     successMessage,
@@ -54,25 +56,30 @@ export function ClassLevelStudents() {
     adminCurrentAction,
     student_category,
   } = useParams();
-  console.log(adminCurrentAction, adminCurrentLink);
-  console.log(class_level, program);
+
+  const [currentStudent, setCurrentStudent] = useState("");
+  const [demoteStudent, setDemoteStudent] = useState("");
+  const [openPromotionModal, setOpenPromotionModal] = useState(false);
+  const [openDemotionModal, setOpenDemotionModal] = useState(false);
+  const [promotionInProgress, setPromotionInProgress] = useState(false);
+  const [demotionInProgress, setDemotionInProgress] = useState(false);
+  const [loadingComplete, setLoadingComplete] = useState(null);
+  const [demotionLoadingComplete, setDemotionLoadingComplete] = useState(null);
+  const [searchStudent, setSearchStudent] = useState("");
   const [openModal, setOpenModal] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
-  const [classLevel, setClassLevel] = useState("");
   const [uncompletedEmploymentTask, setUncompletedEmploymentTask] =
     useState("");
   const allClassLevels = FetchAllClassLevels();
-  const approvedStudents = FetchAllApprovedStudents();
-  const classLevelStudents = FetchApprovedClassLevelStudents(classLevel?._id);
   const allClassLevelSections = FetchAllClassSections();
-  const singleClassLevel = {
-    students: [],
-  };
+  const approvedStudents = FetchAllApprovedStudents();
 
   const classLevelFound = allClassLevels?.find(
     (cLevel) => cLevel?.name === class_level?.replace(/_/g, " ")
   );
-  console.log(classLevelFound);
+  const classLevelStudents = FetchApprovedClassLevelStudents(
+    classLevelFound?._id
+  );
 
   const [currentStudentId, setCurrentStudentId] = useState("");
   const [level100loadingComplete, setLevel100LoadingComplete] = useState(null);
@@ -86,8 +93,16 @@ export function ClassLevelStudents() {
     useState(false);
   const [demoteMultiLoadingComplete, setDemoteMultiLoadingComplete] =
     useState(null);
-  const [searchStudent, setSearchStudent] = useState("");
 
+  //Find selected student to promote
+  const studentToPromote = approvedStudents?.find(
+    (std) => std?._id === currentStudent
+  );
+
+  //Find selected student to demote
+  const studentToDemote = approvedStudents?.find(
+    (std) => std?._id === demoteStudent
+  );
   const filteredStudents = classLevelStudents?.filter(
     (std) =>
       std?.personalInfo?.firstName?.toLowerCase()?.includes(searchStudent) ||
@@ -98,7 +113,6 @@ export function ClassLevelStudents() {
   const foundStudent = classLevelStudents?.find(
     (std) => std._id === currentStudentId
   );
-  console.log(filteredStudents);
 
   const handleNewEnrollment = () => {
     setRedirecting(true);
@@ -109,28 +123,31 @@ export function ClassLevelStudents() {
       );
     }, 3000);
   };
-  const studentDataFormat = studentsColumn(
+  const columnData = {
     authAdmin,
-    foundStudent,
+    studentToPromote,
     adminCurrentAction,
     adminCurrentLink,
-    setCurrentStudentId,
-    setLevel100LoadingComplete,
-    setLevel200LoadingComplete,
-    setLevel300LoadingComplete,
-    level100loadingComplete,
-    level200loadingComplete,
-    level300loadingComplete,
-    // level100PromotionStatus,
-    // level200PromotionStatus,
-    // level300PromotionStatus,
-    dispatch
-  );
+    setOpenPromotionModal,
+    openPromotionModal,
+    setCurrentStudent,
+    setDemoteStudent,
+    setLoadingComplete,
+    loadingComplete,
+    setDemotionLoadingComplete,
+    demotionLoadingComplete,
+    demotionInProgress,
+    promotionInProgress,
+    setOpenDemotionModal,
+    openDemotionModal,
+    promotionStatus,
+    studentToDemote,
+  };
+  const studentDataFormat = studentsColumn(columnData);
 
   // handle multi approval or rejection
   const [multiStudents, setMultiStudents] = useState([]);
   const [toggleClearRows, setToggleClearRows] = useState(false);
-  console.log(multiStudents);
   const handleMultiSelect = (state) => {
     if (state) {
       const studentObj = state?.selectedRows?.map((user) => {
@@ -145,142 +162,50 @@ export function ClassLevelStudents() {
     }
   };
   //Student Promotion Status Check
-  // useEffect(() => {
-  //   if (studentToPromote) {
-  //     if (promotionStatus === "pending") {
-  //       setLoadingComplete(false);
-  //       setPromotionInProgress(false);
-  //     }
-  //     if (promotionStatus === "rejected") {
-  //       setTimeout(() => {
-  //         setLoadingComplete(null);
-  //         setPromotionInProgress(false);
-  //         dispatch(resetPromotionState());
-  //       }, 3000);
-  //       setTimeout(() => {
-  //         error?.errorMessage?.message?.map((err) =>
-  //           toast.error(err, {
-  //             position: "top-right",
-  //             theme: "light",
-  //             toastId: err,
-  //           })
-  //         );
-  //       }, 2000);
-  //       return;
-  //     }
-  //     if (promotionStatus === "success") {
-  //       setTimeout(() => {
-  //         setLoadingComplete(true);
-  //       }, 3000);
-  //       setTimeout(() => {
-  //         toast.success(successMessage, {
-  //           position: "top-right",
-  //           theme: "dark",
-  //           toastId: successMessage,
-  //         });
-  //       }, 1000);
-  //       setTimeout(() => {
-  //         //Fetch all users again when successfully approved
-  //         dispatch(fetchAllUsers());
-  //         dispatch(resetPromotionState());
-  //         setPromotionInProgress(false);
-  //         setLoadingComplete(null);
-  //       }, 6000);
-  //     }
-  //   }
-  // }, [promotionStatus, successMessage, error, dispatch, studentToPromote]);
-
-  // Multi promotions status check
   useEffect(() => {
-    if (multiStudentsPromotionStatus === "pending") {
-      setPromoteMultiLoadingComplete(false);
-    }
-    if (multiStudentsPromotionStatus === "rejected") {
-      setTimeout(() => {
-        setPromoteMultiLoadingComplete(null);
-        setMultiPromotionsInProgress(false);
-        dispatch(resetMultiPromotionsState());
-      }, 3000);
-      setTimeout(() => {
-        error?.errorMessage?.message?.map((err) =>
-          toast.error(err, {
+    if (studentToPromote) {
+      if (promotionStatus === "pending") {
+        setLoadingComplete(false);
+        setPromotionInProgress(false);
+      }
+      if (promotionStatus === "rejected") {
+        setTimeout(() => {
+          setLoadingComplete(null);
+          setPromotionInProgress(false);
+          dispatch(resetPromotionState());
+        }, 3000);
+        setTimeout(() => {
+          error?.errorMessage?.message?.map((err) =>
+            toast.error(err, {
+              position: "top-right",
+              theme: "light",
+              toastId: err,
+            })
+          );
+        }, 2000);
+        return;
+      }
+      if (promotionStatus === "success") {
+        setTimeout(() => {
+          setLoadingComplete(true);
+        }, 3000);
+        setTimeout(() => {
+          toast.success(successMessage, {
             position: "top-right",
             theme: "dark",
-            toastId: "multiStudentPromotionsError",
-          })
-        );
-      }, 2000);
-      return;
+            toastId: successMessage,
+          });
+        }, 1000);
+        setTimeout(() => {
+          //Fetch all users again when successfully approved
+          dispatch(fetchAllUsers());
+          dispatch(resetPromotionState());
+          setPromotionInProgress(false);
+          setLoadingComplete(null);
+        }, 6000);
+      }
     }
-    if (multiStudentsPromotionStatus === "success") {
-      setTimeout(() => {
-        setPromoteMultiLoadingComplete(true);
-      }, 3000);
-      setTimeout(() => {
-        //Fetch all users again when successfully promoted
-        dispatch(fetchAllUsers());
-        setToggleClearRows(!toggleClearRows);
-        dispatch(resetMultiPromotionsState());
-        setMultiPromotionsInProgress(false);
-        setPromoteMultiLoadingComplete(null);
-      }, 6000);
-    }
-  }, [
-    dispatch,
-    multiStudentsPromotionStatus,
-    error,
-    multiStudents,
-    toggleClearRows,
-  ]);
-  // Multi demotions status check
-  useEffect(() => {
-    if (multiStudentsDemotionStatus === "pending") {
-      setDemoteMultiLoadingComplete(false);
-    }
-    if (multiStudentsDemotionStatus === "rejected") {
-      setTimeout(() => {
-        setDemoteMultiLoadingComplete(null);
-        setMultiDemotionsInProgress(false);
-        dispatch(resetMultiDemotionsState());
-      }, 3000);
-      setTimeout(() => {
-        error?.errorMessage?.message?.map((err) =>
-          toast.error(err, {
-            position: "top-right",
-            theme: "dark",
-            toastId: "multiStudentPromotionsError",
-          })
-        );
-      }, 2000);
-      return;
-    }
-    if (multiStudentsDemotionStatus === "success") {
-      setTimeout(() => {
-        setDemoteMultiLoadingComplete(true);
-      }, 3000);
-      setTimeout(() => {
-        //Fetch all users again when successfully promoted
-        dispatch(fetchAllUsers());
-        setToggleClearRows(!toggleClearRows);
-        setMultiDemotionsInProgress(false);
-        setDemoteMultiLoadingComplete(null);
-        dispatch(resetMultiDemotionsState());
-      }, 6000);
-    }
-  }, [
-    dispatch,
-    multiStudentsDemotionStatus,
-    error,
-    multiStudents,
-    toggleClearRows,
-  ]);
-
-  useLayoutEffect(() => {
-    const classLevelFound = allClassLevels?.find(
-      (cLevel) => cLevel?.name === class_level?.replace(/_/g, " ")
-    );
-    setClassLevel(classLevelFound);
-  }, [allClassLevels, class_level]);
+  }, [promotionStatus, successMessage, error, dispatch, studentToPromote]);
 
   const currentClassLevelStd = `${class_level?.replace(
     /_/g,

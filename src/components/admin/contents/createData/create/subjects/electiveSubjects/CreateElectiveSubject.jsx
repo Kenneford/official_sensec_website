@@ -14,11 +14,10 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { CustomTextField } from "../../../../../../../muiStyling/muiStyling";
-import { FetchAllClassLevels } from "../../../../../../../data/class/FetchClassLevel";
 import { FetchAllProgrammes } from "../../../../../../../data/programme/FetchProgrammeData";
 import { getAuthUser } from "../../../../../../../features/auth/authSlice";
 import {
-  createElectiveSubject,
+  createESubject,
   resetCreateSubjectState,
 } from "../../../../../../../features/academics/subjectsSlice";
 import { TaskAlt } from "@mui/icons-material";
@@ -44,10 +43,9 @@ export function CreateElectiveSubject() {
     subjectName: "",
     programId: "",
     divisionProgramId: "",
-    isOptional: false,
+    isOptional: "",
     createdBy: `${authAdmin.id}`,
   });
-  console.log(electiveSubject);
 
   const handleInputValues = (e) => {
     setElectiveSubject({
@@ -69,7 +67,7 @@ export function CreateElectiveSubject() {
       isOptional: electiveSubject?.isOptional,
       createdBy: authAdmin?.id,
     };
-    dispatch(createElectiveSubject({ data }));
+    dispatch(createESubject({ data }));
   };
 
   // Create subject status check

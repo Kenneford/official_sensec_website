@@ -115,7 +115,7 @@ export function CreatePlacementBatch() {
               <span>Successful</span> <TaskAltIcon />
             </>
           )}
-          {loadingComplete === null && "Create Academic Term"}
+          {loadingComplete === null && "Create Placement Batch"}
         </Button>
       </Box>
     </Box>

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import "../../sidebar.scss";
 import PropTypes from "prop-types";
-import { NavHashLink } from "react-router-hash-link";
+import { HashLink, NavHashLink } from "react-router-hash-link";
 import { useParams } from "react-router-dom";
 import {
   Assessment,
@@ -19,12 +19,7 @@ const quickLinks = [
   { name: "Search Assessment" },
 ];
 
-export function AssessmentLinks({
-  isSidebarOpen,
-  setCurrentAction,
-  setCurrentLink,
-  hovered,
-}) {
+export function AssessmentLinks({ hovered }) {
   const authAdmin = useSelector(getAuthUser);
   const { adminCurrentLink } = useParams();
 
@@ -82,7 +77,7 @@ export function AssessmentLinks({
       >
         <div ref={contentRef} className="allSidebarLinksWrap">
           {quickLinks.map((Qlink) => (
-            <NavHashLink
+            <HashLink
               key={Qlink.name}
               to={`/sensec/users/${
                 authAdmin?.uniqueId
@@ -95,10 +90,6 @@ export function AssessmentLinks({
               }
               smooth
               title={!hovered ? Qlink.name : ""}
-              onClick={() => {
-                setCurrentAction("Dashboard");
-                setCurrentLink(Qlink.name);
-              }}
             >
               {Qlink.name === "Students Assessment" && (
                 <Assessment className="icon" />
@@ -107,7 +98,7 @@ export function AssessmentLinks({
                 <Search className="icon" />
               )}
               {hovered && <h4>{Qlink.name}</h4>}
-            </NavHashLink>
+            </HashLink>
           ))}
         </div>
       </SidebarSubLinksContainer>
@@ -116,7 +107,5 @@ export function AssessmentLinks({
 }
 
 AssessmentLinks.propTypes = {
-  isSidebarOpen: PropTypes.bool,
-  setCurrentAction: PropTypes.func,
-  setCurrentLink: PropTypes.func,
+  hovered: PropTypes.bool,
 };

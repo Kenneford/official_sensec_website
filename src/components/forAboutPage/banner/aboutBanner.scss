@@ -1,0 +1,44 @@
+@use "../../../utilities/sizes";
+@use "../../../utilities/colors";
+.bannerWrap {
+  color: #fff;
+  font-size: calc(0.7rem + 1vmin);
+  .links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.5rem;
+    background-color: #292929;
+    a {
+      margin: 0 0.5rem;
+      font-size: 0.9em;
+      color: #fff;
+      transition: 0.4s ease;
+      &:hover {
+        color: #0fc80f;
+      }
+    }
+  }
+  .bannerImg {
+    background-size: cover;
+    background-position: center;
+    .overlay {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 20vh;
+      background-color: rgba(0, 0, 0, 0.5);
+      h1 {
+        font-size: 2em;
+      }
+      span {
+        font-size: 1.2em;
+      }
+      .slogan {
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+    }
+  }
+}
