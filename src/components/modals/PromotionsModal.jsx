@@ -13,8 +13,6 @@ export default function PromotionsModal({
   userDataToDemote,
 }) {
   const dispatch = useDispatch();
-  console.log(userDataToPromote);
-  console.log(userDataToDemote);
 
   if (!open) return null;
   return (

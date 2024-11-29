@@ -192,7 +192,7 @@ export default function PageNavigation() {
                       element: <ParentForm />,
                     },
                     {
-                      path: ":employees/:employees_link",
+                      path: "employees/:employees_link",
                       element: <UserTypesContainer />,
                     },
                     {

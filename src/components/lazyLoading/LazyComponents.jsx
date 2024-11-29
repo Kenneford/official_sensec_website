@@ -25,6 +25,7 @@ export const Home = lazyWithSuspense(
   <PageLoading />,
   "HomePage"
 );
+// For About Page
 export const About = lazyWithSuspense(
   () =>
     import("../../pages/about/About").then((module) => {
@@ -33,6 +34,47 @@ export const About = lazyWithSuspense(
   <PageLoading />,
   "AboutPage"
 );
+export const AboutBanner = lazyWithSuspense(
+  () =>
+    import("../forAboutPage/banner/AboutBanner").then((module) => {
+      return { default: module.AboutBanner };
+    }),
+  <PageLoading />,
+  "AboutBannerComponent"
+);
+export const WhoWeAre = lazyWithSuspense(
+  () =>
+    import("../forAboutPage/aboutWhoWeAre/WhoWeAre").then((module) => {
+      return { default: module.WhoWeAre };
+    }),
+  <PageLoading />,
+  "WhoWeAreComponent"
+);
+export const OurHistory = lazyWithSuspense(
+  () =>
+    import("../forAboutPage/aboutOurHistory/OurHistory").then((module) => {
+      return { default: module.OurHistory };
+    }),
+  <PageLoading />,
+  "OurHistoryComponent"
+);
+export const OurVision = lazyWithSuspense(
+  () =>
+    import("../forAboutPage/aboutOurVision/OurVision").then((module) => {
+      return { default: module.OurVision };
+    }),
+  <PageLoading />,
+  "OurVisionComponent"
+);
+export const Achievements = lazyWithSuspense(
+  () =>
+    import("../forAboutPage/aboutAchievements/Achievements").then((module) => {
+      return { default: module.Achievements };
+    }),
+  <PageLoading />,
+  "AchievementsComponent"
+);
+// For Contact Page
 export const Contact = lazyWithSuspense(
   () =>
     import("../../pages/contact/Contact").then((module) => {

@@ -132,6 +132,15 @@ export const fetchAllPlacementStudents = createAsyncThunk(
     return res.data;
   }
 );
+export const fetchAllPlacementSBatches = createAsyncThunk(
+  "Placement/fetchAllPlacementSBatches",
+  async () => {
+    const res = await axios.get(
+      `${SENSEC_API_ENDPOINT}/placement/batches/fetch_all`
+    );
+    return res.data;
+  }
+);
 
 const placementSlice = createSlice({
   name: "Placement",
@@ -316,6 +325,27 @@ const placementSlice = createSlice({
         error: action.payload,
       };
     });
+    //   Fetch All Placement Students
+    builder.addCase(fetchAllPlacementSBatches.pending, (state) => {
+      return { ...state, fetchStatus: "pending" };
+    });
+    builder.addCase(fetchAllPlacementSBatches.fulfilled, (state, action) => {
+      if (action.payload) {
+        return {
+          ...state,
+          allPlacementBatches: action.payload.batchesFound,
+          fetchSuccessMessage: action.payload.successMessage,
+          fetchStatus: "success",
+        };
+      } else return state;
+    });
+    builder.addCase(fetchAllPlacementSBatches.rejected, (state, action) => {
+      return {
+        ...state,
+        fetchStatus: "rejected",
+        error: action.payload,
+      };
+    });
   },
 });
 
@@ -327,5 +357,7 @@ export const {
 } = placementSlice.actions;
 export const getAllPlacementStudents = (state) =>
   state.placement.allPlacementStudents;
+export const getAllPlacementBatches = (state) =>
+  state.placement.allPlacementBatches;
 
 export default placementSlice.reducer;

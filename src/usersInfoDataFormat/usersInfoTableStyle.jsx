@@ -70,4 +70,44 @@ const customAttendanceTableStyle = {
     },
   },
 };
-export { customUserTableStyle, customAttendanceTableStyle };
+// Define conditional row styles
+const conditionalRowStyles = [
+  {
+    when: (row) => row.enrolled,
+    style: {
+      backgroundColor: "#2c852c",
+      color: "#fff",
+      "&:hover": {
+        backgroundColor: "#227e22",
+        color: "#fff",
+      },
+    },
+  },
+  {
+    when: (row) => row.isGraduated,
+    style: {
+      backgroundColor: "#616261",
+      color: "#fff",
+      "&:hover": {
+        backgroundColor: "#4d4e4d",
+        color: "#fff",
+      },
+    },
+  },
+  {
+    when: (row) => !row.enrolled, // Optional: Styling for unenrolled
+    style: {
+      backgroundColor: "#f46c6c",
+      color: "white",
+      "&:hover": {
+        backgroundColor: "#f35959",
+        color: "white",
+      },
+    },
+  },
+];
+export {
+  customUserTableStyle,
+  customAttendanceTableStyle,
+  conditionalRowStyles,
+};

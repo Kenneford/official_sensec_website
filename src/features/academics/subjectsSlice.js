@@ -31,6 +31,24 @@ export const createSubject = createAsyncThunk(
     }
   }
 );
+export const createESubject = createAsyncThunk(
+  "Subject/createESubject",
+  async ({ data }, { rejectWithValue }) => {
+    try {
+      const res = await tokenInterceptor.post(
+        `/academics/subjects/elective/create`,
+        {
+          data,
+        }
+      );
+      console.log(res.data);
+      return res.data;
+    } catch (error) {
+      console.log(error.response.data);
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 //❓
 export const fetchAllSubjects = createAsyncThunk(
   "Subject/fetchAllSubjects",
@@ -100,6 +118,26 @@ const subjectSlice = createSlice({
       } else return state;
     });
     builder.addCase(createSubject.rejected, (state, action) => {
+      return {
+        ...state,
+        createStatus: "rejected",
+        error: action.payload,
+      };
+    });
+    builder.addCase(createESubject.pending, (state) => {
+      return { ...state, createStatus: "pending" };
+    });
+    builder.addCase(createESubject.fulfilled, (state, action) => {
+      if (action.payload) {
+        return {
+          ...state,
+          subjectInfo: action.payload.subject,
+          successMessage: action.payload.successMessage,
+          createStatus: "success",
+        };
+      } else return state;
+    });
+    builder.addCase(createESubject.rejected, (state, action) => {
       return {
         ...state,
         createStatus: "rejected",

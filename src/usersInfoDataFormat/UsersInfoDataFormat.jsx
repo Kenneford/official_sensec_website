@@ -16,7 +16,6 @@ import {
   approveEmployee,
   rejectEmployee,
 } from "../features/employments/employmentSlice";
-import EnrollmentRejectionModal from "../components/modals/EnrollmentRejectionModal";
 import ApprovalModal from "../components/modals/ApprovalModal";
 import { promoteStudent } from "../features/students/promotionSlice";
 import PromotionsModal from "../components/modals/PromotionsModal";
@@ -416,38 +415,18 @@ const pendingAdminsColumn = (columnObjData) => {
   ];
   return pendingAdminsColumn;
 };
-const studentsColumn = (
-  authAdmin,
-  studentToPromote,
-  adminCurrentAction,
-  adminCurrentLink,
-  setOpenPromotionModal,
-  openPromotionModal,
-  setCurrentStudent,
-  setDemoteStudent,
-  setLoadingComplete,
-  loadingComplete,
-  setDemotionLoadingComplete,
-  demotionLoadingComplete,
-  demotionInProgress,
-  promotionInProgress,
-  setOpenDemotionModal,
-  openDemotionModal,
-  promotionStatus,
-  studentToDemote
-) => {
+const studentsColumn = (columnData) => {
   const studentColumn = [
     {
       name: "Image",
       selector: (row) =>
         row?.personalInfo?.profilePicture ? (
           <HashLink
-            to={`/sensec/admin/${adminCurrentAction}/${adminCurrentLink}/${row?.personalInfo?.firstName?.replace(
-              / /g,
-              "_"
-            )}_${row?.personalInfo?.lastName}/${
-              row?.uniqueId
-            }/student_info#studentInfo`}
+            to={`/sensec/admin/${columnData?.adminCurrentAction}/${
+              columnData?.adminCurrentLink
+            }/${row?.personalInfo?.firstName?.replace(/ /g, "_")}_${
+              row?.personalInfo?.lastName
+            }/${row?.uniqueId}/student_info#studentInfo`}
             title="View Student Info"
           >
             <img
@@ -463,12 +442,11 @@ const studentsColumn = (
         ) : (
           <HashLink
             className="noImgLink"
-            to={`/sensec/admin/${adminCurrentAction}/${adminCurrentLink}/${row?.personalInfo?.firstName?.replace(
-              / /g,
-              "_"
-            )}_${row?.personalInfo?.lastName}/${
-              row?.personalInfo?.uniqueId
-            }/student_info#studentInfo`}
+            to={`/sensec/admin/${columnData?.adminCurrentAction}/${
+              columnData?.adminCurrentLink
+            }/${row?.personalInfo?.firstName?.replace(/ /g, "_")}_${
+              row?.personalInfo?.lastName
+            }/${row?.personalInfo?.uniqueId}/student_info#studentInfo`}
             title="View Student Info"
           >
             {row?.personalInfo?.gender === "Male" && (
@@ -495,11 +473,10 @@ const studentsColumn = (
         ),
     },
     {
-      name: "First Name",
-      selector: (row) => row?.personalInfo?.firstName,
+      name: "Full Name",
+      selector: (row) => row?.personalInfo?.fullName,
       sortable: true,
     },
-    { name: "Surname", selector: (row) => row?.personalInfo?.lastName },
     {
       name: "Date Of Birth",
       selector: (row) => {
@@ -517,7 +494,7 @@ const studentsColumn = (
       },
     },
     {
-      name: "Program",
+      name: "Programme",
       selector: (row) =>
         row?.studentSchoolData ? row.studentSchoolData?.program?.name : "---",
     },
@@ -526,16 +503,16 @@ const studentsColumn = (
       selector: (row) => row?.uniqueId,
       sortable: true,
     },
-    {
-      name: "Email",
-      selector: (row) =>
-        row?.contactAddress?.email ? row?.contactAddress?.email : "---",
-    },
-    {
-      name: "Enrolled Date",
-      selector: (row) =>
-        dateFormatter.format(new Date(row?.studentStatusExtend?.dateEnrolled)),
-    },
+    // {
+    //   name: "Email",
+    //   selector: (row) =>
+    //     row?.contactAddress?.email ? row?.contactAddress?.email : "---",
+    // },
+    // {
+    //   name: "Enrolled Date",
+    //   selector: (row) =>
+    //     dateFormatter.format(new Date(row?.studentStatusExtend?.dateEnrolled)),
+    // },
     {
       name: "Batch",
       selector: (row) =>
@@ -585,59 +562,65 @@ const studentsColumn = (
                   className="approveLink"
                   onClick={async () => {
                     // Do not open modal if approval/rejection is in progress
-                    if (!demotionInProgress && !promotionInProgress) {
-                      setCurrentStudent(row._id);
-                      setOpenPromotionModal(true);
-                      setOpenDemotionModal(false);
+                    if (
+                      !columnData?.demotionInProgress &&
+                      !columnData?.promotionInProgress
+                    ) {
+                      columnData?.setCurrentStudent(row._id);
+                      columnData?.setOpenPromotionModal(true);
+                      columnData?.setOpenDemotionModal(false);
                     }
                   }}
                 >
-                  {studentToPromote && studentToPromote._id === row._id && (
-                    <>
-                      {loadingComplete === false && (
-                        <Box
-                          className="promotionSpinner"
-                          sx={{
-                            marginTop: ".8rem",
-                          }}
-                        >
-                          <span>Processing</span>
-                          <span className="dot-ellipsis">
-                            <span className="dot">.</span>
-                            <span className="dot">.</span>
-                            <span className="dot">.</span>
-                          </span>
-                        </Box>
-                      )}
-                      {loadingComplete && promotionStatus === "success" && (
-                        <>
-                          <span>Promoted</span> <TaskAltIcon />
-                        </>
-                      )}
-                    </>
-                  )}
+                  {columnData?.studentToPromote &&
+                    columnData?.studentToPromote._id === row._id && (
+                      <>
+                        {columnData?.loadingComplete === false && (
+                          <Box
+                            className="promotionSpinner"
+                            sx={{
+                              marginTop: ".8rem",
+                            }}
+                          >
+                            <span>Processing</span>
+                            <span className="dot-ellipsis">
+                              <span className="dot">.</span>
+                              <span className="dot">.</span>
+                              <span className="dot">.</span>
+                            </span>
+                          </Box>
+                        )}
+                        {columnData?.loadingComplete &&
+                          columnData?.promotionStatus === "success" && (
+                            <>
+                              <span>Promoted</span> <TaskAltIcon />
+                            </>
+                          )}
+                      </>
+                    )}
                   <>
-                    {loadingComplete === null && "P-L200"}
-                    {row._id !== studentToPromote?._id &&
-                      loadingComplete !== null &&
+                    {columnData?.loadingComplete === null && "P-L200"}
+                    {row._id !== columnData?.studentToPromote?._id &&
+                      columnData?.loadingComplete !== null &&
                       "P-L200"}
                   </>
                 </HashLink>
-                {studentToPromote && studentToPromote._id === row._id && (
-                  <PromotionsModal
-                    open={openPromotionModal}
-                    onClose={() => setOpenPromotionModal(false)}
-                    promotionFunction={promoteStudent({
-                      studentId: row?.uniqueId,
-                      lastPromotedBy: `${authAdmin?.id}`,
-                    })}
-                    setLoadingComplete={setLoadingComplete}
-                    setSelectedUserToPromote={setCurrentStudent}
-                    selectedUserToPromoteId={row?._id}
-                    userDataToPromote={studentToPromote}
-                    userDataToDemote={studentToDemote}
-                  />
-                )}
+                {columnData?.studentToPromote &&
+                  columnData?.studentToPromote._id === row._id && (
+                    <PromotionsModal
+                      open={columnData?.openPromotionModal}
+                      onClose={() => columnData?.setOpenPromotionModal(false)}
+                      promotionFunction={promoteStudent({
+                        studentId: row?.uniqueId,
+                        lastPromotedBy: `${columnData?.authAdmin?.id}`,
+                      })}
+                      setLoadingComplete={columnData?.setLoadingComplete}
+                      setSelectedUserToPromote={columnData?.setCurrentStudent}
+                      selectedUserToPromoteId={row?._id}
+                      userDataToPromote={columnData?.studentToPromote}
+                      userDataToDemote={columnData?.studentToDemote}
+                    />
+                  )}
               </>
             )}
             {row?.studentSchoolData?.currentClassLevel?.name ===
@@ -648,59 +631,65 @@ const studentsColumn = (
                   className="approveLink"
                   onClick={async () => {
                     // Do not open modal if approval/rejection is in progress
-                    if (!demotionInProgress && !promotionInProgress) {
-                      setCurrentStudent(row._id);
-                      setOpenPromotionModal(true);
-                      setOpenDemotionModal(false);
+                    if (
+                      !columnData?.demotionInProgress &&
+                      !columnData?.promotionInProgress
+                    ) {
+                      columnData?.setCurrentStudent(row._id);
+                      columnData?.setOpenPromotionModal(true);
+                      columnData?.setOpenDemotionModal(false);
                     }
                   }}
                 >
-                  {studentToPromote && studentToPromote._id === row._id && (
-                    <>
-                      {loadingComplete === false && (
-                        <Box
-                          className="promotionSpinner"
-                          sx={{
-                            marginTop: ".8rem",
-                          }}
-                        >
-                          <span>Processing</span>
-                          <span className="dot-ellipsis">
-                            <span className="dot">.</span>
-                            <span className="dot">.</span>
-                            <span className="dot">.</span>
-                          </span>
-                        </Box>
-                      )}
-                      {loadingComplete && promotionStatus === "success" && (
-                        <>
-                          <span>Promoted</span> <TaskAltIcon />
-                        </>
-                      )}
-                    </>
-                  )}
+                  {columnData?.studentToPromote &&
+                    columnData?.studentToPromote._id === row._id && (
+                      <>
+                        {columnData?.loadingComplete === false && (
+                          <Box
+                            className="promotionSpinner"
+                            sx={{
+                              marginTop: ".8rem",
+                            }}
+                          >
+                            <span>Processing</span>
+                            <span className="dot-ellipsis">
+                              <span className="dot">.</span>
+                              <span className="dot">.</span>
+                              <span className="dot">.</span>
+                            </span>
+                          </Box>
+                        )}
+                        {columnData?.loadingComplete &&
+                          columnData?.promotionStatus === "success" && (
+                            <>
+                              <span>Promoted</span> <TaskAltIcon />
+                            </>
+                          )}
+                      </>
+                    )}
                   <>
-                    {loadingComplete === null && "P-L300"}
-                    {row._id !== studentToPromote?._id &&
-                      loadingComplete !== null &&
+                    {columnData?.loadingComplete === null && "P-L300"}
+                    {row._id !== columnData?.studentToPromote?._id &&
+                      columnData?.loadingComplete !== null &&
                       "P-L300"}
                   </>
                 </HashLink>
-                {studentToPromote && studentToPromote._id === row._id && (
-                  <PromotionsModal
-                    open={openPromotionModal}
-                    onClose={() => setOpenPromotionModal(false)}
-                    promotionFunction={promoteStudent({
-                      studentId: row?.uniqueId,
-                      lastPromotedBy: `${authAdmin?.id}`,
-                    })}
-                    setLoadingComplete={setLoadingComplete}
-                    setSelectedUserToPromote={setCurrentStudent}
-                    selectedUserToPromoteId={row?._id}
-                    userDataToPromote={studentToPromote}
-                    userDataToDemote={studentToDemote}
-                  />
-                )}
+                {columnData?.studentToPromote &&
+                  columnData?.studentToPromote._id === row._id && (
+                    <PromotionsModal
+                      open={columnData?.openPromotionModal}
+                      onClose={() => columnData?.setOpenPromotionModal(false)}
+                      promotionFunction={promoteStudent({
+                        studentId: row?.uniqueId,
+                        lastPromotedBy: `${columnData?.authAdmin?.id}`,
+                      })}
+                      setLoadingComplete={columnData?.setLoadingComplete}
+                      setSelectedUserToPromote={columnData?.setCurrentStudent}
+                      selectedUserToPromoteId={row?._id}
+                      userDataToPromote={columnData?.studentToPromote}
+                      userDataToDemote={columnData?.studentToDemote}
+                    />
+                  )}
               </>
             )}
             {row?.studentSchoolData?.currentClassLevel?.name ===
@@ -711,193 +700,67 @@ const studentsColumn = (
                   className="approveLink"
                   onClick={async () => {
                     // Do not open modal if approval/rejection is in progress
-                    if (!demotionInProgress && !promotionInProgress) {
-                      setCurrentStudent(row._id);
-                      setOpenPromotionModal(true);
-                      setOpenDemotionModal(false);
+                    if (
+                      !columnData?.demotionInProgress &&
+                      !columnData?.promotionInProgress
+                    ) {
+                      columnData?.setCurrentStudent(row._id);
+                      columnData?.setOpenPromotionModal(true);
+                      columnData?.setOpenDemotionModal(false);
                     }
                   }}
                 >
-                  {studentToPromote && studentToPromote._id === row._id && (
-                    <>
-                      {loadingComplete === false && (
-                        <Box
-                          className="promotionSpinner"
-                          sx={{
-                            marginTop: ".8rem",
-                          }}
-                        >
-                          <span>Processing</span>
-                          <span className="dot-ellipsis">
-                            <span className="dot">.</span>
-                            <span className="dot">.</span>
-                            <span className="dot">.</span>
-                          </span>
-                        </Box>
-                      )}
-                      {loadingComplete && promotionStatus === "success" && (
-                        <>
-                          <span>Promoted</span> <TaskAltIcon />
-                        </>
-                      )}
-                    </>
-                  )}
+                  {columnData?.studentToPromote &&
+                    columnData?.studentToPromote._id === row._id && (
+                      <>
+                        {columnData?.loadingComplete === false && (
+                          <Box
+                            className="promotionSpinner"
+                            sx={{
+                              marginTop: ".8rem",
+                            }}
+                          >
+                            <span>Processing</span>
+                            <span className="dot-ellipsis">
+                              <span className="dot">.</span>
+                              <span className="dot">.</span>
+                              <span className="dot">.</span>
+                            </span>
+                          </Box>
+                        )}
+                        {columnData?.loadingComplete &&
+                          columnData?.promotionStatus === "success" && (
+                            <>
+                              <span>Promoted</span> <TaskAltIcon />
+                            </>
+                          )}
+                      </>
+                    )}
                   <>
-                    {loadingComplete === null && "Graduate"}
-                    {row._id !== studentToPromote?._id &&
-                      loadingComplete !== null &&
+                    {columnData?.loadingComplete === null && "Graduate"}
+                    {row._id !== columnData?.studentToPromote?._id &&
+                      columnData?.loadingComplete !== null &&
                       "Graduate"}
                   </>
                 </HashLink>
-                {studentToPromote && studentToPromote._id === row._id && (
-                  <PromotionsModal
-                    open={openPromotionModal}
-                    onClose={() => setOpenPromotionModal(false)}
-                    promotionFunction={promoteStudent({
-                      studentId: row?.uniqueId,
-                      lastPromotedBy: `${authAdmin?.id}`,
-                    })}
-                    setLoadingComplete={setLoadingComplete}
-                    setSelectedUserToPromote={setCurrentStudent}
-                    selectedUserToPromoteId={row?._id}
-                    userDataToPromote={studentToPromote}
-                    userDataToDemote={studentToDemote}
-                  />
-                )}
+                {columnData?.studentToPromote &&
+                  columnData?.studentToPromote._id === row._id && (
+                    <PromotionsModal
+                      open={columnData?.openPromotionModal}
+                      onClose={() => columnData?.setOpenPromotionModal(false)}
+                      promotionFunction={promoteStudent({
+                        studentId: row?.uniqueId,
+                        lastPromotedBy: `${columnData?.authAdmin?.id}`,
+                      })}
+                      setLoadingComplete={columnData?.setLoadingComplete}
+                      setSelectedUserToPromote={columnData?.setCurrentStudent}
+                      selectedUserToPromoteId={row?._id}
+                      userDataToPromote={columnData?.studentToPromote}
+                      userDataToDemote={columnData?.studentToDemote}
+                    />
+                  )}
               </>
             )}
-            {/* {row?.studentSchoolData?.currentClassLevel?.name ===
-              "Level 100" && (
-              <Link
-                className="editLink"
-                onClick={async () => {
-                  setLevel100LoadingComplete(false);
-                  setCurrentStudentId(row._id);
-                  // dispatch(
-                  //   promoteStudent({
-                  //     uniqueId: row.uniqueId,
-                  //     lastPromotedBy: `${authAdmin.id}`,
-                  //   })
-                  // );
-                }}
-              >
-                {studentToPromote && studentToPromote._id === row._id && (
-                  <>
-                    {level100loadingComplete === false && (
-                      <Box className="promotionSpinner">
-                        <p>Processing</p>
-                        <span className="dot-ellipsis">
-                          <span className="dot">.</span>
-                          <span className="dot">.</span>
-                          <span className="dot">.</span>
-                        </span>
-                      </Box>
-                    )}
-                    {level100loadingComplete &&
-                      level100PromotionStatus === "success" && (
-                        <>
-                          <span style={{ color: "green" }}>Promoted</span>{" "}
-                          <TaskAltIcon style={{ color: "green" }} />
-                        </>
-                      )}
-                  </>
-                )}
-                <>
-                  {level100loadingComplete === null && "P-L200"}
-                  {row._id !== foundStudent?._id &&
-                    level100loadingComplete !== null &&
-                    "P-L200"}
-                </>
-              </Link>
-            )} */}
-            {/* {row?.studentSchoolData?.currentClassLevel?.name ===
-              "Level 200" && (
-              <Link
-                className="editLink"
-                onClick={async () => {
-                  setLevel200LoadingComplete(false);
-                  setCurrentStudentId(row._id);
-                  //   dispatch(
-                  //     promotingToLevel300({
-                  //       uniqueId: row.uniqueId,
-                  //       lastPromotedBy: `${authAdmin.id}`,
-                  //     })
-                  //   );
-                }}
-              >
-                {foundStudent && foundStudent._id === row._id && (
-                  <>
-                    {level200loadingComplete === false && (
-                      <Box className="promotionSpinner">
-                        <p>Processing</p>
-                        <span className="dot-ellipsis">
-                          <span className="dot">.</span>
-                          <span className="dot">.</span>
-                          <span className="dot">.</span>
-                        </span>
-                      </Box>
-                    )}
-                    {level200loadingComplete &&
-                      level200PromotionStatus === "success" && (
-                        <>
-                          <span style={{ color: "green" }}>Promoted</span>{" "}
-                          <TaskAltIcon style={{ color: "green" }} />
-                        </>
-                      )}
-                  </>
-                )}
-                <>
-                  {level200loadingComplete === null && "P-L300"}
-                  {row._id !== foundStudent?._id &&
-                    level200loadingComplete !== null &&
-                    "P-L300"}
-                </>
-              </Link>
-            )}
-            {row?.studentSchoolData?.currentClassLevel?.name ===
-              "Level 300" && (
-              <Link
-                className="editLink"
-                onClick={async () => {
-                  setLevel300LoadingComplete(false);
-                  setCurrentStudentId(row._id);
-                  //   dispatch(
-                  //     graduateStudent({
-                  //       uniqueId: row.uniqueId,
-                  //       lastPromotedBy: `${authAdmin.id}`,
-                  //     })
-                  //   );
-                }}
-              >
-                {foundStudent && foundStudent._id === row._id && (
-                  <>
-                    {level300loadingComplete === false && (
-                      <Box className="promotionSpinner">
-                        <span>Processing</span>
-                        <span className="dot-ellipsis">
-                          <span className="dot">.</span>
-                          <span className="dot">.</span>
-                          <span className="dot">.</span>
-                        </span>
-                      </Box>
-                    )}
-                    {level300loadingComplete &&
-                      level300PromotionStatus === "success" && (
-                        <>
-                          <span style={{ color: "green" }}>Graduated</span>{" "}
-                          <TaskAltIcon style={{ color: "green" }} />
-                        </>
-                      )}
-                  </>
-                )}
-                <>
-                  {level300loadingComplete === null && "Graduate"}
-                  {row._id !== foundStudent?._id &&
-                    level300loadingComplete !== null &&
-                    "Graduate"}
-                </>
-              </Link>
-            )} */}
           </>
         ),
     },
@@ -912,67 +775,36 @@ const studentsColumn = (
                 <HashLink
                   to={"#"}
                   className="approveLink"
-                  // onClick={async () => {
-                  //   // Do not open modal if approval/rejection is in progress
-                  //   if (!demotionInProgress && !promotionInProgress) {
-                  //     setDemoteStudent(row._id);
-                  //     setOpenDemotionModal(false);
-                  //     setOpenPromotionModal(false);
-                  //   }
-                  // }}
                   style={{ color: "#696969" }}
                 >
-                  {studentToPromote && studentToPromote._id === row._id && (
-                    <>
-                      {demotionLoadingComplete === false && (
-                        <Box
-                          className="promotionSpinner"
-                          sx={{
-                            marginTop: ".8rem",
-                            color: "red",
-                          }}
-                        >
-                          <span>Processing</span>
-                          <span className="dot-ellipsis">
-                            <span className="dot">.</span>
-                            <span className="dot">.</span>
-                            <span className="dot">.</span>
-                          </span>
-                        </Box>
-                      )}
-                      {demotionLoadingComplete &&
-                        promotionStatus === "success" && (
-                          <>
-                            <span>Demoted</span> <TaskAltIcon />
-                          </>
-                        )}
-                    </>
-                  )}
-                  <>
-                    {demotionLoadingComplete === null &&
-                      row?.studentSchoolData?.currentClassLevel?.name ===
-                        "Level 100" &&
-                      "---"}
-                    {row._id !== studentToPromote?._id &&
-                      demotionLoadingComplete !== null &&
-                      "P-L200"}
-                  </>
+                  {columnData?.demotionLoadingComplete === null &&
+                    row?.studentSchoolData?.currentClassLevel?.name ===
+                      "Level 100" &&
+                    "---"}
+                  {row._id !== columnData?.studentToDemote?._id &&
+                    columnData?.demotionLoadingComplete !== null &&
+                    row?.studentSchoolData?.currentClassLevel?.name ===
+                      "Level 100" &&
+                    "---"}
                 </HashLink>
-                {studentToPromote && studentToPromote._id === row._id && (
-                  <DemotionsModal
-                    open={openDemotionModal}
-                    onClose={() => setOpenDemotionModal(false)}
-                    promotionFunction={approveStudentEnrollment({
-                      studentId: row?.uniqueId,
-                      enrollmentApprovedBy: `${authAdmin?.id}`,
-                    })}
-                    setLoadingComplete={setDemotionLoadingComplete}
-                    setSelectedUserToDemote={setDemoteStudent}
-                    selectedUserToDemoteId={row?._id}
-                    userDataToPromote={studentToPromote}
-                    userDataToDemote={studentToDemote}
-                  />
-                )}
+                {columnData?.studentToDemote &&
+                  columnData?.studentToDemote._id === row._id && (
+                    <DemotionsModal
+                      open={columnData?.openDemotionModal}
+                      onClose={() => columnData?.setOpenDemotionModal(false)}
+                      promotionFunction={approveStudentEnrollment({
+                        studentId: row?.uniqueId,
+                        enrollmentApprovedBy: `${columnData?.authAdmin?.id}`,
+                      })}
+                      setLoadingComplete={
+                        columnData?.setDemotionLoadingComplete
+                      }
+                      setSelectedUserToDemote={columnData?.setDemoteStudent}
+                      selectedUserToDemoteId={row?._id}
+                      userDataToPromote={columnData?.studentToPromote}
+                      userDataToDemote={columnData?.studentToDemote}
+                    />
+                  )}
               </>
             )}
             {row?.studentSchoolData?.currentClassLevel?.name ===
@@ -983,67 +815,74 @@ const studentsColumn = (
                   className="approveLink"
                   onClick={async () => {
                     // Do not open modal if approval/rejection is in progress
-                    if (!demotionInProgress && !promotionInProgress) {
-                      setDemoteStudent(row._id);
-                      setOpenDemotionModal(true);
-                      setOpenPromotionModal(false);
+                    if (
+                      !columnData?.demotionInProgress &&
+                      !columnData?.promotionInProgress
+                    ) {
+                      columnData?.setDemoteStudent(row._id);
+                      columnData?.setOpenDemotionModal(true);
+                      columnData?.setOpenPromotionModal(false);
                     }
                   }}
                   style={{ color: "#696969" }}
                 >
-                  {studentToDemote && studentToDemote._id === row._id && (
-                    <>
-                      {demotionLoadingComplete === false && (
-                        <Box
-                          className="promotionSpinner"
-                          sx={{
-                            marginTop: ".8rem",
-                            color: "red",
-                          }}
-                        >
-                          <span>Processing</span>
-                          <span className="dot-ellipsis">
-                            <span className="dot">.</span>
-                            <span className="dot">.</span>
-                            <span className="dot">.</span>
-                          </span>
-                        </Box>
-                      )}
-                      {demotionLoadingComplete &&
-                        promotionStatus === "success" && (
-                          <>
-                            <span>Demoted</span> <TaskAltIcon />
-                          </>
+                  {columnData?.studentToDemote &&
+                    columnData?.studentToDemote._id === row._id && (
+                      <>
+                        {columnData?.demotionLoadingComplete === false && (
+                          <Box
+                            className="promotionSpinner"
+                            sx={{
+                              marginTop: ".8rem",
+                              color: "red",
+                            }}
+                          >
+                            <span>Processing</span>
+                            <span className="dot-ellipsis">
+                              <span className="dot">.</span>
+                              <span className="dot">.</span>
+                              <span className="dot">.</span>
+                            </span>
+                          </Box>
                         )}
-                    </>
-                  )}
+                        {columnData?.demotionLoadingComplete &&
+                          columnData?.promotionStatus === "success" && (
+                            <>
+                              <span>Demoted</span> <TaskAltIcon />
+                            </>
+                          )}
+                      </>
+                    )}
                   <>
-                    {demotionLoadingComplete === null &&
+                    {columnData?.demotionLoadingComplete === null &&
                       row?.studentSchoolData?.currentClassLevel?.name ===
                         "Level 200" &&
-                      "P-L100"}
-                    {row._id !== studentToDemote?._id &&
-                      demotionLoadingComplete !== null &&
+                      "D-L100"}
+                    {row._id !== columnData?.studentToDemote?._id &&
+                      columnData?.demotionLoadingComplete !== null &&
                       row?.studentSchoolData?.currentClassLevel?.name ===
                         "Level 200" &&
-                      "P-L100"}
+                      "D-L100"}
                   </>
                 </HashLink>
-                {studentToDemote && studentToDemote._id === row._id && (
-                  <DemotionsModal
-                    open={openDemotionModal}
-                    onClose={() => setOpenDemotionModal(false)}
-                    promotionFunction={approveStudentEnrollment({
-                      studentId: row?.uniqueId,
-                      enrollmentApprovedBy: `${authAdmin?.id}`,
-                    })}
-                    setLoadingComplete={setDemotionLoadingComplete}
-                    setSelectedUserToDemote={setDemoteStudent}
-                    selectedUserToDemoteId={row?._id}
-                    userDataToPromote={studentToPromote}
-                    userDataToDemote={studentToDemote}
-                  />
-                )}
+                {columnData?.studentToDemote &&
+                  columnData?.studentToDemote._id === row._id && (
+                    <DemotionsModal
+                      open={columnData?.openDemotionModal}
+                      onClose={() => columnData?.setOpenDemotionModal(false)}
+                      promotionFunction={approveStudentEnrollment({
+                        studentId: row?.uniqueId,
+                        enrollmentApprovedBy: `${columnData?.authAdmin?.id}`,
+                      })}
+                      setLoadingComplete={
+                        columnData?.setDemotionLoadingComplete
+                      }
+                      setSelectedUserToDemote={columnData?.setDemoteStudent}
+                      selectedUserToDemoteId={row?._id}
+                      userDataToPromote={columnData?.studentToPromote}
+                      userDataToDemote={columnData?.studentToDemote}
+                    />
+                  )}
               </>
             )}
             {row?.studentSchoolData?.currentClassLevel?.name ===
@@ -1054,201 +893,76 @@ const studentsColumn = (
                   className="approveLink"
                   onClick={async () => {
                     // Do not open modal if approval/rejection is in progress
-                    if (!demotionInProgress && !promotionInProgress) {
-                      setDemoteStudent(row._id);
-                      setOpenDemotionModal(true);
-                      setOpenPromotionModal(false);
+                    if (
+                      !columnData?.demotionInProgress &&
+                      !columnData?.promotionInProgress
+                    ) {
+                      columnData?.setDemoteStudent(row._id);
+                      columnData?.setOpenDemotionModal(true);
+                      columnData?.setOpenPromotionModal(false);
                     }
                   }}
                   style={{ color: "#696969" }}
                 >
-                  {studentToDemote && studentToDemote._id === row._id && (
-                    <>
-                      {demotionLoadingComplete === false && (
-                        <Box
-                          className="promotionSpinner"
-                          sx={{
-                            marginTop: ".8rem",
-                            color: "red",
-                          }}
-                        >
-                          <span>Processing</span>
-                          <span className="dot-ellipsis">
-                            <span className="dot">.</span>
-                            <span className="dot">.</span>
-                            <span className="dot">.</span>
-                          </span>
-                        </Box>
-                      )}
-                      {demotionLoadingComplete &&
-                        promotionStatus === "success" && (
-                          <>
-                            <span>Demoted</span> <TaskAltIcon />
-                          </>
+                  {columnData?.studentToDemote &&
+                    columnData?.studentToDemote._id === row._id && (
+                      <>
+                        {columnData?.demotionLoadingComplete === false && (
+                          <Box
+                            className="promotionSpinner"
+                            sx={{
+                              marginTop: ".8rem",
+                              color: "red",
+                            }}
+                          >
+                            <span>Processing</span>
+                            <span className="dot-ellipsis">
+                              <span className="dot">.</span>
+                              <span className="dot">.</span>
+                              <span className="dot">.</span>
+                            </span>
+                          </Box>
                         )}
-                    </>
-                  )}
+                        {columnData?.demotionLoadingComplete &&
+                          columnData?.promotionStatus === "success" && (
+                            <>
+                              <span>Demoted</span> <TaskAltIcon />
+                            </>
+                          )}
+                      </>
+                    )}
                   <>
-                    {demotionLoadingComplete === null &&
+                    {columnData?.demotionLoadingComplete === null &&
                       row?.studentSchoolData?.currentClassLevel?.name ===
                         "Level 300" &&
-                      "P-L200"}
-                    {row._id !== studentToDemote?._id &&
-                      demotionLoadingComplete !== null &&
+                      "D-L200"}
+                    {row._id !== columnData?.studentToDemote?._id &&
+                      columnData?.demotionLoadingComplete !== null &&
                       row?.studentSchoolData?.currentClassLevel?.name ===
                         "Level 300" &&
-                      "P-L200"}
+                      "D-L200"}
                   </>
                 </HashLink>
-                {studentToDemote && studentToDemote._id === row._id && (
-                  <DemotionsModal
-                    open={openDemotionModal}
-                    onClose={() => setOpenDemotionModal(false)}
-                    promotionFunction={approveStudentEnrollment({
-                      studentId: row?.uniqueId,
-                      enrollmentApprovedBy: `${authAdmin?.id}`,
-                    })}
-                    setLoadingComplete={setDemotionLoadingComplete}
-                    setSelectedUserToDemote={setDemoteStudent}
-                    selectedUserToDemoteId={row?._id}
-                    userDataToPromote={studentToPromote}
-                    userDataToDemote={studentToDemote}
-                  />
-                )}
+                {columnData?.studentToDemote &&
+                  columnData?.studentToDemote._id === row._id && (
+                    <DemotionsModal
+                      open={columnData?.openDemotionModal}
+                      onClose={() => columnData?.setOpenDemotionModal(false)}
+                      promotionFunction={approveStudentEnrollment({
+                        studentId: row?.uniqueId,
+                        enrollmentApprovedBy: `${columnData?.authAdmin?.id}`,
+                      })}
+                      setLoadingComplete={
+                        columnData?.setDemotionLoadingComplete
+                      }
+                      setSelectedUserToDemote={columnData?.setDemoteStudent}
+                      selectedUserToDemoteId={row?._id}
+                      userDataToPromote={columnData?.studentToPromote}
+                      userDataToDemote={columnData?.studentToDemote}
+                    />
+                  )}
               </>
             )}
-            {/* {row?.studentSchoolData?.currentClassLevel?.name ===
-              "Level 100" && (
-              <Link
-                className="editLink"
-                onClick={async () => {
-                  setLevel100LoadingComplete(false);
-                  setCurrentStudentId(row._id);
-                  // dispatch(
-                  //   promoteStudent({
-                  //     uniqueId: row.uniqueId,
-                  //     lastPromotedBy: `${authAdmin.id}`,
-                  //   })
-                  // );
-                }}
-              >
-                {foundStudent && foundStudent._id === row._id && (
-                  <>
-                    {level100loadingComplete === false && (
-                      <Box className="promotionSpinner">
-                        <p>Processing</p>
-                        <span className="dot-ellipsis">
-                          <span className="dot">.</span>
-                          <span className="dot">.</span>
-                          <span className="dot">.</span>
-                        </span>
-                      </Box>
-                    )}
-                    {level100loadingComplete &&
-                      level100PromotionStatus === "success" && (
-                        <>
-                          <span style={{ color: "green" }}>Promoted</span>{" "}
-                          <TaskAltIcon style={{ color: "green" }} />
-                        </>
-                      )}
-                  </>
-                )}
-                <>
-                  {level100loadingComplete === null && "P-L200"}
-                  {row._id !== foundStudent?._id &&
-                    level100loadingComplete !== null &&
-                    "P-L200"}
-                </>
-              </Link>
-            )} */}
-            {/* {row?.studentSchoolData?.currentClassLevel?.name ===
-              "Level 200" && (
-              <Link
-                className="editLink"
-                onClick={async () => {
-                  setLevel200LoadingComplete(false);
-                  setCurrentStudentId(row._id);
-                  //   dispatch(
-                  //     promotingToLevel300({
-                  //       uniqueId: row.uniqueId,
-                  //       lastPromotedBy: `${authAdmin.id}`,
-                  //     })
-                  //   );
-                }}
-              >
-                {foundStudent && foundStudent._id === row._id && (
-                  <>
-                    {level200loadingComplete === false && (
-                      <Box className="promotionSpinner">
-                        <p>Processing</p>
-                        <span className="dot-ellipsis">
-                          <span className="dot">.</span>
-                          <span className="dot">.</span>
-                          <span className="dot">.</span>
-                        </span>
-                      </Box>
-                    )}
-                    {level200loadingComplete &&
-                      level200PromotionStatus === "success" && (
-                        <>
-                          <span style={{ color: "green" }}>Promoted</span>{" "}
-                          <TaskAltIcon style={{ color: "green" }} />
-                        </>
-                      )}
-                  </>
-                )}
-                <>
-                  {level200loadingComplete === null && "P-L300"}
-                  {row._id !== foundStudent?._id &&
-                    level200loadingComplete !== null &&
-                    "P-L300"}
-                </>
-              </Link>
-            )}
-            {row?.studentSchoolData?.currentClassLevel?.name ===
-              "Level 300" && (
-              <Link
-                className="editLink"
-                onClick={async () => {
-                  setLevel300LoadingComplete(false);
-                  setCurrentStudentId(row._id);
-                  //   dispatch(
-                  //     graduateStudent({
-                  //       uniqueId: row.uniqueId,
-                  //       lastPromotedBy: `${authAdmin.id}`,
-                  //     })
-                  //   );
-                }}
-              >
-                {foundStudent && foundStudent._id === row._id && (
-                  <>
-                    {level300loadingComplete === false && (
-                      <Box className="promotionSpinner">
-                        <span>Processing</span>
-                        <span className="dot-ellipsis">
-                          <span className="dot">.</span>
-                          <span className="dot">.</span>
-                          <span className="dot">.</span>
-                        </span>
-                      </Box>
-                    )}
-                    {level300loadingComplete &&
-                      level300PromotionStatus === "success" && (
-                        <>
-                          <span style={{ color: "green" }}>Graduated</span>{" "}
-                          <TaskAltIcon style={{ color: "green" }} />
-                        </>
-                      )}
-                  </>
-                )}
-                <>
-                  {level300loadingComplete === null && "Graduate"}
-                  {row._id !== foundStudent?._id &&
-                    level300loadingComplete !== null &&
-                    "Graduate"}
-                </>
-              </Link>
-            )} */}
           </>
         ),
     },
@@ -1257,7 +971,7 @@ const studentsColumn = (
       selector: (row) => (
         <Link
           className="editLink"
-          to={`/sensec/users/${authAdmin.uniqueId}/admin/Students/${row.uniqueId}/student_update`}
+          to={`/sensec/users/${columnData?.authAdmin?.uniqueId}/admin/Students/${row.uniqueId}/student_update`}
         >
           <EditIcon />
         </Link>
@@ -1320,11 +1034,10 @@ const pendingStudentsColumn = (columnData) => {
         ),
     },
     {
-      name: "First Name",
-      selector: (row) => row?.personalInfo?.firstName,
+      name: "Full Name",
+      selector: (row) => row?.personalInfo?.fullName,
       sortable: true,
     },
-    { name: "Surname", selector: (row) => row?.personalInfo?.lastName },
     {
       name: "Date Of Birth",
       selector: (row) => {
@@ -1342,23 +1055,35 @@ const pendingStudentsColumn = (columnData) => {
       },
     },
     {
+      name: "Program",
+      selector: (row) =>
+        row?.studentSchoolData ? row.studentSchoolData?.program?.name : "---",
+    },
+    {
       name: "Unique-ID",
       selector: (row) => (row?.uniqueId ? row?.uniqueId : "---"),
       sortable: true,
     },
+    // {
+    //   name: "Email",
+    //   selector: (row) =>
+    //     row?.contactAddress?.email ? row?.contactAddress?.email : "---",
+    // },
+    // {
+    //   name: "Date Enrolled",
+    //   selector: (row) =>
+    //     !row?.studentStatusExtend?.dateEnrolled
+    //       ? "---"
+    //       : dateFormatter?.format(
+    //           new Date(row?.studentStatusExtend?.dateEnrolled)
+    //         ),
+    // },
     {
-      name: "Email",
+      name: "Batch",
       selector: (row) =>
-        row?.contactAddress?.email ? row?.contactAddress?.email : "---",
-    },
-    {
-      name: "Date Enrolled",
-      selector: (row) =>
-        !row?.studentStatusExtend?.dateEnrolled
-          ? "---"
-          : dateFormatter?.format(
-              new Date(row?.studentStatusExtend?.dateEnrolled)
-            ),
+        row.studentSchoolData?.batch?.yearRange
+          ? `${row?.studentSchoolData?.batch?.yearRange.replace(/-/g, "/")}`
+          : "---",
     },
     {
       name: "Level",
@@ -1388,17 +1113,6 @@ const pendingStudentsColumn = (columnData) => {
             )}
           </div>
         ),
-    },
-    {
-      name: "Update",
-      selector: (row) => (
-        <Link
-          className="editLink"
-          to={`/sensec/users/${columnData?.authAdmin?.uniqueId}/admin/Students/${row?.uniqueId}/student_update`}
-        >
-          <EditIcon />
-        </Link>
-      ),
     },
     {
       name: "Approve",
@@ -1557,6 +1271,17 @@ const pendingStudentsColumn = (columnData) => {
           </HashLink>
         ),
     },
+    {
+      name: "Update",
+      selector: (row) => (
+        <Link
+          className="editLink"
+          to={`/sensec/users/${columnData?.authAdmin?.uniqueId}/admin/Students/${row?.uniqueId}/student_update`}
+        >
+          <EditIcon />
+        </Link>
+      ),
+    },
   ];
   return pendingStudentsColumn;
 };
@@ -1665,16 +1390,7 @@ const pendingStudentsColumn = (columnData) => {
 //   ];
 //   return studentColumn;
 // };
-const teachersColumn = (
-  authAdmin,
-  redirect,
-  setRedirect,
-  navigate,
-  removeLecturerStatus,
-  setRemovingLecturer,
-  removingLecturer,
-  dispatch
-) => {
+const teachersColumn = (columnData) => {
   const teachersDataFormat = [
     {
       name: "Image",
@@ -1764,7 +1480,11 @@ const teachersColumn = (
               position: "relative",
               textAlign: "center",
             }}
-            title={`${row?.lecturerSchoolData?.classLevelHandling?.sectionName}-${row?.lecturerSchoolData?.classLevelHandling?.classLevelName}`}
+            title={
+              row?.lecturerSchoolData?.classLevelHandling
+                ? `${row?.lecturerSchoolData?.classLevelHandling?.sectionName}-${row?.lecturerSchoolData?.classLevelHandling?.classLevelName}`
+                : ""
+            }
           >
             {row?.lecturerSchoolData?.classLevelHandling ? (
               row?.lecturerSchoolData?.classLevelHandling?.label
@@ -1779,51 +1499,67 @@ const teachersColumn = (
                 }}
                 onClick={(e) => {
                   e.preventDefault();
-                  setRedirect(true);
-                  setTimeout(() => {
-                    navigate(
-                      `/sensec/users/${authAdmin?.uniqueId}/admin/User_Types/Lecturers/${row?.uniqueId}/assign_class`
-                    );
-                  }, 3000);
+                  if (!columnData?.redirect) {
+                    columnData?.setLecturerToAssign(row?.uniqueId);
+                    columnData?.setRedirect(true);
+                    localStorage?.setItem("lecturerId", row?.uniqueId);
+                    setTimeout(() => {
+                      columnData?.navigate(
+                        `/sensec/users/${columnData?.authAdmin?.uniqueId}/admin/User_Types/Lecturers/employees/assign_class`
+                      );
+                    }, 3000);
+                  }
                 }}
               >
-                {!redirect && "Assign Class"}
-                {redirect && (
-                  <Box
-                    className="promotionSpinner"
-                    sx={
-                      {
-                        // marginTop: ".5rem",
+                {!columnData?.redirect &&
+                  !columnData?.lecturerToAssign &&
+                  "Assign Class"}
+                {columnData?.redirect &&
+                  columnData?.lecturerToAssign !== row?.uniqueId &&
+                  "Assign Class"}
+                {columnData?.redirect &&
+                  columnData?.lecturerToAssign === row?.uniqueId && (
+                    <Box
+                      className="promotionSpinner"
+                      sx={
+                        {
+                          // marginTop: ".5rem",
+                        }
                       }
-                    }
-                  >
-                    <p>Processing</p>
-                    <span className="dot-ellipsis">
-                      <span className="dot">.</span>
-                      <span className="dot">.</span>
-                      <span className="dot">.</span>
-                    </span>
-                  </Box>
-                )}
+                    >
+                      <p>Processing</p>
+                      <span className="dot-ellipsis">
+                        <span className="dot">.</span>
+                        <span className="dot">.</span>
+                        <span className="dot">.</span>
+                      </span>
+                    </Box>
+                  )}
               </Button>
             )}
           </p>
           {row?.lecturerSchoolData?.classLevelHandling && (
             <>
               {row?.lecturerSchoolData?.classLevelHandling &&
-                removingLecturer === null && (
+                columnData?.removingLecturer === null && (
                   <Close
+                    titleAccess={
+                      row?.lecturerSchoolData?.classLevelHandling
+                        ? "Unassign Lecturer"
+                        : ""
+                    }
                     className="removeClassLecturerIcon"
                     onClick={(e) => {
                       e.preventDefault();
-                      setRemovingLecturer(false);
-                      dispatch(
+                      columnData?.setRemovingLecturer(false);
+                      columnData?.dispatch(
                         removeClassSectionLecturer({
                           data: {
                             lecturerId: row?.uniqueId,
                             classSectionId:
                               row?.lecturerSchoolData?.classLevelHandling?._id,
-                            previousLecturerRemovedBy: authAdmin?.id,
+                            previousLecturerRemovedBy:
+                              columnData?.authAdmin?.id,
                           },
                         })
                       );
@@ -1838,7 +1574,7 @@ const teachersColumn = (
                     }}
                   />
                 )}
-              {removingLecturer === false && (
+              {columnData?.removingLecturer === false && (
                 <Box className="promotionSpinner">
                   <span className="dot-ellipsis" style={{ color: "red" }}>
                     <span className="dot">.</span>
@@ -1847,8 +1583,8 @@ const teachersColumn = (
                   </span>
                 </Box>
               )}
-              {removingLecturer === true &&
-                removeLecturerStatus === "success" && (
+              {columnData?.removingLecturer === true &&
+                columnData?.removeLecturerStatus === "success" && (
                   <Box className="promotionSpinner">
                     <TaskAltIcon sx={{ color: "green" }} />
                   </Box>
@@ -1892,7 +1628,7 @@ const teachersColumn = (
       selector: (row) => (
         <Link
           className="editLink"
-          to={`/sensec/users/${authAdmin.uniqueId}/admin/Lecturers/${row.uniqueId}/lecturer_update`}
+          to={`/sensec/users/${columnData?.authAdmin.uniqueId}/admin/Lecturers/${row.uniqueId}/lecturer_update`}
         >
           <EditIcon />
         </Link>

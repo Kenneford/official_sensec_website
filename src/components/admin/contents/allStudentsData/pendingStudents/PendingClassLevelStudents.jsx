@@ -50,7 +50,6 @@ export function PendingClassLevelStudents() {
   const [openApproveEnrollmentModal, setOpenApproveEnrollmentModal] =
     useState(false);
   const [openRejectModal, setOpenRejectModal] = useState(false);
-  console.log(loadingComplete);
   const [currentStudent, setCurrentStudent] = useState("");
   const [rejectStudent, setRejectStudent] = useState("");
   const [openModal, setOpenModal] = useState(false);
@@ -71,12 +70,9 @@ export function PendingClassLevelStudents() {
   const pendingClassLevelStudents = FetchPendingClassLevelStudents(
     classLevel?._id
   );
-  const allClassLevelSections = [];
   const singleClassLevel = {
     students: [],
   };
-  console.log(singleClassLevel);
-  console.log(allClassLevelSections);
 
   const [searchStudent, setSearchStudent] = useState("");
 
@@ -128,7 +124,6 @@ export function PendingClassLevelStudents() {
   // handle multi approval or rejection
   const [multiStudents, setMultiStudents] = useState([]);
   const [toggleClearRows, setToggleClearRows] = useState(false);
-  console.log(multiStudents);
   const handleMultiSelect = (state) => {
     if (state) {
       const studentObj = state?.selectedRows?.map((user) => {

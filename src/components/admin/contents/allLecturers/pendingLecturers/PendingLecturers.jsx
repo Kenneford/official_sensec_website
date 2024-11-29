@@ -46,7 +46,6 @@ export function PendingLecturers() {
     error,
   } = useSelector((state) => state.employment);
 
-  console.log(allPendingLecturers);
   const {
     adminCurrentAction,
     adminCurrentLink,
@@ -54,7 +53,6 @@ export function PendingLecturers() {
     class_level,
     employees_link,
   } = useParams();
-  console.log(employees_link);
   const [currentLecturer, setCurrentLecturer] = useState("");
   const [rejectLecturer, setRejectLecturer] = useState("");
   const [loadingComplete, setLoadingComplete] = useState(null);
@@ -76,15 +74,13 @@ export function PendingLecturers() {
       tch.personalInfo.lastName.toLowerCase().includes(searchTeacher) ||
       tch.personalInfo.lastName.includes(searchTeacher)
   );
-  console.log(currentLecturer);
   const foundLecturer = allPendingLecturers.find(
     (user) => user._id === currentLecturer
   );
   const lecturerToReject = allPendingLecturers.find(
     (user) => user._id === rejectLecturer
   );
-  console.log(lecturerToReject);
-  const [redirecting, setRedirecting] = useState("");
+  const [redirecting, setRedirecting] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [openRejectModal, setOpenRejectModal] = useState(false);
   const [uncompletedEmploymentTask, setUncompletedEmploymentTask] =
@@ -114,7 +110,6 @@ export function PendingLecturers() {
   // handle multi approval or rejection
   const [multiEmployees, setMultiEmployees] = useState([]);
   const [toggleClearRows, setToggleClearRows] = useState(false);
-  console.log(multiEmployees);
   const handleMultiSelect = (state) => {
     if (state) {
       const employeeObj = state?.selectedRows?.map((user) => {

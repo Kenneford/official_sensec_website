@@ -43,7 +43,6 @@ export function NewDataContainer({
   const adminAction = localStorage.getItem("currentAdminAction");
   const navigate = useNavigate();
   const { adminCurrentAction, adminCurrentLink, data } = useParams();
-  console.log(data);
   return (
     <>
       {/* Current dashboard title */}

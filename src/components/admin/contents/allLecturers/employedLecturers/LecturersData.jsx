@@ -22,7 +22,6 @@ import { resetRemoveLecturer } from "../../../../../features/academics/classSect
 export function LecturersData() {
   const authAdmin = useSelector(getAuthUser);
   const allEmployedLecturers = FetchAllEmployedLecturers();
-  const currentEmployeeLink = localStorage.getItem("currentEmployeeLink");
   const navigate = useNavigate();
   const actionBtns = AllEmployedLecturersPageQuickLinks();
   const dispatch = useDispatch();
@@ -31,9 +30,10 @@ export function LecturersData() {
   );
   const [redirect, setRedirect] = useState(false);
   const [removingLecturer, setRemovingLecturer] = useState(null);
-  console.log(allEmployedLecturers);
+  const [lecturerToAssign, setLecturerToAssign] = useState("");
   const allClassLevels = FetchAllClassLevels();
-  const teachersData = teachersColumn(
+
+  const columnData = {
     authAdmin,
     redirect,
     setRedirect,
@@ -41,13 +41,14 @@ export function LecturersData() {
     removeLecturerStatus,
     setRemovingLecturer,
     removingLecturer,
-    dispatch
-  );
+    dispatch,
+    lecturerToAssign,
+    setLecturerToAssign,
+  };
+  const teachersData = teachersColumn(columnData);
   const { adminCurrentAction, adminCurrentLink, class_level, employees_link } =
     useParams();
-  console.log(employees_link);
 
-  console.log(adminCurrentAction, adminCurrentLink);
   const [searchTeacher, setSearchTeacher] = useState("");
   const teachersEmployed = allEmployedLecturers?.filter(
     (tch) =>
@@ -58,7 +59,7 @@ export function LecturersData() {
       tch?.personalInfo?.lastName?.includes(searchTeacher)
   );
 
-  const [redirecting, setRedirecting] = useState("");
+  const [redirecting, setRedirecting] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [uncompletedEmploymentTask, setUncompletedEmploymentTask] =
     useState("");
