@@ -11,4 +11,5 @@ export default defineConfig({
       "date-fns",
     ],
   },
+  base: "/official_sensec_website/",
 });
