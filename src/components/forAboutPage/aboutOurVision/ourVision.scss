@@ -1,0 +1,62 @@
+@use "../../../utilities/sizes";
+@use "../../../utilities/colors";
+
+.visionWrap {
+  font-size: calc(0.7rem + 1vmin);
+  .visionCont {
+    color: #696969;
+    h4 {
+      padding-bottom: 1.5rem;
+      color: #696969;
+    }
+    .vision {
+      color: #696969;
+      .visionRight {
+        .visionSectionImg {
+          max-width: 50%;
+          height: auto;
+          float: right;
+          border: 5px solid #fff;
+          border-radius: 0.4rem;
+          -webkit-box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+          box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+          margin-left: 1rem;
+          margin-right: 0;
+          transition: 0.8s;
+          margin-bottom: 0;
+          &:hover {
+            transform: scale(0.95);
+          }
+        }
+      }
+      .visionLeft {
+        h2 {
+          padding-bottom: 1rem;
+        }
+        h5 {
+          font-size: 0.9em;
+        }
+        p {
+          line-height: sizes.$line_height;
+          padding: 0 0 1rem;
+          font-size: 0.9em;
+        }
+        // a {
+        //   .visionBtn {
+        //     background-color: #0fc80f;
+        //     padding: 10px 15px;
+        //     font-weight: 500;
+        //     transition: 0.4s ease;
+        //     color: #fff;
+        //     font-size: 1.5rem;
+        //     cursor: pointer;
+        //     border-radius: 5px;
+        //   }
+        //   .visionBtn:hover {
+        //     background-color: colors.$primaryColor;
+        //   }
+        // }
+      }
+    }
+  }
+}

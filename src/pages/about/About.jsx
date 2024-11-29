@@ -1,11 +1,22 @@
 import React from "react";
+import Footer from "../../components/footer/Footer";
+import {
+  AboutBanner,
+  Achievements,
+  OurHistory,
+  OurVision,
+  WhoWeAre,
+} from "../../components/lazyLoading/LazyComponents";
 
 export function About() {
   return (
-    <div className="pageFlex">
-      <div className="contents" style={{ flex: "5" }}>
-        <h1>About</h1>
-      </div>
-    </div>
+    <>
+      <AboutBanner />
+      <WhoWeAre />
+      <OurHistory />
+      <OurVision />
+      <Achievements />
+      <Footer />
+    </>
   );
 }
