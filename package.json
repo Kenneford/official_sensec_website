@@ -1,5 +1,6 @@
 {
-  "name": "sensec_website_2025",
+  "homepage": "https://Kenneford.github.io/official_sensec_website/",
+  "name": "official_sensec_website",
   "private": true,
   "version": "0.0.0",
   "type": "module",
