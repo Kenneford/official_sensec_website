@@ -3,7 +3,7 @@ import "../../sidebar.scss";
 import PropTypes from "prop-types";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import { NavHashLink } from "react-router-hash-link";
+import { HashLink, NavHashLink } from "react-router-hash-link";
 import { useParams } from "react-router-dom";
 import { Box } from "@mui/material";
 import { SidebarSubLinksContainer } from "../../../../muiStyling/muiStyling";
@@ -21,12 +21,7 @@ const quickLinks = [
   { name: "Suspend & Withdraw" },
 ];
 
-export function ActionsLinks({
-  isSidebarOpen,
-  setCurrentAction,
-  setCurrentLink,
-  hovered,
-}) {
+export function ActionsLinks({ hovered }) {
   const authAdmin = useSelector(getAuthUser);
   const { adminCurrentLink } = useParams();
 
@@ -58,9 +53,7 @@ export function ActionsLinks({
     <>
       <Box
         component={"button"}
-        className={
-          isSidebarOpen ? "sidebarLinksTitle" : "sidebarLinksTitle closed"
-        }
+        className={hovered ? "sidebarLinksTitle" : "sidebarLinksTitle closed"}
         onClick={toggleExpandDashBoardLinks}
       >
         <h5
@@ -93,7 +86,7 @@ export function ActionsLinks({
       >
         <div ref={contentRef} className="allSidebarLinksWrap">
           {quickLinks.map((Qlink) => (
-            <NavHashLink
+            <HashLink
               key={Qlink.name}
               to={`/sensec/users/${
                 authAdmin?.uniqueId
@@ -106,10 +99,10 @@ export function ActionsLinks({
               }
               smooth
               title={!hovered ? Qlink.name : ""}
-              onClick={() => {
-                setCurrentAction("Dashboard");
-                setCurrentLink(Qlink.name);
-              }}
+              // onClick={() => {
+              //   setCurrentAction("Dashboard");
+              //   setCurrentLink(Qlink.name);
+              // }}
             >
               {Qlink.name === "Register" && (
                 <AppRegistration className="icon" />
@@ -121,7 +114,7 @@ export function ActionsLinks({
                 <PersonRemoveAlt1 className="icon" />
               )}
               {hovered && <h4>{Qlink.name}</h4>}
-            </NavHashLink>
+            </HashLink>
           ))}
         </div>
       </SidebarSubLinksContainer>
@@ -130,8 +123,8 @@ export function ActionsLinks({
 }
 
 ActionsLinks.propTypes = {
-  isSidebarOpen: PropTypes.bool,
+  // isSidebarOpen: PropTypes.bool,
   hovered: PropTypes.bool,
-  setCurrentAction: PropTypes.func,
-  setCurrentLink: PropTypes.func,
+  // setCurrentAction: PropTypes.func,
+  // setCurrentLink: PropTypes.func,
 };

@@ -10,7 +10,7 @@ import SchoolOutlinedIcon from "@mui/icons-material/SchoolOutlined";
 import Diversity2Icon from "@mui/icons-material/Diversity2";
 import EmojiPeopleIcon from "@mui/icons-material/EmojiPeople";
 import DryCleaningIcon from "@mui/icons-material/DryCleaning";
-import { NavHashLink } from "react-router-hash-link";
+import { HashLink, NavHashLink } from "react-router-hash-link";
 import { useParams } from "react-router-dom";
 import { SidebarSubLinksContainer } from "../../../../muiStyling/muiStyling";
 import { Box } from "@mui/material";
@@ -28,12 +28,7 @@ import { getAuthUser } from "../../../../features/auth/authSlice";
 //   { name: "Hanging Employments" },
 // ];
 
-export function UsersLinks({
-  isSidebarOpen,
-  setCurrentAction,
-  setCurrentLink,
-  hovered,
-}) {
+export function UsersLinks({ hovered }) {
   const authAdmin = useSelector(getAuthUser);
   const { adminCurrentLink } = useParams();
 
@@ -94,7 +89,7 @@ export function UsersLinks({
       >
         <div ref={contentRef} className="allSidebarLinksWrap">
           {quickLinks.map((Qlink) => (
-            <NavHashLink
+            <HashLink
               key={Qlink.name}
               to={
                 Qlink.name === "Admins"
@@ -148,10 +143,6 @@ export function UsersLinks({
               }
               smooth
               title={!hovered ? Qlink.name : ""}
-              onClick={() => {
-                setCurrentAction("Dashboard");
-                setCurrentLink(Qlink.name);
-              }}
             >
               {Qlink.name === "Admins" && (
                 <AdminPanelSettingsIcon className="icon" />
@@ -173,7 +164,7 @@ export function UsersLinks({
               )}
               {Qlink.name === "Team" && <Diversity2Icon className="icon" />}
               {hovered && <h4>{Qlink.name}</h4>}
-            </NavHashLink>
+            </HashLink>
           ))}
         </div>
       </SidebarSubLinksContainer>
@@ -182,8 +173,5 @@ export function UsersLinks({
 }
 
 UsersLinks.propTypes = {
-  isSidebarOpen: PropTypes.bool,
   hovered: PropTypes.bool,
-  setCurrentAction: PropTypes.func,
-  setCurrentLink: PropTypes.func,
 };

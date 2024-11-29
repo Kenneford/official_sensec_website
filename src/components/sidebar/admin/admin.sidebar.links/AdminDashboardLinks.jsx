@@ -26,12 +26,7 @@ const quickLinks = [
   { name: "Blogs" },
 ];
 
-export function AdminDashboardLinks({
-  isSidebarOpen,
-  setCurrentAction,
-  setCurrentLink,
-  hovered,
-}) {
+export function AdminDashboardLinks({ hovered }) {
   const authAdmin = useSelector(getAuthUser);
   const { adminCurrentLink } = useParams();
 
@@ -109,10 +104,10 @@ export function AdminDashboardLinks({
                   ? "currentAdminSidebarLink"
                   : "notCurrentAdminSidebarLink"
               }
-              onClick={() => {
-                setCurrentAction("Dashboard");
-                setCurrentLink(qLink.name);
-              }}
+              // onClick={() => {
+              //   setCurrentAction("Dashboard");
+              //   setCurrentLink(qLink.name);
+              // }}
             >
               {qLink.name === "Overview" && <Tv className="icon" />}
               {qLink.name === "Class Levels" && <Equalizer className="icon" />}
@@ -131,8 +126,5 @@ export function AdminDashboardLinks({
 }
 
 AdminDashboardLinks.propTypes = {
-  isSidebarOpen: PropTypes.bool,
   hovered: PropTypes.bool,
-  setCurrentAction: PropTypes.func,
-  setCurrentLink: PropTypes.func,
 };
