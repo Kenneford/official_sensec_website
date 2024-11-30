@@ -12,4 +12,10 @@ export default defineConfig(({ mode }) => ({
       "date-fns",
     ],
   },
+  resolve: {
+    alias: {
+      "date-fns/_lib/format/longFormatters":
+        "date-fns/esm/_lib/format/longFormatters/index.js",
+    },
+  },
 }));
