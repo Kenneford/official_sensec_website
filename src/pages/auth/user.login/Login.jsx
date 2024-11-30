@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import "../user.signUp/signUp.scss";
+import "./login.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { toast } from "react-toastify";
