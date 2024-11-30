@@ -1,1 +1,0 @@
-import{j as e}from"./index-BrKZIgIs.js";import{L as i}from"./LoadingProgress-DyOM2CxY.js";function o({color:r,size:t}){return e.jsxs("div",{style:{display:"flex",alignItems:"center",justifyContent:"center",gap:".4rem"},children:[e.jsx("p",{children:"Redirecting..."}),e.jsx(i,{color:r,size:t})]})}export{o as R};
