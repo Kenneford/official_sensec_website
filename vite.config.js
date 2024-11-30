@@ -5,4 +5,9 @@ import react from "@vitejs/plugin-react";
 export default defineConfig(({ mode }) => ({
   plugins: [react()],
   base: mode === "production" ? "/official_sensec_website/" : "/",
+  build: {
+    rollupOptions: {
+      external: ["@mui/x-date-pickers"],
+    },
+  },
 }));
