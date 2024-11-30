@@ -1,0 +1,1 @@
+import{j as s,V as r,W as o,X as t,Y as e,Z as i}from"./index-BrKZIgIs.js";import{F as n}from"./Footer-B0MBhWgD.js";import"./Twitter-BImCl4OR.js";import"./react-router-hash-link.esm-CcfNRvgg.js";function u(){return s.jsxs(s.Fragment,{children:[s.jsx(r,{}),s.jsx(o,{}),s.jsx(t,{}),s.jsx(e,{}),s.jsx(i,{}),s.jsx(n,{})]})}export{u as About};
