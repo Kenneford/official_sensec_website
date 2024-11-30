@@ -25,7 +25,7 @@ export function PageNotFound() {
         <Box className="emptyWrap">
           {/* <img style={{}} /> */}
           <Avatar
-            src="/assets/sad-dog1.jpg"
+            src="../../../public/assets/sad-dog1.jpg"
             alt="sad dog"
             sx={{
               width: "10rem",
