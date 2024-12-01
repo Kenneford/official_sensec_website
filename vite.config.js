@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   base: "/", // Make sure to set base URL if using a subdirectory
   optimizeDeps: {
-    include: ["@mui/x-date-pickers", "date-fns"],
+    include: ["@mui/x-date-pickers", "date-fns", "@date-io/date-fns"],
   },
   build: {
     outDir: "dist", // Default output directory
