@@ -9,7 +9,7 @@ export default defineConfig({
     outDir: "dist", // Default output directory
     rollupOptions: {
       // Ensuring all routes fallback to index.html
-      input: "/dist/index.html",
+      input: "/index.html",
       external: ["@mui/x-date-pickers"],
     },
   },
