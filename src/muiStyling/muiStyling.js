@@ -1,5 +1,5 @@
 import { styled, Toolbar, TextField, Box, Button } from "@mui/material";
-// import { MobileDatePicker } from "@mui/x-date-pickers";
+import { MobileDatePicker } from "@mui/x-date-pickers";
 
 // Navbar Styling
 export const StyledNavbar = {
@@ -118,35 +118,36 @@ export const CustomTextField = styled(TextField)({
     color: "red", // Change the asterisk color to red
   },
 });
-// export const CustomMobileDatePicker = styled(MobileDatePicker)({
-//   // Border styles for focused state
-//   "& .MuiOutlinedInput-root": {
-//     "& fieldset": {
-//       borderColor: "#b5b3b3 !important", // Remove the border color
-//       boxShadow: "2px 2px 3px 0px #454343ad",
-//     },
-//     "&.Mui-focused fieldset": {
-//       borderColor: "#454343ad", // Change focus border color
-//       boxShadow: "2px 2px 3px 0px #454343ad",
-//     },
-//     "&:hover fieldset": {
-//       border: ".5px solid #454343ad", // Disable border on hover
-//       boxShadow: "2px 2px 3px 0px #1a0505ad",
-//     },
-//   },
-//   // Label color on focus
-//   "& .MuiInputLabel-root.Mui-focused": {
-//     fontSize: "1.1rem",
-//     color: "#454343ad", // Custom focus label color
-//     // borderColor: "transparent",
-//   },
-//   "& .MuiInputLabel-root": {
-//     // fontSize: "1.05rem",
-//     fontSize: "1.1rem",
-//     color: "#454343ad !important", // Custom focus label color
-//     border: "none",
-//   },
-// });
+export const CustomMobileDatePicker = styled(MobileDatePicker)({
+  // Border styles for focused state
+  "& .MuiOutlinedInput-root": {
+    "& fieldset": {
+      borderColor: "#b5b3b3 !important", // Remove the border color
+      // boxShadow: "2px 2px 3px 0px #454343ad",
+    },
+    "&.Mui-focused fieldset": {
+      borderColor: "#454343ad", // Change focus border color
+      boxShadow: "2px 2px 3px 0px #454343ad",
+    },
+    "&:hover fieldset": {
+      border: ".5px solid #454343ad", // Disable border on hover
+      boxShadow: "2px 2px 3px 0px #1a0505ad",
+    },
+  },
+  // Label color on focus
+  "& .MuiInputLabel-root.Mui-focused": {
+    fontSize: "1.1rem",
+    color: "#454343ad", // Custom focus label color
+    // borderColor: "transparent",
+  },
+  "& .MuiInputLabel-root": {
+    // fontSize: "1.05rem",
+    fontSize: "1.1rem",
+    color: "#454343ad !important", // Custom focus label color
+    border: "none",
+  },
+});
+
 export const CustomSearchField = styled(TextField)({
   // width: "100%",
   // Border styles for focused state

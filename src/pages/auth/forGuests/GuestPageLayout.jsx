@@ -91,7 +91,7 @@ export function GuestPageLayout() {
           top: 0,
           backgroundColor: "#fff",
           padding: 0,
-          zIndex: 1,
+          zIndex: 3,
         }}
       >
         <NavigationBar
