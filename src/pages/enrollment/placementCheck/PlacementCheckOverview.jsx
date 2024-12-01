@@ -676,13 +676,14 @@ export function PlacementCheckOverview() {
               </li>
             </ul>
             <p>
-              If you're ready to enroll, kindly click on the others link with
-              dropdown arrow on the navbar and select the enrollment option to
-              begin the enrollment process.
+              If you&apos;re ready to enroll, kindly click on the others link
+              with dropdown arrow on the navbar ( if on mobile, click on the
+              menu icon ) and select the enrollment option to begin the
+              enrollment process.
             </p>
             <span>
-              Please don't forget to come along with all downloaded documents on
-              the reporting date.
+              Please don&apos;t forget to come along with all downloaded
+              documents on the reporting date.
             </span>
           </Box>
         </Box>
