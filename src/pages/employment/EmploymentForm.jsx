@@ -474,7 +474,7 @@ export function EmploymentForm() {
               {/* Date Of Birth */}
               <Grid item xs={12} sm={6} md={4} lg={4}>
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  <MobileDatePicker
+                  <CustomMobileDatePicker
                     label="Date of Birth"
                     // inputFormat="MM/dd/yyyy"
                     value={newEmployment?.dateOfBirth || ""}
