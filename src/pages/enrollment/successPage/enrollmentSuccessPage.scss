@@ -1,0 +1,859 @@
+.applicationInfoCont {
+  margin-top: 10rem;
+  display: flex;
+  .leftWrap {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: calc(100vh - 160px);
+    width: 20%;
+    background-color: #292929;
+    .studentWrap {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 3rem 0 2rem;
+      img {
+        width: 6rem;
+        height: 6rem;
+        border-radius: 0.4rem;
+        object-fit: cover;
+        background-color: #555;
+      }
+      .studentName {
+        padding: 1rem;
+        color: aliceblue;
+        font-size: 1.2rem;
+        font-weight: 500;
+        letter-spacing: 1px;
+      }
+    }
+    .leftLinks {
+      width: 90%;
+      a {
+        display: flex;
+        flex-direction: column;
+        margin: 0.5rem 0;
+        padding: 0.5rem;
+        border-radius: 0.4rem;
+        background-color: aliceblue;
+        color: #555;
+        text-transform: uppercase;
+      }
+      .isCurrentLink {
+        display: flex;
+        flex-direction: column;
+        margin: 0.5rem 0;
+        padding: 0.5rem;
+        border-radius: 0.4rem;
+        background-color: #3e3e3e;
+        color: #fff;
+      }
+    }
+  }
+  .rightWrap {
+    height: calc(100vh - 160px);
+    width: 80%;
+    position: relative;
+    left: 20%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding-bottom: 3rem;
+    &::-webkit-scrollbar-thumb {
+      background-color: #ccc;
+    }
+    &::-webkit-scrollbar-track {
+      background-color: #5e5e5e;
+    }
+    &::-webkit-scrollbar {
+      width: 5px;
+    }
+    .houseAlert {
+      position: relative;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.2rem;
+      font-weight: 500;
+      background-color: #dce312;
+      color: #070606;
+      padding: 0.7rem;
+      .alertCloseBtn {
+        position: absolute;
+        width: 2rem;
+        height: 2rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        right: 2rem;
+        // padding: 0 0.5rem;
+        // color: #fff;
+        cursor: pointer;
+        border-radius: 0.4rem;
+        transition: 0.4s ease-out;
+        &:hover {
+          background-color: #000;
+          button {
+            color: #dce312;
+          }
+        }
+        button {
+          background-color: transparent;
+          color: #000;
+          font-size: 2rem;
+          cursor: pointer;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          .closeIcon {
+            font-size: 2rem;
+          }
+        }
+      }
+    }
+    .applicationInfoTitle {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem 0;
+      gap: 2rem;
+      background-color: #414141;
+      color: #fff;
+      span {
+        font-size: 1.2rem;
+        color: yellow;
+      }
+    }
+    .applicationContent {
+      margin: 2rem;
+      border-radius: 0.4rem;
+      padding-bottom: 1rem;
+      -webkit-box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+      box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+      .welldone {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        background-color: green;
+        color: yellow;
+        letter-spacing: 1px;
+        border-radius: 0.4rem 0.4rem 0 0;
+        min-height: 4rem;
+        p {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          text-transform: uppercase;
+        }
+      }
+      .studentDataCont {
+        display: flex;
+        .studentData {
+          flex: 1.5;
+          // padding: 1rem 2rem;
+          margin: 1rem 2rem;
+          border-radius: 0 0 0.4rem 0.4rem;
+          -webkit-box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+          box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+          .studentDataWrap {
+            display: flex;
+            height: 10rem;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: green;
+            color: yellow;
+            border-radius: 0.4rem 0.4rem 0 0;
+            -webkit-box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+            box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+            .student {
+              position: relative;
+              top: 2.5rem;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              padding-bottom: 1rem;
+              .studentName {
+                text-transform: uppercase;
+                font-size: 1.2rem;
+                letter-spacing: 1px;
+              }
+              .studentId {
+                font-size: 1.2rem;
+                letter-spacing: 1px;
+              }
+            }
+            .studentImg {
+              position: relative;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              top: 1rem;
+              background-color: #fff;
+              border-radius: 50%;
+              -webkit-box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+              box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+              img {
+                width: 6rem;
+                height: 6rem;
+                padding: 0.1rem;
+                border-radius: 50%;
+                object-fit: cover;
+              }
+            }
+          }
+          .enrollmentInfoWrap {
+            border-radius: 0 0 0.4rem 0.4rem;
+            .enrolledDate {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              padding-top: 4rem;
+              color: #555;
+              h3 {
+                background-color: #292929;
+                padding: 0.3rem 0.5rem;
+                color: #fff;
+                border-radius: 0.4rem;
+                letter-spacing: 1.5px;
+                span {
+                  font-style: italic;
+                  // text-decoration: underline;
+                  color: #fff;
+                  font-weight: 500;
+                  letter-spacing: 1.5px;
+                }
+              }
+            }
+            .studentEnrolmentInfo {
+              padding: 1rem 2rem 2rem;
+              .infoCardWrap {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                .infoCard {
+                  min-height: 4rem;
+                  display: flex;
+                  flex-direction: column;
+                  justify-content: center;
+                  align-items: center;
+                  letter-spacing: 1px;
+                  border-bottom: 1px solid #ccc;
+                  padding: 0.5rem 0;
+                  margin: 0.5rem 0.5rem;
+                  border-radius: 0.4rem;
+                  -webkit-box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+                  box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+
+                  h3 {
+                    color: #292929;
+                  }
+                  span {
+                    color: #555;
+                  }
+                }
+              }
+            }
+          }
+        }
+        .studentElectiveSubjects {
+          flex: 1;
+          .comeAlongDocsWrap {
+            padding: 1rem 2rem;
+            margin: 1rem 2rem 1rem 0;
+            border-radius: 0.4rem;
+            padding-bottom: 1rem;
+            -webkit-box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+            box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+            h2 {
+              padding-bottom: 1rem;
+              color: #696969;
+            }
+            p {
+              color: crimson;
+              font-size: 1.2rem;
+              padding-bottom: 1.5rem;
+            }
+            ul {
+              padding-bottom: 2rem;
+              padding-left: 2rem;
+              li {
+                list-style: circle;
+                span {
+                  font-size: 1.2rem;
+                  color: #696969;
+                }
+              }
+            }
+            &:nth-child(1) {
+              height: 15rem;
+            }
+          }
+          .eSubjects {
+            display: flex;
+            .optionalSub {
+              color: #ac037c;
+            }
+          }
+        }
+        .classTeacherWrap {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          padding-bottom: 1.5rem;
+          gap: 1rem;
+          .studentLecturerImgWrap {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 0.3rem;
+            .studentLecturerImg {
+              width: 4rem;
+              height: 4rem;
+              border-radius: 0.4rem;
+              object-fit: cover;
+            }
+          }
+        }
+      }
+      .docDownloadWrap {
+        margin: 0 2rem 1rem;
+        padding: 1rem;
+        border: 1px solid #cccc;
+        .docList {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          padding: 1rem 0;
+          gap: 1rem;
+          .docItem {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: green;
+            color: #fff;
+            border-radius: 0.4rem;
+            padding: 0.5rem;
+            font-size: 1.2rem;
+            cursor: pointer;
+            height: 3rem;
+            // width: 15rem;
+            .downloadIcon {
+              position: relative;
+              top: 0.1rem;
+            }
+          }
+        }
+        // .comeAlongDocsWrap {
+        //   p {
+        //     color: crimson;
+        //     font-size: 1.2rem;
+        //     padding-bottom: 1.5rem;
+        //   }
+        //   ul {
+        //     padding-bottom: 2rem;
+        //     padding-left: 2rem;
+        //     li {
+        //       font-size: 1.2rem;
+        //       list-style: circle;
+        //     }
+        //   }
+        // }
+      }
+    }
+    .footer {
+      position: fixed;
+      bottom: 0;
+      width: 80%;
+    }
+  }
+}
+.sidebar {
+  font-size: calc(0.7rem + 1vmin);
+  z-index: 5;
+  // height: 100vh;
+  .userInfo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 0;
+    gap: 0.5rem;
+    color: #ccc;
+    img {
+      width: 5rem;
+      height: 5rem;
+      object-fit: cover;
+      border-radius: 0.4rem;
+    }
+    .infoText {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      span {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        font-size: 1rem;
+        font-weight: 500;
+      }
+      p {
+        padding-top: 0.5rem;
+      }
+    }
+  }
+  #sidebarContentWrap {
+    width: 100%;
+    height: 89vh;
+    padding-top: 2rem;
+    // padding: 1rem;
+    padding-bottom: 2rem;
+    transition: width 0.5s ease;
+    overflow-y: auto;
+    &::-webkit-scrollbar {
+      width: 5px;
+    }
+    &::-webkit-scrollbar-track {
+      background-color: #292929;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: #ccc;
+      border-radius: 0.4rem;
+    }
+    &::-webkit-scrollbar-track-piece {
+      width: 5px;
+    }
+    .sidebarContentLinksWrap {
+      a {
+        color: #fff;
+      }
+      .sidebarLinksTitle {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+        background-color: transparent;
+        color: #fff;
+        cursor: pointer;
+        text-align: unset;
+        .expandMoreIcon {
+          margin-top: -0.1rem;
+          cursor: pointer;
+        }
+        .dashboardSidebarLinksTitle {
+          width: inherit;
+          font-size: 1.2em;
+          font-weight: 300;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+        }
+      }
+      .sidebarLinksTitle.closed {
+        // text-align: center;
+        .dashboardSidebarLinksTitle {
+          text-transform: capitalize;
+        }
+      }
+      .sidebarContentLinks {
+        width: inherit;
+        transition: 0.5s ease;
+        .allSidebarLinksWrap {
+          padding-bottom: 0.5rem;
+          .currentAdminSidebarLink {
+            width: inherit;
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.7rem 0;
+            transition: 0.4s ease;
+            border-radius: 0.3rem;
+            cursor: pointer;
+            align-items: center;
+            margin: 0.2rem 0;
+            background-color: #383838;
+            border-left: 2px solid #fff;
+            .icon {
+              margin-left: 0.5rem;
+            }
+            h4 {
+              font-weight: 300;
+              font-size: 0.7em;
+            }
+          }
+          .notCurrentAdminSidebarLink {
+            width: inherit;
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.7rem 0;
+            transition: 0.4s ease;
+            border-radius: 0.3rem;
+            cursor: pointer;
+            position: relative;
+            align-items: center;
+            margin: 0.2rem 0;
+            h4 {
+              font-weight: 300;
+              font-size: 0.7em;
+            }
+            &:hover {
+              background-color: #383838;
+            }
+            .icon {
+              margin-left: 0.5rem;
+            }
+          }
+        }
+      }
+      .sidebarContentLinks.closed {
+        transition: 0.5s ease;
+        .allSidebarLinksWrap {
+          .currentAdminSidebarLink,
+          .notCurrentAdminSidebarLink {
+            display: flex;
+            justify-content: center;
+            .icon {
+              margin-left: unset;
+            }
+          }
+        }
+      }
+    }
+  }
+  .sideBarLogoutBtn {
+    position: fixed;
+    // width: 20%;
+    height: 2.5rem;
+    left: 0;
+    bottom: 0;
+    background-color: red;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    transition: 0.5s ease;
+    cursor: pointer;
+  }
+}
+.rightWrap {
+  height: calc(100vh - 160px);
+  // width: 80%;
+  position: relative;
+  // left: 20%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  padding-bottom: 3rem;
+  &::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+  }
+  &::-webkit-scrollbar-track {
+    background-color: #5e5e5e;
+  }
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+  .houseAlert {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    font-weight: 500;
+    background-color: #dce312;
+    color: #070606;
+    padding: 0.7rem;
+    .alertCloseBtn {
+      position: absolute;
+      width: 2rem;
+      height: 2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      right: 2rem;
+      // padding: 0 0.5rem;
+      // color: #fff;
+      cursor: pointer;
+      border-radius: 0.4rem;
+      transition: 0.4s ease-out;
+      &:hover {
+        background-color: #000;
+        button {
+          color: #dce312;
+        }
+      }
+      button {
+        background-color: transparent;
+        color: #000;
+        font-size: 2rem;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .closeIcon {
+          font-size: 2rem;
+        }
+      }
+    }
+  }
+  .applicationInfoTitle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem 0;
+    gap: 2rem;
+    background-color: #414141;
+    color: #fff;
+    span {
+      font-size: 1.2rem;
+      color: yellow;
+    }
+  }
+  .applicationContent {
+    margin: 2rem;
+    border-radius: 0.4rem;
+    padding-bottom: 1rem;
+    -webkit-box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+    box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+    .welldone {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      background-color: green;
+      color: yellow;
+      letter-spacing: 1px;
+      border-radius: 0.4rem 0.4rem 0 0;
+      min-height: 4rem;
+      p {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-transform: uppercase;
+      }
+    }
+    .studentDataCont {
+      // display: flex;
+      .studentData {
+        flex: 1.5;
+        // padding: 1rem 2rem;
+        margin: 1rem 2rem;
+        border-radius: 0 0 0.4rem 0.4rem;
+        -webkit-box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+        box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+        .studentDataWrap {
+          display: flex;
+          height: 10rem;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          background-color: green;
+          color: yellow;
+          border-radius: 0.4rem 0.4rem 0 0;
+          -webkit-box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+          box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+          .student {
+            position: relative;
+            top: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 1rem;
+            .studentName {
+              text-transform: uppercase;
+              font-size: 1.2rem;
+              letter-spacing: 1px;
+            }
+            .studentId {
+              font-size: 1.2rem;
+              letter-spacing: 1px;
+            }
+          }
+          .studentImg {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            top: 1rem;
+            background-color: #fff;
+            border-radius: 50%;
+            -webkit-box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+            box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+            img {
+              width: 6rem;
+              height: 6rem;
+              padding: 0.1rem;
+              border-radius: 50%;
+              object-fit: cover;
+            }
+          }
+        }
+        .enrollmentInfoWrap {
+          border-radius: 0 0 0.4rem 0.4rem;
+          .enrolledDate {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-top: 4rem;
+            color: #555;
+            h3 {
+              background-color: #292929;
+              padding: 0.3rem 0.5rem;
+              color: #fff;
+              border-radius: 0.4rem;
+              letter-spacing: 1.5px;
+              span {
+                font-style: italic;
+                // text-decoration: underline;
+                color: #fff;
+                font-weight: 500;
+                letter-spacing: 1.5px;
+              }
+            }
+          }
+          .studentEnrolmentInfo {
+            padding: 1rem 2rem 2rem;
+            .infoCardWrap {
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+              .infoCard {
+                min-height: 4rem;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                letter-spacing: 1px;
+                border-bottom: 1px solid #ccc;
+                padding: 0.5rem 0;
+                margin: 0.5rem 0.5rem;
+                border-radius: 0.4rem;
+                -webkit-box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+                box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+
+                h3 {
+                  color: #292929;
+                }
+                span {
+                  color: #555;
+                }
+              }
+            }
+          }
+        }
+      }
+      .studentElectiveSubjects {
+        flex: 1;
+        .comeAlongDocsWrap {
+          padding: 1rem 2rem;
+          margin: 1rem 2rem 1rem 0;
+          border-radius: 0.4rem;
+          padding-bottom: 1rem;
+          -webkit-box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+          box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+          h2 {
+            padding-bottom: 1rem;
+            color: #696969;
+          }
+          p {
+            color: crimson;
+            font-size: 1.2rem;
+            padding-bottom: 1.5rem;
+          }
+          ul {
+            padding-bottom: 2rem;
+            padding-left: 2rem;
+            li {
+              list-style: circle;
+              span {
+                font-size: 1.2rem;
+                color: #696969;
+              }
+            }
+          }
+          &:nth-child(1) {
+            height: 15rem;
+          }
+        }
+        .eSubjects {
+          display: flex;
+          .optionalSub {
+            color: #ac037c;
+          }
+        }
+      }
+      .classTeacherWrap {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-bottom: 1.5rem;
+        gap: 1rem;
+        .studentLecturerImgWrap {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          gap: 0.3rem;
+          .studentLecturerImg {
+            width: 4rem;
+            height: 4rem;
+            border-radius: 0.4rem;
+            object-fit: cover;
+          }
+        }
+      }
+    }
+    .docDownloadWrap {
+      margin: 0 2rem 1rem;
+      padding: 1rem;
+      border: 1px solid #cccc;
+      .docList {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        padding: 1rem 0;
+        gap: 1rem;
+        .docItem {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          background-color: green;
+          color: #fff;
+          border-radius: 0.4rem;
+          padding: 0.5rem;
+          font-size: 1.2rem;
+          cursor: pointer;
+          height: 3rem;
+          // width: 15rem;
+          .downloadIcon {
+            position: relative;
+            top: 0.1rem;
+          }
+        }
+      }
+      // .comeAlongDocsWrap {
+      //   p {
+      //     color: crimson;
+      //     font-size: 1.2rem;
+      //     padding-bottom: 1.5rem;
+      //   }
+      //   ul {
+      //     padding-bottom: 2rem;
+      //     padding-left: 2rem;
+      //     li {
+      //       font-size: 1.2rem;
+      //       list-style: circle;
+      //     }
+      //   }
+      // }
+    }
+  }
+  .footer {
+    position: fixed;
+    bottom: 0;
+    width: 80%;
+  }
+}

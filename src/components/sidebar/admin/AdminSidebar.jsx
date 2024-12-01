@@ -32,7 +32,7 @@ export function AdminSidebar({ hovered, currentTerm, currentAcademicYear }) {
 
   return (
     <>
-      {/* Button to toggle sidebar */}
+      {/* User Info */}
       <Box
         sx={{
           backgroundColor: "#292929",
@@ -54,7 +54,8 @@ export function AdminSidebar({ hovered, currentTerm, currentAcademicYear }) {
             fontSize: "1rem",
           }}
         >
-          <span>{currentTerm?.name}</span>-
+          <span>{currentTerm?.name}</span>
+          {"-"}
           <span>{currentAcademicYear?.yearRange}</span>
         </Box>
         {/* <IconButton
@@ -121,29 +122,18 @@ export function AdminSidebar({ hovered, currentTerm, currentAcademicYear }) {
           {/* Add content that overflows */}
           <div className="sidebarContentLinksWrap">
             {/* Dashboard */}
-            <>
-              <AdminDashboardLinks hovered={hovered} />
-            </>
+            <AdminDashboardLinks hovered={hovered} />
             {/* Actions */}
-            <>
-              <ActionsLinks hovered={hovered} />
-            </>
+            <ActionsLinks hovered={hovered} />
             {/* Users */}
-            <>
-              <UsersLinks hovered={hovered} />
-            </>
+            <UsersLinks hovered={hovered} />
             {/* Attendance */}
-            <>
-              <AdminAttendanceLinks hovered={hovered} />
-            </>
+            <AdminAttendanceLinks hovered={hovered} />
             {/* Assessment */}
-            <>
-              <AssessmentLinks hovered={hovered} />
-            </>
+            <AssessmentLinks hovered={hovered} />
             {/* Account */}
-            <>
-              <AccountLinks hovered={hovered} />
-            </>
+
+            <AccountLinks hovered={hovered} />
           </div>
         </Box>
       </Box>

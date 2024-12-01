@@ -9,6 +9,7 @@ import {
   Courses,
   EmploymentForm,
   EnrollmentPage,
+  EnrollmentSuccessOverview,
   FrequentlyAskedQuestions,
   Home,
   PageNotFound,
@@ -127,6 +128,10 @@ export default function PageNavigation() {
             {
               path: "online/:studentId/guardian/add",
               element: <GuardianForm />,
+            },
+            {
+              path: "online/:studentId/success",
+              element: <EnrollmentSuccessOverview />,
             },
             { path: "*", element: <PageNotFound /> },
           ],

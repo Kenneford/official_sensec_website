@@ -125,6 +125,16 @@ export const EnrollmentPage = lazyWithSuspense(
   <PageLoading />,
   "EnrollmentPage"
 );
+export const EnrollmentSuccessOverview = lazyWithSuspense(
+  () =>
+    import("../../pages/enrollment/successPage/EnrollmentSuccessOverview").then(
+      (module) => {
+        return { default: module.EnrollmentSuccessOverview };
+      }
+    ),
+  <PageLoading />,
+  "EnrollmentSuccessOverview"
+);
 export const EmploymentForm = lazyWithSuspense(
   () =>
     import("../../pages/employment/EmploymentForm").then((module) => {
@@ -197,6 +207,7 @@ export const SearchModal = lazyWithSuspense(
   <PageLoading />,
   "SearchModalComponent"
 );
+// For Admin
 export const MultiApprovalBtn = lazyWithSuspense(
   () =>
     import("../../buttons/MultiApprovalBtn").then((module) => {
@@ -229,7 +240,6 @@ export const MultiStudentsDemotionBtn = lazyWithSuspense(
   <PageLoading />,
   "MultiStudentsDemotionBtnComponent"
 );
-// For Admin
 export const AdminDashboard = lazyWithSuspense(
   () =>
     import("../admin/AdminDashboard").then((module) => {
