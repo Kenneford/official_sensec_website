@@ -4,12 +4,12 @@ import react from "@vitejs/plugin-react";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: "/sensec", // Make sure to set base URL if using a subdirectory
+  base: "/", // Make sure to set base URL if using a subdirectory
   build: {
     outDir: "dist", // Default output directory
     rollupOptions: {
       // Ensuring all routes fallback to index.html
-      input: "/index.html",
+      input: "/sensec",
       external: ["@mui/x-date-pickers"],
     },
   },
