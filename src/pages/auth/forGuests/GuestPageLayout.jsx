@@ -1,5 +1,10 @@
 import { Avatar, Box, Typography } from "@mui/material";
-import { useNavigate, useOutletContext, useParams } from "react-router-dom";
+import {
+  useLocation,
+  useNavigate,
+  useOutletContext,
+  useParams,
+} from "react-router-dom";
 import {
   About,
   Contact,
@@ -7,6 +12,7 @@ import {
   EmploymentForm,
   Home,
   NavigationBar,
+  PageNotFound,
 } from "../../../components/lazyLoading/LazyComponents";
 import {
   Login,
@@ -18,6 +24,7 @@ import SearchForm from "../../../components/searchForm/SearchForm";
 export function GuestPageLayout() {
   const { currentGuestPage } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const {
     currentAction,
     setCurrentAction,
@@ -104,14 +111,15 @@ export function GuestPageLayout() {
           setOpenSearchModal={setOpenSearchModal}
         />
       </Box>
-      {currentGuestPage === "homepage" && <Home />}
-      {currentGuestPage === "about" && <About />}
-      {currentGuestPage === "courses" && <Courses />}
-      {currentGuestPage === "contact" && <Contact />}
-      {currentGuestPage === "sign_up" && <SignUpContainer />}
-      {currentGuestPage === "login" && <Login />}
-      {currentGuestPage === "login_options" && <LoginOptions />}
-      {currentGuestPage === "new_employment" && <EmploymentForm />}
+      {location?.pathname === "/sensec/homepage" && <Home />}
+      {location?.pathname === "/sensec/about" && <About />}
+      {location?.pathname === "/sensec/courses" && <Courses />}
+      {location?.pathname === "/sensec/contact" && <Contact />}
+      {location?.pathname === "/sensec/sign_up" && <SignUpContainer />}
+      {location?.pathname === "/sensec/login" && <Login />}
+      {location?.pathname === "/sensec/login_options" && <LoginOptions />}
+      {location?.pathname === "/sensec/new_employment" && <EmploymentForm />}
+      {location?.pathname === "*" && <PageNotFound />}
     </Box>
   );
 }
