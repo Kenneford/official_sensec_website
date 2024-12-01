@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 // import "./studentEnrollment.scss";
 import {
   ContainerBox,
+  CustomMobileDatePicker,
   // CustomMobileDatePicker,
   CustomTextField,
 } from "../../muiStyling/muiStyling";
@@ -40,8 +41,8 @@ import {
   newEmployee,
   resetEmploymentState,
 } from "../../features/employments/employmentSlice";
-// import { LocalizationProvider } from "@mui/x-date-pickers";
-// import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 export function EmploymentForm() {
   const dispatch = useDispatch();
@@ -471,7 +472,7 @@ export function EmploymentForm() {
               </Grid>
               {/* Date Of Birth */}
               <Grid item xs={12} sm={6} md={4} lg={4}>
-                {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
                   <CustomMobileDatePicker
                     label="Date of Birth"
                     // inputFormat="MM/dd/yyyy"
@@ -484,7 +485,7 @@ export function EmploymentForm() {
                       width: "100%",
                     }}
                   />
-                </LocalizationProvider> */}
+                </LocalizationProvider>
               </Grid>
               {/* Nationality */}
               <Grid item xs={12} sm={6} md={4} lg={4}>
