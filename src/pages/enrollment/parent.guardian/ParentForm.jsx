@@ -126,7 +126,7 @@ export function ParentForm() {
             `/sensec/users/${authAdmin?.uniqueId}/admin/User-Types/Students/${studentId}/enrollment/online/success`
           );
         } else {
-          navigate(`/sensec/students/${studentId}/enrollment/online/success`);
+          navigate(`/sensec/students/enrollment/online/${studentId}/success`);
         }
       }, 9000);
     }
