@@ -43,6 +43,7 @@ import {
 } from "../../features/employments/employmentSlice";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
 
 export function EmploymentForm() {
   const dispatch = useDispatch();
@@ -473,7 +474,7 @@ export function EmploymentForm() {
               {/* Date Of Birth */}
               <Grid item xs={12} sm={6} md={4} lg={4}>
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  <CustomMobileDatePicker
+                  <MobileDatePicker
                     label="Date of Birth"
                     // inputFormat="MM/dd/yyyy"
                     value={newEmployment?.dateOfBirth || ""}
@@ -483,6 +484,33 @@ export function EmploymentForm() {
                     // helperText="" // Optionally clear helper text
                     sx={{
                       width: "100%",
+                      // Border styles for focused state
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": {
+                          borderColor: "#b5b3b3 !important", // Remove the border color
+                          // boxShadow: "2px 2px 3px 0px #454343ad",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#454343ad", // Change focus border color
+                          boxShadow: "2px 2px 3px 0px #454343ad",
+                        },
+                        "&:hover fieldset": {
+                          border: ".5px solid #454343ad", // Disable border on hover
+                          boxShadow: "2px 2px 3px 0px #1a0505ad",
+                        },
+                      },
+                      // Label color on focus
+                      "& .MuiInputLabel-root.Mui-focused": {
+                        fontSize: "1.1rem",
+                        color: "#454343ad", // Custom focus label color
+                        // borderColor: "transparent",
+                      },
+                      "& .MuiInputLabel-root": {
+                        // fontSize: "1.05rem",
+                        fontSize: "1.1rem",
+                        color: "#454343ad !important", // Custom focus label color
+                        border: "none",
+                      },
                     }}
                   />
                 </LocalizationProvider>
