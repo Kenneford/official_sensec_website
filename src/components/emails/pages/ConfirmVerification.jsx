@@ -12,24 +12,39 @@ import LoadingProgress from "../../pageLoading/LoadingProgress";
 import Redirection from "../../pageLoading/Redirection";
 import {
   fetchAllUsers,
+  fetchVerificationData,
   getAllUsers,
   getAuthUser,
+  getUserVerificationData,
+  resetEmailVerificationState,
+  verifyUser,
 } from "../../../features/auth/authSlice";
-import { VerificationTimeOut } from "../../lazyLoading/auth/AuthLazyComponents";
+import {
+  NotSignedUp,
+  VerificationTimeOut,
+} from "../../lazyLoading/auth/AuthLazyComponents";
+import { FetchAllUsers } from "../../../data/allUsers/FetchAllUsers";
+import { Box, Button } from "@mui/material";
 
 export function ConfirmVerification() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const allUsers = FetchAllUsers();
   const { uniqueId, emailToken } = useParams();
-  const userInfo = useSelector(getAuthUser);
-  const allUsers = useSelector(getAllUsers);
-  const verificationData = {};
+  console.log(uniqueId);
 
-  const currentDate = new Date("2024-10-26T20:48:52.432+00:00").toISOString();
+  const userInfo = useSelector(getAuthUser);
+  const verificationData = useSelector(getUserVerificationData);
+  console.log(verificationData);
+
+  const currentDate = new Date().toISOString();
+  console.log(verificationData?.expiryDate);
+
   const checkDataExpiry = verificationData?.expiryDate < currentDate;
 
-  // const { verificationStatus, verificationSuccessMessage, verificationError } =
-  //   useSelector((state) => state.user);
+  const { verifyEmailStatus, successMessage, error } = useSelector(
+    (state) => state.authUser
+  );
 
   console.log(userInfo);
   console.log(verificationData);
@@ -52,10 +67,10 @@ export function ConfirmVerification() {
   );
   console.log(allUnVerifiedUsers);
 
-  const existingVerifiedUser = allVerifiedUsers.find(
-    (user) => user.uniqueId === uniqueId
+  const existingVerifiedUser = allUsers.find(
+    (user) => user.uniqueId === uniqueId && user?.isVerified
   );
-  const signedUpUser = allUnVerifiedUsers.find(
+  const signedUpUser = allUsers.find(
     (user) => user?.uniqueId === uniqueId && user?.signedUp
   );
 
@@ -63,9 +78,8 @@ export function ConfirmVerification() {
   console.log(signedUpButNotLoggedIn);
   console.log(existingVerifiedUser);
   console.log(uniqueId);
-  const userFound = allUnVerifiedUsers.find(
-    (user) => user?.uniqueId === uniqueId
-  );
+
+  const userFound = allUsers.find((user) => user?.uniqueId === uniqueId);
   console.log(userFound);
   const userRedirectingToLogin =
     userInfo && userInfo?.uniqueId !== userFound?.uniqueId;
@@ -74,112 +88,66 @@ export function ConfirmVerification() {
 
   //Handle User Verification
   const handleVerification = () => {
-    setLoadingComplete(false);
-    if (!user) {
-      toast.error("User Not Found!", {
-        position: "top-right",
-        theme: "dark",
-        // toastId: successId,
-      });
-      setTimeout(() => {
-        setLoadingComplete(null);
-      }, 3000);
-    } else if (!verificationData) {
-      toast.error("Verification Data Not Found!", {
-        position: "top-right",
-        theme: "dark",
-        // toastId: successId,
-      });
-      setTimeout(() => {
-        // setLoadingComplete(null);
-        setRedirecting(true);
-        // dispatch(deleteExpiredVerificationData({ uniqueId, emailToken }));
-      }, 3000);
-      setTimeout(() => {
-        navigate(`/sensec/email/${uniqueId}/${emailToken}/verify/redirection`);
-      }, 6000);
-    } else if (user && checkDataExpiry) {
-      setTimeout(() => {
-        setTokenExpire(true);
-        // dispatch(deleteExpiredVerificationData({ uniqueId, emailToken }));
-      }, 3000);
-    } else if (signedUpUser && !signedUpUser?.isVerified) {
-      // dispatch(verifyUser({ uniqueId, emailToken }));
-    } else {
-      setTimeout(() => {
-        setLoadingComplete(true);
-        setRedirecting(true);
-      }, 3000);
-      setTimeout(() => {
-        navigate(`/sensec/email/${uniqueId}/${emailToken}/verify/redirection`);
-      }, 6000);
-    }
+    dispatch(verifyUser({ userId: uniqueId, emailToken }));
   };
 
   useEffect(() => {
-    // dispatch(fetchVerificationData(emailToken));
-    dispatch(fetchAllUsers());
-    // dispatch(fetchAllUnVerifiedUsers());
+    dispatch(fetchVerificationData(emailToken));
   }, [dispatch, emailToken]);
 
   //User email verification status controls
-  // useEffect(() => {
-  //   if (verificationStatus === "pending") {
-  //     setTimeout(() => {
-  //       setLoadingComplete(true);
-  //     }, 3000);
-  //   }
-  //   if (verificationStatus === "success") {
-  //     setTimeout(() => {
-  //       setLoadingComplete(true);
-  //     }, 3000);
-  //     setTimeout(() => {
-  //       setRedirecting(true);
-  //     }, 6000);
-  //     setTimeout(() => {
-  //       if (user?.adminStatusExtend?.isAdmin) {
-  //         navigate("/sensec/admin/Dashboard/Overview#admin");
-  //         localStorage.setItem("currentNavLink", "admin");
-  //       }
-  //       if (user?.teacherStatusExtend?.isTeacher) {
-  //         navigate("/sensec/teacher/Dashboard/Overview");
-  //       }
-  //       if (user?.studentStatusExtend?.isStudent) {
-  //         navigate("/sensec/student/Dashboard/Overview");
-  //       }
-  //       if (user?.nTStaffStatusExtend?.isNTStaff) {
-  //         navigate("/sensec/nt_staff/Dashboard/Overview");
-  //       }
-  //     }, 9000);
-  //   }
-  //   if (verificationStatus === "rejected") {
-  //     dispatch(fetchAllUsers());
-  //     setTimeout(() => {
-  //       setLoadingComplete(null);
-  //     }, 3000);
-  //     verificationError.errorMessage.message.map((err) =>
-  //       setTimeout(() => {
-  //         toast.error(err, {
-  //           position: "top-right",
-  //           theme: "dark",
-  //           // toastId: successId,
-  //         });
-  //         setErrorMsg(err);
-  //       }, 2000)
-  //     );
-  //   }
-  // }, [
-  //   dispatch,
-  //   navigate,
-  //   user,
-  //   verificationStatus,
-  //   existingVerifiedUser,
-  //   verificationError,
-  //   verificationSuccessMessage,
-  //   loadingComplete,
-  //   tokenExpire,
-  //   errorMsg,
-  // ]);
+  useEffect(() => {
+    if (verifyEmailStatus === "pending") {
+      setLoadingComplete(false);
+    }
+    if (verifyEmailStatus === "success") {
+      setTimeout(() => {
+        setLoadingComplete(true);
+      }, 3000);
+      setTimeout(() => {
+        setRedirecting(true);
+      }, 6000);
+      setTimeout(() => {
+        dispatch(resetEmailVerificationState());
+        if (user?.adminStatusExtend?.isAdmin) {
+          navigate(`/sensec/users/${user?.uniqueId}/admin/Dashboard/Overview`);
+          // localStorage.setItem("currentNavLink", "admin");
+        }
+        if (user?.lecturerStatusExtend?.isLecturer) {
+          navigate(
+            `/sensec/users/${user?.uniqueId}/lecturer/Dashboard/Overview`
+          );
+        }
+        if (user?.studentStatusExtend?.isStudent) {
+          navigate(
+            `/sensec/users/${user?.uniqueId}/student/Dashboard/Overview`
+          );
+        }
+        if (user?.nTStaffStatusExtend?.isNTStaff) {
+          navigate(
+            `/sensec/users/${user?.uniqueId}/nt_staff/Dashboard/Overview`
+          );
+        }
+      }, 9000);
+    }
+    if (verifyEmailStatus === "rejected") {
+      setTimeout(() => {
+        setLoadingComplete(null);
+        dispatch(resetEmailVerificationState());
+      }, 3000);
+      error.errorMessage.message.map((err) =>
+        setTimeout(() => {
+          toast.error(err, {
+            position: "top-right",
+            theme: "dark",
+            toastId: "EmailVerificationError",
+          });
+          setErrorMsg(err);
+        }, 2000)
+      );
+    }
+  }, [dispatch, navigate, verifyEmailStatus, error, successMessage, user]);
+
   if (!user) {
     return (
       <h3
@@ -189,119 +157,119 @@ export function ConfirmVerification() {
           alignItems: "center",
           textAlign: "center",
           marginTop: "2rem",
-          color: "#696969",
+          color: "#cccc",
         }}
       >
-        Page Loading...
-        <LoadingProgress color={"#696969"} size={"1.3rem"} />
+        Loading data...
+        {/* <LoadingProgress color={"#696969"} size={"1.3rem"} /> */}
       </h3>
     );
   }
   return (
     <>
-      {tokenExpire ? (
-        <VerificationTimeOut />
-      ) : (
-        <>
-          {user && (
-            <div className="confirmWrap">
-              {/* Require user to confirm verification to login */}
-              <div className="confirmContainer">
-                <div className="confirmContent">
-                  <h1>Verify Your Email Address</h1>
-                  <div className="imageWrap">
-                    {user && (
-                      <img
-                        src={user?.personalInfo?.profilePicture?.url}
-                        alt=""
-                      />
-                    )}
-                    <p>
-                      Hi{" "}
-                      <span>
-                        {user?.personalInfo?.firstName}{" "}
-                        {user?.personalInfo?.lastName},
-                      </span>
-                    </p>
-                  </div>
-                  <div className="infoText">
-                    <p>
-                      Please confirm that you want to use this as your account
-                      email address. Once it's done you will be able to use your
-                      dashboard.
-                    </p>
-                    <p className="thanks">Thanks a lot for signing up!</p>
-                  </div>
-                  {errorMsg && (
+      {checkDataExpiry && <VerificationTimeOut />}
+      {!verificationData && <NotSignedUp />}
+      {!checkDataExpiry && user && (
+        <Box className="confirmWrap">
+          {/* Require user to confirm verification to login */}
+          <Box className="confirmContainer">
+            <Box className="confirmContent">
+              <h1>Verify Your Email Address</h1>
+              <Box className="imageWrap">
+                {user && (
+                  <img src={user?.personalInfo?.profilePicture?.url} alt="" />
+                )}
+                <p>
+                  Hi{" "}
+                  <span>
+                    {user?.personalInfo?.firstName}{" "}
+                    {user?.personalInfo?.lastName},
+                  </span>
+                </p>
+              </Box>
+              <Box className="infoText">
+                <p>
+                  Please confirm that you want to use this as your account email
+                  address. Once it&apos;s done you will be able to use your
+                  dashboard.
+                </p>
+                <p className="thanks">Thanks a lot for signing up!</p>
+              </Box>
+              {/* {errorMsg && (
                     <p className="verificationErrorMsg">{errorMsg}</p>
+                  )} */}
+              <Box display={"flex"} justifyContent={"center"} mb={2}>
+                <Button
+                  variant="contained"
+                  disabled={existingVerifiedUser}
+                  onClick={() => {
+                    handleVerification();
+                  }}
+                  sx={{
+                    textTransform: "capitalize",
+                    width: "90%",
+                    bgcolor: "#008000",
+                    "&:hover": {
+                      bgcolor: "#019001",
+                    },
+                    minHeight: "2.5rem",
+                  }}
+                >
+                  {loadingComplete === false && !redirecting && (
+                    <LoadingProgress color={"#fff"} size={"1.3rem"} />
                   )}
-                  <div className="confirmBtn">
-                    <button
-                      onClick={() => {
-                        handleVerification();
-                      }}
-                    >
-                      {loadingComplete === false && !redirecting && (
-                        <LoadingProgress color={"#fff"} size={"1.3rem"} />
-                      )}
-                      {loadingComplete === true &&
-                        // verificationStatus === "success" &&
-                        !redirecting && (
-                          <>
-                            <span> Email Verified</span> <TaskAltIcon />
-                          </>
-                        )}
-                      {loadingComplete === null && "Verify Your Email"}
-                      {redirecting && (
-                        <Redirection color={"#fff"} size={"1.3rem"} />
-                      )}
-                    </button>
-                  </div>
-                  <hr />
-                  <div className="socials">
-                    <span>
-                      <FacebookIcon
-                        className="icon"
-                        titleAccess="Facebook Link"
-                      />
-                    </span>
-                    <span>
-                      <InstagramIcon
-                        className="icon"
-                        titleAccess="Instagram Link"
-                      />
-                    </span>
-                    <span>
-                      <TwitterIcon
-                        className="icon"
-                        titleAccess="Twitter Link"
-                      />
-                    </span>
-                    <span>
-                      <LinkedInIcon
-                        className="icon"
-                        titleAccess="LinkedIn Link"
-                      />
-                    </span>
-                  </div>
-                  <div className="sensecRigth">
-                    <p>
-                      &copy;{currentYear} <span>Sen</span>
-                      <span>sec</span>
-                    </p>
-                    <div
-                      style={{
-                        border: "1px solid #555",
-                        height: "15px",
-                      }}
-                    ></div>
-                    <p>All Rights Reserved!</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-        </>
+                  {loadingComplete === true &&
+                    verifyEmailStatus === "success" &&
+                    !redirecting && (
+                      <>
+                        <span>Email Verified</span> <TaskAltIcon />
+                      </>
+                    )}
+                  {loadingComplete === null &&
+                    !existingVerifiedUser &&
+                    "Verify Your Email"}
+                  {loadingComplete === null &&
+                    existingVerifiedUser &&
+                    "Email Verified"}
+                  {redirecting && (
+                    <Redirection color={"#fff"} size={"1.3rem"} />
+                  )}
+                </Button>
+              </Box>
+              <hr />
+              <Box className="socials">
+                <span>
+                  <FacebookIcon className="icon" titleAccess="Facebook Link" />
+                </span>
+                <span>
+                  <InstagramIcon
+                    className="icon"
+                    titleAccess="Instagram Link"
+                  />
+                </span>
+                <span>
+                  <TwitterIcon className="icon" titleAccess="Twitter Link" />
+                </span>
+                <span>
+                  <LinkedInIcon className="icon" titleAccess="LinkedIn Link" />
+                </span>
+              </Box>
+              <Box className="sensecRigth">
+                <p>
+                  &copy;{currentYear} <span>Sen</span>
+                  <span>sec</span>
+                </p>
+                <Box
+                  style={{
+                    border: "1px solid #555",
+                    height: "15px",
+                  }}
+                ></Box>
+                <p>All Rights Reserved!</p>
+              </Box>
+            </Box>
+          </Box>
+        </Box>
       )}
     </>
   );

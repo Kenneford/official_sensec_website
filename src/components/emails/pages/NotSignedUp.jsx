@@ -1,15 +1,16 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
+import { FetchAllUsers } from "../../../data/allUsers/FetchAllUsers";
+import PageLoading from "../../pageLoading/PageLoading";
 import LoadingProgress from "../../pageLoading/LoadingProgress";
 import Redirection from "../../pageLoading/Redirection";
-import { FetchAllUsers } from "../../../data/allUsers/FetchAllUsers";
 
-export function VerificationTimeOut() {
+export function NotSignedUp() {
   const allUsers = FetchAllUsers();
 
   const currentYear = new Date().getFullYear();
@@ -22,7 +23,7 @@ export function VerificationTimeOut() {
   const [goToSignUpLoadingComplete, setGoToSignUpLoadingComplete] =
     useState(null);
 
-  const signedUpUserFound = allUsers?.find(
+  const signedUpUserFound = allUsers.find(
     (user) => user?.uniqueId === uniqueId
   );
   console.log(signedUpUserFound);
@@ -31,7 +32,6 @@ export function VerificationTimeOut() {
     setGoToSignUpLoadingComplete(false);
     setTimeout(() => {
       setGoToSignUpLoadingComplete(true);
-      // dispatch(deleteExpiredVerificationData({ uniqueId, emailToken }));
     }, 3000);
     setTimeout(() => {
       localStorage.removeItem("userToken");
@@ -64,11 +64,11 @@ export function VerificationTimeOut() {
     <div className="confirmWrap">
       <div className="confirmContainer">
         <div className="confirmContent">
-          <h1>Verification Expired!</h1>
+          <h1>Not Signed Up!</h1>
           <div className="imageWrap">
             {signedUpUserFound && (
               <img
-                src={signedUpUserFound?.personalInfo?.profilePicture?.url}
+                src={signedUpUserFound?.personalInfo?.profilePicture.url}
                 alt=""
               />
             )}
@@ -84,8 +84,8 @@ export function VerificationTimeOut() {
           </div>
           <div className="infoText">
             <p>
-              Your verification token has expired. Kindly sign up again and
-              verify your email to activate a new user account.
+              Your verification token expired and it's been deleted. Kindly sign
+              up again and verify your email to activate a new user account.
             </p>
             <p className="thanks">Go To Sign Up👇🏾</p>
           </div>
