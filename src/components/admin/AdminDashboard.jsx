@@ -9,7 +9,6 @@ import {
 } from "react-router-dom";
 import {
   AdminAttendance,
-  AdminDashboardOverview,
   AllAdmins,
   AllEnrolledStudents,
   Blogs,
@@ -28,6 +27,7 @@ import {
   StudentDataUpdateForm,
 } from "../lazyLoading/student/StudentsLazyLoadingComponents";
 import { NavigationBar } from "../navbar/NavigationBar";
+import { AdminDashboardOverview } from "./contents/overview/AdminDashboardOverview";
 
 export function AdminDashboard() {
   const {

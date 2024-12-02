@@ -1,7 +1,7 @@
 import { Outlet, useOutletContext } from "react-router-dom";
 import { Box, useMediaQuery, useTheme } from "@mui/material";
 import { useEffect, useState } from "react";
-import { SideBar } from "../../components/lazyLoading/auth/AuthLazyComponents";
+import { SideBar } from "../../components/sidebar/SideBar";
 
 export function UserDashboardLayout() {
   const {
