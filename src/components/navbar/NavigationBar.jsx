@@ -19,7 +19,7 @@ import {
 } from "../../features/auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { SearchModal } from "../lazyLoading/LazyComponents";
+import { SearchModal } from "../../modals/SearchModal";
 
 const signUpOptions = [
   {
@@ -49,7 +49,6 @@ const loginOptions = [
     path: "/sensec/login",
   },
 ];
-
 const userActions = [
   {
     label: "View Profile",
@@ -68,7 +67,6 @@ const userActions = [
     value: "Logout",
   },
 ];
-
 const navbarLinks = [
   {
     name: "homepage",

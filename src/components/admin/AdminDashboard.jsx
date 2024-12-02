@@ -22,11 +22,12 @@ import {
 } from "../lazyLoading/admin/AdminLazyLoadingComponents";
 import SearchForm from "../searchForm/SearchForm";
 import { useEffect, useState } from "react";
-import { EmploymentForm, NavigationBar } from "../lazyLoading/LazyComponents";
+import { EmploymentForm } from "../lazyLoading/LazyComponents";
 import {
   EnrollmentForm,
   StudentDataUpdateForm,
 } from "../lazyLoading/student/StudentsLazyLoadingComponents";
+import { NavigationBar } from "../navbar/NavigationBar";
 
 export function AdminDashboard() {
   const {
