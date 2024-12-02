@@ -169,7 +169,7 @@ export function ConfirmVerification() {
     <>
       {checkDataExpiry && <VerificationTimeOut />}
       {!verificationData && <NotSignedUp />}
-      {!checkDataExpiry && user && (
+      {!checkDataExpiry && verificationData && user && (
         <Box className="confirmWrap">
           {/* Require user to confirm verification to login */}
           <Box className="confirmContainer">
