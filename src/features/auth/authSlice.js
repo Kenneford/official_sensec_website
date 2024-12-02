@@ -98,7 +98,7 @@ export const verifyUser = createAsyncThunk(
   "Auth/verifyUser",
   async ({ userId, emailToken }, { rejectWithValue }) => {
     try {
-      const res = await axios.put(
+      const res = await axios.post(
         `${SENSEC_API_ENDPOINT}/users/${userId}/${emailToken}/verify`
       );
       console.log(res.data);
