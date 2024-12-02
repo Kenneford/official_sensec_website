@@ -1,14 +1,6 @@
 import { Box, Collapse, Typography } from "@mui/material";
 import PropTypes from "prop-types";
 import "./adminSidebar.scss";
-import {
-  AccountLinks,
-  ActionsLinks,
-  AdminAttendanceLinks,
-  AssessmentLinks,
-  AdminDashboardLinks,
-  UsersLinks,
-} from "../../lazyLoading/auth/AuthLazyComponents";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchAllUsers,
@@ -16,6 +8,12 @@ import {
   getAuthUser,
 } from "../../../features/auth/authSlice";
 import { useEffect } from "react";
+import { AdminDashboardLinks } from "./admin.sidebar.links/AdminDashboardLinks";
+import { ActionsLinks } from "./admin.sidebar.links/ActionsLinks";
+import { UsersLinks } from "./admin.sidebar.links/UsersLinks";
+import { AdminAttendanceLinks } from "./admin.sidebar.links/AdminAttendanceLinks";
+import { AssessmentLinks } from "./admin.sidebar.links/AssessmentLinks";
+import { AccountLinks } from "./admin.sidebar.links/AccountLinks";
 
 export function AdminSidebar({ hovered, currentTerm, currentAcademicYear }) {
   const dispatch = useDispatch();

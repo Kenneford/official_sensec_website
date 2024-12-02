@@ -36,7 +36,7 @@ export function UsersLinks({ hovered }) {
   const quickLinks = AdminSidebarUserTypesLinks();
 
   // Set sub-link to expand on page render
-  const [openDashBoardLinks, setOpenDashBoardLinks] = useState(false);
+  const [openDashBoardLinks, setOpenDashBoardLinks] = useState(true);
   // Set initial height for sidebar sub-links
   const [contentHeight, setContentHeight] = useState(0);
   // Set a ref for the div that holds the sub-links
