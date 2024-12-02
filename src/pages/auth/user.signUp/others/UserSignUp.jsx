@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import "./signup.scss";
+import "./signUp.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -19,22 +19,22 @@ import {
   MenuItem,
   Typography,
 } from "@mui/material";
-import { CustomTextField } from "../../../muiStyling/muiStyling";
+import { CustomTextField } from "../../../../muiStyling/muiStyling";
 import {
   fetchAllUsers,
   getAllUsers,
   resetSignUpState,
   userSignUp,
-} from "../../../features/auth/authSlice";
-import Redirection from "../../../components/pageLoading/Redirection";
-import LoadingProgress from "../../../components/pageLoading/LoadingProgress";
+} from "../../../../features/auth/authSlice";
+import Redirection from "../../../../components/pageLoading/Redirection";
+import LoadingProgress from "../../../../components/pageLoading/LoadingProgress";
 import {
   fetchAllClassSections,
   getAllClassSections,
-} from "../../../features/academics/classSectionSlice";
-import { FetchAllProgrammes } from "../../../data/programme/FetchProgrammeData";
+} from "../../../../features/academics/classSectionSlice";
+import { FetchAllProgrammes } from "../../../../data/programme/FetchProgrammeData";
 
-export function StudentsSignUp() {
+export function UserSignUp() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -82,8 +82,6 @@ export function StudentsSignUp() {
   // Initial user input state
   const [newUser, setNewUser] = useState({
     uniqueId: "",
-    programme: "",
-    class: "",
     userName: "",
     password: "",
     confirmPassword: "",
@@ -91,9 +89,9 @@ export function StudentsSignUp() {
   console.log(newUser);
 
   // Find student who want to sign-up
-  const studentFound = allUsers?.find(
+  const userFound = allUsers?.find(
     (user) =>
-      user?.uniqueId === newUser?.uniqueId && user?.roles?.includes("student")
+      user?.uniqueId === newUser?.uniqueId && !user?.roles?.includes("student")
   );
   // Check for existing username
   const existingUserName = allUsers?.find(
@@ -129,33 +127,11 @@ export function StudentsSignUp() {
   // Validate input data
   useEffect(() => {
     // Unique ID
-    if (newUser?.uniqueId && !studentFound) {
+    if (newUser?.uniqueId && !userFound) {
       setUniqueIDInputError(true);
       return;
     } else {
       setUniqueIDInputError(false);
-    }
-    // Student's Programme
-    if (
-      newUser?.uniqueId !== "" &&
-      newUser?.programme !== "" &&
-      newUser?.programme !== studentFound?.studentSchoolData?.program
-    ) {
-      setProgrammeInputError(true);
-    } else {
-      setProgrammeInputError(false);
-    }
-    // Student's Class
-    if (
-      newUser?.uniqueId !== "" &&
-      newUser?.class !== "" &&
-      newUser?.class !==
-        studentFound?.studentSchoolData?.currentClassLevelSection
-    ) {
-      setClassInputError(true);
-      return;
-    } else {
-      setClassInputError(false);
     }
     // Username
     if (userNameInputError) {
@@ -180,7 +156,7 @@ export function StudentsSignUp() {
     }
   }, [
     newUser,
-    studentFound,
+    userFound,
     userNameInputError,
     existingUserName,
     passwordInputError,
@@ -201,7 +177,7 @@ export function StudentsSignUp() {
     if (signUpStatus === "rejected") {
       error?.errorMessage?.message?.map((err) => {
         toast.error(err, {
-          position: "top-center",
+          position: "top-right",
           theme: "light",
           toastId: err,
         });
@@ -236,19 +212,11 @@ export function StudentsSignUp() {
         setRedirecting(true);
       }, 5000);
       setTimeout(() => {
-        navigate(`/sensec/users/sign_up/successful/${studentFound?.uniqueId}`);
+        navigate(`/sensec/users/sign_up/successful/${newUser?.uniqueId}`);
         dispatch(resetSignUpState());
       }, 7000);
     }
-  }, [
-    signUpStatus,
-    error,
-    successMessage,
-    navigate,
-    dispatch,
-    newUser,
-    studentFound,
-  ]);
+  }, [signUpStatus, error, successMessage, navigate, dispatch, newUser]);
 
   return (
     <Box
@@ -279,7 +247,7 @@ export function StudentsSignUp() {
       >
         <Box width={"15rem"} sx={{ display: { xs: "none", sm: "block" } }}>
           <Box className="left">
-            <h1>Welcome, Cherished Student.</h1>
+            <h1>Welcome, Cherished Partner.</h1>
             <p>
               The Great Sensec is glad to have you here. Kindly fill all
               required fields to create a new account.
@@ -308,26 +276,20 @@ export function StudentsSignUp() {
                 mb={2}
                 sx={{ fontSize: "1.7rem" }}
               >
-                Students Sign-Up
+                Partners Sign-Up
               </Typography>
-              {/* <Avatar
-              src="https://plus.unsplash.com/premium_photo-1689977927774-401b12d137d6?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-              sx={{ width: "6rem", height: "6rem" }}
-            /> */}
               <Box className="profilePictureWrap">
-                {/* {studentFound && ( */}
                 <Box className="profilePictureCont">
                   <img
                     className="profileImg"
                     src={
-                      studentFound
-                        ? studentFound?.personalInfo?.profilePicture?.url
+                      userFound
+                        ? userFound?.personalInfo?.profilePicture?.url
                         : "/assets/noAvatar.png"
                     }
                     alt=""
                   />
                 </Box>
-                {/* )} */}
               </Box>
             </Box>
             <Grid container spacing={2}>
@@ -341,7 +303,7 @@ export function StudentsSignUp() {
                   onChange={handleInputValue}
                   required
                   error={uniqueIDInputError}
-                  helperText={uniqueIDInputError ? "Invalid student-ID!" : ""}
+                  helperText={uniqueIDInputError ? "Invalid user-ID!" : ""}
                   sx={{
                     "& .MuiInputLabel-asterisk": {
                       color:
@@ -351,66 +313,6 @@ export function StudentsSignUp() {
                     },
                   }}
                 />
-              </Grid>
-              {/* Programme Selection */}
-              <Grid item xs={12}>
-                <CustomTextField
-                  select
-                  fullWidth
-                  label="Select Programme"
-                  name="programme"
-                  value={newUser?.programme}
-                  onChange={handleInputValue}
-                  required
-                  error={programmeInputError}
-                  helperText={
-                    programmeInputError
-                      ? "Not enrolled into selected programme!"
-                      : ""
-                  }
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color:
-                        newUser?.programme && !programmeInputError
-                          ? "green"
-                          : "red", // Change the asterisk color to red
-                    },
-                  }}
-                >
-                  {allProgrammes?.map((programme) => (
-                    <MenuItem key={programme?._id} value={programme?._id}>
-                      {programme?.name}
-                    </MenuItem>
-                  ))}
-                </CustomTextField>
-              </Grid>
-              {/* Class */}
-              <Grid item xs={12}>
-                <CustomTextField
-                  select
-                  fullWidth
-                  label={"Class"}
-                  name="class"
-                  value={newUser?.class}
-                  onChange={handleInputValue}
-                  required
-                  error={classInputError}
-                  helperText={
-                    classInputError ? "You're not in this class!" : ""
-                  }
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color:
-                        newUser?.class && !classInputError ? "green" : "red", // Change the asterisk color to red
-                    },
-                  }}
-                >
-                  {allClassSections?.map((section) => (
-                    <MenuItem key={section?._id} value={section?._id}>
-                      {section?.label}
-                    </MenuItem>
-                  ))}
-                </CustomTextField>
               </Grid>
               {/* Username */}
               <Grid item xs={12}>

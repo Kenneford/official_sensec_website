@@ -36,17 +36,21 @@ export const SignUpContainer = lazyWithSuspense(
 );
 export const UserSignUp = lazyWithSuspense(
   () =>
-    import("../../../pages/auth/user.signUp/UserSignUp").then((module) => {
-      return { default: module.UserSignUp };
-    }),
+    import("../../../pages/auth/user.signUp/others/UserSignUp").then(
+      (module) => {
+        return { default: module.UserSignUp };
+      }
+    ),
   <PageLoading />,
   "UserSignUpPage"
 );
 export const StudentsSignUp = lazyWithSuspense(
   () =>
-    import("../../../pages/auth/user.signUp/StudentsSignUp").then((module) => {
-      return { default: module.StudentsSignUp };
-    }),
+    import("../../../pages/auth/user.signUp/students/StudentsSignUp").then(
+      (module) => {
+        return { default: module.StudentsSignUp };
+      }
+    ),
   <PageLoading />,
   "StudentsSignUpPage"
 );
