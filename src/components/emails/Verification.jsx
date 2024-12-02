@@ -1,7 +1,7 @@
 import { Avatar, Box, Typography } from "@mui/material";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { NavigationBar } from "../lazyLoading/LazyComponents";
-import { ConfirmVerification } from "../lazyLoading/auth/AuthLazyComponents";
+import { NavigationBar } from "../navbar/NavigationBar";
+import { ConfirmVerification } from "./pages/ConfirmVerification";
 
 export function Verification() {
   const navigate = useNavigate();

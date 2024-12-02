@@ -1,7 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-import { SENSEC_API_ENDPOINT } from "../../apiEndPoint/api";
+import {
+  SENSEC_API_ENDPOINT,
+  SENSEC_API_ENDPOINTS,
+} from "../../apiEndPoint/api";
 import tokenInterceptor from "../../apiEndPoint/interceptors";
 
 // Initialize an Axios instance
@@ -22,8 +25,10 @@ const initialState = {
   allUsers: [],
   authUser: "",
   userInfo: "",
+  userVerificationData: "",
   refreshTokenInfo: "",
   signUpStatus: "",
+  verifyEmailStatus: "",
   loginStatus: "",
   refreshTokenStatus: "",
   fetchStatus: "",
@@ -69,6 +74,37 @@ export const userSignUp = createAsyncThunk(
       return res.data;
     } catch (error) {
       console.log(error.response.data);
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const fetchVerificationData = createAsyncThunk(
+  "Auth/fetchVerificationData",
+  async (emailToken, { rejectWithValue }) => {
+    console.log(emailToken);
+
+    try {
+      const res = await axios.get(
+        `${SENSEC_API_ENDPOINT}/users/verification_data/${emailToken}/fetch`
+      );
+      console.log(res.data);
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const verifyUser = createAsyncThunk(
+  "Auth/verifyUser",
+  async ({ userId, emailToken }, { rejectWithValue }) => {
+    try {
+      const res = await axios.put(
+        `${SENSEC_API_ENDPOINT}/users/${userId}/${emailToken}/verify`
+      );
+      console.log(res.data);
+      localStorage.setItem("userToken", res?.data?.token);
+      return res.data;
+    } catch (error) {
       return rejectWithValue(error.response.data);
     }
   }
@@ -130,6 +166,15 @@ const authSlice = createSlice({
         successMessage: "",
       };
     },
+    resetEmailVerificationState(state) {
+      return {
+        ...state,
+        verifyEmailStatus: "",
+        userInfo: "",
+        error: "",
+        successMessage: "",
+      };
+    },
     resetLoginState(state) {
       return {
         ...state,
@@ -177,6 +222,49 @@ const authSlice = createSlice({
       return {
         ...state,
         signUpStatus: "rejected",
+        error: action.payload,
+      };
+    });
+    //   User Email Verification
+    builder.addCase(verifyUser.pending, (state) => {
+      return { ...state, verifyEmailStatus: "pending" };
+    });
+    builder.addCase(verifyUser.fulfilled, (state, action) => {
+      if (action.payload) {
+        const user = tokenDecoded(action.payload.token);
+        return {
+          ...state,
+          authUser: user,
+          successMessage: action.payload.successMessage,
+          verifyEmailStatus: "success",
+        };
+      } else return state;
+    });
+    builder.addCase(verifyUser.rejected, (state, action) => {
+      return {
+        ...state,
+        verifyEmailStatus: "rejected",
+        error: action.payload,
+      };
+    });
+    //   User Email Verification
+    builder.addCase(fetchVerificationData.pending, (state) => {
+      return { ...state, fetchStatus: "pending" };
+    });
+    builder.addCase(fetchVerificationData.fulfilled, (state, action) => {
+      if (action.payload) {
+        return {
+          ...state,
+          userVerificationData: action.payload.verificationDataFound,
+          fetchSuccessMessage: action.payload.successMessage,
+          fetchStatus: "success",
+        };
+      } else return state;
+    });
+    builder.addCase(fetchVerificationData.rejected, (state, action) => {
+      return {
+        ...state,
+        fetchStatus: "rejected",
         error: action.payload,
       };
     });
@@ -250,11 +338,14 @@ const authSlice = createSlice({
 
 export const {
   resetSignUpState,
+  resetEmailVerificationState,
   resetLoginState,
   resetSessionUpdateState,
   userLogout,
 } = authSlice.actions;
 export const getAuthUser = (state) => state.authUser.authUser;
+export const getUserVerificationData = (state) =>
+  state.authUser.userVerificationData;
 export const getAllUsers = (state) => state.authUser.allUsers;
 export const getRefreshToken = (state) => state.authUser.refreshTokenInfo;
 export default authSlice.reducer;

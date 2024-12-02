@@ -74,6 +74,14 @@ export const VerificationTimeOut = lazyWithSuspense(
   <PageLoading />,
   "VerificationTimeOutComponent"
 );
+export const NotSignedUp = lazyWithSuspense(
+  () =>
+    import("../../emails/pages/NotSignedUp").then((module) => {
+      return { default: module.NotSignedUp };
+    }),
+  <PageLoading />,
+  "NotSignedUpComponent"
+);
 export const LoginOptions = lazyWithSuspense(
   () =>
     import("../../../pages/auth/user.login/LoginOptions").then((module) => {
