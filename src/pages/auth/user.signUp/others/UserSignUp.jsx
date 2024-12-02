@@ -190,7 +190,7 @@ export function UserSignUp() {
     }
     if (signUpStatus === "success") {
       toast.success(successMessage, {
-        position: "top-center",
+        position: "top-right",
         theme: "dark",
         toastId: successMessage,
       });

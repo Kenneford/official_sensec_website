@@ -24,7 +24,7 @@ import {
   VerificationTimeOut,
 } from "../../lazyLoading/auth/AuthLazyComponents";
 import { FetchAllUsers } from "../../../data/allUsers/FetchAllUsers";
-import { Box, Button } from "@mui/material";
+import { Box, Button, Grid } from "@mui/material";
 
 export function ConfirmVerification() {
   const dispatch = useDispatch();
@@ -170,10 +170,38 @@ export function ConfirmVerification() {
       {checkDataExpiry && <VerificationTimeOut />}
       {!verificationData && <NotSignedUp />}
       {!checkDataExpiry && verificationData && user && (
-        <Box className="confirmWrap">
+        <Box
+          sx={{
+            width: { xs: "95%", sm: "35rem" },
+          }}
+          margin={"auto"}
+          mt={5}
+          mb={2}
+          // height={"70vh"}
+          display={"flex"}
+          flexDirection={"column"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          fontSize={"calc(.7rem + 1vmin)"}
+        >
           {/* Require user to confirm verification to login */}
-          <Box className="confirmContainer">
-            <Box className="confirmContent">
+          <Box
+            color={"#696969"}
+            sx={{
+              filter: "drop-shadow(0 0 0.3em rgb(255, 255, 255, 0.68))",
+              boxShadow: "0px 1px 9px 1px #454343ad",
+              borderRadius: ".4rem",
+              display: { xs: "block", sm: "flex" },
+            }}
+            p={1}
+            width={"100%"}
+          >
+            <Box
+              className="confirmContent"
+              sx={{
+                padding: { xs: "1rem .5rem", sm: "1rem" },
+              }}
+            >
               <h1>Verify Your Email Address</h1>
               <Box className="imageWrap">
                 {user && (
@@ -187,7 +215,13 @@ export function ConfirmVerification() {
                   </span>
                 </p>
               </Box>
-              <Box className="infoText">
+              <Box
+                className="infoText"
+                sx={{
+                  width: { xs: "95%", sm: "90%" },
+                  margin: "auto",
+                }}
+              >
                 <p>
                   Please confirm that you want to use this as your account email
                   address. Once it&apos;s done you will be able to use your
@@ -207,8 +241,9 @@ export function ConfirmVerification() {
                   }}
                   sx={{
                     textTransform: "capitalize",
-                    width: "90%",
+                    width: { xs: "95%", sm: "90%" },
                     bgcolor: "#008000",
+                    fontSize: "1em",
                     "&:hover": {
                       bgcolor: "#019001",
                     },
@@ -254,18 +289,33 @@ export function ConfirmVerification() {
                   <LinkedInIcon className="icon" titleAccess="LinkedIn Link" />
                 </span>
               </Box>
-              <Box className="sensecRigth">
-                <p>
-                  &copy;{currentYear} <span>Sen</span>
-                  <span>sec</span>
-                </p>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: { xs: 0, sm: ".5rem" },
+                  textAlign: "center",
+                  fontSize: "1em",
+                }}
+                flexDirection={{ xs: "column", sm: "row" }}
+              >
+                <Box>
+                  <p>
+                    &copy;{currentYear} <span>Sen</span>
+                    <span>sec</span>
+                  </p>
+                </Box>
                 <Box
+                  display={{ xs: "none", sm: "block" }}
                   style={{
-                    border: "1px solid #555",
-                    height: "15px",
+                    border: "1px solid #a3a3a3",
+                    height: "1.2rem",
                   }}
                 ></Box>
-                <p>All Rights Reserved!</p>
+                <Box>
+                  <p>All Rights Reserved!</p>
+                </Box>
               </Box>
             </Box>
           </Box>
