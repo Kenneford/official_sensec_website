@@ -113,6 +113,8 @@ export function NavigationBar({
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const authUser = useSelector(getAuthUser);
+  console.log(authUser);
+
   const allUsers = useSelector(getAllUsers);
   const { currentGuestPage } = useParams();
 
