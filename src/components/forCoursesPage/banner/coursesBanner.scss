@@ -4,18 +4,38 @@
   color: #fff;
   font-size: calc(0.7rem + 1vmin);
   .links {
-    display: flex;
+    text-align: center;
+    display: inline-block;
     justify-content: center;
     align-items: center;
-    padding: 0.5rem;
+    padding: 0.5rem 0.5rem 0;
     background-color: #292929;
+    overflow-x: scroll;
+    // scrollbar-gutter: stable;
+    white-space: nowrap;
+    &::-webkit-scrollbar {
+      width: 3px;
+      height: 5px;
+    }
+    &::-webkit-scrollbar-track {
+      background-color: #292929;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: #696969;
+    }
+    &::-webkit-scrollbar-track-piece {
+      width: 5px;
+    }
     a {
-      margin: 0 0.5rem;
+      margin: 0.5rem;
       font-size: 0.9em;
       color: #fff;
       transition: 0.4s ease;
+      text-wrap: nowrap;
+      cursor: pointer;
       &:hover {
         color: #0fc80f;
+        cursor: pointer;
       }
     }
   }
@@ -35,10 +55,6 @@
       }
       span {
         font-size: 1.2em;
-      }
-      .slogan {
-        font-size: 1.5rem;
-        font-weight: 700;
       }
     }
   }
