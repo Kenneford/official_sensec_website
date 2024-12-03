@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "./signUp.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
@@ -33,13 +33,16 @@ import {
   getAllClassSections,
 } from "../../../../features/academics/classSectionSlice";
 import { FetchAllProgrammes } from "../../../../data/programme/FetchProgrammeData";
+import { FetchAllUsers } from "../../../../data/allUsers/FetchAllUsers";
 
 export function UserSignUp() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { signUpAction } = useParams();
+  console.log(signUpAction);
 
   // Getting data from redux state
-  const allUsers = useSelector(getAllUsers);
+  const allUsers = FetchAllUsers(getAllUsers);
   const allProgrammes = FetchAllProgrammes();
   const allClassSections = useSelector(getAllClassSections);
 
@@ -90,13 +93,14 @@ export function UserSignUp() {
 
   // Find student who want to sign-up
   const userFound = allUsers?.find(
-    (user) =>
-      user?.uniqueId === newUser?.uniqueId && !user?.roles?.includes("student")
+    (user) => user?.uniqueId === newUser?.uniqueId
   );
+  console.log(userFound);
+
   // Check for existing username
-  const existingUserName = allUsers?.find(
-    (user) => user?.userSignUpDetails?.userName === newUser?.userName
-  );
+  // const existingUserName = allUsers?.find(
+  //   (user) => user?.userSignUpDetails?.userName === newUser?.userName
+  // );
 
   // Handle input value
   const handleInputValue = (e) => {
@@ -109,10 +113,10 @@ export function UserSignUp() {
   // handle student sign up
   const handleSignUp = (e) => {
     e.preventDefault();
-    if (newUser?.userName && existingUserName) {
-      setUserNameInputError(true);
-      return;
-    }
+    // if (newUser?.userName && existingUserName) {
+    //   setUserNameInputError(true);
+    //   return;
+    // }
     if (newUser?.password?.length < 6) {
       setPasswordInputError(true);
       return;
@@ -158,23 +162,17 @@ export function UserSignUp() {
     newUser,
     userFound,
     userNameInputError,
-    existingUserName,
+    // existingUserName,
     passwordInputError,
     confirmPasswordInputError,
   ]);
 
-  // Fetch needed data
-  useEffect(() => {
-    dispatch(fetchAllUsers());
-    dispatch(fetchAllClassSections());
-  }, [dispatch]);
-
   // Check user sign up status
   useEffect(() => {
-    if (signUpStatus === "pending") {
+    if (signUpAction === "partners" && signUpStatus === "pending") {
       setLoadingComplete(false);
     }
-    if (signUpStatus === "rejected") {
+    if (signUpAction === "partners" && signUpStatus === "rejected") {
       error?.errorMessage?.message?.map((err) => {
         toast.error(err, {
           position: "top-right",
@@ -188,23 +186,12 @@ export function UserSignUp() {
       }, 3000);
       return;
     }
-    if (signUpStatus === "success") {
+    if (signUpAction === "partners" && signUpStatus === "success") {
       toast.success(successMessage, {
         position: "top-right",
         theme: "dark",
         toastId: successMessage,
       });
-      // Reset Input state
-      setTimeout(() => {
-        setNewUser({
-          uniqueId: "",
-          programme: "",
-          class: "",
-          userName: "",
-          password: "",
-          confirmPassword: "",
-        });
-      }, 2000);
       setTimeout(() => {
         setLoadingComplete(true);
       }, 3000);
@@ -212,11 +199,21 @@ export function UserSignUp() {
         setRedirecting(true);
       }, 5000);
       setTimeout(() => {
-        navigate(`/sensec/users/sign_up/successful/${newUser?.uniqueId}`);
+        navigate(
+          `/sensec/sign_up/${signUpAction}/${userFound?.uniqueId}/successful`
+        );
         dispatch(resetSignUpState());
       }, 7000);
     }
-  }, [signUpStatus, error, successMessage, navigate, dispatch, newUser]);
+  }, [
+    signUpStatus,
+    error,
+    successMessage,
+    navigate,
+    dispatch,
+    userFound,
+    signUpAction,
+  ]);
 
   return (
     <Box
@@ -324,17 +321,17 @@ export function UserSignUp() {
                   onChange={handleInputValue}
                   required
                   error={userNameInputError}
-                  helperText={
-                    userNameInputError ? "Username already in use!" : ""
-                  }
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color:
-                        newUser?.userName && !userNameInputError
-                          ? "green"
-                          : "red", // Change the asterisk color to red
-                    },
-                  }}
+                  // helperText={
+                  //   userNameInputError ? "Username already in use!" : ""
+                  // }
+                  // sx={{
+                  //   "& .MuiInputLabel-asterisk": {
+                  //     color:
+                  //       newUser?.userName && !userNameInputError
+                  //         ? "green"
+                  //         : "red", // Change the asterisk color to red
+                  //   },
+                  // }}
                 />
               </Grid>
               {/* Password */}

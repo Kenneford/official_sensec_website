@@ -44,6 +44,16 @@ export const UserSignUp = lazyWithSuspense(
   <PageLoading />,
   "UserSignUpPage"
 );
+export const SignUpSuccessPage = lazyWithSuspense(
+  () =>
+    import(
+      "../../../pages/auth/user.signUp/successPage/SignUpSuccessPage"
+    ).then((module) => {
+      return { default: module.SignUpSuccessPage };
+    }),
+  <PageLoading />,
+  "SignUpSuccessPagePage"
+);
 export const StudentsSignUp = lazyWithSuspense(
   () =>
     import("../../../pages/auth/user.signUp/students/StudentsSignUp").then(

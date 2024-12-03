@@ -22,7 +22,7 @@ import {
 import SearchForm from "../../../components/searchForm/SearchForm";
 
 export function GuestPageLayout() {
-  const { currentGuestPage } = useParams();
+  const { currentGuestPage, uniqueId } = useParams();
   const signUpAction = localStorage.getItem("loginAction");
   const navigate = useNavigate();
   const location = useLocation();
@@ -116,13 +116,11 @@ export function GuestPageLayout() {
       {location?.pathname === "/sensec/about" && <About />}
       {location?.pathname === "/sensec/courses" && <Courses />}
       {location?.pathname === "/sensec/contact" && <Contact />}
-      {location?.pathname?.includes("/sensec/sign_up") && <SignUpContainer />}
-      {/* {location?.pathname === "/sensec/sign_up/students" && <SignUpContainer />}
-      {location?.pathname === "/sensec/sign_up/partners" && <SignUpContainer />} */}
+      {location?.pathname === "/sensec/sign_up/partners" && <SignUpContainer />}
+      {location?.pathname === "/sensec/sign_up/students" && <SignUpContainer />}
       {location?.pathname === "/sensec/login" && <Login />}
       {location?.pathname === "/sensec/login_options" && <LoginOptions />}
       {location?.pathname === "/sensec/new_employment" && <EmploymentForm />}
-      {location?.pathname === "*" && <PageNotFound />}
     </Box>
   );
 }
