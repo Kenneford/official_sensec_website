@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 import "./aboutBanner.scss";
-import { Link } from "react-router-dom";
+import { HashLink } from "react-router-hash-link";
 
 export function AboutBanner() {
   return (
@@ -17,10 +17,10 @@ export function AboutBanner() {
         </Box>
       </Box>
       <Box className="links">
-        <Link to={"#"}>Vision</Link>
-        <Link to={"#"}>History</Link>
-        <Link to={"#"}>Achievements</Link>
-        <Link to={"#"}>Our Team</Link>
+        <HashLink to={"#"}>Vision</HashLink>
+        <HashLink to={"#"}>History</HashLink>
+        <HashLink to={"#"}>Achievements</HashLink>
+        <HashLink to={"#"}>Our Team</HashLink>
       </Box>
     </Box>
   );
