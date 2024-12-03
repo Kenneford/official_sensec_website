@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "./studentsSignup.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
@@ -33,13 +33,15 @@ import {
   getAllClassSections,
 } from "../../../../features/academics/classSectionSlice";
 import { FetchAllProgrammes } from "../../../../data/programme/FetchProgrammeData";
+import { FetchAllUsers } from "../../../../data/allUsers/FetchAllUsers";
 
 export function StudentsSignUp() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { signUpAction } = useParams();
 
   // Getting data from redux state
-  const allUsers = useSelector(getAllUsers);
+  const allUsers = FetchAllUsers();
   const allProgrammes = FetchAllProgrammes();
   const allClassSections = useSelector(getAllClassSections);
 
@@ -195,10 +197,10 @@ export function StudentsSignUp() {
 
   // Check user sign up status
   useEffect(() => {
-    if (signUpStatus === "pending") {
+    if (signUpAction === "students" && signUpStatus === "pending") {
       setLoadingComplete(false);
     }
-    if (signUpStatus === "rejected") {
+    if (signUpAction === "students" && signUpStatus === "rejected") {
       error?.errorMessage?.message?.map((err) => {
         toast.error(err, {
           position: "top-center",
@@ -212,23 +214,12 @@ export function StudentsSignUp() {
       }, 3000);
       return;
     }
-    if (signUpStatus === "success") {
+    if (signUpAction === "students" && signUpStatus === "success") {
       toast.success(successMessage, {
         position: "top-right",
         theme: "dark",
         toastId: successMessage,
       });
-      // Reset Input state
-      setTimeout(() => {
-        setNewUser({
-          uniqueId: "",
-          programme: "",
-          class: "",
-          userName: "",
-          password: "",
-          confirmPassword: "",
-        });
-      }, 2000);
       setTimeout(() => {
         setLoadingComplete(true);
       }, 3000);
@@ -236,7 +227,7 @@ export function StudentsSignUp() {
         setRedirecting(true);
       }, 5000);
       setTimeout(() => {
-        navigate(`/sensec/users/sign_up/successful/${studentFound?.uniqueId}`);
+        `/sensec/sign_up/${signUpAction}/${studentFound?.uniqueId}/successful`;
         dispatch(resetSignUpState());
       }, 7000);
     }
@@ -246,8 +237,8 @@ export function StudentsSignUp() {
     successMessage,
     navigate,
     dispatch,
-    newUser,
     studentFound,
+    signUpAction,
   ]);
 
   return (

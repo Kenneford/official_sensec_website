@@ -114,7 +114,8 @@ export function NavigationBar({
   const dispatch = useDispatch();
   const authUser = useSelector(getAuthUser);
   const allUsers = useSelector(getAllUsers);
-  const { currentGuestPage } = useParams();
+  const { currentGuestPage, enrollment } = useParams();
+  console.log(enrollment);
 
   const otherLinks = [
     {
@@ -615,7 +616,7 @@ export function NavigationBar({
                               ))}
                             {!userInfo &&
                               filteredOtherLinks?.map((link) => (
-                                <NavHashLink
+                                <HashLink
                                   key={link?.name}
                                   className={
                                     currentOtherNavLink &&
@@ -651,7 +652,7 @@ export function NavigationBar({
                                   }
                                 >
                                   {link?.name}
-                                </NavHashLink>
+                                </HashLink>
                               ))}
                           </div>
                         )}
@@ -763,6 +764,7 @@ export function NavigationBar({
                       onClick={() => {
                         localStorage.setItem("loginAction", option?.name),
                           localStorage.removeItem("currentOtherNavLink"),
+                          localStorage.removeItem("currentNavLink"),
                           navigate(option?.path);
                       }}
                     >
@@ -779,8 +781,9 @@ export function NavigationBar({
                       key={option?.name}
                       className="signUpWrap"
                       onClick={() => {
-                        localStorage.setItem("signUpAction", option?.name),
-                          localStorage.removeItem("currentOtherNavLink"),
+                        // localStorage.setItem("signUpAction", option?.name),
+                        localStorage.removeItem("currentOtherNavLink"),
+                          localStorage.removeItem("currentNavLink"),
                           navigate(option?.path);
                       }}
                     >

@@ -67,7 +67,7 @@ export const userSignUp = createAsyncThunk(
   async (signUpData, { rejectWithValue }) => {
     console.log(signUpData);
     try {
-      const res = await axios.post(`${SENSEC_API_ENDPOINT}/users/sign_up`, {
+      const res = await axios.post(`${SENSEC_API_ENDPOINTS}/users/sign_up`, {
         signUpData,
       });
       console.log(res.data);

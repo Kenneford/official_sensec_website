@@ -9,6 +9,7 @@ import LoadingProgress from "../../pageLoading/LoadingProgress";
 import Redirection from "../../pageLoading/Redirection";
 import { FetchAllUsers } from "../../../data/allUsers/FetchAllUsers";
 import { Box, Button } from "@mui/material";
+import { verifyUser } from "../../../features/auth/authSlice";
 
 export function VerificationTimeOut() {
   const allUsers = FetchAllUsers();
@@ -32,7 +33,7 @@ export function VerificationTimeOut() {
     setGoToSignUpLoadingComplete(false);
     setTimeout(() => {
       setGoToSignUpLoadingComplete(true);
-      // dispatch(deleteExpiredVerificationData({ uniqueId, emailToken }));
+      dispatch(verifyUser({ userId: uniqueId, emailToken }));
     }, 3000);
     setTimeout(() => {
       localStorage.removeItem("userToken");

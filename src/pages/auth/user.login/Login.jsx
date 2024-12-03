@@ -190,6 +190,7 @@ export function Login() {
           setRedirecting(true);
         }, 3000);
       } else {
+        localStorage.removeItem("loginAction");
         dispatch(resetLoginState());
         navigate(`/sensec/users/${authUser?.uniqueId}/${userRolePath}`);
       }
