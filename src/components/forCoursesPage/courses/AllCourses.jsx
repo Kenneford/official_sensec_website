@@ -5,21 +5,45 @@ import { Box, Grid, Typography } from "@mui/material";
 import { FetchAllProgrammes } from "../../../data/programme/FetchProgrammeData";
 import { ContainerBox } from "../../../muiStyling/muiStyling";
 
-export default function AllCourses() {
+export function AllCourses() {
   const allProgrammes = FetchAllProgrammes();
   const leftProgrammes = allProgrammes?.slice(0, 3);
   const rightProgrammes = allProgrammes?.slice(3, 6);
+
+  if (!allProgrammes) {
+    return (
+      <h3
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          textAlign: "center",
+          marginTop: "2rem",
+          color: "#cccc",
+        }}
+      >
+        Loading data...
+        {/* <LoadingProgress color={"#696969"} size={"1.3rem"} /> */}
+      </h3>
+    );
+  }
   return (
     <Box>
       <ContainerBox
         sx={{
           width: { xs: "100%", sm: "95%", md: "90%", lg: "90%", xl: "75%" },
           margin: "auto",
-          paddingTop: "2rem",
+          marginTop: 3,
         }}
       >
-        <Grid container spacing={{ sm: 2, md: 12 }}>
-          <Grid item xs={12} sm={12} md={6}>
+        <Grid
+          container
+          spacing={{ sm: 2, md: 7 }}
+          // mt={4}
+          className="gridContainer"
+          pt={"0 !important"}
+        >
+          <Grid item xs={12} sm={12} md={6} pt={0}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 {leftProgrammes?.map((program) => (
@@ -35,9 +59,10 @@ export default function AllCourses() {
                               className="courseImg"
                               alt={`${program?.name} Image`}
                               sx={{
-                                width: "30rem",
+                                width: { sm: "15rem", md: "30rem" },
                                 marginRight: 2,
                                 marginBottom: 2,
+                                float: "left",
                               }}
                             />
                           )}
@@ -48,9 +73,11 @@ export default function AllCourses() {
                               className="courseImg"
                               alt={`${program?.name} Image`}
                               sx={{
-                                width: "30rem",
-                                marginRight: 2,
+                                width: { sm: "15rem", md: "30rem" },
                                 marginBottom: 2,
+                                float: { xs: "right", sm: "right", md: "left" },
+                                marginRight: { sm: 0, md: "1rem" },
+                                marginLeft: { xs: "1rem", sm: "1rem", md: 0 },
                               }}
                             />
                           )}
@@ -61,9 +88,10 @@ export default function AllCourses() {
                               className="courseImg"
                               alt={`${program?.name} Image`}
                               sx={{
-                                width: "30rem",
+                                width: { sm: "15rem", md: "30rem" },
                                 marginRight: 2,
                                 marginBottom: 2,
+                                float: "left",
                               }}
                             />
                           )}
@@ -89,12 +117,12 @@ export default function AllCourses() {
               </Grid>
             </Grid>
           </Grid>
-          <Grid item xs={12} sm={12} md={6} mt={{ sm: 0, md: "5rem" }}>
+          <Grid item xs={12} sm={12} md={6} mt={{ sm: "2rem", md: "5rem" }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 {rightProgrammes?.map((program, index) => (
                   <Box className="courseWrap" id="course" key={program?._id}>
-                    <Box className="courseCont">
+                    <Box className="courseCont" mt={{ xs: "2rem" }}>
                       <h1 className="title">{program?.name}</h1>
                       <Box className="rightCourseItem">
                         <Box className="courseImageWrap">
@@ -105,9 +133,10 @@ export default function AllCourses() {
                               className="courseImg"
                               alt={`${program?.name} Image`}
                               sx={{
-                                width: "30rem",
-                                marginRight: 2,
+                                width: { sm: "15rem", md: "30rem" },
                                 marginBottom: 2,
+                                float: "right",
+                                marginLeft: 2,
                               }}
                             />
                           )}
@@ -118,9 +147,11 @@ export default function AllCourses() {
                               className="courseImg"
                               alt={`${program?.name} Image`}
                               sx={{
-                                width: "30rem",
-                                marginRight: 2,
+                                width: { sm: "15rem", md: "30rem" },
                                 marginBottom: 2,
+                                float: { xs: "left", sm: "left", md: "right" },
+                                marginRight: { xs: "1rem", sm: "1rem", md: 0 },
+                                marginLeft: { sm: 0, md: "1rem" },
                               }}
                             />
                           )}
@@ -131,9 +162,10 @@ export default function AllCourses() {
                               className="courseImg"
                               alt={`${program?.name} Image`}
                               sx={{
-                                width: "30rem",
-                                marginRight: 2,
+                                width: { sm: "15rem", md: "30rem" },
                                 marginBottom: 2,
+                                float: "right",
+                                marginLeft: 2,
                               }}
                             />
                           )}
