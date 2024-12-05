@@ -170,7 +170,7 @@ export function AdminDashboard() {
       <Box
         sx={{
           fontSize: "calc(0.7rem + 1vmin)",
-          marginTop: fixedNavbar ? "8rem" : "",
+          // marginTop: fixedNavbar ? "20rem" : "",
         }}
       >
         {adminCurrentLink === "Overview" && <AdminDashboardOverview />}

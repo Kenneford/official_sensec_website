@@ -67,7 +67,7 @@ export const CenteredBox = styled(Box)({
 export const ContainerBox = styled(Box)({
   width: { xs: "100%", sm: "95%", md: "90%", lg: "90%", xl: "75%" },
   // margin: "auto",
-  padding: "2rem 1rem",
+  padding: "1rem 1rem 2rem",
   // paddingBottom: "2rem",
   display: "flex",
   flexDirection: "column",

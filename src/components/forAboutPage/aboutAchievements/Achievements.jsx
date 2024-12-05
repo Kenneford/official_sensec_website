@@ -93,6 +93,8 @@ export function Achievements() {
                 </p>
               </Box>
             </Box>
+            <h3>{allPrograms?.length}</h3>
+            <h3>{alumni?.length}+</h3>
             <Box m={"1rem 0"}>
               <Grid container spacing={5}>
                 <Grid item xs={12} sm={12} md={6} lg={6}>

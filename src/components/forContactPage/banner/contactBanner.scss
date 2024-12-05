@@ -1,0 +1,70 @@
+@use "../../../utilities/sizes";
+@use "../../../utilities/colors";
+.contactBannerWrap {
+  color: #fff;
+  font-size: calc(0.7rem + 1vmin);
+  .contactBannerImg {
+    background-size: cover;
+    background-position: center;
+    .overlay {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 20vh;
+      background-color: rgba(0, 0, 0, 0.5);
+      text-align: center;
+      h1 {
+        font-size: 1.5em;
+        // padding-top: 1rem;
+      }
+      span {
+        font-size: 1em;
+      }
+      // a {
+      //   margin-top: 1rem;
+      //   .appointment {
+      //     background-color: transparent;
+      //     border: 2px solid #fff;
+      //     padding: 0.5rem;
+      //     font-weight: 500;
+      //     transition: 0.4s ease;
+      //     color: #fff;
+      //     font-size: 0.9em;
+      //     border-radius: 5px;
+      //     cursor: pointer;
+      //     &:hover {
+      //       background-color: colors.$primaryColor;
+      //     }
+      //   }
+      // }
+    }
+  }
+  // @media screen and (max-width: 1200px) {
+  //   .contactBannerImg {
+  //     .overlay {
+  //       a {
+  //         .appointment {
+  //           font-weight: 400;
+  //           font-size: 1rem;
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
+  // @media screen and (max-width: 670px) {
+  //   .contactBannerImg {
+  //     background-size: cover;
+  //     background-position: center;
+  //     .overlay {
+  //       h1 {
+  //         font-size: 2rem;
+  //         padding-top: 2rem;
+  //       }
+  //       span {
+  //         font-size: 1.3rem;
+  //       }
+  //     }
+  //   }
+  // }
+}

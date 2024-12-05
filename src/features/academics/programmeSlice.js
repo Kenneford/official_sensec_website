@@ -1,6 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { SENSEC_API_ENDPOINT } from "../../apiEndPoint/api";
+import {
+  SENSEC_API_ENDPOINT,
+  SENSEC_API_ENDPOINTS,
+} from "../../apiEndPoint/api";
 import tokenInterceptor from "../../apiEndPoint/interceptors";
 
 const initialState = {
