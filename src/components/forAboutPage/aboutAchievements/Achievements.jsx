@@ -91,10 +91,30 @@ export function Achievements() {
                   second, losing out narrowly to Mfantsiman SHS who took the
                   ultimate prize.
                 </p>
+                <p>
+                  SENSEC also placed first runners-up in the Awutu Senya
+                  District’s 66th Independence Day Quiz Competition with
+                  Obrachire SHTS coming first. In the District’s 67th
+                  Independence Day Quiz, SENSEC won the competition and
+                  represented the District at the Zonal level. SENSEC Quiz team
+                  failed to progress from the Zonal level.
+                </p>
+                <p>
+                  In September 2023, SENSEC won the maiden edition of the Ahoba
+                  Kese Festival Science, Mathematics and General Knowledge quiz
+                  competition organised by the Gomoa Fetteh Traditional Council.
+                  T.I Ahamadiyya SHS, Potsin, came second. The other
+                  participants are Hope College, Awutu Winton Senior High School
+                  and Fettehman SHS. SENSEC was presented with a trophy and cash
+                  prize of 700 cedis.
+                </p>
+                <p>
+                  When your ward/child is enrolled at Sensec, he/she shall
+                  benefit from a holistic lifelong education that will empowers
+                  them to effect positive change in their lives and community
+                </p>
               </Box>
             </Box>
-            <h3>{allPrograms?.length}</h3>
-            <h3>{alumni?.length}+</h3>
             <Box m={"1rem 0"}>
               <Grid container spacing={5}>
                 <Grid item xs={12} sm={12} md={6} lg={6}>
@@ -117,6 +137,48 @@ export function Achievements() {
                     component="img"
                     // className="achieveImg"
                     src="https://images.unsplash.com/photo-1642506539221-8019a4cd44cb?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    alt="Sample"
+                    sx={{
+                      width: "100%",
+                      height: "25vh",
+                      objectFit: "cover",
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={12} md={6} lg={6}>
+                  <h5>SENSEC Debate Team and their coach and some teachers.</h5>
+                  <Box
+                    component="img"
+                    // className="achieveImg"
+                    src="https://images.unsplash.com/photo-1573496774426-fe3db3dd1731?q=80&w=2069&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    alt="Sample"
+                    sx={{
+                      width: "100%",
+                      height: "25vh",
+                      objectFit: "cover",
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={12} md={6} lg={6}>
+                  <h5>SENSEC Quiz team with their masters.</h5>
+                  <Box
+                    component="img"
+                    // className="achieveImg"
+                    src="https://images.unsplash.com/photo-1589104760192-ccab0ce0d90f?q=80&w=2067&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                    alt="Sample"
+                    sx={{
+                      width: "100%",
+                      height: "25vh",
+                      objectFit: "cover",
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={12} md={6} lg={6}>
+                  <h5>SENSEC Team with the Ahoba Kese Festival Trophy.</h5>
+                  <Box
+                    component="img"
+                    // className="achieveImg"
+                    src="https://plus.unsplash.com/premium_photo-1723478655890-c094d1be13b6?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                     alt="Sample"
                     sx={{
                       width: "100%",

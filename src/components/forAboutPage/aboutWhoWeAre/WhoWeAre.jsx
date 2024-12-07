@@ -45,6 +45,30 @@ export function WhoWeAre() {
                 but has also played a pivotal role in shaping the minds and
                 future of countless students.
               </p>
+              <h4 id="anthem">Academic Excellence</h4>
+              <p id="we">
+                As the years passed, SENSEC steadily gained reputation for
+                academic excellence. The school’s committed faculty and staff
+                worked tirelessly to provide students with well-rounded
+                education that went beyond the confines of textbooks. Students
+                are encouraged to explore their potential, develop critical
+                thinking skills, and engage in extracurricular activities
+              </p>
+              <p>
+                One notable aspect of Sensec’s success was its dominance in
+                district-held debate competition and quizzes. The school’s
+                debate team consistently displayed eloquence and analytical
+                prowess, earning numerous accolades and trophies. These
+                victories not only brought recognition to the school but also
+                instilled a sense of pride among the students and community.
+              </p>
+              <p>
+                In a nutshell, SENSEC has grown from modest beginnings to become
+                a symbol of academic excellence. Its journey, marked by
+                resilience and determination, exemplifies the transformative
+                power of education. As the school continues to empower
+                generations{" "}
+              </p>
               <h4 id="anthem">Our Anthems</h4>
               <Box display={{ sx: "block", sm: "flex" }} gap={1}>
                 {/* Anthem 1 */}

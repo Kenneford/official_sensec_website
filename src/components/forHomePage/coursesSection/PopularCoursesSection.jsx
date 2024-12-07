@@ -3,8 +3,10 @@ import "./popularCoursesSection.scss";
 import { motion } from "framer-motion";
 import { HashLink } from "react-router-hash-link";
 import { ContainerBox } from "../../../muiStyling/muiStyling";
+import { FetchAllProgrammes } from "../../../data/programme/FetchProgrammeData";
 
 export function PopularCoursesSection() {
+  const allProgrammes = FetchAllProgrammes();
   const scrollWithOffset = (el) => {
     const yCoordinate = el.getBoundingClientRect().top + window.scrollY;
     const yOffset = -80;
