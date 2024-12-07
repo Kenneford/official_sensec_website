@@ -90,43 +90,46 @@ export default function ContactContent() {
             <h2>Get in touch</h2>
             <p>
               Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry. Lorem Ipsum has been the industry's standard dummy text
-              ever since the 1500s, when an unknown printer took a galley of
-              type and scrambled it to make a type specimen book. It has
+              industry. Lorem Ipsum has been the industry&apos;s standard dummy
+              text ever since the 1500s, when an unknown printer took a galley
+              of type and scrambled it to make a type specimen book. It has
               survived not only five centuries, but also the leap into
               electronic typesetting, remaining essentially unchanged.
             </p>
             <div className="contactsDetails">
               <div className="address">
-                <h3>Address</h3>
+                <h3>Address/GPS</h3>
                 <div>
                   <LocationOnOutlinedIcon />
-                  <span>Sensec Street 114, SB-City - Ghana.</span>
+                  <span>CG-2308-4841</span>
+                  {/* <a href="https://www.ghanapostgps.com" target="_blank">
+                    Open GPS
+                  </a> */}
                 </div>
               </div>
               <div className="email">
                 <h3>Email</h3>
                 <div>
                   <EmailIcon />
-                  <span>sensec/sb-city@gmail.com</span>
+                  <span>senyashs@ges.gov.gh</span>
                 </div>
               </div>
               <div className="phone">
                 <h3>Mobile</h3>
                 <div>
                   <LocalPhoneIcon />
-                  <span>+233 000 000 001</span>
+                  <span>+233 508 670 598</span>
                 </div>
                 <div>
                   <WhatsAppIcon />
-                  <span>+233 000 000 002</span>
+                  <span>+233 245 940 586 </span>
                 </div>
               </div>
               <div className="support">
                 <h3>Support</h3>
                 <div>
                   <DraftsIcon />
-                  <span>sensec@support.com</span>
+                  <span>senya.shs.1991@gmail.com</span>
                 </div>
               </div>
             </div>
@@ -197,11 +200,12 @@ export default function ContactContent() {
             <h2>Location</h2>
             <iframe
               title="sensecMap"
+              // src="https://www.google.com/maps?q=5.410616, -0.505370&hl=en&z=14&output=embed"
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6680.147688730123!2d-0.5097847354054883!3d5.410943016471147!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xfdfb72dbac8012d%3A0x32e187eb1c520b4e!2sSENYA%20SENIOR%20HIGH%20SCHOOL!5e0!3m2!1sen!2sde!4v1681719352650!5m2!1sen!2sde"
               width="600"
               height="450"
               style={{ border: "1px solid #292929" }}
-              allowfullscreen=""
+              allowfullscreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
             ></iframe>

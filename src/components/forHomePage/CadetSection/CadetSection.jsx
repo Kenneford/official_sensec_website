@@ -40,12 +40,14 @@ export default function CadetSection() {
           <Box className="message">
             <h3>A Message from our Cadet</h3>
             <p>
-              It has roots in a piece of classical Latin literature from 45 BC,
-              making it over 2000 years old. Richard McClintock, a Latin
-              professor at Hampden-Sydney College in Virginia, looked up one of
-              the more obscure Latin words, consectetur, from a Lorem Ipsum
-              passage, and going through the cites of the word in classical
-              literature, discovered the undoubtable source.
+              The Sensec Cadet was established in 2011. The purpose is to
+              promote discipline, patriotism and fitness required for rigorous
+              school life. Students are taken through activities such as
+              exercise, parade, hiking, community service and intellectual
+              engagements aimed at enabling them sharpen their intelligence,
+              social and emotional skills necessary to resist unacceptable
+              tendencies such substance abuse, intolerance, violence and other
+              social vices.
             </p>
             <Link to={"#"}>
               <button className="cadetBtn">Read More</button>
