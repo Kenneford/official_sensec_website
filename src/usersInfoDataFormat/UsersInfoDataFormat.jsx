@@ -1540,6 +1540,7 @@ const teachersColumn = (columnData) => {
           </p>
           {row?.lecturerSchoolData?.classLevelHandling && (
             <>
+              {/* Initial state */}
               {row?.lecturerSchoolData?.classLevelHandling &&
                 columnData?.removingLecturer === null && (
                   <Close
@@ -1551,6 +1552,7 @@ const teachersColumn = (columnData) => {
                     className="removeClassLecturerIcon"
                     onClick={(e) => {
                       e.preventDefault();
+                      columnData?.setLecturerToRemove(row?.uniqueId);
                       columnData?.setRemovingLecturer(false);
                       columnData?.dispatch(
                         removeClassSectionLecturer({
@@ -1574,17 +1576,57 @@ const teachersColumn = (columnData) => {
                     }}
                   />
                 )}
-              {columnData?.removingLecturer === false && (
-                <Box className="promotionSpinner">
-                  <span className="dot-ellipsis" style={{ color: "red" }}>
-                    <span className="dot">.</span>
-                    <span className="dot">.</span>
-                    <span className="dot">.</span>
-                  </span>
-                </Box>
-              )}
+              {/* When a user is selected */}
+              {row?.lecturerSchoolData?.classLevelHandling &&
+                columnData?.removingLecturer !== null &&
+                columnData?.lecturerToRemove !== row?.uniqueId && (
+                  <Close
+                    titleAccess={
+                      row?.lecturerSchoolData?.classLevelHandling
+                        ? "Unassign Lecturer"
+                        : ""
+                    }
+                    className="removeClassLecturerIcon"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      columnData?.setLecturerToRemove(row?.uniqueId);
+                      columnData?.setRemovingLecturer(false);
+                      columnData
+                        ?.dispatch
+                        // removeClassSectionLecturer({
+                        //   data: {
+                        //     lecturerId: row?.uniqueId,
+                        //     classSectionId:
+                        //       row?.lecturerSchoolData?.classLevelHandling?._id,
+                        //     previousLecturerRemovedBy:
+                        //       columnData?.authAdmin?.id,
+                        //   },
+                        // })
+                        ();
+                    }}
+                    sx={{
+                      backgroundColor: "red",
+                      color: "#fff",
+                      borderRadius: "50%",
+                      fontSize: "1rem",
+                      margin: "unset",
+                      "&-hover": { cursor: "pointer" },
+                    }}
+                  />
+                )}
+              {columnData?.removingLecturer === false &&
+                columnData?.lecturerToRemove === row?.uniqueId && (
+                  <Box className="promotionSpinner">
+                    <span className="dot-ellipsis" style={{ color: "red" }}>
+                      <span className="dot">.</span>
+                      <span className="dot">.</span>
+                      <span className="dot">.</span>
+                    </span>
+                  </Box>
+                )}
               {columnData?.removingLecturer === true &&
-                columnData?.removeLecturerStatus === "success" && (
+                columnData?.removeLecturerStatus === "success" &&
+                columnData?.lecturerToRemove === row?.uniqueId && (
                   <Box className="promotionSpinner">
                     <TaskAltIcon sx={{ color: "green" }} />
                   </Box>

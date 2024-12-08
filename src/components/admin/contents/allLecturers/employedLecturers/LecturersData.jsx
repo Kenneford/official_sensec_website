@@ -17,7 +17,10 @@ import { teachersColumn } from "../../../../../usersInfoDataFormat/UsersInfoData
 import SearchFilter from "../../../../searchForm/SearchFilter";
 import { FetchAllClassLevels } from "../../../../../data/class/FetchClassLevel";
 import { toast } from "react-toastify";
-import { resetRemoveLecturer } from "../../../../../features/academics/classSectionSlice";
+import {
+  resetAssignLecturer,
+  resetRemoveLecturer,
+} from "../../../../../features/academics/classSectionSlice";
 
 export function LecturersData() {
   const authAdmin = useSelector(getAuthUser);
@@ -25,12 +28,15 @@ export function LecturersData() {
   const navigate = useNavigate();
   const actionBtns = AllEmployedLecturersPageQuickLinks();
   const dispatch = useDispatch();
-  const { removeLecturerStatus, error, successMessage } = useSelector(
+  const { removeLecturerStatus, error } = useSelector(
     (state) => state.classSection
   );
   const [redirect, setRedirect] = useState(false);
   const [removingLecturer, setRemovingLecturer] = useState(null);
   const [lecturerToAssign, setLecturerToAssign] = useState("");
+  const [lecturerToRemove, setLecturerToRemove] = useState("");
+  console.log(lecturerToRemove);
+
   const allClassLevels = FetchAllClassLevels();
 
   const columnData = {
@@ -44,6 +50,8 @@ export function LecturersData() {
     dispatch,
     lecturerToAssign,
     setLecturerToAssign,
+    setLecturerToRemove,
+    lecturerToRemove,
   };
   const teachersData = teachersColumn(columnData);
   const { adminCurrentAction, adminCurrentLink, class_level, employees_link } =
@@ -74,7 +82,7 @@ export function LecturersData() {
     }, 3000);
   };
 
-  //   // Handle enrollment status check
+  // Handle unassign lecturer status check
   useEffect(() => {
     if (removeLecturerStatus === "pending") {
       setRemovingLecturer(false);
@@ -100,20 +108,12 @@ export function LecturersData() {
         setRemovingLecturer(true);
       }, 3000);
       setTimeout(() => {
-        dispatch(fetchAllUsers());
+        dispatch(resetRemoveLecturer());
         setRemovingLecturer(null);
+        dispatch(fetchAllUsers());
       }, 6000);
     }
-  }, [
-    navigate,
-    dispatch,
-    removeLecturerStatus,
-    error,
-    successMessage,
-    adminCurrentAction,
-    adminCurrentLink,
-    authAdmin,
-  ]);
+  }, [dispatch, removeLecturerStatus, error]);
 
   useEffect(() => {
     if (redirect) {
