@@ -30,6 +30,7 @@ const FetchPlacementStudentsByYear = (year) => {
   return allStudents;
 };
 const FetchAllPlacementSBatches = () => {
+  const { uploadExcelFileStatus } = useSelector((state) => state.placement);
   const dispatch = useDispatch();
   const allPlacementBatches = useSelector(getAllPlacementBatches);
 

@@ -9,6 +9,7 @@ import {
   FileInput,
 } from "../../../../../muiStyling/muiStyling";
 import {
+  fetchAllPlacementSBatches,
   fetchAllPlacementStudents,
   resetPlacementUploadErrorState,
   resetPlacementUploadState,
@@ -80,7 +81,7 @@ export default function UploadPlacementExcelData() {
       }, 2000);
       setTimeout(() => {
         setLoadingComplete(true);
-        dispatch(fetchAllPlacementStudents());
+        dispatch(fetchAllPlacementSBatches());
       }, 3000);
       setTimeout(() => {
         setData({
