@@ -58,10 +58,10 @@ export function AllCourses() {
                       <h1 className="title">{program?.name}</h1>
                       <Box className="courseItem">
                         <Box className="courseImageWrap">
-                          {program?.name === "Business" && (
+                          {program?.name === "Agric Science" && (
                             <Box
                               component="img"
-                              src="https://images.unsplash.com/photo-1611095790444-1dfa35e37b52?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1171&q=80"
+                              src="https://images.unsplash.com/photo-1557234195-bd9f290f0e4d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
                               className="courseImg"
                               alt={`${program?.name} Image`}
                               sx={{
@@ -72,10 +72,10 @@ export function AllCourses() {
                               }}
                             />
                           )}
-                          {program?.name === "Agric Science" && (
+                          {program?.name === "Visual Arts" && (
                             <Box
                               component="img"
-                              src="https://images.unsplash.com/photo-1557234195-bd9f290f0e4d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
+                              src="https://images.unsplash.com/photo-1525254646234-87ffe274c810?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
                               className="courseImg"
                               alt={`${program?.name} Image`}
                               sx={{
@@ -107,20 +107,6 @@ export function AllCourses() {
                           )}
                         </Box>
                         <Box className="courseInfo">
-                          {program?.name === "Business" && (
-                            <p>
-                              Business, is one of the many programmes studied at
-                              SENSEC. The programme is practical in nature and a
-                              fast-changing field of discipline. The purpose of
-                              the Business programme is to provide students with
-                              knowledge, skills and attitudes to achieve success
-                              in business education, workplace, post-secondary
-                              education or training and daily life. Elective
-                              subjects taught here include Business Management,
-                              Principles of Cost Accounting, Financial
-                              Accounting, Elective Mathematics and Economics.
-                            </p>
-                          )}
                           {program?.name === "Agric Science" && (
                             <p>
                               The Agric Science Department is one of the first
@@ -137,6 +123,30 @@ export function AllCourses() {
                               Animal Husbandry, Chemistry, Physics, General
                               Agriculture and Elective Mathematics.
                             </p>
+                          )}
+                          {program?.name === "Visual Arts" && (
+                            <>
+                              <p>
+                                The Visual Art programme in SENSEC was rolled
+                                out in the year 2005, through the effort of a
+                                visual art teacher Mr. Nelson Appeadu under the
+                                leadership and guidance of the then
+                                headmistress, Mrs Prah. Visual Arts is a
+                                creative discipline that encompasses various
+                                forms of visual expression such as drawing,
+                                painting, sculpture and graphic design. The
+                                programme therefore encourages students to
+                                explore their creativity, imagination and
+                                self-expression through visual media.
+                              </p>
+                              <p>
+                                SENSEC Visual Arts curriculum typically focuses
+                                on theory as well as practical application. Some
+                                of the elective subjects studied are
+                                Leatherwork, Graphic Design, General Knowledge
+                                in Arts and Music.
+                              </p>
+                            </>
                           )}
                           {program?.name === "General Science" && (
                             <p>
@@ -172,10 +182,10 @@ export function AllCourses() {
                       <h1 className="title">{program?.name}</h1>
                       <Box className="rightCourseItem">
                         <Box className="courseImageWrap">
-                          {program?.name === "General Arts" && (
+                          {program?.name === "Business" && (
                             <Box
                               component="img"
-                              src="https://plus.unsplash.com/premium_photo-1661781303670-5fe01555296e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
+                              src="https://images.unsplash.com/photo-1611095790444-1dfa35e37b52?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1171&q=80"
                               className="courseImg"
                               alt={`${program?.name} Image`}
                               sx={{
@@ -186,10 +196,10 @@ export function AllCourses() {
                               }}
                             />
                           )}
-                          {program?.name === "Home Economics" && (
+                          {program?.name === "General Arts" && (
                             <Box
                               component="img"
-                              src="https://plus.unsplash.com/premium_photo-1682097054374-43bfdbef7e2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
+                              src="https://plus.unsplash.com/premium_photo-1661781303670-5fe01555296e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
                               className="courseImg"
                               alt={`${program?.name} Image`}
                               sx={{
@@ -209,10 +219,10 @@ export function AllCourses() {
                               }}
                             />
                           )}
-                          {program?.name === "Visual Arts" && (
+                          {program?.name === "Home Economics" && (
                             <Box
                               component="img"
-                              src="https://images.unsplash.com/photo-1525254646234-87ffe274c810?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
+                              src="https://plus.unsplash.com/premium_photo-1682097054374-43bfdbef7e2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
                               className="courseImg"
                               alt={`${program?.name} Image`}
                               sx={{
@@ -225,6 +235,20 @@ export function AllCourses() {
                           )}
                         </Box>
                         <Box className="courseInfo">
+                          {program?.name === "Business" && (
+                            <p>
+                              Business, is one of the many programmes studied at
+                              SENSEC. The programme is practical in nature and a
+                              fast-changing field of discipline. The purpose of
+                              the Business programme is to provide students with
+                              knowledge, skills and attitudes to achieve success
+                              in business education, workplace, post-secondary
+                              education or training and daily life. Elective
+                              subjects taught here include Business Management,
+                              Principles of Cost Accounting, Financial
+                              Accounting, Elective Mathematics and Economics.
+                            </p>
+                          )}
                           {program?.name === "General Arts" && (
                             <p>
                               The General Arts department is the largest
@@ -255,30 +279,6 @@ export function AllCourses() {
                               therefore participate meaningfully in the world of
                               work.
                             </p>
-                          )}
-                          {program?.name === "Visual Arts" && (
-                            <>
-                              <p>
-                                The Visual Art programme in SENSEC was rolled
-                                out in the year 2005, through the effort of a
-                                visual art teacher Mr. Nelson Appeadu under the
-                                leadership and guidance of the then
-                                headmistress, Mrs Prah. Visual Arts is a
-                                creative discipline that encompasses various
-                                forms of visual expression such as drawing,
-                                painting, sculpture and graphic design. The
-                                programme therefore encourages students to
-                                explore their creativity, imagination and
-                                self-expression through visual media.
-                              </p>
-                              <p>
-                                SENSEC Visual Arts curriculum typically focuses
-                                on theory as well as practical application. Some
-                                of the elective subjects studied are
-                                Leatherwork, Graphic Design, General Knowledge
-                                in Arts and Music.
-                              </p>
-                            </>
                           )}
                           <Link to={"#"}>
                             <button className="programmeBtn">Learn More</button>
