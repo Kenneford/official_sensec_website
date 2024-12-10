@@ -18,15 +18,16 @@ import TaskAltIcon from "@mui/icons-material/TaskAlt";
 // import LoadingProgress from "../../pageLoading/LoadingProgress";
 import { toast } from "react-toastify";
 import {
+  CustomMobileDatePicker,
   // CustomMobileDatePicker,
   CustomTextField,
 } from "../../../../../../muiStyling/muiStyling";
 import { createAcademicTerm } from "../../../../../../features/academics/academicTermSlice";
 import { getAuthUser } from "../../../../../../features/auth/authSlice";
 import LoadingProgress from "../../../../../pageLoading/LoadingProgress";
-// import { LocalizationProvider } from "@mui/x-date-pickers";
-// import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-// import { parseISO } from "date-fns";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { parseISO } from "date-fns";
 
 export function CreateAcademicTerm() {
   const authAdmin = useSelector(getAuthUser);
@@ -167,7 +168,7 @@ export function CreateAcademicTerm() {
                 },
               }}
             /> */}
-            {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
               <CustomMobileDatePicker
                 label="From"
                 name="from"
@@ -181,7 +182,7 @@ export function CreateAcademicTerm() {
                   width: "100%",
                 }}
               />
-            </LocalizationProvider> */}
+            </LocalizationProvider>
           </Grid>
           <Grid item xs={12} sm={6} md={6} lg={6} className="inputCont">
             {/* <CustomTextField
@@ -198,7 +199,7 @@ export function CreateAcademicTerm() {
                 },
               }}
             /> */}
-            {/* <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
               <CustomMobileDatePicker
                 label="To"
                 name="to"
@@ -212,7 +213,7 @@ export function CreateAcademicTerm() {
                   width: "100%",
                 }}
               />
-            </LocalizationProvider> */}
+            </LocalizationProvider>
           </Grid>
           <Grid item xs={12} sm={6} md={6} lg={6} className="inputCont">
             <CustomTextField

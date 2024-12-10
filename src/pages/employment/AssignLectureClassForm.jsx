@@ -90,11 +90,11 @@ export function AssignLectureClassForm() {
         setRedirecting(true);
       }, 6000);
       setTimeout(() => {
-        localStorage.removeItem("lecturerId");
         dispatch(resetAssignLecturer());
         navigate(
           `/sensec/users/${authAdmin?.uniqueId}/admin/User_Types/Lecturers/employees/All`
         );
+        localStorage.removeItem("lecturerId");
       }, 9000);
     }
   }, [
