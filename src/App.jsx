@@ -6,6 +6,11 @@ import "react-toastify/dist/ReactToastify.css";
 import TokenExpiry from "./pages/auth/token/TokenExpiry";
 
 function App() {
+  if (import.meta.env.MODE === "production") {
+    console.log("You are in production mode");
+  } else {
+    console.log("You are in development mode");
+  }
   return (
     <>
       <ScrollToTop />
