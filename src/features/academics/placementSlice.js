@@ -172,7 +172,6 @@ const placementSlice = createSlice({
         ...state,
         updateStatus: "",
         successMessage: "",
-        error: "",
       };
     },
   },
