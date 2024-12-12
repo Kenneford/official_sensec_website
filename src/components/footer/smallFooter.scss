@@ -1,0 +1,19 @@
+@use "../../utilities/sizes";
+@use "../../utilities/colors";
+
+#smallFooterWrap {
+  //   position: absolute;
+  //   bottom: 0;
+  width: 100%;
+  color: #fff;
+  background-color: #292929;
+  font-size: calc(0.7rem + 1vmin);
+  .smallFooterContent {
+    padding: 1rem 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1%;
+    font-size: 0.9rem;
+  }
+}

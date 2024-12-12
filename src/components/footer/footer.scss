@@ -186,3 +186,17 @@
     }
   }
 }
+#smallFooterWrap {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  color: #fff;
+  padding: 1rem 0;
+  .smallFooterContent {
+    background-color: #292929;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1%;
+  }
+}
