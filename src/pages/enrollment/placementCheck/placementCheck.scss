@@ -88,40 +88,43 @@
                 }
               }
             }
-            .studentEnrolmentInfo {
-              width: 90%;
+            .placementInfoBox {
+              // font-size: calc(0.7rem + 1vmin);
+              // width: 50%;
+              height: 4rem;
               display: flex;
-              // justify-content: center;
+              flex-direction: column;
+              justify-content: center;
               align-items: center;
-              padding: 1rem 0 0;
-              border-radius: 0 0 0.4rem 0.4rem;
-              min-height: 17rem;
-              margin: auto;
-              .placementInfoBox {
-                // font-size: calc(0.7rem + 1vmin);
-                // width: 50%;
-                height: 4rem;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                letter-spacing: 1px;
-                border-bottom: 1px solid #ccc;
-                padding: unset;
-                margin: 0.5rem 0;
-                border-radius: 0.4rem;
-                -webkit-box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
-                box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
-                h3 {
-                  color: #292929;
-                  font-size: 0.9rem;
-                }
-                span {
-                  letter-spacing: 1px;
-                  color: #696969;
-                  font-size: 0.9rem;
-                }
+              letter-spacing: 1px;
+              border-bottom: 1px solid #ccc;
+              padding: unset;
+              margin: 0.5rem 0;
+              border-radius: 0.4rem;
+              -webkit-box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+              box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+              h3 {
+                color: #292929;
+                font-size: 0.9rem;
               }
+              span {
+                letter-spacing: 1px;
+                color: #696969;
+                font-size: 0.9rem;
+              }
+              .css-mhc70k-MuiGrid-root > .MuiGrid-item {
+                padding-top: 0;
+              }
+            }
+            .studentEnrolmentInfo {
+              // width: 90%;
+              // display: flex;
+              // // justify-content: center;
+              // align-items: center;
+              // padding: 1rem 0 0;
+              // border-radius: 0 0 0.4rem 0.4rem;
+              // min-height: 17rem;
+              // margin: auto;
             }
           }
           .updatePlacementData {
@@ -151,18 +154,20 @@
                 .dOBBtn {
                   position: absolute;
                   top: 2rem;
-                  right: 0.4rem;
+                  right: 0.5rem;
                   cursor: pointer;
                   z-index: 4;
                 }
                 .closeDOBBtn {
                   position: absolute;
-                  top: 1.1rem;
-                  right: 0.7rem;
-                  font-size: 0.7rem;
-                  color: red;
+                  top: 2.2rem;
+                  right: 0.6rem;
+                  font-size: 1.2rem;
+                  color: #fff;
+                  background-color: red;
                   cursor: pointer;
                   z-index: 4;
+                  border-radius: 50%;
                 }
               }
             }
@@ -181,7 +186,7 @@
           .saveUpdateBtnWrap {
             display: flex;
             justify-content: center;
-            padding-bottom: 1rem;
+            padding-bottom: 1.5rem;
             margin: 0 2rem 0.5rem;
             .saveUpdateBtn {
               width: 100%;
@@ -199,15 +204,16 @@
         border-radius: 0.4rem;
         -webkit-box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
         box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+        font-size: calc(0.7rem + 1vmin);
         h4 {
-          font-size: 0.9rem;
+          font-size: 0.9em;
           color: red;
           text-decoration: underline;
           letter-spacing: 1px;
         }
         p {
           padding: 0.5rem 0;
-          font-size: 0.9rem;
+          font-size: 0.9em;
           span {
             color: red;
           }
@@ -215,37 +221,26 @@
         ul {
           padding: 1rem 2rem;
           li {
-            font-size: 0.9rem;
+            font-size: 1em;
             list-style: circle;
             color: red;
             p {
               padding: 0.2rem;
               color: #696969;
               .firstStepInfo {
-                color: #292929;
+                color: #28a11a;
                 font-style: italic;
+                font-size: 1em;
               }
             }
           }
         }
         span {
           color: red;
-          font-size: 0.9rem;
+          font-size: 0.9em;
           padding-bottom: 1.5rem;
         }
       }
-    }
-  }
-  .footer {
-    width: 100%;
-    padding: 1rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: black;
-    color: #fff;
-    p {
-      margin: 0 5px;
     }
   }
 }

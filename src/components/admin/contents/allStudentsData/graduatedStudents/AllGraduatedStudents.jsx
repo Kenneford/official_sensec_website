@@ -63,7 +63,7 @@ export function AllGraduatedStudents() {
     setUncompletedEmploymentTask("You're being redirected");
     setTimeout(() => {
       navigate(
-        `/sensec/users/${authAdmin?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/new_employment/personal_info`
+        `/sensec/users/${authAdmin?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/new_enrollment/placement_verification`
       );
     }, 3000);
   };

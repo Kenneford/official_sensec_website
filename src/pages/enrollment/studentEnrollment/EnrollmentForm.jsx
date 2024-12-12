@@ -1,6 +1,10 @@
 import React, { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import "./studentEnrollment.scss";
-import { ContainerBox, CustomTextField } from "../../../muiStyling/muiStyling";
+import {
+  ContainerBox,
+  CustomMobileDatePicker,
+  CustomTextField,
+} from "../../../muiStyling/muiStyling";
 import {
   MenuItem,
   Button,
@@ -37,6 +41,8 @@ import Redirection from "../../../components/pageLoading/Redirection";
 import { useNavigate, useParams } from "react-router-dom";
 import { getAuthUser } from "../../../features/auth/authSlice";
 import { FetchAllStudents } from "../../../data/students/FetchAllStudents";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 export function EnrollmentForm() {
   const dispatch = useDispatch();
@@ -211,6 +217,12 @@ export function EnrollmentForm() {
       ...newStudent,
       [name]: value,
     });
+  };
+  const handleDateChange = (field, date) => {
+    setNewStudent((prev) => ({
+      ...prev,
+      [field]: date, // Store the Date object directly
+    }));
   };
 
   // Generate new unique-Id for old student
@@ -561,11 +573,16 @@ export function EnrollmentForm() {
                   value={newStudent?.placeOfBirth}
                   onChange={handleChange}
                   required
+                  sx={{
+                    "& .MuiInputLabel-asterisk": {
+                      color: newStudent?.placeOfBirth ? "green" : "red", // Change the asterisk color to red
+                    },
+                  }}
                 />
               </Grid>
               {/* Date Of Birth */}
               <Grid item xs={12} sm={6} md={4} lg={4}>
-                <CustomTextField
+                {/* <CustomTextField
                   fullWidth
                   // label="DD/MM/YYYY"
                   name="dateOfBirth"
@@ -573,19 +590,38 @@ export function EnrollmentForm() {
                   value={newStudent?.dateOfBirth || ""}
                   onChange={handleChange}
                   required
-                  // error={dateOfBirthError}
-                  // helperText={
-                  //   dateOfBirthError ? "Date of birth is not correct!" : ""
-                  // }
-                  // sx={{
-                  //   "& .MuiInputLabel-asterisk": {
-                  //     color:
-                  //       newStudent?.dateOfBirth && !dateOfBirthError
-                  //         ? "green"
-                  //         : "red", // Change the asterisk color to red
-                  //   },
-                  // }}
-                />
+                /> */}
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <CustomMobileDatePicker
+                    // label="From"
+                    label={
+                      <span>
+                        Date of Birth{" "}
+                        <span
+                          style={{
+                            color: !newStudent?.dateOfBirth ? "red" : "green", // Dynamically set the asterisk color
+                            marginRight: "8px",
+                          }}
+                        >
+                          *
+                        </span>
+                      </span>
+                    }
+                    name="dateOfBirth"
+                    // inputFormat="MM/dd/yyyy"
+                    value={newStudent?.dateOfBirth || ""}
+                    onChange={(date) => handleDateChange("dateOfBirth", date)}
+                    renderInput={(params) => <CustomTextField {...params} />}
+                    error={false} // Make sure this is false
+                    helperText="" // Optionally clear helper text
+                    sx={{
+                      width: "100%",
+                      "& .MuiInputLabel-asterisk": {
+                        color: newStudent?.dateOfBirth ? "green" : "red", // Change the asterisk color to red
+                      },
+                    }}
+                  />
+                </LocalizationProvider>
               </Grid>
               {/* Nationality */}
               <Grid item xs={12} sm={6} md={4} lg={4}>
@@ -596,6 +632,11 @@ export function EnrollmentForm() {
                   value={newStudent?.nationality}
                   onChange={handleChange}
                   required
+                  sx={{
+                    "& .MuiInputLabel-asterisk": {
+                      color: newStudent?.nationality ? "green" : "red", // Change the asterisk color to red
+                    },
+                  }}
                 />
               </Grid>
               {/* Gender Selection */}
@@ -608,6 +649,11 @@ export function EnrollmentForm() {
                   value={newStudent?.gender}
                   onChange={handleChange}
                   required
+                  sx={{
+                    "& .MuiInputLabel-asterisk": {
+                      color: newStudent?.gender ? "green" : "red", // Change the asterisk color to red
+                    },
+                  }}
                 >
                   <MenuItem value="Male">Male</MenuItem>
                   <MenuItem value="Female">Female</MenuItem>
@@ -623,6 +669,11 @@ export function EnrollmentForm() {
                   value={newStudent?.motherTongue}
                   onChange={handleChange}
                   required
+                  sx={{
+                    "& .MuiInputLabel-asterisk": {
+                      color: newStudent?.motherTongue ? "green" : "red", // Change the asterisk color to red
+                    },
+                  }}
                 >
                   <MenuItem value="Twi">Twi</MenuItem>
                   <MenuItem value="Fante">Fante</MenuItem>
@@ -650,6 +701,11 @@ export function EnrollmentForm() {
                   name="otherTongue"
                   value={newStudent?.otherTongue}
                   onChange={handleChange}
+                  sx={{
+                    "& .MuiInputLabel-asterisk": {
+                      color: newStudent?.otherTongue ? "green" : "red", // Change the asterisk color to red
+                    },
+                  }}
                 >
                   <MenuItem value="English">English</MenuItem>
                   <MenuItem value="French">French</MenuItem>
@@ -670,6 +726,11 @@ export function EnrollmentForm() {
                   value={newStudent?.complexion}
                   onChange={handleChange}
                   required
+                  sx={{
+                    "& .MuiInputLabel-asterisk": {
+                      color: newStudent?.complexion ? "green" : "red", // Change the asterisk color to red
+                    },
+                  }}
                 >
                   <MenuItem value="Very Fair">Very Fair</MenuItem>
                   <MenuItem value="Fair">Fair</MenuItem>
@@ -695,6 +756,11 @@ export function EnrollmentForm() {
                       ),
                     },
                   }}
+                  sx={{
+                    "& .MuiInputLabel-asterisk": {
+                      color: newStudent?.height ? "green" : "red", // Change the asterisk color to red
+                    },
+                  }}
                 />
               </Grid>
               {/* Weight */}
@@ -713,6 +779,11 @@ export function EnrollmentForm() {
                       ),
                     },
                   }}
+                  sx={{
+                    "& .MuiInputLabel-asterisk": {
+                      color: newStudent?.weight ? "green" : "red", // Change the asterisk color to red
+                    },
+                  }}
                 />
               </Grid>
               {/* Region */}
@@ -725,6 +796,11 @@ export function EnrollmentForm() {
                   value={newStudent?.region}
                   onChange={handleChange}
                   required
+                  sx={{
+                    "& .MuiInputLabel-asterisk": {
+                      color: newStudent?.region ? "green" : "red", // Change the asterisk color to red
+                    },
+                  }}
                 >
                   <MenuItem value="Greater Accra">Greater Accra</MenuItem>
                   <MenuItem value="Ashanti">Ashanti</MenuItem>
@@ -753,6 +829,11 @@ export function EnrollmentForm() {
                   value={newStudent?.homeTown}
                   onChange={handleChange}
                   required
+                  sx={{
+                    "& .MuiInputLabel-asterisk": {
+                      color: newStudent?.homeTown ? "green" : "red", // Change the asterisk color to red
+                    },
+                  }}
                 />
               </Grid>
               {/* House Address */}
@@ -764,6 +845,11 @@ export function EnrollmentForm() {
                   value={newStudent?.residentialAddress}
                   onChange={handleChange}
                   required
+                  sx={{
+                    "& .MuiInputLabel-asterisk": {
+                      color: newStudent?.residentialAddress ? "green" : "red", // Change the asterisk color to red
+                    },
+                  }}
                 />
               </Grid>
               {/* District */}
@@ -775,6 +861,11 @@ export function EnrollmentForm() {
                   value={newStudent?.district}
                   onChange={handleChange}
                   required
+                  sx={{
+                    "& .MuiInputLabel-asterisk": {
+                      color: newStudent?.district ? "green" : "red", // Change the asterisk color to red
+                    },
+                  }}
                 />
               </Grid>
               {/* Current City */}
@@ -786,6 +877,11 @@ export function EnrollmentForm() {
                   value={newStudent?.currentCity}
                   onChange={handleChange}
                   required
+                  sx={{
+                    "& .MuiInputLabel-asterisk": {
+                      color: newStudent?.currentCity ? "green" : "red", // Change the asterisk color to red
+                    },
+                  }}
                 />
               </Grid>
               {/* GPS Address */}
@@ -797,6 +893,11 @@ export function EnrollmentForm() {
                   value={newStudent?.gpsAddress}
                   onChange={handleChange}
                   required
+                  sx={{
+                    "& .MuiInputLabel-asterisk": {
+                      color: newStudent?.gpsAddress ? "green" : "red", // Change the asterisk color to red
+                    },
+                  }}
                 />
               </Grid>
               {/* Email */}
@@ -808,6 +909,11 @@ export function EnrollmentForm() {
                   value={newStudent?.email}
                   onChange={handleChange}
                   required
+                  sx={{
+                    "& .MuiInputLabel-asterisk": {
+                      color: newStudent?.email ? "green" : "red", // Change the asterisk color to red
+                    },
+                  }}
                 />
               </Grid>
               {/* Mobile */}
@@ -819,6 +925,11 @@ export function EnrollmentForm() {
                   value={newStudent?.mobile}
                   onChange={handleChange}
                   required
+                  sx={{
+                    "& .MuiInputLabel-asterisk": {
+                      color: newStudent?.mobile ? "green" : "red", // Change the asterisk color to red
+                    },
+                  }}
                 />
               </Grid>
               {/* JHS Attended */}
@@ -875,10 +986,11 @@ export function EnrollmentForm() {
                   name="jhsIndexNo"
                   value={newStudent?.jhsIndexNo}
                   onChange={handleChange}
-                  disabled={
-                    !authUser ||
-                    (authUser && authUser?.roles?.includes("admin"))
-                  }
+                  // disabled={
+                  //   !authUser ||
+                  //   (authUser && authUser?.roles?.includes("admin"))
+                  // }
+                  slotProps={{ input: { readOnly: true } }}
                 />
               </Grid>
               {/* Programme Selection */}
@@ -891,6 +1003,11 @@ export function EnrollmentForm() {
                   value={newStudent?.program}
                   onChange={handleChange}
                   required
+                  sx={{
+                    "& .MuiInputLabel-asterisk": {
+                      color: newStudent?.program ? "green" : "red", // Change the asterisk color to red
+                    },
+                  }}
                 >
                   {allProgrammes?.map((programme) => (
                     <MenuItem key={programme?._id} value={programme?._id}>
@@ -909,7 +1026,14 @@ export function EnrollmentForm() {
                     name="divisionProgram"
                     value={newStudent?.divisionProgram}
                     onChange={handleChange}
-                    //   required
+                    required={
+                      allDivisionProgrammes && allDivisionProgrammes?.length > 0
+                    }
+                    sx={{
+                      "& .MuiInputLabel-asterisk": {
+                        color: newStudent?.divisionProgram ? "green" : "red", // Change the asterisk color to red
+                      },
+                    }}
                   >
                     {allDivisionProgrammes?.map((programme) => (
                       <MenuItem key={programme?._id} value={programme?._id}>
@@ -932,6 +1056,13 @@ export function EnrollmentForm() {
                       value={newStudent?.optionalElectiveSubject}
                       onChange={handleChange}
                       required
+                      sx={{
+                        "& .MuiInputLabel-asterisk": {
+                          color: newStudent?.optionalElectiveSubject
+                            ? "green"
+                            : "red", // Change the asterisk color to red
+                        },
+                      }}
                     >
                       {selectedDivisionProgramme?.optionalElectiveSubjects?.map(
                         (subject) => (
@@ -955,6 +1086,13 @@ export function EnrollmentForm() {
                       value={newStudent?.optionalElectiveSubject}
                       onChange={handleChange}
                       required
+                      sx={{
+                        "& .MuiInputLabel-asterisk": {
+                          color: newStudent?.optionalElectiveSubject
+                            ? "green"
+                            : "red", // Change the asterisk color to red
+                        },
+                      }}
                     >
                       {studentProgramme?.optionalElectiveSubjects?.map(
                         (subject) => (
@@ -976,6 +1114,11 @@ export function EnrollmentForm() {
                   value={newStudent?.currentClassLevel}
                   onChange={handleChange}
                   required
+                  sx={{
+                    "& .MuiInputLabel-asterisk": {
+                      color: newStudent?.currentClassLevel ? "green" : "red", // Change the asterisk color to red
+                    },
+                  }}
                 >
                   {allClassLevels?.map((cLevel) => (
                     <MenuItem key={cLevel?._id} value={cLevel?._id}>
@@ -994,6 +1137,11 @@ export function EnrollmentForm() {
                   value={newStudent?.batch}
                   onChange={handleChange}
                   required
+                  sx={{
+                    "& .MuiInputLabel-asterisk": {
+                      color: newStudent?.batch ? "green" : "red", // Change the asterisk color to red
+                    },
+                  }}
                 >
                   {allBatches?.map((batch) => (
                     <MenuItem key={batch?._id} value={batch?._id}>
@@ -1012,6 +1160,11 @@ export function EnrollmentForm() {
                   value={newStudent?.currentAcademicYear}
                   onChange={handleChange}
                   required
+                  sx={{
+                    "& .MuiInputLabel-asterisk": {
+                      color: newStudent?.currentAcademicYear ? "green" : "red", // Change the asterisk color to red
+                    },
+                  }}
                   // disabled
                 >
                   {academicYears.map((year) => (
@@ -1031,6 +1184,11 @@ export function EnrollmentForm() {
                   value={newStudent?.residentialStatus}
                   onChange={handleChange}
                   required
+                  sx={{
+                    "& .MuiInputLabel-asterisk": {
+                      color: newStudent?.residentialStatus ? "green" : "red", // Change the asterisk color to red
+                    },
+                  }}
                 >
                   <MenuItem value="Day">Day</MenuItem>
                   <MenuItem value="Boarding">Boarding</MenuItem>
