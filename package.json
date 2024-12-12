@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --port 2025",
+    "start": "vite --port 2026",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -26,6 +27,7 @@
     "@tinymce/tinymce-react": "^5.1.1",
     "axios": "^1.7.7",
     "date-fns": "^2.30.0",
+    "dayjs": "^1.11.13",
     "file-saver": "^2.0.5",
     "formik": "^2.4.6",
     "framer-motion": "^11.10.0",
