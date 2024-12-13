@@ -160,9 +160,6 @@ export function PendingStudents() {
       if (enrollmentApprovalStatus === "pending") {
         setLoadingComplete(false);
         setApprovalInProgress(false);
-        setTimeout(() => {
-          setLoadingComplete(true);
-        }, 3000);
       }
       if (enrollmentApprovalStatus === "rejected") {
         setTimeout(() => {
@@ -189,6 +186,9 @@ export function PendingStudents() {
             toastId: successMessage,
           });
         }, 1000);
+        setTimeout(() => {
+          setLoadingComplete(true);
+        }, 3000);
         setTimeout(() => {
           //Fetch all users again when successfully approved
           dispatch(fetchAllUsers());

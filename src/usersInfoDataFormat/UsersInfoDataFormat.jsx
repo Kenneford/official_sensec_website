@@ -1477,34 +1477,33 @@ const teachersColumn = (columnData) => {
       name: "Class Handling",
       selector: (row) => (
         <Box display={"flex"} alignItems={"center"} gap={1}>
-          <p
-            style={{
-              position: "relative",
-              textAlign: "center",
-            }}
-            title={
-              row?.lecturerSchoolData?.classLevelHandling
-                ? `${row?.lecturerSchoolData?.classLevelHandling?.sectionName}-${row?.lecturerSchoolData?.classLevelHandling?.classLevelName}`
-                : ""
-            }
-          >
-            {row?.lecturerSchoolData?.classLevelHandling ? (
-              row?.lecturerSchoolData?.classLevelHandling?.label
-            ) : (
-              <Button
-                variant="text"
-                sx={{
-                  color: "green",
-                  textTransform: "capitalize",
-                  fontSize: "1rem",
-                  backgroundColor: "transparent",
-                }}
+          {/* Assign Lecturer Btn */}
+          {!row?.lecturerSchoolData?.classLevelHandling && (
+            <Box
+              style={{
+                position: "relative",
+                textAlign: "center",
+              }}
+            >
+              <HashLink
+                to={"#"}
+                className="approveLink"
+                // variant="text"
+                // sx={{
+                //   color: "green",
+                //   textTransform: "capitalize",
+                //   fontSize: "1rem",
+                //   backgroundColor: "transparent",
+                // }}
                 onClick={(e) => {
                   e.preventDefault();
-                  if (!columnData?.redirect) {
+                  if (
+                    !columnData?.redirect &&
+                    !columnData?.removeLecturerInProgress
+                  ) {
                     columnData?.setSelectedLecturerToAssign(row?._id);
                     columnData?.setOpenAssignLecturerModal(true);
-                    columnData?.setOpenRemoveLectureModal(false);
+                    columnData?.setOpenRemoveLecturerModal(false);
                     localStorage?.setItem("lecturerId", row?.uniqueId);
                   }
                 }}
@@ -1533,51 +1532,25 @@ const teachersColumn = (columnData) => {
                       </span>
                     </Box>
                   )}
-              </Button>
-            )}
-          </p>
+              </HashLink>
+            </Box>
+          )}
           {row?.lecturerSchoolData?.classLevelHandling && (
             <>
-              {/* Initial state */}
-              {row?.lecturerSchoolData?.classLevelHandling &&
-                columnData?.removingLecturer === null && (
-                  <Close
-                    titleAccess={
-                      row?.lecturerSchoolData?.classLevelHandling
-                        ? "Unassign Lecturer"
-                        : ""
-                    }
-                    className="removeClassLecturerIcon"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      columnData?.setLecturerToRemove(row?.uniqueId);
-                      columnData?.setRemovingLecturer(false);
-                      columnData?.dispatch(
-                        removeClassSectionLecturer({
-                          data: {
-                            lecturerId: row?.uniqueId,
-                            classSectionId:
-                              row?.lecturerSchoolData?.classLevelHandling?._id,
-                            previousLecturerRemovedBy:
-                              columnData?.authAdmin?.id,
-                          },
-                        })
-                      );
-                    }}
-                    sx={{
-                      backgroundColor: "red",
-                      color: "#fff",
-                      borderRadius: "50%",
-                      fontSize: "1rem",
-                      margin: "unset",
-                      "&-hover": { cursor: "pointer" },
-                    }}
-                  />
-                )}
               {/* When a user is selected */}
-              {row?.lecturerSchoolData?.classLevelHandling &&
-                columnData?.removingLecturer !== null &&
-                columnData?.lecturerToRemove !== row?.uniqueId && (
+              {columnData?.loadingComplete === null && (
+                <>
+                  <p
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      gap: "5%",
+                    }}
+                    title={`${row?.lecturerSchoolData?.classLevelHandling?.sectionName}-${row?.lecturerSchoolData?.classLevelHandling?.classLevelName}`}
+                  >
+                    {row?.lecturerSchoolData?.classLevelHandling?.label}
+                  </p>
                   <Close
                     titleAccess={
                       row?.lecturerSchoolData?.classLevelHandling
@@ -1587,20 +1560,14 @@ const teachersColumn = (columnData) => {
                     className="removeClassLecturerIcon"
                     onClick={(e) => {
                       e.preventDefault();
-                      columnData?.setLecturerToRemove(row?.uniqueId);
-                      columnData?.setRemovingLecturer(false);
-                      columnData
-                        ?.dispatch
-                        // removeClassSectionLecturer({
-                        //   data: {
-                        //     lecturerId: row?.uniqueId,
-                        //     classSectionId:
-                        //       row?.lecturerSchoolData?.classLevelHandling?._id,
-                        //     previousLecturerRemovedBy:
-                        //       columnData?.authAdmin?.id,
-                        //   },
-                        // })
-                        ();
+                      if (
+                        !columnData?.removeLecturerInProgress &&
+                        !columnData?.assignLecturerInProgress
+                      ) {
+                        columnData?.setSelectedLecturerToRemove(row?._id);
+                        columnData?.setOpenRemoveLecturerModal(true);
+                        columnData?.setOpenAssignLecturerModal(false);
+                      }
                     }}
                     sx={{
                       backgroundColor: "red",
@@ -1611,10 +1578,59 @@ const teachersColumn = (columnData) => {
                       "&-hover": { cursor: "pointer" },
                     }}
                   />
+                </>
+              )}
+              {row?._id !== columnData?.lecturerToRemove?._id &&
+                columnData?.loadingComplete !== null && (
+                  <>
+                    <p
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        gap: "5%",
+                      }}
+                      title={`${row?.lecturerSchoolData?.classLevelHandling?.sectionName}-${row?.lecturerSchoolData?.classLevelHandling?.classLevelName}`}
+                    >
+                      {row?.lecturerSchoolData?.classLevelHandling?.label}
+                    </p>
+                    <Close
+                      titleAccess={
+                        row?.lecturerSchoolData?.classLevelHandling
+                          ? "Unassign Lecturer"
+                          : ""
+                      }
+                      className="removeClassLecturerIcon"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (
+                          !columnData?.removeLecturerInProgress &&
+                          !columnData?.assignLecturerInProgress
+                        ) {
+                          columnData?.setSelectedLecturerToRemove(row?._id);
+                          columnData?.setOpenRemoveLecturerModal(true);
+                          columnData?.setOpenAssignLecturerModal(false);
+                        }
+                      }}
+                      sx={{
+                        backgroundColor: "red",
+                        color: "#fff",
+                        borderRadius: "50%",
+                        fontSize: "1rem",
+                        margin: "unset",
+                        "&-hover": { cursor: "pointer" },
+                      }}
+                    />
+                  </>
                 )}
-              {columnData?.removingLecturer === false &&
-                columnData?.lecturerToRemove === row?.uniqueId && (
+            </>
+          )}
+          {columnData?.lecturerToRemove &&
+            columnData?.lecturerToRemove?._id === row?._id && (
+              <>
+                {columnData?.loadingComplete === false && (
                   <Box className="promotionSpinner">
+                    <span>Processing</span>
                     <span className="dot-ellipsis" style={{ color: "red" }}>
                       <span className="dot">.</span>
                       <span className="dot">.</span>
@@ -1622,15 +1638,15 @@ const teachersColumn = (columnData) => {
                     </span>
                   </Box>
                 )}
-              {columnData?.removingLecturer === true &&
-                columnData?.removeLecturerStatus === "success" &&
-                columnData?.lecturerToRemove === row?.uniqueId && (
-                  <Box className="promotionSpinner">
-                    <TaskAltIcon sx={{ color: "green" }} />
-                  </Box>
-                )}
-            </>
-          )}
+                {columnData?.loadingComplete &&
+                  columnData?.removeLecturerStatus === "success" && (
+                    <Box className="promotionSpinner">
+                      <span>Removed</span>{" "}
+                      <TaskAltIcon sx={{ color: "green" }} />
+                    </Box>
+                  )}
+              </>
+            )}
           {columnData?.lecturerToAssign &&
             columnData?.lecturerToAssign._id === row._id && (
               <AssignClassLecturerModal
@@ -1642,7 +1658,6 @@ const teachersColumn = (columnData) => {
                 }
                 navigateTo={columnData?.navigate}
                 authAdminId={columnData?.authAdmin?.uniqueId}
-                // setSelectedLecturerToAssign={columnData?.setLecturerToAssign}
                 selectedLecturerToAssignId={row?._id}
                 lecturerDataToAssign={columnData?.lecturerToAssign}
                 lecturerDataToRemove={columnData?.lecturerToRemove}
@@ -1652,14 +1667,17 @@ const teachersColumn = (columnData) => {
             columnData?.lecturerToRemove._id === row._id && (
               <RemoveClassLecturerModal
                 open={columnData?.openRemoveLecturerModal}
-                onClose={() => columnData?.setOpenRemoveLectureModal(false)}
-                setRedirect={columnData?.setRedirect}
-                setRemoveLecturerInProgress={
-                  columnData?.setRemoveLecturerInProgress
-                }
-                // navigateTo={columnData?.navigate}
-                // authAdminId={columnData?.authAdmin?.uniqueId}
-                // setSelectedLecturerToAssign={columnData?.setLecturerToAssign}
+                onClose={() => columnData?.setOpenRemoveLecturerModal(false)}
+                removeClassLecturerFunction={removeClassSectionLecturer({
+                  data: {
+                    lecturerId: row?.uniqueId,
+                    classSectionId:
+                      row?.lecturerSchoolData?.classLevelHandling?._id,
+                    previousLecturerRemovedBy: columnData?.authAdmin?.id,
+                  },
+                })}
+                setLoadingComplete={columnData?.setLoadingComplete}
+                setSelectedLecturerToRemove={columnData?.setLoadingComplete}
                 selectedLecturerToAssignId={row?._id}
                 lecturerDataToAssign={columnData?.lecturerToAssign}
                 lecturerDataToRemove={columnData?.lecturerToRemove}

@@ -179,38 +179,38 @@ export function AssignLectureClassForm() {
                     alignItems: "center",
                   }}
                 >
-                  <Grid item xs={12} sm={4}>
-                    <Box
-                      display="flex"
-                      flexDirection="column"
-                      justifyContent="center"
-                      alignItems="center"
-                      height="100%"
+                  <Box
+                    display="flex"
+                    flexDirection="column"
+                    justifyContent="center"
+                    alignItems="center"
+                    height="100%"
+                  >
+                    <Avatar
+                      src={foundLecturer?.personalInfo?.profilePicture?.url}
+                      alt="Profile Preview"
+                      sx={{
+                        width: "6rem",
+                        height: "6rem",
+                        borderRadius: ".4rem",
+                        border: "1px solid #696969",
+                        padding: ".2rem",
+                      }}
+                    />
+                    <Typography
+                      sx={{ color: "#696969", mt: 1, textAlign: "center" }}
                     >
-                      <Avatar
-                        src={foundLecturer?.personalInfo?.profilePicture?.url}
-                        alt="Profile Preview"
-                        sx={{
-                          width: "6rem",
-                          height: "6rem",
-                          borderRadius: ".4rem",
-                          border: "1px solid #696969",
-                          padding: ".2rem",
-                        }}
-                      />
-                      <Typography sx={{ color: "#696969", mt: 1 }}>
-                        {foundLecturer &&
-                          foundLecturer?.personalInfo?.gender === "Male" &&
-                          "Mr."}{" "}
-                        {foundLecturer &&
-                          foundLecturer?.personalInfo?.gender === "Female" &&
-                          "Mrs."}{" "}
-                        {foundLecturer
-                          ? foundLecturer?.personalInfo?.fullName
-                          : ""}
-                      </Typography>
-                    </Box>
-                  </Grid>
+                      {foundLecturer &&
+                        foundLecturer?.personalInfo?.gender === "Male" &&
+                        "Mr."}{" "}
+                      {foundLecturer &&
+                        foundLecturer?.personalInfo?.gender === "Female" &&
+                        "Mrs."}{" "}
+                      {foundLecturer
+                        ? foundLecturer?.personalInfo?.fullName
+                        : ""}
+                    </Typography>
+                  </Box>
                 </Box>
               </Grid>
               {/* Class Level Selection */}
