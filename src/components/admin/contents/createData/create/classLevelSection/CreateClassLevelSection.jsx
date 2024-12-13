@@ -82,7 +82,7 @@ export function CreateClassLevelSection() {
     });
   };
 
-  // Fetch needed data
+  // Fetch division programs
   useEffect(() => {
     if (classSection?.programId) {
       dispatch(

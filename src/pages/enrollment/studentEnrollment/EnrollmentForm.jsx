@@ -609,16 +609,13 @@ export function EnrollmentForm() {
                     }
                     name="dateOfBirth"
                     // inputFormat="MM/dd/yyyy"
-                    value={newStudent?.dateOfBirth || ""}
+                    value={newStudent?.dateOfBirth || {}}
                     onChange={(date) => handleDateChange("dateOfBirth", date)}
                     renderInput={(params) => <CustomTextField {...params} />}
                     error={false} // Make sure this is false
                     helperText="" // Optionally clear helper text
                     sx={{
                       width: "100%",
-                      "& .MuiInputLabel-asterisk": {
-                        color: newStudent?.dateOfBirth ? "green" : "red", // Change the asterisk color to red
-                      },
                     }}
                   />
                 </LocalizationProvider>

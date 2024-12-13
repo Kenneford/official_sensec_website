@@ -38,6 +38,7 @@ import {
 } from "../lazyLoading/admin/AdminLazyLoadingComponents";
 import FakeDashboard from "../admin/contents/overview/FakeDashboard";
 import {
+  AdminStudentEnrollmentSuccessOverview,
   EnrollmentForm,
   GuardianForm,
   ParentForm,
@@ -204,6 +205,10 @@ export default function PageNavigation() {
                     {
                       path: ":studentId/new_enrollment/parent/add",
                       element: <ParentForm />,
+                    },
+                    {
+                      path: ":studentId/enrollment/online/success",
+                      element: <AdminStudentEnrollmentSuccessOverview />,
                     },
                     {
                       path: "employees/:employees_link",

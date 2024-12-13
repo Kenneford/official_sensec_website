@@ -17,13 +17,15 @@ const FetchAllProgrammes = () => {
 
   return allProgrammes;
 };
-const FetchAllDivisionProgrammes = () => {
+const FetchAllDivisionProgrammes = ({ programId }) => {
+  console.log(programId?._id);
+
   const allProgrammes = useSelector(getAllDivisionProgrammes);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchAllDivisionProgrammes());
-  }, [dispatch]);
+    dispatch(fetchAllDivisionProgrammes({ programId: programId?._id }));
+  }, [dispatch, programId]);
 
   return allProgrammes;
 };

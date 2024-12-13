@@ -38,6 +38,7 @@ import {
   FetchAllProgrammes,
 } from "../../../data/programme/FetchProgrammeData";
 import SmallFooter from "../../../components/footer/SmallFooter";
+import { fetchAllDivisionProgrammes } from "../../../features/academics/programmeSlice";
 
 export function EnrollmentSuccessOverview({
   setEnroledStudent,
@@ -45,16 +46,20 @@ export function EnrollmentSuccessOverview({
   currentEnrolmentSuccessLink,
 }) {
   const studentUniqueId = localStorage.getItem("studentUniqueId");
-  const { studentId, enrolmentSuccessCurrentLink } = useParams();
+  const { studentId, adminCurrentAction } = useParams();
 
   const currentYear = new Date().getFullYear();
   const allStudents = FetchAllStudents();
   const allProgrammes = FetchAllProgrammes();
-  const allDivisionProgrammes = FetchAllDivisionProgrammes();
   const enrolledStudent = allStudents?.find(
     (std) => std?.uniqueId === studentId
   );
+  const allDivisionProgrammes = FetchAllDivisionProgrammes({
+    programId: enrolledStudent?.studentSchoolData?.program,
+  });
+  // const allDivisionProgrammes = useSelector(getAllDivisionProgrammes);
   const [studentProgramme, setStudentProgramme] = useState("");
+  console.log(allDivisionProgrammes);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -210,6 +215,7 @@ export function EnrollmentSuccessOverview({
     //   )
     // );
   };
+  console.log(studentProgramme);
 
   useEffect(() => {
     if (enrolledStudent?.studentSchoolData?.divisionProgram) {
@@ -228,8 +234,13 @@ export function EnrollmentSuccessOverview({
     }
   }, [enrolledStudent, allProgrammes, allDivisionProgrammes]);
   useEffect(() => {
+    // dispatch(
+    //   fetchAllDivisionProgrammes({
+    //     programId: enrolledStudent?.studentSchoolData?.program?._id,
+    //   })
+    // );
     setDisappear(false);
-  }, [dispatch]);
+  }, [dispatch, enrolledStudent]);
   // useEffect(() => {
   //   setEnroledStudent(enroledStudent);
   // }, [setEnroledStudent, enroledStudent]);
@@ -332,7 +343,7 @@ export function EnrollmentSuccessOverview({
         className="rightWrap"
         width={!isMobile ? "calc(100% - 160px)" : "100%"}
         ml={!isMobile ? "160px" : 0}
-        flexShrink={1}
+        flexShrink={!adminCurrentAction ? 1 : 0}
       >
         {!enrolledStudent?.studentSchoolData?.house && !disappear && (
           <Box className="houseAlert">
@@ -505,21 +516,23 @@ export function EnrollmentSuccessOverview({
                       <img
                         className="studentLecturerImg"
                         src={
-                          enrolledStudent?.studentSchoolData?.classTeacher
-                            ? enrolledStudent?.studentSchoolData?.classTeacher
-                                ?.personalInfo?.profilePicture?.url
+                          enrolledStudent?.studentSchoolData
+                            ?.currentClassTeacher
+                            ? enrolledStudent?.studentSchoolData
+                                ?.currentClassTeacher?.personalInfo
+                                ?.profilePicture?.url
                             : "/assets/noAvatar.png"
                         }
                         alt=""
                       />
                       <p>
-                        {enrolledStudent?.studentSchoolData?.classTeacher
+                        {enrolledStudent?.studentSchoolData?.currentClassTeacher
                           ?.personalInfo?.gender === "Male" && "Mr."}
-                        {enrolledStudent?.studentSchoolData?.classTeacher
+                        {enrolledStudent?.studentSchoolData?.currentClassTeacher
                           ?.personalInfo?.gender === "Female" && "Mrs."}{" "}
-                        {enrolledStudent?.studentSchoolData?.classTeacher
-                          ? enrolledStudent?.studentSchoolData?.classTeacher
-                              ?.personalInfo?.fullName
+                        {enrolledStudent?.studentSchoolData?.currentClassTeacher
+                          ? enrolledStudent?.studentSchoolData
+                              ?.currentClassTeacher?.personalInfo?.fullName
                           : ""}
                       </p>
                     </Box>
