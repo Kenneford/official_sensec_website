@@ -33,11 +33,32 @@ export function LecturersData() {
   );
   const [redirect, setRedirect] = useState(false);
   const [removingLecturer, setRemovingLecturer] = useState(null);
-  const [lecturerToAssign, setLecturerToAssign] = useState("");
-  const [lecturerToRemove, setLecturerToRemove] = useState("");
-  console.log(lecturerToRemove);
+  const [selectedLecturerToAssign, setSelectedLecturerToAssign] = useState("");
+  const [selectedLecturerToRemove, setSelectedLecturerToRemove] = useState("");
+  const [openAssignLecturerModal, setOpenAssignLecturerModal] = useState(false);
+  const [openRemoveLectureModal, setOpenRemoveLectureModal] = useState(false);
+  const [assignLecturerInProgress, setAssignLecturerInProgress] =
+    useState(false);
+  const [removeLectureInProgress, setRemoveLectureInProgress] = useState(false);
+  const [assignLecturerLoadingComplete, setAssignLecturerLoadingComplete] =
+    useState(null);
+  const [removeLecturerLoadingComplete, setRemoveLecturerLoadingComplete] =
+    useState(null);
 
   const allClassLevels = FetchAllClassLevels();
+
+  //Find selected lecturer to assign
+  const lecturerToAssign = allEmployedLecturers?.find(
+    (std) => std?._id === selectedLecturerToAssign
+  );
+
+  //Find selected lecturer to remove
+  const lecturerToRemove = allEmployedLecturers?.find(
+    (std) => std?._id === selectedLecturerToRemove
+  );
+
+  console.log(lecturerToAssign);
+  console.log(redirect);
 
   const columnData = {
     authAdmin,
@@ -49,9 +70,21 @@ export function LecturersData() {
     removingLecturer,
     dispatch,
     lecturerToAssign,
-    setLecturerToAssign,
-    setLecturerToRemove,
+    setSelectedLecturerToAssign,
+    setSelectedLecturerToRemove,
     lecturerToRemove,
+    openAssignLecturerModal,
+    setOpenAssignLecturerModal,
+    openRemoveLectureModal,
+    setOpenRemoveLectureModal,
+    assignLecturerInProgress,
+    setAssignLecturerInProgress,
+    removeLectureInProgress,
+    setRemoveLectureInProgress,
+    assignLecturerLoadingComplete,
+    setAssignLecturerLoadingComplete,
+    removeLecturerLoadingComplete,
+    setRemoveLecturerLoadingComplete,
   };
   const teachersData = teachersColumn(columnData);
   const { adminCurrentAction, adminCurrentLink, class_level, employees_link } =
