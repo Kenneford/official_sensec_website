@@ -8,7 +8,7 @@ export default function RemoveClassLecturerModal({
   removeClassLecturerFunction,
   setLoadingComplete,
   setSelectedLecturerToRemove,
-  selectedLecturerToRemoveId,
+  selectedLecturerToAssignId,
   lecturerDataToAssign,
   lecturerDataToRemove,
 }) {
@@ -25,16 +25,15 @@ export default function RemoveClassLecturerModal({
           }}
         >
           <Box className="previewCont">
-            <p>Assign Student</p>
+            <p>Remove Lecturer</p>
             <Box className="modalActionBtns">
               <button
                 className="employLectBtn"
                 onClick={async () => {
-                  setSelectedLecturerToRemove(selectedLecturerToRemoveId);
-                  if (lecturerDataToAssign && !lecturerDataToRemove) {
+                  setSelectedLecturerToRemove(selectedLecturerToAssignId);
+                  if (lecturerDataToRemove && !lecturerDataToAssign) {
                     dispatch(removeClassLecturerFunction);
                   }
-                  // setLoadingComplete(false);
                   onClose();
                 }}
               >
@@ -62,9 +61,8 @@ RemoveClassLecturerModal.propTypes = {
   onClose: PropTypes.func,
   removeClassLecturerFunction: PropTypes.func,
   setLoadingComplete: PropTypes.func,
-  dispatch: PropTypes.func,
   setSelectedLecturerToRemove: PropTypes.func,
-  selectedLecturerToRemoveId: PropTypes.string,
+  selectedLecturerToAssignId: PropTypes.string,
   lecturerDataToAssign: PropTypes.object,
   lecturerDataToRemove: PropTypes.object,
 };

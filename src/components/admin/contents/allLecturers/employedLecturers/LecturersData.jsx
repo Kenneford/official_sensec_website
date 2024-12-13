@@ -28,18 +28,20 @@ export function LecturersData() {
   const navigate = useNavigate();
   const actionBtns = AllEmployedLecturersPageQuickLinks();
   const dispatch = useDispatch();
-  const { removeLecturerStatus, error } = useSelector(
+  const { assignLecturerStatus, removeLecturerStatus, error } = useSelector(
     (state) => state.classSection
   );
   const [redirect, setRedirect] = useState(false);
   const [removingLecturer, setRemovingLecturer] = useState(null);
+  const [loadingComplete, setLoadingComplete] = useState(null);
   const [selectedLecturerToAssign, setSelectedLecturerToAssign] = useState("");
   const [selectedLecturerToRemove, setSelectedLecturerToRemove] = useState("");
   const [openAssignLecturerModal, setOpenAssignLecturerModal] = useState(false);
-  const [openRemoveLectureModal, setOpenRemoveLectureModal] = useState(false);
+  const [openRemoveLecturerModal, setOpenRemoveLecturerModal] = useState(false);
   const [assignLecturerInProgress, setAssignLecturerInProgress] =
     useState(false);
-  const [removeLectureInProgress, setRemoveLectureInProgress] = useState(false);
+  const [removeLecturerInProgress, setRemoveLecturerInProgress] =
+    useState(false);
   const [assignLecturerLoadingComplete, setAssignLecturerLoadingComplete] =
     useState(null);
   const [removeLecturerLoadingComplete, setRemoveLecturerLoadingComplete] =
@@ -57,7 +59,7 @@ export function LecturersData() {
     (std) => std?._id === selectedLecturerToRemove
   );
 
-  console.log(lecturerToAssign);
+  console.log(lecturerToRemove);
   console.log(redirect);
 
   const columnData = {
@@ -65,6 +67,8 @@ export function LecturersData() {
     redirect,
     setRedirect,
     navigate,
+    loadingComplete,
+    setLoadingComplete,
     removeLecturerStatus,
     setRemovingLecturer,
     removingLecturer,
@@ -75,12 +79,12 @@ export function LecturersData() {
     lecturerToRemove,
     openAssignLecturerModal,
     setOpenAssignLecturerModal,
-    openRemoveLectureModal,
-    setOpenRemoveLectureModal,
+    openRemoveLecturerModal,
+    setOpenRemoveLecturerModal,
     assignLecturerInProgress,
     setAssignLecturerInProgress,
-    removeLectureInProgress,
-    setRemoveLectureInProgress,
+    removeLecturerInProgress,
+    setRemoveLecturerInProgress,
     assignLecturerLoadingComplete,
     setAssignLecturerLoadingComplete,
     removeLecturerLoadingComplete,
@@ -117,44 +121,66 @@ export function LecturersData() {
 
   // Handle unassign lecturer status check
   useEffect(() => {
-    if (removeLecturerStatus === "pending") {
-      setRemovingLecturer(false);
+    if (lecturerToRemove) {
+      setSelectedLecturerToAssign("");
+      if (removeLecturerStatus === "pending") {
+        setRemoveLecturerInProgress(true);
+        setLoadingComplete(false);
+        setAssignLecturerInProgress(false);
+      }
+      if (removeLecturerStatus === "rejected") {
+        setTimeout(() => {
+          error?.errorMessage?.message?.map((err) =>
+            toast.error(err, {
+              position: "top-right",
+              theme: "light",
+              toastId: err,
+            })
+          );
+        }, 2000);
+        setTimeout(() => {
+          setLoadingComplete(null);
+          setAssignLecturerInProgress(false);
+          dispatch(resetRemoveLecturer());
+          setRemoveLecturerInProgress(false);
+        }, 3000);
+        return;
+      }
+      if (removeLecturerStatus === "success") {
+        setTimeout(() => {
+          setLoadingComplete(true);
+          setRemoveLecturerInProgress(false);
+        }, 3000);
+        setTimeout(() => {
+          setLoadingComplete(null);
+          dispatch(resetRemoveLecturer());
+          setAssignLecturerInProgress(false);
+          dispatch(fetchAllUsers());
+          setRemoveLecturerInProgress(false);
+        }, 6000);
+      }
     }
-    if (removeLecturerStatus === "rejected") {
-      setTimeout(() => {
-        error?.errorMessage?.message?.map((err) =>
-          toast.error(err, {
-            position: "top-right",
-            theme: "light",
-            toastId: err,
-          })
-        );
-      }, 2000);
-      setTimeout(() => {
-        setRemovingLecturer(null);
-        dispatch(resetRemoveLecturer());
-      }, 3000);
-      return;
+    if (lecturerToAssign) {
+      setSelectedLecturerToRemove("");
     }
-    if (removeLecturerStatus === "success") {
-      setTimeout(() => {
-        setRemovingLecturer(true);
-      }, 3000);
-      setTimeout(() => {
-        dispatch(resetRemoveLecturer());
-        setRemovingLecturer(null);
-        dispatch(fetchAllUsers());
-      }, 6000);
-    }
-  }, [dispatch, removeLecturerStatus, error]);
+  }, [
+    dispatch,
+    removeLecturerStatus,
+    error,
+    lecturerToRemove,
+    lecturerToAssign,
+  ]);
 
   useEffect(() => {
+    if (assignLecturerStatus === "success") {
+      setSelectedLecturerToAssign("");
+    }
     if (redirect) {
       setTimeout(() => {
         setRedirect(false);
       }, 3000);
     }
-  }, [redirect]);
+  }, [redirect, assignLecturerStatus]);
 
   const allStd = `All Employed Lecturers / Total = ${teachersEmployed?.length}`;
   return (

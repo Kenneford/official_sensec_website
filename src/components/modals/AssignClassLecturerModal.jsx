@@ -9,8 +9,6 @@ export default function AssignClassLecturerModal({
   setAssignLecturerInProgress,
   navigateTo,
   authAdminId,
-  // setSelectedLecturerToAssign,
-  // selectedLecturerToAssignId,
   lecturerDataToAssign,
   lecturerDataToRemove,
 }) {
@@ -27,14 +25,12 @@ export default function AssignClassLecturerModal({
           }}
         >
           <Box className="previewCont">
-            <p>Assign Student</p>
+            <p>Assign Lecturer</p>
             <Box className="modalActionBtns">
               <button
                 className="employLectBtn"
                 onClick={async () => {
-                  setAssignLecturerInProgress(true);
                   if (lecturerDataToAssign && !lecturerDataToRemove) {
-                    // setSelectedLecturerToAssign(selectedLecturerToAssignId);
                     setRedirect(true);
                     setTimeout(() => {
                       navigateTo(
@@ -42,7 +38,6 @@ export default function AssignClassLecturerModal({
                       );
                     }, 3000);
                   }
-                  // setLoadingComplete(false);
                   onClose();
                 }}
               >
@@ -73,8 +68,6 @@ AssignClassLecturerModal.propTypes = {
   navigateTo: PropTypes.func,
   authAdminId: PropTypes.string,
   dispatch: PropTypes.func,
-  // setSelectedLecturerToAssign: PropTypes.func,
-  // selectedLecturerToAssignId: PropTypes.string,
   lecturerDataToAssign: PropTypes.object,
   lecturerDataToRemove: PropTypes.object,
 };
