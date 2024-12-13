@@ -85,6 +85,8 @@ export function EmployeeDataUpdateForm() {
   // Get selected admin ID
   const employeeId = adminCurrentLink;
   const foundAdmin = allEmployees?.find((adm) => adm?.uniqueId === employeeId);
+  console.log(foundAdmin);
+
   // Convert the birth date string to a JavaScript Date object
   const dateObject = foundAdmin?.personalInfo?.dateOfBirth
     ? new Date(foundAdmin?.personalInfo?.dateOfBirth).toISOString()
@@ -104,6 +106,7 @@ export function EmployeeDataUpdateForm() {
     profilePicture: foundAdmin?.personalInfo?.profilePicture?.url,
     // School Data
     typeOfEmployment: foundAdmin?.employment?.employmentType,
+    program: foundAdmin?.lecturerSchoolData?.program?._id,
     classSection: foundAdmin?.lecturerSchoolData?.classLevelHandling?._id,
     // Status
     height: foundAdmin?.status?.height,
@@ -207,6 +210,7 @@ export function EmployeeDataUpdateForm() {
       profilePicture: foundAdmin?.personalInfo?.profilePicture?.url,
       // School Data
       typeOfEmployment: foundAdmin?.employment?.employmentType,
+      program: foundAdmin?.lecturerSchoolData?.program?._id,
       classSection: foundAdmin?.lecturerSchoolData?.classLevelHandling?._id,
       // Status
       height: foundAdmin?.status?.height,
@@ -259,7 +263,7 @@ export function EmployeeDataUpdateForm() {
       mobile: newEmployment?.mobile,
       email: newEmployment?.email,
     };
-    dispatch(newEmployee(data));
+    // dispatch(newEmployee(data));
     console.log(data);
   };
 
@@ -714,6 +718,25 @@ export function EmployeeDataUpdateForm() {
                   </MenuItem>
                 </CustomTextField>
               </Grid>
+              {/* Programme Selection */}
+              {newEmployment?.program && (
+                <Grid item xs={12} sm={6} md={4} lg={4}>
+                  <CustomTextField
+                    select
+                    fullWidth
+                    label="Select Programme"
+                    name="program"
+                    value={newEmployment?.program || ""}
+                    onChange={handleChange}
+                  >
+                    {allProgrammes?.map((programme) => (
+                      <MenuItem key={programme?._id} value={programme?._id}>
+                        {programme?.name}
+                      </MenuItem>
+                    ))}
+                  </CustomTextField>
+                </Grid>
+              )}
               {/* Class Level Selection */}
               <Grid item xs={12} sm={6} md={4} lg={4}>
                 <CustomTextField

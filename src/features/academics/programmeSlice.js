@@ -139,6 +139,10 @@ const programmeSlice = createSlice({
         ...state,
         createStatus: "",
         successMessage: "",
+        error: "",
+        deleteStatus: "",
+        updateStatus: "",
+        fetchingStatus: "",
       };
     },
   },

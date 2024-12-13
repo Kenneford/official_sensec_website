@@ -53,3 +53,13 @@ export const GuardianForm = lazyWithSuspense(
   <PageLoading />,
   "GuardianFormComponent"
 );
+export const AdminStudentEnrollmentSuccessOverview = lazyWithSuspense(
+  () =>
+    import(
+      "../../../pages/enrollment/successPage/AdminStudentEnrollmentSuccessOverview"
+    ).then((module) => {
+      return { default: module.AdminStudentEnrollmentSuccessOverview };
+    }),
+  <PageLoading />,
+  "AdminStudentEnrollmentSuccessOverviewComponent"
+);

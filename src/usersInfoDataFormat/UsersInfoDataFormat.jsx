@@ -22,6 +22,8 @@ import PromotionsModal from "../components/modals/PromotionsModal";
 import DemotionsModal from "../components/modals/DemotionsModal";
 import { Close } from "@mui/icons-material";
 import { removeClassSectionLecturer } from "../features/academics/classSectionSlice";
+import AssignClassLecturerModal from "../components/modals/AssignClassLecturerModal";
+import RemoveClassLecturerModal from "../components/modals/RemoveClassLecturerModal";
 
 const adminsColumn = (authAdmin) => {
   const hangingAdminsColumn = [
@@ -1500,25 +1502,21 @@ const teachersColumn = (columnData) => {
                 onClick={(e) => {
                   e.preventDefault();
                   if (!columnData?.redirect) {
-                    columnData?.setLecturerToAssign(row?.uniqueId);
-                    columnData?.setRedirect(true);
+                    columnData?.setSelectedLecturerToAssign(row?._id);
+                    columnData?.setOpenAssignLecturerModal(true);
+                    columnData?.setOpenRemoveLectureModal(false);
                     localStorage?.setItem("lecturerId", row?.uniqueId);
-                    setTimeout(() => {
-                      columnData?.navigate(
-                        `/sensec/users/${columnData?.authAdmin?.uniqueId}/admin/User_Types/Lecturers/employees/assign_class`
-                      );
-                    }, 3000);
                   }
                 }}
               >
                 {!columnData?.redirect &&
-                  !columnData?.lecturerToAssign &&
+                  !columnData?.assignLecturerInProgress &&
                   "Assign Class"}
                 {columnData?.redirect &&
-                  columnData?.lecturerToAssign !== row?.uniqueId &&
+                  columnData?.lecturerToAssign?._id !== row?._id &&
                   "Assign Class"}
                 {columnData?.redirect &&
-                  columnData?.lecturerToAssign === row?.uniqueId && (
+                  columnData?.lecturerToAssign?._id === row?._id && (
                     <Box
                       className="promotionSpinner"
                       sx={
@@ -1633,6 +1631,40 @@ const teachersColumn = (columnData) => {
                 )}
             </>
           )}
+          {columnData?.lecturerToAssign &&
+            columnData?.lecturerToAssign._id === row._id && (
+              <AssignClassLecturerModal
+                open={columnData?.openAssignLecturerModal}
+                onClose={() => columnData?.setOpenAssignLecturerModal(false)}
+                setRedirect={columnData?.setRedirect}
+                setAssignLecturerInProgress={
+                  columnData?.setAssignLecturerInProgress
+                }
+                navigateTo={columnData?.navigate}
+                authAdminId={columnData?.authAdmin?.uniqueId}
+                // setSelectedLecturerToAssign={columnData?.setLecturerToAssign}
+                selectedLecturerToAssignId={row?._id}
+                lecturerDataToAssign={columnData?.lecturerToAssign}
+                lecturerDataToRemove={columnData?.lecturerToRemove}
+              />
+            )}
+          {columnData?.lecturerToRemove &&
+            columnData?.lecturerToRemove._id === row._id && (
+              <RemoveClassLecturerModal
+                open={columnData?.openRemoveLecturerModal}
+                onClose={() => columnData?.setOpenRemoveLectureModal(false)}
+                setRedirect={columnData?.setRedirect}
+                setRemoveLecturerInProgress={
+                  columnData?.setRemoveLecturerInProgress
+                }
+                // navigateTo={columnData?.navigate}
+                // authAdminId={columnData?.authAdmin?.uniqueId}
+                // setSelectedLecturerToAssign={columnData?.setLecturerToAssign}
+                selectedLecturerToAssignId={row?._id}
+                lecturerDataToAssign={columnData?.lecturerToAssign}
+                lecturerDataToRemove={columnData?.lecturerToRemove}
+              />
+            )}
         </Box>
       ),
     },

@@ -73,45 +73,31 @@ export const ContainerBox = styled(Box)({
   flexDirection: "column",
 });
 export const CustomTextField = styled(TextField)({
-  "& .css-wq8qsl-MuiFormHelperText-root": {
-    // marginLeft: 0,
-    // position: "absolute",
-    // bottom: "-1.3rem",
+  "& .MuiInputLabel-root": {
+    fontSize: "14px", // Default label size
+    transition: "font-size 0.2s, color 0.2s",
   },
-  // Select field
-  // "& .css-15k6ek6-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.css-15k6ek6-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.css-15k6ek6-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input":
-  //   {
-  //     padding: ".8rem",
-  //     marginTop: ".5rem",
-  //   },
-  // // Text field
-  // "& .css-1jk99ih-MuiInputBase-input-MuiOutlinedInput-input": {
-  //   padding: ".8rem",
-  //   marginTop: ".5rem",
-  // },
-  // // Password Input
-  // "& .css-lc42l8-MuiInputBase-input-MuiOutlinedInput-input": {
-  //   padding: ".8rem",
-  //   marginTop: ".5rem",
-  // },
   // Border styles for focused state
   "& .MuiOutlinedInput-root": {
-    // boxShadow: "2px 2px 3px 0px #454343ad",
     "&.Mui-focused fieldset": {
       borderColor: "#454343ad", // Change focus border color
       boxShadow: "2px 2px 3px 0px #454343ad",
     },
     // Border styles for hover
     "&:hover fieldset": {
-      border: ".5px solid #454343ad", // Disable border on hover
+      border: ".5px solid #454343ad", // Border on hover
       boxShadow: "2px 2px 3px 0px #1a0505ad",
     },
   },
-  // Label color on focus
+  // Label size and color for focused state
   "& .MuiInputLabel-root.Mui-focused": {
-    fontSize: "1.05rem",
+    fontSize: "1.05rem", // Larger size on focus
     color: "#454343ad", // Custom focus label color
-    borderColor: "transparent",
+  },
+  // Shrinked label (when value exists)
+  "& .MuiInputLabel-root.MuiFormLabel-filled": {
+    fontSize: "1.05rem", // Matches focused label size
+    color: "#454343ad",
   },
   // Target the required asterisk
   "& .MuiInputLabel-asterisk": {

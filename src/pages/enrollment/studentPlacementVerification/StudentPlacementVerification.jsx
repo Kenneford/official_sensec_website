@@ -154,7 +154,7 @@ export function StudentPlacementVerification() {
           );
         } else {
           navigate(
-            `/sensec/students/${foundPlacementStudent?.enrollmentId}/enrollment/online/success`
+            `/sensec/students/enrollment/online/${foundPlacementStudent?.enrollmentId}/success`
           );
         }
       }, 7000);
