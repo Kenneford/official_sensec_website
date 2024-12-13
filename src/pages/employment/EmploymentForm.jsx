@@ -44,6 +44,7 @@ import {
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
+import dayjs from "dayjs";
 
 export function EmploymentForm() {
   const dispatch = useDispatch();
@@ -479,6 +480,7 @@ export function EmploymentForm() {
                     // inputFormat="MM/dd/yyyy"
                     value={newEmployment?.dateOfBirth || {}}
                     onChange={(date) => handleDateChange("dateOfBirth", date)}
+                    maxDate={new Date()}
                     renderInput={(params) => <CustomTextField {...params} />}
                     sx={{
                       width: "100%",
