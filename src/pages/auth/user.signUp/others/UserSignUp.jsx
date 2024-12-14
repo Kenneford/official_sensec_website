@@ -199,6 +199,7 @@ export function UserSignUp() {
         setRedirecting(true);
       }, 5000);
       setTimeout(() => {
+        localStorage.setItem("signUpId", userFound?.uniqueId);
         navigate(
           `/sensec/sign_up/${signUpAction}/${userFound?.uniqueId}/successful`
         );

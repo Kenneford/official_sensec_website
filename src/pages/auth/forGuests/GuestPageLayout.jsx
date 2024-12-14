@@ -18,6 +18,7 @@ import {
   Login,
   LoginOptions,
   SignUpContainer,
+  SignUpSuccessPage,
 } from "../../../components/lazyLoading/auth/AuthLazyComponents";
 import SearchForm from "../../../components/searchForm/SearchForm";
 
@@ -121,6 +122,10 @@ export function GuestPageLayout() {
       {location?.pathname === "/sensec/login" && <Login />}
       {location?.pathname === "/sensec/login_options" && <LoginOptions />}
       {location?.pathname === "/sensec/new_employment" && <EmploymentForm />}
+      {location?.pathname ===
+        "/sensec/sign_up/partners/ADM-55421JE-2024/successful" && (
+        <SignUpSuccessPage />
+      )}
     </Box>
   );
 }
