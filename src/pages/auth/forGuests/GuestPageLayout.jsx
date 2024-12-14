@@ -25,6 +25,9 @@ import SearchForm from "../../../components/searchForm/SearchForm";
 export function GuestPageLayout() {
   const { currentGuestPage, uniqueId } = useParams();
   const signUpAction = localStorage.getItem("loginAction");
+  const signUpId = localStorage.getItem("signUpId");
+  console.log(signUpId);
+
   const navigate = useNavigate();
   const location = useLocation();
   const {
@@ -123,7 +126,7 @@ export function GuestPageLayout() {
       {location?.pathname === "/sensec/login_options" && <LoginOptions />}
       {location?.pathname === "/sensec/new_employment" && <EmploymentForm />}
       {location?.pathname ===
-        "/sensec/sign_up/partners/ADM-55421JE-2024/successful" && (
+        `/sensec/sign_up/partners/${signUpId}/successful` && (
         <SignUpSuccessPage />
       )}
     </Box>

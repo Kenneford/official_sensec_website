@@ -14,6 +14,8 @@ import { NavigationBar } from "../../../../components/navbar/NavigationBar";
 
 export function SignUpSuccessPage() {
   const signUpId = localStorage.getItem("signUpId");
+  console.log(signUpId);
+
   const allUsers = FetchAllUsers();
 
   const currentYear = new Date().getFullYear();

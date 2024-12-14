@@ -93,10 +93,10 @@ export default function PageNavigation() {
             // { path: "*", element: <PageNotFound /> },
           ],
         },
-        {
-          path: "sensec/sign_up/users/:signUpAction/:uniqueId/successful",
-          element: <SignUpSuccessPage />,
-        },
+        // {
+        //   path: "sensec/sign_up/users/:signUpAction/:uniqueId/successful",
+        //   element: <SignUpSuccessPage />,
+        // },
         // {
         //   path: "sensec/sign_up/successful/:uniqueId",
         //   element: <SignUpSuccessPage />,
