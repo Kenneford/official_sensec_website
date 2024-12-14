@@ -140,8 +140,8 @@ export function PlacementCheckOverview() {
       const formattedStudent = {
         ...foundStudent,
         dateOfBirth: dayjs(foundStudent.dateOfBirth).isValid()
-          ? dayjs(foundStudent.dateOfBirth)
-          : null,
+          ? dayjs(foundStudent?.dateOfBirth)
+          : dayjs("MM/DD/YYYY"),
       };
       setPlacementStudent(formattedStudent);
     } else {
@@ -439,7 +439,7 @@ export function PlacementCheckOverview() {
                           lg={4}
                           className="changeDOBWrap"
                         >
-                          {!changeDOB && (
+                          {/* {!changeDOB && (
                             <CustomTextField
                               fullWidth
                               label="Date Of Birth"
@@ -472,46 +472,46 @@ export function PlacementCheckOverview() {
                               onClick={() => setChangeDOB(true)}
                               className="dOBBtn"
                             />
-                          )}
-                          {changeDOB && (
-                            <CustomMobileDatePicker
-                              label={
-                                <span>
-                                  Date of Birth{" "}
-                                  <span
-                                    style={{
-                                      color: !foundStudent?.dateOfBirth
-                                        ? "red"
-                                        : "green", // Dynamically set the asterisk color
-                                      marginRight: "8px",
-                                    }}
-                                  >
-                                    *
-                                  </span>
+                          )} */}
+                          {/* {changeDOB && ( */}
+                          <CustomMobileDatePicker
+                            label={
+                              <span>
+                                Date of Birth{" "}
+                                <span
+                                  style={{
+                                    color: !foundStudent?.dateOfBirth
+                                      ? "red"
+                                      : "green", // Dynamically set the asterisk color
+                                    marginRight: "8px",
+                                  }}
+                                >
+                                  *
                                 </span>
-                              }
-                              name="dateOfBirth"
-                              // inputFormat="MM/dd/yyyy"
-                              value={placementStudent?.dateOfBirth || dayjs()}
-                              onChange={handleDateChange}
-                              maxDate={dayjs()}
-                              renderInput={(params) => (
-                                <CustomTextField {...params} />
-                              )}
-                              required
-                              error={false} // Make sure this is false
-                              helperText="" // Optionally clear helper text
-                              sx={{
-                                width: "100%",
-                                cursor: "pointer",
-                                "& .MuiInputLabel-asterisk": {
-                                  color: foundStudent?.dateOfBirth
-                                    ? "green"
-                                    : "red", // Change the asterisk color to red
-                                },
-                              }}
-                            />
-                          )}
+                              </span>
+                            }
+                            name="dateOfBirth"
+                            // inputFormat="MM/dd/yyyy"
+                            value={placementStudent?.dateOfBirth}
+                            onChange={handleDateChange}
+                            maxDate={dayjs()}
+                            renderInput={(params) => (
+                              <CustomTextField {...params} />
+                            )}
+                            required
+                            error={false} // Make sure this is false
+                            helperText="" // Optionally clear helper text
+                            sx={{
+                              width: "100%",
+                              cursor: "pointer",
+                              "& .MuiInputLabel-asterisk": {
+                                color: foundStudent?.dateOfBirth
+                                  ? "green"
+                                  : "red", // Change the asterisk color to red
+                              },
+                            }}
+                          />
+                          {/* )} */}
                           {/* {changeDOB && !foundStudent && (
                             <CustomMobileDatePicker
                               // label="Date Of Birth"
