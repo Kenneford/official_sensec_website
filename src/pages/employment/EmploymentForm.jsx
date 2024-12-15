@@ -410,6 +410,7 @@ export function EmploymentForm() {
               alignItems: "center",
               gap: "2rem",
               padding: ".5rem 0",
+              fontSize: "calc(0.7rem + 1vmin)",
             }}
           >
             <Grid container spacing={3}>

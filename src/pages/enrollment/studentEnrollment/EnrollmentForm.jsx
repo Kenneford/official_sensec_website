@@ -497,6 +497,7 @@ export function EnrollmentForm() {
               alignItems: "center",
               gap: "2rem",
               padding: ".5rem 0",
+              fontSize: "calc(0.7rem + 1vmin)",
             }}
           >
             {/* <Avatar

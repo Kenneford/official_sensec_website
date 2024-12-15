@@ -39,6 +39,8 @@ import {
 } from "../../../data/programme/FetchProgrammeData";
 import SmallFooter from "../../../components/footer/SmallFooter";
 import { fetchAllDivisionProgrammes } from "../../../features/academics/programmeSlice";
+import { Link } from "react-router-dom";
+import { HashLink } from "react-router-hash-link";
 
 export function EnrollmentSuccessOverview({
   setEnroledStudent,
@@ -46,7 +48,8 @@ export function EnrollmentSuccessOverview({
   currentEnrolmentSuccessLink,
 }) {
   const studentUniqueId = localStorage.getItem("studentUniqueId");
-  const { studentId, adminCurrentAction } = useParams();
+  const { studentId, adminCurrentAction, current_link } = useParams();
+  console.log(current_link);
 
   const currentYear = new Date().getFullYear();
   const allStudents = FetchAllStudents();
@@ -61,6 +64,20 @@ export function EnrollmentSuccessOverview({
   const [studentProgramme, setStudentProgramme] = useState("");
   console.log(allDivisionProgrammes);
 
+  const links = [
+    {
+      name: "Overview",
+      ulr: `/sensec/students/enrollment/online/${enrolledStudent?.uniqueId}/success/Overview`,
+    },
+    {
+      name: "View Profile",
+      ulr: `/sensec/students/enrollment/online/${enrolledStudent?.uniqueId}/success/View_Profile`,
+    },
+    {
+      name: "Update",
+      ulr: `/sensec/students/enrollment/online/${enrolledStudent?.uniqueId}/success/Update`,
+    },
+  ];
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [hovered, setHovered] = useState(false);
@@ -335,6 +352,22 @@ export function EnrollmentSuccessOverview({
                   </Collapse>
                 )}
               </Box>
+            </Box>
+            <Box className="links">
+              {links?.map((link) => (
+                <HashLink
+                  to={link?.ulr}
+                  key={link?.name}
+                  className={
+                    current_link &&
+                    current_link?.replace(/_/g, " ") !== link?.name
+                      ? "link"
+                      : "link active"
+                  }
+                >
+                  {link?.name}
+                </HashLink>
+              ))}
             </Box>
           </Drawer>
         )}
