@@ -26,7 +26,7 @@ export function GuestPageLayout() {
   const { currentGuestPage, uniqueId } = useParams();
   const signUpAction = localStorage.getItem("loginAction");
   const signUpId = localStorage.getItem("signUpId");
-  console.log(signUpId);
+  console.log(currentGuestPage);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -125,10 +125,10 @@ export function GuestPageLayout() {
       {location?.pathname === "/sensec/login" && <Login />}
       {location?.pathname === "/sensec/login_options" && <LoginOptions />}
       {location?.pathname === "/sensec/new_employment" && <EmploymentForm />}
-      {location?.pathname ===
+      {/* {location?.pathname ===
         `/sensec/sign_up/partners/${signUpId}/successful` && (
         <SignUpSuccessPage />
-      )}
+      )} */}
     </Box>
   );
 }
