@@ -74,24 +74,26 @@ export const ContainerBox = styled(Box)({
 });
 export const CustomTextField = styled(TextField)({
   "& .MuiInputLabel-root": {
-    fontSize: "14px", // Default label size
+    fontSize: ".9em", // Default label size
     transition: "font-size 0.2s, color 0.2s",
   },
   // Border styles for focused state
   "& .MuiOutlinedInput-root": {
+    fontSize: ".9em",
     "&.Mui-focused fieldset": {
       borderColor: "#454343ad", // Change focus border color
       boxShadow: "2px 2px 3px 0px #454343ad",
     },
     // Border styles for hover
     "&:hover fieldset": {
+      fontSize: "1.05em",
       border: ".5px solid #454343ad", // Border on hover
       boxShadow: "2px 2px 3px 0px #1a0505ad",
     },
   },
   // Label size and color for focused state
   "& .MuiInputLabel-root.Mui-focused": {
-    fontSize: "1.05rem", // Larger size on focus
+    fontSize: "1.05em", // Larger size on focus
     color: "#454343ad", // Custom focus label color
   },
   // Shrinked label (when value exists)

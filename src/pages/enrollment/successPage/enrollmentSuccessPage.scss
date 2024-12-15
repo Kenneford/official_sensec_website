@@ -407,6 +407,22 @@
       }
     }
   }
+  .links {
+    display: flex;
+    flex-direction: column;
+    padding-top: 0.5rem;
+    .link {
+      color: #ccc;
+      font-size: 0.7em;
+      padding: 0.5rem;
+      &:hover {
+        background-color: #5e5e5e;
+      }
+    }
+    .link.active {
+      background-color: #383838;
+    }
+  }
   #sidebarContentWrap {
     width: 100%;
     height: 89vh;
@@ -893,5 +909,29 @@
     position: fixed;
     bottom: 0;
     width: 80%;
+  }
+  .tableContainer {
+    h3 {
+      font-size: 1em;
+      color: #696969;
+      margin-bottom: 0.5rem;
+      padding-left: 2rem;
+    }
+    .tableHeader {
+      background-color: #555;
+      .headerCell {
+        color: #fff;
+        padding: 0.6rem 1rem;
+        font-size: 0.9em;
+        // text-align: center;
+      }
+    }
+    .tableBody {
+      .bodyCell {
+        padding: 0.4rem 1rem;
+        font-size: 0.7em;
+        // text-align: center;
+      }
+    }
   }
 }

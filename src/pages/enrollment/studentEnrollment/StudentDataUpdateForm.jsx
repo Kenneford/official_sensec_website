@@ -35,8 +35,9 @@ export function StudentDataUpdateForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const authUser = useSelector(getAuthUser);
-  const { studentIndexNo, adminCurrentAction, adminCurrentLink } = useParams();
-  const studentId = adminCurrentLink;
+  const { studentIndexNo, adminCurrentAction, adminCurrentLink, studentId } =
+    useParams();
+  const studentUniqueId = adminCurrentLink || studentId;
   const allStudents = FetchAllStudents();
   const allProgrammes = FetchAllProgrammes();
   const allClassLevels = FetchAllClassLevels();
@@ -51,7 +52,9 @@ export function StudentDataUpdateForm() {
   const [redirecting, setRedirecting] = useState("");
 
   //   console.log(foundStudent);
-  const foundStudent = allStudents?.find((std) => std?.uniqueId === studentId);
+  const foundStudent = allStudents?.find(
+    (std) => std?.uniqueId === studentUniqueId
+  );
 
   // Convert the birth date string to a JavaScript Date object
   const dateObject = foundStudent?.personalInfo?.dateOfBirth
@@ -276,6 +279,19 @@ export function StudentDataUpdateForm() {
           position: "relative",
         }}
       >
+        {studentId && (
+          <Typography
+            variant="h6"
+            sx={{
+              textTransform: "uppercase",
+              textAlign: "center",
+              color: "#696969",
+              fontSize: "1em",
+            }}
+          >
+            Update Data
+          </Typography>
+        )}
         <Box
           component="div"
           id="enrollmentFormWrap"
@@ -298,6 +314,7 @@ export function StudentDataUpdateForm() {
               alignItems: "center",
               gap: "2rem",
               padding: ".5rem 0",
+              fontSize: "calc(0.7rem + 1vmin)",
             }}
           >
             <Grid container spacing={3}>

@@ -141,6 +141,16 @@ export const EnrollmentPage = lazyWithSuspense(
   <PageLoading />,
   "EnrollmentPage"
 );
+export const EnrollmentSuccessLinksContainer = lazyWithSuspense(
+  () =>
+    import(
+      "../../pages/enrollment/successPage/sidebar_links/linkContainer/EnrollmentSuccessLinksContainer"
+    ).then((module) => {
+      return { default: module.EnrollmentSuccessLinksContainer };
+    }),
+  <PageLoading />,
+  "EnrollmentSuccessLinksContainer"
+);
 export const EnrollmentSuccessOverview = lazyWithSuspense(
   () =>
     import("../../pages/enrollment/successPage/EnrollmentSuccessOverview").then(
@@ -150,6 +160,26 @@ export const EnrollmentSuccessOverview = lazyWithSuspense(
     ),
   <PageLoading />,
   "EnrollmentSuccessOverview"
+);
+export const StudentDataOverview = lazyWithSuspense(
+  () =>
+    import("../../pages/enrollment/successPage/StudentDataOverview").then(
+      (module) => {
+        return { default: module.StudentDataOverview };
+      }
+    ),
+  <PageLoading />,
+  "StudentDataOverview"
+);
+export const UpdateEnrollmentData = lazyWithSuspense(
+  () =>
+    import("../../pages/enrollment/successPage/UpdateEnrollmentData").then(
+      (module) => {
+        return { default: module.UpdateEnrollmentData };
+      }
+    ),
+  <PageLoading />,
+  "UpdateEnrollmentData"
 );
 export const EmploymentForm = lazyWithSuspense(
   () =>
