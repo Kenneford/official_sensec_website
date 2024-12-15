@@ -1,6 +1,6 @@
 import { Box, Collapse, Typography } from "@mui/material";
 import PropTypes from "prop-types";
-import "./adminSidebar.scss";
+// import "./adminSidebar.scss";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchAllUsers,
@@ -8,15 +8,12 @@ import {
   getAuthUser,
 } from "../../../features/auth/authSlice";
 import { useEffect } from "react";
-import { AdminDashboardLinks } from "./admin.sidebar.links/AdminDashboardLinks";
-import { ActionsLinks } from "./admin.sidebar.links/ActionsLinks";
-import { UsersLinks } from "./admin.sidebar.links/UsersLinks";
-import { AdminAttendanceLinks } from "./admin.sidebar.links/AdminAttendanceLinks";
-import { AssessmentLinks } from "./admin.sidebar.links/AssessmentLinks";
-import { AccountLinks } from "./admin.sidebar.links/AccountLinks";
 import { FetchAllUsers } from "../../../data/allUsers/FetchAllUsers";
+import { LecturerDashboardLinks } from "./lecturer.sidebar.links/LecturerDashboardLinks";
+import { LecturerAttendanceLinks } from "./lecturer.sidebar.links/LecturerAttendanceLinks";
+import { AccountLinks } from "./lecturer.sidebar.links/AccountLinks";
 
-export function AdminSidebar({ hovered, currentTerm, currentAcademicYear }) {
+export function LecturerSidebar({ hovered, currentTerm, currentAcademicYear }) {
   const dispatch = useDispatch();
   const authUser = useSelector(getAuthUser);
   const allUsers = FetchAllUsers();
@@ -95,10 +92,8 @@ export function AdminSidebar({ hovered, currentTerm, currentAcademicYear }) {
                 {authUser?.personalInfo?.gender === "Male" ? "Mr." : "Mrs."}{" "}
                 {authUser?.personalInfo?.lastName}
               </span>
-              {authUser && authAdminInfo?.status.positionHolding && (
-                <Typography>
-                  ({authAdminInfo?.status.positionHolding})
-                </Typography>
+              {authUser?.status?.positionHolding && (
+                <Typography>({authUser?.status?.positionHolding})</Typography>
               )}
             </Collapse>
           )}
@@ -119,28 +114,18 @@ export function AdminSidebar({ hovered, currentTerm, currentAcademicYear }) {
           }}
         >
           {/* Add content that overflows */}
-          <div className="sidebarContentLinksWrap">
-            {/* Dashboard */}
-            <AdminDashboardLinks hovered={hovered} />
-            {/* Actions */}
-            <ActionsLinks hovered={hovered} />
-            {/* Users */}
-            <UsersLinks hovered={hovered} />
-            {/* Attendance */}
-            <AdminAttendanceLinks hovered={hovered} />
-            {/* Assessment */}
-            <AssessmentLinks hovered={hovered} />
-            {/* Account */}
-
+          <Box className="sidebarContentLinksWrap">
+            <LecturerDashboardLinks hovered={hovered} />
+            <LecturerAttendanceLinks hovered={hovered} />
             <AccountLinks hovered={hovered} />
-          </div>
+          </Box>
         </Box>
       </Box>
     </>
   );
 }
 
-AdminSidebar.propTypes = {
+LecturerSidebar.propTypes = {
   hovered: PropTypes.bool,
   currentTerm: PropTypes.object,
   currentAcademicYear: PropTypes.object,

@@ -2,7 +2,6 @@ import { Box, Button, Drawer, Typography } from "@mui/material";
 import "./sidebar.scss";
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { AdminSidebar } from "../lazyLoading/admin/AdminLazyLoadingComponents";
 import { StudentSideBar } from "./student/StudentSideBar";
 import { useDispatch, useSelector } from "react-redux";
 import { getAuthUser, userLogout } from "../../features/auth/authSlice";
@@ -13,6 +12,9 @@ import {
   FetchCurrentAcademicTerms,
 } from "../../data/term.year/FetchAcademicTerms";
 import { FetchCurrentAcademicYear } from "../../data/term.year/FetchAcademicYears";
+import { LecturerDashboard } from "../lecturer/LecturerDashboard";
+import { AdminSidebar } from "./admin/AdminSidebar";
+import { LecturerSidebar } from "./lecturer/LecturerSidebar";
 // import { AdminSidebar } from "../lazyLoading/admin/AdminLazyLoadingComponents";
 // import AdminSidebar from "./admin/AdminSidebar";
 
@@ -28,6 +30,7 @@ export function SideBar({
   drawerWidthExpanded,
 }) {
   const authUser = useSelector(getAuthUser);
+  console.log(authUser);
   const currentTerm = FetchCurrentAcademicTerms();
   const currentAcademicYear = FetchCurrentAcademicYear();
 
@@ -99,6 +102,18 @@ export function SideBar({
     >
       {authUser?.roles?.includes("admin") && (
         <AdminSidebar
+          isSidebarOpen={isSidebarOpen}
+          toggleSidebar={toggleSidebar}
+          setCurrentAction={setCurrentAction}
+          setCurrentLink={setCurrentLink}
+          navbar={navbar}
+          hovered={hovered}
+          currentTerm={currentTerm}
+          currentAcademicYear={currentAcademicYear}
+        />
+      )}
+      {authUser?.roles?.includes("lecturer") && (
+        <LecturerSidebar
           isSidebarOpen={isSidebarOpen}
           toggleSidebar={toggleSidebar}
           setCurrentAction={setCurrentAction}

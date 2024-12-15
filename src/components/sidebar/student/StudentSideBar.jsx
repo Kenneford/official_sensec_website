@@ -45,6 +45,7 @@ import {
 } from "../../../features/auth/authSlice";
 import { useEffect } from "react";
 import { FetchAllProgrammes } from "../../../data/programme/FetchProgrammeData";
+import { FetchAllUsers } from "../../../data/allUsers/FetchAllUsers";
 
 export function StudentSideBar({
   isSidebarOpen,
@@ -55,7 +56,7 @@ export function StudentSideBar({
 }) {
   const dispatch = useDispatch();
   const authUser = useSelector(getAuthUser);
-  const allUsers = useSelector(getAllUsers);
+  const allUsers = FetchAllUsers();
   const allProgrammes = FetchAllProgrammes();
   // Find logged in student
   const studentInfo = allUsers?.find(

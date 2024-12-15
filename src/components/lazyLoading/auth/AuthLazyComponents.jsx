@@ -8,7 +8,7 @@ export const AuthUserDashboard = lazyWithSuspense(
       return { default: module.AuthUserDashboard };
     }),
   <PageLoading />,
-  "AdminDashboard"
+  "AuthUserDashboard"
 );
 export const UserDashboardLayout = lazyWithSuspense(
   () =>
