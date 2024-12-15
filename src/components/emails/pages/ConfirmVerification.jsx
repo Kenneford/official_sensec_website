@@ -161,7 +161,6 @@ export function ConfirmVerification() {
         }}
       >
         Loading data...
-        {/* <LoadingProgress color={"#696969"} size={"1.3rem"} /> */}
       </h3>
     );
   }

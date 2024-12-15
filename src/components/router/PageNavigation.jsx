@@ -37,6 +37,7 @@ import {
   NewDataContainer,
   StudentsCategories,
   UserTypesContainer,
+  Blogs,
 } from "../lazyLoading/admin/AdminLazyLoadingComponents";
 import FakeDashboard from "../admin/contents/overview/FakeDashboard";
 import {
@@ -49,6 +50,7 @@ import {
 } from "../lazyLoading/student/StudentsLazyLoadingComponents";
 import { useSelector } from "react-redux";
 import { getAuthUser } from "../../features/auth/authSlice";
+import { LecturerDashboard } from "../lazyLoading/lecturer/LecturerLazyComponents";
 
 export default function PageNavigation() {
   const authUser = useSelector(getAuthUser);
@@ -96,9 +98,13 @@ export default function PageNavigation() {
           ],
         },
         // {
-        //   path: "sensec/sign_up/users/:signUpAction/:uniqueId/successful",
-        //   element: <SignUpSuccessPage />,
+        //   path: "/sensec/blog",
+        //   element: <Blogs />,
         // },
+        {
+          path: "/sensec/sign_up/:signUpAction/:uniqueId/successful",
+          element: <SignUpSuccessPage />,
+        },
         // {
         //   path: "sensec/sign_up/successful/:uniqueId",
         //   element: <SignUpSuccessPage />,
@@ -242,6 +248,13 @@ export default function PageNavigation() {
                     },
                     { path: "*", element: <PageNotFound /> },
                   ],
+                },
+                // Lecturer Dashboard
+                {
+                  path: "lecturer/:lecturerCurrentAction/:lecturerCurrentLink",
+                  element: authUser?.roles?.includes("lecturer") && (
+                    <LecturerDashboard />
+                  ),
                 },
                 // Student Dashboard
                 {

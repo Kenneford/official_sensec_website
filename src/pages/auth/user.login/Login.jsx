@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "./login.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useLayoutEffect, useState } from "react";
@@ -25,6 +25,7 @@ import LoadingProgress from "../../../components/pageLoading/LoadingProgress";
 export function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const loginAction = localStorage.getItem("loginAction");
 
   // Redux state management
@@ -229,6 +230,17 @@ export function Login() {
       );
     }
   }, [authUser, navigate]);
+
+  useEffect(() => {
+    // Navigation home when loginAction does not exist
+    if (!localStorage.getItem("loginAction")) {
+      navigate("/");
+    }
+    // Remove loginAction on page navigation
+    return () => {
+      localStorage.removeItem("loginAction");
+    };
+  }, [navigate, location]);
 
   return (
     <Box

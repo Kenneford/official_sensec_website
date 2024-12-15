@@ -1,35 +1,9 @@
-import { Avatar, Box, Typography } from "@mui/material";
-import {
-  useLocation,
-  useNavigate,
-  useOutletContext,
-  useParams,
-} from "react-router-dom";
-import {
-  About,
-  Contact,
-  Courses,
-  EmploymentForm,
-  Home,
-  NavigationBar,
-  PageNotFound,
-} from "../../../components/lazyLoading/LazyComponents";
-import {
-  Login,
-  LoginOptions,
-  SignUpContainer,
-  SignUpSuccessPage,
-} from "../../../components/lazyLoading/auth/AuthLazyComponents";
-import SearchForm from "../../../components/searchForm/SearchForm";
+import { Avatar, Box, Stack, Typography } from "@mui/material";
+import { useNavigate, useOutletContext } from "react-router-dom";
+import { NavigationBar } from "../navbar/NavigationBar";
 
-export function GuestPageLayout() {
-  const { currentGuestPage, uniqueId } = useParams();
-  const signUpAction = localStorage.getItem("loginAction");
-  const signUpId = localStorage.getItem("signUpId");
-  console.log(currentGuestPage);
-
+export function LecturerDashboard() {
   const navigate = useNavigate();
-  const location = useLocation();
   const {
     currentAction,
     setCurrentAction,
@@ -43,14 +17,18 @@ export function GuestPageLayout() {
     openSignUpActions,
     setOpenMenuLinks,
     openMenuLinks,
+    isSidebarOpen,
     openSearchModal,
     setOpenSearchModal,
+    hovered,
+    setHovered,
+    drawerWidthCollapsed,
+    drawerWidthExpanded,
   } = useOutletContext();
 
   return (
     <Box>
-      {/* School Logo */}
-      <Box
+      <Stack
         direction="column"
         sx={{
           display: "flex",
@@ -88,17 +66,8 @@ export function GuestPageLayout() {
             </Typography>
           </Box>
         </Box>
-      </Box>
-      {/* Main navbar links */}
-      <Box
-        sx={{
-          position: "sticky",
-          top: 0,
-          backgroundColor: "#fff",
-          padding: 0,
-          zIndex: 3,
-        }}
-      >
+      </Stack>
+      <Box>
         <NavigationBar
           setOpenSubNavLinks={setOpenSubNavLinks}
           openSubNavLinks={openSubNavLinks}
@@ -112,23 +81,11 @@ export function GuestPageLayout() {
           setCurrentAction={setCurrentAction}
           currentLink={currentLink}
           setCurrentLink={setCurrentLink}
+          isSidebarOpen={isSidebarOpen}
           openSearchModal={openSearchModal}
           setOpenSearchModal={setOpenSearchModal}
         />
       </Box>
-      {location?.pathname === "/sensec/homepage" && <Home />}
-      {location?.pathname === "/sensec/about" && <About />}
-      {location?.pathname === "/sensec/courses" && <Courses />}
-      {location?.pathname === "/sensec/contact" && <Contact />}
-      {location?.pathname === "/sensec/sign_up/partners" && <SignUpContainer />}
-      {location?.pathname === "/sensec/sign_up/students" && <SignUpContainer />}
-      {location?.pathname === "/sensec/login" && <Login />}
-      {location?.pathname === "/sensec/login_options" && <LoginOptions />}
-      {location?.pathname === "/sensec/new_employment" && <EmploymentForm />}
-      {/* {location?.pathname ===
-        `/sensec/sign_up/partners/${signUpId}/successful` && (
-        <SignUpSuccessPage />
-      )} */}
     </Box>
   );
 }

@@ -45,6 +45,13 @@ export function VerificationTimeOut() {
     }, 6000);
   };
 
+  useEffect(() => {
+    // Delete user's old signup info on page navigation
+    return () => {
+      dispatch(verifyUser({ userId: uniqueId, emailToken }));
+    };
+  }, [dispatch, emailToken, uniqueId]);
+
   if (!signedUpUserFound) {
     return (
       <h3
