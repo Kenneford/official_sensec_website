@@ -1711,8 +1711,8 @@ const teachersColumn = (columnData) => {
     {
       name: "Class Levels",
       selector: (row) =>
-        row?.teacherSchoolData?.classLevels
-          ? row?.teacherSchoolData?.classLevels?.length
+        row?.lecturerSchoolData?.classLevels
+          ? row?.lecturerSchoolData?.classLevels?.length
           : "---",
     },
     {
