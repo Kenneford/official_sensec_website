@@ -3,8 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   fetchAllDivisionProgrammes,
   fetchAllProgrammes,
+  fetchCreatedDivisionProgrammes,
   getAllDivisionProgrammes,
   getAllProgrammes,
+  getCreatedDivisionProgrammes,
 } from "../../features/academics/programmeSlice";
 
 const FetchAllProgrammes = () => {
@@ -29,5 +31,20 @@ const FetchAllDivisionProgrammes = ({ programId }) => {
 
   return allProgrammes;
 };
+const FetchAllCreatedDivisionProgrammes = () => {
+  const allProgrammes = useSelector(getCreatedDivisionProgrammes);
+  const dispatch = useDispatch();
+  console.log(allProgrammes);
 
-export { FetchAllProgrammes, FetchAllDivisionProgrammes };
+  useEffect(() => {
+    dispatch(fetchCreatedDivisionProgrammes());
+  }, [dispatch]);
+
+  return allProgrammes;
+};
+
+export {
+  FetchAllProgrammes,
+  FetchAllDivisionProgrammes,
+  FetchAllCreatedDivisionProgrammes,
+};
