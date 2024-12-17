@@ -1,8 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import "../create.scss";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 // import LoadingProgress from "../../pageLoading/LoadingProgress";
@@ -26,6 +23,7 @@ import {
   getAllDivisionProgrammes,
 } from "../../../../../../features/academics/programmeSlice";
 import LoadingProgress from "../../../../../pageLoading/LoadingProgress";
+import { TaskAlt } from "@mui/icons-material";
 
 export function CreateClassLevelSection() {
   const authAdmin = useSelector(getAuthUser);
@@ -222,7 +220,7 @@ export function CreateClassLevelSection() {
           )}
           {loadingComplete === true && createStatus === "success" && (
             <>
-              <span>Successful</span> <TaskAltIcon />
+              <span>Successful</span> <TaskAlt />
             </>
           )}
           {loadingComplete === null && "Create Class Section"}

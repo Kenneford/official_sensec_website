@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./createSchoolData.scss";
-import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import { Editor } from "@tinymce/tinymce-react";
 // import { useDispatch, useSelector } from "react-redux";
 import Modal from "./modal/Modal";
@@ -798,7 +797,7 @@ export function CreateSchoolInfoData() {
             )}
             {loadingComplete && addSchoolStatus === "success" && (
               <>
-                <span> Data Saved</span> <TaskAltIcon />
+                <span> Data Saved</span> <TaskAlt />
               </>
             )}
             {loadingComplete === null && "Create Data"} */}

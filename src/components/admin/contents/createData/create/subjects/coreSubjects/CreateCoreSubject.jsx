@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
 import "../../create.scss";
 import { Box, Button, Grid } from "@mui/material";
-import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { CustomTextField } from "../../../../../../../muiStyling/muiStyling";
-import { getAuthUser } from "../../../../../../../features/auth/authSlice";
 import {
   createSubject,
   resetCreateSubjectState,
 } from "../../../../../../../features/academics/subjectsSlice";
 import LoadingProgress from "../../../../../../pageLoading/LoadingProgress";
+import { getAuthUser } from "../../../../../../../features/auth/authSlice";
+import { TaskAlt } from "@mui/icons-material";
 
 export function CreateCoreSubject() {
   const authAdmin = useSelector(getAuthUser);
@@ -132,7 +132,7 @@ export function CreateCoreSubject() {
           )}
           {loadingComplete === true && createStatus === "success" && (
             <>
-              <span>Successfully</span> <TaskAltIcon />
+              <span>Successfully</span> <TaskAlt />
             </>
           )}
           {loadingComplete === null && "Create Core Subject"}

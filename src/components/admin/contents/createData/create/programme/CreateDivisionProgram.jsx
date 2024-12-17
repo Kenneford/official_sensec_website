@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../create.scss";
 import { Box, Button, CircularProgress, Grid, MenuItem } from "@mui/material";
-import TaskAltIcon from "@mui/icons-material/TaskAlt";
 // import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -15,6 +14,7 @@ import {
 import LoadingProgress from "../../../../../pageLoading/LoadingProgress";
 import { getAuthUser } from "../../../../../../features/auth/authSlice";
 import { FetchAllProgrammes } from "../../../../../../data/programme/FetchProgrammeData";
+import { TaskAlt } from "@mui/icons-material";
 
 export function CreateDivisionProgram() {
   const authAdmin = useSelector(getAuthUser);
@@ -158,7 +158,7 @@ export function CreateDivisionProgram() {
           )}
           {loadingComplete === true && createStatus === "success" && (
             <>
-              <span>Successful</span> <TaskAltIcon />
+              <span>Successful</span> <TaskAlt />
             </>
           )}
           {loadingComplete === null && "Create Programme"}

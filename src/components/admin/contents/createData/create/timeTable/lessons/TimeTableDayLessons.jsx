@@ -1,9 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import "../../create.scss";
 import { Box, Button, CircularProgress, Grid, MenuItem } from "@mui/material";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import TaskAltIcon from "@mui/icons-material/TaskAlt";
 // import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 // import LoadingProgress from "../../../pageLoading/LoadingProgress";
@@ -354,7 +351,7 @@ export function TimeTableDayLessons() {
           {loadingComplete === true && createTermStatus === "success" && (
             <>
               <span> Academic Term Created Successfully...</span>{" "}
-              <TaskAltIcon />
+              <TaskAlt />
             </>
           )}
           {loadingComplete === null && "Create Academic Term"} */}

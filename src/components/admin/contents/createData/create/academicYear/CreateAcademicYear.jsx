@@ -4,7 +4,6 @@ import { Box, Button, CircularProgress, Grid } from "@mui/material";
 // import { createAcademicYear } from "../../../features/academics/academicYear/academicYearSlice";
 import { useNavigate } from "react-router-dom";
 // import LoadingProgress from "../../pageLoading/LoadingProgress";
-import TaskAltIcon from "@mui/icons-material/TaskAlt";
 // import { getUser } from "../../../features/allUsers/usersSlice";
 import { toast } from "react-toastify";
 import { CustomTextField } from "../../../../../../muiStyling/muiStyling";
@@ -12,6 +11,7 @@ import { createAcademicYear } from "../../../../../../features/academics/academi
 import { useDispatch, useSelector } from "react-redux";
 import { getAuthUser } from "../../../../../../features/auth/authSlice";
 import LoadingProgress from "../../../../../pageLoading/LoadingProgress";
+import { TaskAlt } from "@mui/icons-material";
 
 export function CreateAcademicYear() {
   const authAdmin = useSelector(getAuthUser);
@@ -140,7 +140,7 @@ export function CreateAcademicYear() {
           )}
           {loadingComplete === true && createStatus === "success" && (
             <>
-              <span>Successfully</span> <TaskAltIcon />
+              <span>Successfully</span> <TaskAlt />
             </>
           )}
           {loadingComplete === null && "Create Academic Year"}

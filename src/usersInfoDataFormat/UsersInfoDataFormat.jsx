@@ -1,10 +1,5 @@
 import { Link } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
-import EditIcon from "@mui/icons-material/Edit";
-import TaskAltIcon from "@mui/icons-material/TaskAlt";
-import HowToRegIcon from "@mui/icons-material/HowToReg";
-import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
-import SchoolOutlinedIcon from "@mui/icons-material/SchoolOutlined";
 import { dateFormatter } from "../dateFormatter/DateFormatter";
 import { Box, Button } from "@mui/material";
 import {
@@ -20,7 +15,14 @@ import ApprovalModal from "../components/modals/ApprovalModal";
 import { promoteStudent } from "../features/students/promotionSlice";
 import PromotionsModal from "../components/modals/PromotionsModal";
 import DemotionsModal from "../components/modals/DemotionsModal";
-import { Close } from "@mui/icons-material";
+import {
+  Close,
+  Edit,
+  HowToReg,
+  PersonRemove,
+  SchoolOutlined,
+  TaskAlt,
+} from "@mui/icons-material";
 import { removeClassSectionLecturer } from "../features/academics/classSectionSlice";
 import AssignClassLecturerModal from "../components/modals/AssignClassLecturerModal";
 import RemoveClassLecturerModal from "../components/modals/RemoveClassLecturerModal";
@@ -132,7 +134,7 @@ const adminsColumn = (authAdmin) => {
               className="editLink"
               to={`/sensec/users/${authAdmin.uniqueId}/admin/Admins/${row.uniqueId}/admin_update`}
             >
-              <EditIcon />
+              <Edit />
             </Link>
           )}
         </>
@@ -253,7 +255,7 @@ const pendingAdminsColumn = (columnObjData) => {
           className="editLink"
           to={`/sensec/users/${columnObjData?.authAdmin.uniqueId}/admin/Admins/${row.uniqueId}/admin_update`}
         >
-          <EditIcon />
+          <Edit />
         </Link>
       ),
     },
@@ -298,21 +300,21 @@ const pendingAdminsColumn = (columnObjData) => {
                     {columnObjData?.loadingComplete &&
                       columnObjData?.approveEmploymentStatus === "success" && (
                         <>
-                          <span>Approved</span> <TaskAltIcon />
+                          <span>Approved</span> <TaskAlt />
                         </>
                       )}
                   </>
                 )}
               <>
                 {columnObjData?.loadingComplete === null && (
-                  <HowToRegIcon
+                  <HowToReg
                     titleAccess="Approve Employment"
                     style={{ fontSize: "2rem" }}
                   />
                 )}
                 {row?._id !== columnObjData?.foundAdmin?._id &&
                   columnObjData?.loadingComplete !== null && (
-                    <HowToRegIcon
+                    <HowToReg
                       titleAccess="Approve Employment"
                       style={{ fontSize: "2rem" }}
                     />
@@ -359,14 +361,14 @@ const pendingAdminsColumn = (columnObjData) => {
             }}
           >
             {columnObjData?.rejectLoadingComplete === null && (
-              <PersonRemoveIcon
+              <PersonRemove
                 titleAccess="Reject Employment"
                 style={{ fontSize: "2rem" }}
               />
             )}
             {row?._id !== columnObjData?.adminToReject?._id &&
               columnObjData?.rejectLoadingComplete !== null && (
-                <PersonRemoveIcon
+                <PersonRemove
                   titleAccess="Reject Employment"
                   style={{ fontSize: "2rem" }}
                 />
@@ -393,7 +395,7 @@ const pendingAdminsColumn = (columnObjData) => {
                   {columnObjData?.rejectLoadingComplete &&
                     columnObjData?.rejectEmploymentStatus === "success" && (
                       <>
-                        <span>Rejected</span> <TaskAltIcon />
+                        <span>Rejected</span> <TaskAlt />
                       </>
                     )}
                   <RejectionModal
@@ -545,7 +547,7 @@ const studentsColumn = (columnData) => {
               )}
             {row.isGraduated && (
               <div className="isGraduated" title="Graduated">
-                <SchoolOutlinedIcon />
+                <SchoolOutlined />
               </div>
             )}
           </div>
@@ -595,7 +597,7 @@ const studentsColumn = (columnData) => {
                         {columnData?.loadingComplete &&
                           columnData?.promotionStatus === "success" && (
                             <>
-                              <span>Promoted</span> <TaskAltIcon />
+                              <span>Promoted</span> <TaskAlt />
                             </>
                           )}
                       </>
@@ -664,7 +666,7 @@ const studentsColumn = (columnData) => {
                         {columnData?.loadingComplete &&
                           columnData?.promotionStatus === "success" && (
                             <>
-                              <span>Promoted</span> <TaskAltIcon />
+                              <span>Promoted</span> <TaskAlt />
                             </>
                           )}
                       </>
@@ -733,7 +735,7 @@ const studentsColumn = (columnData) => {
                         {columnData?.loadingComplete &&
                           columnData?.promotionStatus === "success" && (
                             <>
-                              <span>Promoted</span> <TaskAltIcon />
+                              <span>Promoted</span> <TaskAlt />
                             </>
                           )}
                       </>
@@ -850,7 +852,7 @@ const studentsColumn = (columnData) => {
                         {columnData?.demotionLoadingComplete &&
                           columnData?.promotionStatus === "success" && (
                             <>
-                              <span>Demoted</span> <TaskAltIcon />
+                              <span>Demoted</span> <TaskAlt />
                             </>
                           )}
                       </>
@@ -928,7 +930,7 @@ const studentsColumn = (columnData) => {
                         {columnData?.demotionLoadingComplete &&
                           columnData?.promotionStatus === "success" && (
                             <>
-                              <span>Demoted</span> <TaskAltIcon />
+                              <span>Demoted</span> <TaskAlt />
                             </>
                           )}
                       </>
@@ -975,7 +977,7 @@ const studentsColumn = (columnData) => {
           className="editLink"
           to={`/sensec/users/${columnData?.authAdmin?.uniqueId}/admin/Students/${row.uniqueId}/student_update`}
         >
-          <EditIcon />
+          <Edit />
         </Link>
       ),
     },
@@ -1110,7 +1112,7 @@ const pendingStudentsColumn = (columnData) => {
               )}
             {row.isGraduated && (
               <div className="isGraduated" title="Graduated">
-                <SchoolOutlinedIcon />
+                <SchoolOutlined />
               </div>
             )}
           </div>
@@ -1157,21 +1159,21 @@ const pendingStudentsColumn = (columnData) => {
                     {columnData?.loadingComplete &&
                       columnData?.enrollmentApprovalStatus === "success" && (
                         <>
-                          <span>Approved</span> <TaskAltIcon />
+                          <span>Approved</span> <TaskAlt />
                         </>
                       )}
                   </>
                 )}
               <>
                 {columnData?.loadingComplete === null && (
-                  <HowToRegIcon
+                  <HowToReg
                     titleAccess="Approve Enrollment"
                     style={{ fontSize: "2rem" }}
                   />
                 )}
                 {row?._id !== columnData?.foundStudent?._id &&
                   columnData?.loadingComplete !== null && (
-                    <HowToRegIcon
+                    <HowToReg
                       titleAccess="Approve Enrollment"
                       style={{ fontSize: "2rem" }}
                     />
@@ -1219,14 +1221,14 @@ const pendingStudentsColumn = (columnData) => {
             }}
           >
             {columnData?.rejectLoadingComplete === null && (
-              <PersonRemoveIcon
+              <PersonRemove
                 titleAccess="Reject Employment"
                 style={{ fontSize: "2rem" }}
               />
             )}
             {row?._id !== columnData?.studentToReject?._id &&
               columnData?.rejectLoadingComplete !== null && (
-                <PersonRemoveIcon
+                <PersonRemove
                   titleAccess="Reject Employment"
                   style={{ fontSize: "2rem" }}
                 />
@@ -1252,7 +1254,7 @@ const pendingStudentsColumn = (columnData) => {
                   {columnData?.rejectLoadingComplete &&
                     columnData?.rejectEnrollmentStatus === "success" && (
                       <>
-                        <span>Rejected</span> <TaskAltIcon />
+                        <span>Rejected</span> <TaskAlt />
                       </>
                     )}
                   <RejectionModal
@@ -1280,7 +1282,7 @@ const pendingStudentsColumn = (columnData) => {
           className="editLink"
           to={`/sensec/users/${columnData?.authAdmin?.uniqueId}/admin/Students/${row?.uniqueId}/student_update`}
         >
-          <EditIcon />
+          <Edit />
         </Link>
       ),
     },
@@ -1641,8 +1643,7 @@ const teachersColumn = (columnData) => {
                 {columnData?.loadingComplete &&
                   columnData?.removeLecturerStatus === "success" && (
                     <Box className="promotionSpinner">
-                      <span>Removed</span>{" "}
-                      <TaskAltIcon sx={{ color: "green" }} />
+                      <span>Removed</span> <TaskAlt sx={{ color: "green" }} />
                     </Box>
                   )}
               </>
@@ -1722,7 +1723,7 @@ const teachersColumn = (columnData) => {
           className="editLink"
           to={`/sensec/users/${columnData?.authAdmin.uniqueId}/admin/Lecturers/${row.uniqueId}/lecturer_update`}
         >
-          <EditIcon />
+          <Edit />
         </Link>
       ),
     },
@@ -1848,7 +1849,7 @@ const pendingTeachersColumn = (columnObjData) => {
               className="editLink"
               to={`/sensec/users/${columnObjData?.authAdmin.uniqueId}/admin/Lecturers/${row.uniqueId}/lecturer_update`}
             >
-              <EditIcon />
+              <Edit />
             </Link>
           )}
         </>
@@ -1888,21 +1889,21 @@ const pendingTeachersColumn = (columnObjData) => {
                     {columnObjData?.loadingComplete &&
                       columnObjData?.approveEmploymentStatus === "success" && (
                         <>
-                          <span>Approved</span> <TaskAltIcon />
+                          <span>Approved</span> <TaskAlt />
                         </>
                       )}
                   </>
                 )}
               <>
                 {columnObjData?.loadingComplete === null && (
-                  <HowToRegIcon
+                  <HowToReg
                     titleAccess="Approve Employment"
                     style={{ fontSize: "2rem" }}
                   />
                 )}
                 {row?._id !== columnObjData?.foundLecturer?._id &&
                   columnObjData?.loadingComplete !== null && (
-                    <HowToRegIcon
+                    <HowToReg
                       titleAccess="Approve Employment"
                       style={{ fontSize: "2rem" }}
                     />
@@ -1943,14 +1944,14 @@ const pendingTeachersColumn = (columnObjData) => {
             }}
           >
             {columnObjData?.rejectLoadingComplete === null && (
-              <PersonRemoveIcon
+              <PersonRemove
                 titleAccess="Reject Employment"
                 style={{ fontSize: "2rem" }}
               />
             )}
             {row?._id !== columnObjData?.lecturerToReject?._id &&
               columnObjData?.rejectLoadingComplete !== null && (
-                <PersonRemoveIcon
+                <PersonRemove
                   titleAccess="Reject Employment"
                   style={{ fontSize: "2rem" }}
                 />
@@ -1976,7 +1977,7 @@ const pendingTeachersColumn = (columnObjData) => {
                   {columnObjData?.rejectLoadingComplete &&
                     columnObjData?.rejectEmploymentStatus === "success" && (
                       <>
-                        <span>Rejected</span> <TaskAltIcon />
+                        <span>Rejected</span> <TaskAlt />
                       </>
                     )}
                   <RejectionModal
@@ -2112,7 +2113,7 @@ const nTStaffsColumn = (adminCurrentLink, authAdmin) => {
           className="editLink"
           to={`/sensec/users/${authAdmin?.uniqueId}/admin/NT-Staff/${row?.uniqueId}/nt-staff_update`}
         >
-          <EditIcon />
+          <Edit />
         </Link>
       ),
     },
@@ -2238,7 +2239,7 @@ const pendingNTStaffsColumn = (columnObjData) => {
               className="editLink"
               to={`/sensec/users/${columnObjData?.authAdmin?.uniqueId}/admin/NT-Staff/${row?.uniqueId}/nt-staff_update`}
             >
-              <EditIcon />
+              <Edit />
             </Link>
           )}
         </>
@@ -2279,21 +2280,21 @@ const pendingNTStaffsColumn = (columnObjData) => {
                     {columnObjData?.loadingComplete &&
                       columnObjData?.approveEmploymentStatus === "success" && (
                         <>
-                          <span>Approved</span> <TaskAltIcon />
+                          <span>Approved</span> <TaskAlt />
                         </>
                       )}
                   </>
                 )}
               <>
                 {columnObjData?.loadingComplete === null && (
-                  <HowToRegIcon
+                  <HowToReg
                     titleAccess="Approve Employment"
                     style={{ fontSize: "2rem" }}
                   />
                 )}
                 {row?._id !== columnObjData?.foundNTStaff?._id &&
                   columnObjData?.loadingComplete !== null && (
-                    <HowToRegIcon
+                    <HowToReg
                       titleAccess="Approve Employment"
                       style={{ fontSize: "2rem" }}
                     />
@@ -2334,14 +2335,14 @@ const pendingNTStaffsColumn = (columnObjData) => {
             }}
           >
             {columnObjData?.rejectLoadingComplete === null && (
-              <PersonRemoveIcon
+              <PersonRemove
                 titleAccess="Reject Employment"
                 style={{ fontSize: "2rem" }}
               />
             )}
             {row?._id !== columnObjData?.nTStaffToReject?._id &&
               columnObjData?.rejectLoadingComplete !== null && (
-                <PersonRemoveIcon
+                <PersonRemove
                   titleAccess="Reject Employment"
                   style={{ fontSize: "2rem" }}
                 />
@@ -2368,7 +2369,7 @@ const pendingNTStaffsColumn = (columnObjData) => {
                   {columnObjData?.rejectLoadingComplete &&
                     columnObjData?.rejectEmploymentStatus === "success" && (
                       <>
-                        <span>Rejected</span> <TaskAltIcon />
+                        <span>Rejected</span> <TaskAlt />
                       </>
                     )}
                   <RejectionModal
@@ -2500,7 +2501,7 @@ const graduatesColumn = () => {
       selector: (row) =>
         row?.studentStatusExtend?.isGraduated && (
           <div className="isGraduated" title="Graduated">
-            <SchoolOutlinedIcon />
+            <SchoolOutlined />
           </div>
         ),
     },

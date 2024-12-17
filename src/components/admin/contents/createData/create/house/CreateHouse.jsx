@@ -3,12 +3,12 @@ import "../create.scss";
 import { Box, Button, CircularProgress, Grid } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import { toast } from "react-toastify";
 import { CustomTextField } from "../../../../../../muiStyling/muiStyling";
 import { getAuthUser } from "../../../../../../features/auth/authSlice";
 import LoadingProgress from "../../../../../pageLoading/LoadingProgress";
 import { createHouse } from "../../../../../../features/academics/houseSlice";
+import { TaskAlt } from "@mui/icons-material";
 
 export function CreateHouse() {
   const authAdmin = useSelector(getAuthUser);
@@ -109,7 +109,7 @@ export function CreateHouse() {
           )}
           {loadingComplete === true && createStatus === "success" && (
             <>
-              <span>Successful</span> <TaskAltIcon />
+              <span>Successful</span> <TaskAlt />
             </>
           )}
           {loadingComplete === null && "Create House"}
