@@ -8,9 +8,10 @@ import {
   StyleSheet,
   View,
 } from "@react-pdf/renderer";
+import PropTypes from "prop-types";
 
-export default function ProspectusPDF({ enroledStudent }) {
-  console.log(enroledStudent);
+export default function ProspectusPDF({ enrolledStudent }) {
+  console.log(enrolledStudent);
 
   const styles = StyleSheet.create({
     red: {
@@ -66,7 +67,7 @@ export default function ProspectusPDF({ enroledStudent }) {
         </Text>
         <Image
           style={styles.image}
-          src={enroledStudent?.personalInfo?.profilePicture?.url}
+          src={enrolledStudent?.personalInfo?.profilePicture?.url}
         />
         <Text style={styles.text}>
           It is a long established fact that a reader will be distracted by the
@@ -112,3 +113,7 @@ export default function ProspectusPDF({ enroledStudent }) {
     </Document>
   );
 }
+
+ProspectusPDF.propTypes = {
+  enrolledStudent: PropTypes.object,
+};

@@ -12,7 +12,6 @@ import { useDispatch, useSelector } from "react-redux";
 // import { getAdminInfo } from "../../../features/admin/adminsSlice";
 // import { createAcademicYear } from "../../../features/academics/academicYear/academicYearSlice";
 import { useNavigate } from "react-router-dom";
-import TaskAltIcon from "@mui/icons-material/TaskAlt";
 // import { createAcademicTerm } from "../../../features/academics/academicTerm/academicTermSlice";
 // import { getUser } from "../../../features/allUsers/usersSlice";
 // import LoadingProgress from "../../pageLoading/LoadingProgress";
@@ -28,6 +27,7 @@ import LoadingProgress from "../../../../../pageLoading/LoadingProgress";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { parseISO } from "date-fns";
+import { TaskAlt } from "@mui/icons-material";
 
 export function CreateAcademicTerm() {
   const authAdmin = useSelector(getAuthUser);
@@ -246,7 +246,7 @@ export function CreateAcademicTerm() {
           )}
           {loadingComplete === true && createStatus === "success" && (
             <>
-              <span>Successfully</span> <TaskAltIcon />
+              <span>Successfully</span> <TaskAlt />
             </>
           )}
           {loadingComplete === null && "Create Academic Term"}

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "../create.scss";
-import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -9,6 +8,7 @@ import { CustomTextField } from "../../../../../../muiStyling/muiStyling";
 import { createClassLevel } from "../../../../../../features/academics/classLevelsSlice";
 import { getAuthUser } from "../../../../../../features/auth/authSlice";
 import LoadingProgress from "../../../../../pageLoading/LoadingProgress";
+import { TaskAlt } from "@mui/icons-material";
 
 export function CreateClassLevel() {
   const authAdmin = useSelector(getAuthUser);
@@ -110,7 +110,7 @@ export function CreateClassLevel() {
           )}
           {loadingComplete === true && createStatus === "success" && (
             <>
-              <span>Successfully</span> <TaskAltIcon />
+              <span>Successfully</span> <TaskAlt />
             </>
           )}
           {loadingComplete === null && "Create Class Level"}

@@ -10,7 +10,6 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 // import LoadingProgress from "../../pageLoading/LoadingProgress";
-import TaskAltIcon from "@mui/icons-material/TaskAlt";
 // import { createBatch } from "../../../features/academics/batch/batchSlice";
 // import { getUser } from "../../../features/allUsers/usersSlice";
 import { toast } from "react-toastify";
@@ -18,6 +17,7 @@ import { CustomTextField } from "../../../../../../muiStyling/muiStyling";
 import { createBatch } from "../../../../../../features/academics/batchSlice";
 import { getAuthUser } from "../../../../../../features/auth/authSlice";
 import LoadingProgress from "../../../../../pageLoading/LoadingProgress";
+import { TaskAlt } from "@mui/icons-material";
 
 export function CreateAcademicBatch() {
   const authAdmin = useSelector(getAuthUser);
@@ -136,7 +136,7 @@ export function CreateAcademicBatch() {
           )}
           {loadingComplete === true && createStatus === "success" && (
             <>
-              <span>Successfully!</span> <TaskAltIcon />
+              <span>Successfully!</span> <TaskAlt />
             </>
           )}
           {loadingComplete === null && "Create Academic Batch"}

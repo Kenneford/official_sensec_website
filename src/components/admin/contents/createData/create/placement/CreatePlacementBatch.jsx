@@ -3,7 +3,6 @@ import "../create.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 // import LoadingProgress from "../../pageLoading/LoadingProgress";
-import TaskAltIcon from "@mui/icons-material/TaskAlt";
 // import { getUser } from "../../../features/allUsers/usersSlice";
 // import { createPlacementBatch } from "../../../features/placementStudents/PlacementStudentsSlice";
 import { toast } from "react-toastify";
@@ -12,6 +11,7 @@ import { CustomTextField } from "../../../../../../muiStyling/muiStyling";
 import { createPlacementBatch } from "../../../../../../features/academics/placementSlice";
 import { getAuthUser } from "../../../../../../features/auth/authSlice";
 import LoadingProgress from "../../../../../pageLoading/LoadingProgress";
+import { TaskAlt } from "@mui/icons-material";
 
 export function CreatePlacementBatch() {
   const authAdmin = useSelector(getAuthUser);
@@ -112,7 +112,7 @@ export function CreatePlacementBatch() {
           )}
           {loadingComplete === true && createStatus === "success" && (
             <>
-              <span>Successful</span> <TaskAltIcon />
+              <span>Successful</span> <TaskAlt />
             </>
           )}
           {loadingComplete === null && "Create Placement Batch"}

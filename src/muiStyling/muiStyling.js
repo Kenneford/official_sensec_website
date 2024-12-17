@@ -80,6 +80,10 @@ export const CustomTextField = styled(TextField)({
   // Border styles for focused state
   "& .MuiOutlinedInput-root": {
     fontSize: ".9em",
+    "& legend": {
+      display: "inline",
+      width: "auto", // Ensure the label width is appropriate
+    },
     "&.Mui-focused fieldset": {
       borderColor: "#454343ad", // Change focus border color
       boxShadow: "2px 2px 3px 0px #454343ad",

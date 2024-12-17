@@ -8,7 +8,8 @@ const initialState = {
   programInfo: "",
   divisionProgramInfo: "",
   allProgrammes: [],
-  allDivisionProgrammes: [],
+  allDivisionProgrammesById: [],
+  createdDivisionProgrammes: [],
   error: "",
   successMessage: "",
   createStatus: "",
@@ -66,6 +67,20 @@ export const fetchAllDivisionProgrammes = createAsyncThunk(
     try {
       const response = await axios.get(
         `${SENSEC_API_ENDPOINT}/academics/programs/${programId}/divisions/fetch_all`
+      );
+      return response.data;
+    } catch (error) {
+      console.log(error.response.data);
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const fetchCreatedDivisionProgrammes = createAsyncThunk(
+  "Programme/fetchCreatedDivisionProgrammes",
+  async (rejectWithValue) => {
+    try {
+      const response = await axios.get(
+        `${SENSEC_API_ENDPOINT}/academics/programs/divisions/fetch_all`
       );
       return response.data;
     } catch (error) {
@@ -219,7 +234,7 @@ const programmeSlice = createSlice({
       if (action.payload) {
         return {
           ...state,
-          allDivisionProgrammes: action.payload.programs,
+          allDivisionProgrammesById: action.payload.programs,
           successMessage: action.payload.successMessage,
           fetchStatus: "success",
         };
@@ -232,6 +247,33 @@ const programmeSlice = createSlice({
         error: action.payload,
       };
     });
+
+    builder.addCase(fetchCreatedDivisionProgrammes.pending, (state) => {
+      return { ...state, fetchStatus: "pending" };
+    });
+    builder.addCase(
+      fetchCreatedDivisionProgrammes.fulfilled,
+      (state, action) => {
+        if (action.payload) {
+          return {
+            ...state,
+            createdDivisionProgrammes: action.payload.divisionProgramsFound,
+            successMessage: action.payload.successMessage,
+            fetchStatus: "success",
+          };
+        } else return state;
+      }
+    );
+    builder.addCase(
+      fetchCreatedDivisionProgrammes.rejected,
+      (state, action) => {
+        return {
+          ...state,
+          fetchStatus: "rejected",
+          error: action.payload,
+        };
+      }
+    );
 
     builder.addCase(fetchSingleProgram.pending, (state, action) => {
       return { ...state, fetchingStatus: "pending" };
@@ -301,7 +343,9 @@ export const { resetCreateProgrammeState, selectProgramme } =
   programmeSlice.actions;
 export const getAllProgrammes = (state) => state.programme.allProgrammes;
 export const getAllDivisionProgrammes = (state) =>
-  state.programme.allDivisionProgrammes;
+  state.programme.allDivisionProgrammesById;
+export const getCreatedDivisionProgrammes = (state) =>
+  state.programme.createdDivisionProgrammes;
 export const getSingleProgram = (state) => state.programme.programInfo;
 export const getUpdatedProgram = (state) => state.programme.updatedProgram;
 

@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 // import PageLoading from "../../pageLoading/PageLoading";
 import { saveAs } from "file-saver";
-import { pdf } from "@react-pdf/renderer";
+import { pdf, PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 import AdmissionPDF from "./PDFDownload/pdfs/AdmissionPDF";
 import { toast } from "react-toastify";
 // import StudentRecordDetails from "./StudentRecords/StudentRecordDetails";
@@ -34,6 +34,7 @@ import { FetchCurrentAcademicTerms } from "../../../data/term.year/FetchAcademic
 import { FetchCurrentAcademicYear } from "../../../data/term.year/FetchAcademicYears";
 import { ContainerBox } from "../../../muiStyling/muiStyling";
 import {
+  FetchAllCreatedDivisionProgrammes,
   FetchAllDivisionProgrammes,
   FetchAllProgrammes,
 } from "../../../data/programme/FetchProgrammeData";
@@ -41,6 +42,7 @@ import SmallFooter from "../../../components/footer/SmallFooter";
 import { fetchAllDivisionProgrammes } from "../../../features/academics/programmeSlice";
 import { Link } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
+import { FetchAllCoreSubjects } from "../../../data/subjects/FetchSubjects";
 
 export function EnrollmentSuccessOverview({
   setEnroledStudent,
@@ -53,7 +55,16 @@ export function EnrollmentSuccessOverview({
 
   const currentYear = new Date().getFullYear();
   const allStudents = FetchAllStudents();
+  const allCoreSubjects = FetchAllCoreSubjects();
   const allProgrammes = FetchAllProgrammes();
+  const allCreatedDivisionProgrammes = FetchAllCreatedDivisionProgrammes();
+  console.log(allCreatedDivisionProgrammes);
+
+  const nonDivisionPrograms = allProgrammes?.find(
+    (program) => !program?.hasDivisions && program
+  );
+  console.log(nonDivisionPrograms);
+
   const enrolledStudent = allStudents?.find(
     (std) => std?.uniqueId === studentId
   );
@@ -177,7 +188,15 @@ export function EnrollmentSuccessOverview({
     // );
   };
   const downloadProgrammesPDF = () => {
-    pdf(<ProgrammesPDF enrolledStudent={enrolledStudent} />)
+    pdf(
+      <ProgrammesPDF
+        enrolledStudent={enrolledStudent}
+        allCoreSubjects={allCoreSubjects}
+        allProgrammes={allProgrammes}
+        nonDivisionPrograms={nonDivisionPrograms}
+        allDivisionProgrammes={allCreatedDivisionProgrammes}
+      />
+    )
       .toBlob()
       .then(
         (blob) => {
@@ -258,9 +277,6 @@ export function EnrollmentSuccessOverview({
     // );
     setDisappear(false);
   }, [dispatch, enrolledStudent]);
-  // useEffect(() => {
-  //   setEnroledStudent(enroledStudent);
-  // }, [setEnroledStudent, enroledStudent]);
 
   useEffect(() => {
     if (
@@ -271,28 +287,8 @@ export function EnrollmentSuccessOverview({
     }
   }, [currentEnrolmentSuccessLink, setCurrentEnrolmentSuccessLink]);
 
-  // if (!enroledStudent && !studentUniqueId) {
-  //   navigate("/");
-  // }
-  // if (!enroledStudent) {
-  //   return <PageLoading />;
-  // } else if (enroledStudent?.studentStatusExtend?.isGraduated) {
-  //   return <StudentHasGraduated />;
-  // }
-
   return (
-    <Box
-      display={"flex"}
-      // justifyContent={"space-between"}
-      // alignItems={"center"}
-    >
-      {/* <ContainerBox
-        sx={{
-          width: { xs: "100%", sm: "95%", md: "90%", lg: "90%", xl: "75%" },
-          margin: "auto",
-          paddingTop: "2rem",
-        }}
-      > */}
+    <Box display={"flex"}>
       <Box>
         {!isMobile && (
           <Drawer
@@ -709,6 +705,21 @@ export function EnrollmentSuccessOverview({
                         <span>Programme/Subject</span>
                       </Button>
                     </Grid>
+                    {/* <PDFViewer>
+                      <UndertakingPDF />
+                    </PDFViewer>{" "}
+                    <PDFDownloadLink
+                      document={<UndertakingPDF />}
+                      fileName="undertaking.pdf"
+                    >
+                      {({ loading }) =>
+                        loading ? (
+                          "Loading document..."
+                        ) : (
+                          <button>Download PDF</button>
+                        )
+                      }
+                    </PDFDownloadLink> */}
                     <Grid item xs={12} sm={4} md={3} lg={3}>
                       <Button
                         onClick={() => {
