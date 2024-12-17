@@ -150,11 +150,11 @@ export function StudentPlacementVerification() {
       setTimeout(() => {
         if (adminCurrentAction) {
           navigate(
-            `/sensec/users/${authUser?.uniqueId}/admin/User-Types/Students/${foundPlacementStudent?.enrollmentId}/enrollment/online/success`
+            `/sensec/users/${authUser?.uniqueId}/admin/User-Types/Students/${foundPlacementStudent?.enrollmentId}/enrollment/online/success/Overview`
           );
         } else {
           navigate(
-            `/sensec/students/enrollment/online/${foundPlacementStudent?.enrollmentId}/success`
+            `/sensec/students/enrollment/online/${foundPlacementStudent?.enrollmentId}/success/Overview`
           );
         }
       }, 7000);
@@ -203,11 +203,11 @@ export function StudentPlacementVerification() {
       setTimeout(() => {
         if (adminCurrentAction) {
           navigate(
-            `/sensec/users/${authUser?.uniqueId}/admin/User-Types/Students/${enrolledStudent?.uniqueId}/enrollment/online/success`
+            `/sensec/users/${authUser?.uniqueId}/admin/User-Types/Students/${enrolledStudent?.uniqueId}/enrollment/online/success/Overview`
           );
         } else {
           navigate(
-            `/sensec/students/${enrolledStudent?.uniqueId}/enrollment/online/success`
+            `/sensec/students/enrollment/online/${enrolledStudent?.uniqueId}/success/Overview`
           );
         }
       }, 7000);
