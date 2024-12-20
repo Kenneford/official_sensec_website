@@ -97,12 +97,12 @@ export const CustomTextField = styled(TextField)({
   },
   // Label size and color for focused state
   "& .MuiInputLabel-root.Mui-focused": {
-    fontSize: "1.05em", // Larger size on focus
+    fontSize: ".9em", // Larger size on focus
     color: "#454343ad", // Custom focus label color
   },
   // Shrinked label (when value exists)
   "& .MuiInputLabel-root.MuiFormLabel-filled": {
-    fontSize: "1.05rem", // Matches focused label size
+    fontSize: ".9em", // Matches focused label size
     color: "#454343ad",
   },
   // Target the required asterisk

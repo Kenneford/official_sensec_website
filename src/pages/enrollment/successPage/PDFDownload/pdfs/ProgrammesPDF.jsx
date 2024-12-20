@@ -23,35 +23,84 @@ export default function ProgrammesPDF({
       paddingBottom: 65,
       paddingHorizontal: 35,
     },
+    letterBody: {
+      marginTop: 35,
+    },
+    letterViews: {
+      paddingTop: 16,
+    },
     headerTitleWrap: {
       marginTop: 8,
     },
     headerTitle: {
       textAlign: "center",
       textDecoration: "underline",
-      color: "#696969",
+      color: "#555",
       marginTop: 5,
     },
-    text: {
-      margin: 12,
+    textBox: {
+      marginTop: 24,
       fontSize: 14,
       textAlign: "justify",
       //   fontFamily: "AntonFamily",
     },
+    text: {
+      marginVertical: 2,
+      fontSize: 14,
+      textAlign: "justify",
+      color: "#696969",
+      lineHeight: 1.5,
+    },
+    textSpan: {
+      color: "#555",
+    },
+    textSpan1: {
+      fontWeight: "extrabold",
+      color: "#555",
+    },
+    textSpan2: {
+      fontWeight: "extrabold",
+      color: "#292929",
+    },
+    letterTitle: {
+      marginVertical: 2,
+      fontSize: 20,
+      fontWeight: "extrabold",
+      textAlign: "center",
+      color: "#555",
+      textDecoration: "underline",
+    },
+    date: {
+      marginTop: 6,
+      fontSize: 14,
+      textAlign: "justify",
+      color: "#292929",
+    },
     image: {
-      marginTop: 24,
+      marginTop: -20,
       marginHorizontal: "auto",
       borderRadius: ".4rem",
-      width: 50,
-      height: 50,
+      width: 40,
+      height: 40,
       objectFit: "cover",
+    },
+    underTakingWrap: {
+      marginTop: 20,
+    },
+    underTakingHeader: {
+      marginTop: 10,
+      marginBottom: 3,
+      fontSize: 16,
+      color: "#555",
+      textDecoration: "underline",
     },
     h3: {
       fontSize: 16,
       color: "#696969",
-      paddingLeft: 16,
-      marginTop: 16,
+      // paddingLeft: 16,
+      marginTop: 5,
       marginBottom: 8,
+      textDecoration: "underline",
     },
     header: {
       fontSize: 12,
@@ -65,13 +114,19 @@ export default function ProgrammesPDF({
       padding: 0,
     },
     listItem: {
-      marginBottom: 5,
+      // marginBottom: 5,
       paddingLeft: 20,
       position: "relative",
     },
+    listItemName: {
+      // fontWeight: "bold",
+      color: "#555",
+      marginBottom: 0,
+      letterSpacing: 1,
+    },
     bullet: {
       position: "absolute",
-      left: 0,
+      left: 10,
       top: 0,
       fontSize: 12,
       lineHeight: 1,
@@ -115,16 +170,13 @@ export default function ProgrammesPDF({
       - Elective Subjects: Physics, Chemistry, Biology, Elective Mathematics
     `;
   return (
-    <Document>
+    <Document title="Programme_&_Subject.pdf">
       <Page style={styles.body}>
+        <Image style={styles.image} src={"/assets/sensec-logo1.png"} />
         <View style={styles.headerTitleWrap}>
           <Text style={styles.headerTitle}>SENYA SENIOR HIGH SCHOOL</Text>
           <Text style={styles.headerTitle}>PROGRAMMES AND SUBJECTS</Text>
         </View>
-        <Image
-          style={styles.image}
-          src={enrolledStudent?.personalInfo?.profilePicture.url}
-        />
         <Text style={styles.h3}>All Featured Programmes</Text>
         <View style={styles.list}>
           {allProgrammes?.map((program) => (

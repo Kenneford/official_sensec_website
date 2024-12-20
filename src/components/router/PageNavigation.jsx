@@ -45,6 +45,7 @@ import {
   EnrollmentForm,
   GuardianForm,
   ParentForm,
+  PreviewPDF,
   StudentDashboard,
   StudentDataUpdateForm,
 } from "../lazyLoading/student/StudentsLazyLoadingComponents";
@@ -150,6 +151,10 @@ export default function PageNavigation() {
             {
               path: "online/:studentId/success/:current_link",
               element: <EnrollmentSuccessLinksContainer />,
+            },
+            {
+              path: "online/:studentId/success/:current_link/:pdf",
+              element: <PreviewPDF />,
             },
             {
               path: "online/:studentId/success/data_overview",

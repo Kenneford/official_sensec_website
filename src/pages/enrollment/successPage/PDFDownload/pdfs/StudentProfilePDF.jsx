@@ -33,12 +33,22 @@ export default function StudentProfilePDF({ enrolledStudent }) {
       color: "grey",
       //   fontFamily: "AntonFamily",
     },
-    image: {
-      marginTop: 24,
+    logo: {
+      marginTop: -20,
       marginHorizontal: "auto",
       borderRadius: ".4rem",
-      width: 50,
-      height: 50,
+      width: 40,
+      height: 40,
+      objectFit: "cover",
+    },
+    imageWrap: { alignItems: "flex-end" },
+    image: {
+      marginTop: 16,
+      // marginHorizontal: "auto",
+      right: 0,
+      borderRadius: ".4rem",
+      width: 65,
+      height: 70,
       objectFit: "cover",
     },
     h3: {
@@ -67,7 +77,7 @@ export default function StudentProfilePDF({ enrolledStudent }) {
     headerTitle: {
       textAlign: "center",
       textDecoration: "underline",
-      color: "#696969",
+      color: "#555",
       marginTop: 5,
     },
     tableHeader: {
@@ -115,16 +125,19 @@ export default function StudentProfilePDF({ enrolledStudent }) {
   });
 
   return (
-    <Document>
+    <Document title={"Student_Profile.pdf"}>
       <Page size="A4" style={styles.body}>
+        <Image style={styles.logo} src={"/assets/sensec-logo1.png"} />
         <View style={styles.headerTitleWrap}>
           <Text style={styles.headerTitle}>SENYA SENIOR HIGH SCHOOL</Text>
           <Text style={styles.headerTitle}>STUDENT PROFILE</Text>
         </View>
-        <Image
-          style={styles.image}
-          src={enrolledStudent?.personalInfo?.profilePicture.url}
-        />
+        <View style={styles.imageWrap}>
+          <Image
+            style={styles.image}
+            src={enrolledStudent?.personalInfo?.profilePicture.url}
+          />
+        </View>
 
         <Text style={styles.h3}>Personal Details</Text>
         <View style={styles.table}>
