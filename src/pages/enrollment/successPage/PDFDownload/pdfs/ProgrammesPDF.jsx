@@ -117,6 +117,7 @@ export default function ProgrammesPDF({
       // marginBottom: 5,
       paddingLeft: 20,
       position: "relative",
+      color: "#696969",
     },
     listItemName: {
       // fontWeight: "bold",
