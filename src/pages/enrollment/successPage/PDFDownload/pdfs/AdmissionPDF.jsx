@@ -9,9 +9,16 @@ import {
   View,
 } from "@react-pdf/renderer";
 import PropTypes from "prop-types";
+import { dateFormatter } from "../../../../../dateFormatter/DateFormatter";
 
-export default function AdmissionPDF({ enrolledStudent }) {
+export default function AdmissionPDF({
+  enrolledStudent,
+  currentTerm,
+  currentAcademicYear,
+}) {
   console.log(enrolledStudent);
+  const todaysDate = new Date();
+  const currentYear = new Date().getFullYear();
 
   const styles = StyleSheet.create({
     body: {
@@ -19,27 +26,65 @@ export default function AdmissionPDF({ enrolledStudent }) {
       paddingBottom: 65,
       paddingHorizontal: 35,
     },
+    letterBody: {
+      marginTop: 35,
+    },
+    letterViews: {
+      paddingTop: 16,
+    },
     headerTitleWrap: {
       marginTop: 8,
     },
     headerTitle: {
       textAlign: "center",
       textDecoration: "underline",
-      color: "#696969",
+      color: "#555",
       marginTop: 5,
     },
-    text: {
-      margin: 12,
+    textBox: {
+      marginTop: 24,
       fontSize: 14,
       textAlign: "justify",
       //   fontFamily: "AntonFamily",
     },
+    text: {
+      marginVertical: 2,
+      fontSize: 14,
+      textAlign: "justify",
+      color: "#696969",
+      lineHeight: 1.5,
+    },
+    textSpan: {
+      color: "#555",
+    },
+    textSpan1: {
+      fontWeight: "extrabold",
+      color: "#292929",
+    },
+    textSpan2: {
+      fontWeight: "extrabold",
+      color: "#292929",
+    },
+    letterTitle: {
+      marginVertical: 2,
+      fontSize: 20,
+      fontWeight: "extrabold",
+      textAlign: "center",
+      color: "#555",
+      textDecoration: "underline",
+    },
+    date: {
+      marginTop: 6,
+      fontSize: 14,
+      textAlign: "justify",
+      color: "#292929",
+    },
     image: {
-      marginTop: 24,
+      marginTop: -20,
       marginHorizontal: "auto",
       borderRadius: ".4rem",
-      width: 50,
-      height: 50,
+      width: 40,
+      height: 40,
       objectFit: "cover",
     },
     h3: {
@@ -56,6 +101,23 @@ export default function AdmissionPDF({ enrolledStudent }) {
       color: "grey",
       //   fontFamily: "AntonFamily",
     },
+    list: {
+      margin: 0,
+      padding: 0,
+    },
+    listItem: {
+      // marginBottom: 5,
+      paddingLeft: 7,
+      position: "relative",
+    },
+    bullet: {
+      position: "absolute",
+      left: 0,
+      top: 0,
+      fontSize: 12,
+      lineHeight: 1,
+      marginTop: 2,
+    },
     pageNumber: {
       position: "absolute",
       fontSize: 12,
@@ -67,45 +129,121 @@ export default function AdmissionPDF({ enrolledStudent }) {
       //   fontFamily: "AntonFamily",
     },
   });
-  const admission_text = `
-Senya Senior High School
-[School Address]
-
-Date: [Insert Date]
-
-Admission Letter
-
-Dear [Student's Name],
-
-Congratulations! You have been admitted into [Programme Name] at Senya Senior High School for the academic year [Year].
-
-Your admission details are as follows:
-- Name: [Full Name]
-- Programme: [Programme Name]
-- Index Number: [Index Number]
-- House: [House Name]
-
-You are expected to report to the school premises on [Reporting Date] with the required items as listed in the prospectus.
-
-We look forward to welcoming you!
-
-Best regards,
-[Headmaster's Name]
-Headmaster/Headmistress
-`;
   return (
-    <Document>
+    <Document title={"Admission.pdf"}>
       <Page style={styles.body}>
+        <Image style={styles.image} src={"/assets/sensec-logo1.png"} />
         <View style={styles.headerTitleWrap}>
           <Text style={styles.headerTitle}>SENYA SENIOR HIGH SCHOOL</Text>
           <Text style={styles.headerTitle}>STUDENT ADMISSION LETTER</Text>
         </View>
-        <Image
-          style={styles.image}
-          src={enrolledStudent?.personalInfo?.profilePicture.url}
-        />
-        {/* <Text style={styles.h3}>All Featured Programmes</Text> */}
-        <Text style={styles.text}>{admission_text}</Text>
+        <View style={styles.letterBody}>
+          <View style={styles.letterViews}>
+            <Text style={styles.text}>Senya Senior High School</Text>
+            <Text style={styles.text}>P.O. Box 23</Text>
+            <Text style={styles.text}>GPS: CG-2308-4841</Text>
+            <Text style={styles.date}>
+              Date: <Text>{dateFormatter?.format(new Date(todaysDate))}.</Text>
+            </Text>
+          </View>
+          <View style={styles.letterViews}>
+            <Text style={styles.letterTitle}>Student Admission Letter</Text>
+          </View>
+          <View style={styles.letterViews}>
+            <Text style={styles.text}>
+              Dear {enrolledStudent?.personalInfo?.firstName},
+            </Text>
+          </View>
+          <View style={styles.letterViews}>
+            <Text style={styles.text}>
+              Congratulations! You&apos;ve been admitted into{" "}
+              <Text style={[styles.text, styles.textSpan]}>
+                {enrolledStudent?.studentSchoolData?.program?.name}
+              </Text>{" "}
+              programme at Senya Senior High School for the academic year{" "}
+              <Text style={[styles.text, styles.textSpan]}>
+                {currentAcademicYear?.yearRange}
+              </Text>
+              .
+            </Text>
+          </View>
+          <View style={styles.letterViews}>
+            <Text style={styles.text}>
+              Your admission details are as follows:
+            </Text>
+            <View style={styles.list}>
+              <View style={styles.listItem}>
+                <Text style={styles.bullet}>•</Text>
+                <Text style={styles.listItem}>
+                  <Text style={[styles.text, styles.textSpan1]}>
+                    Name:{" "}
+                    <Text style={styles.text}>
+                      {enrolledStudent?.personalInfo?.fullName}
+                    </Text>
+                  </Text>
+                </Text>
+              </View>
+              <View style={styles.listItem}>
+                <Text style={styles.bullet}>•</Text>
+                <Text style={styles.listItem}>
+                  <Text style={[styles.text, styles.textSpan1]}>
+                    Programme:{" "}
+                  </Text>
+                  <Text style={styles.text}>
+                    {enrolledStudent?.studentSchoolData?.program?.name}
+                  </Text>
+                </Text>
+              </View>
+              <View style={styles.listItem}>
+                <Text style={styles.bullet}>•</Text>
+                <Text style={styles.listItem}>
+                  <Text style={[styles.text, styles.textSpan1]}>
+                    Index Number:{" "}
+                  </Text>
+                  <Text style={styles.text}>
+                    {enrolledStudent?.studentSchoolData?.jhsIndexNo}
+                  </Text>
+                </Text>
+              </View>
+              <View style={styles.listItem}>
+                <Text style={styles.bullet}>•</Text>
+                <Text style={styles.listItem}>
+                  <Text style={[styles.text, styles.textSpan1]}>House: </Text>
+                  <Text style={styles.text}>
+                    {enrolledStudent?.studentSchoolData?.house?.name}&apos;s
+                    House
+                  </Text>
+                </Text>
+              </View>
+            </View>
+          </View>
+          <View style={styles.letterViews}>
+            <Text style={styles.text}>
+              You are expected to report to the school premises on{" "}
+              <Text style={[styles.text, styles.textSpan]}>
+                {currentTerm
+                  ? dateFormatter?.format(new Date(currentTerm?.from))
+                  : "___________________"}
+              </Text>{" "}
+              with the required items as listed in the prospectus.
+            </Text>
+            <Text style={styles.text}>We look forward to welcoming you!</Text>
+          </View>
+          <View style={styles.letterViews}>
+            <Text style={styles.text}>Best regards,</Text>
+          </View>
+          <View style={styles.letterViews}>
+            <Text style={[styles.text, styles.textSpan1]}>
+              Ebenezer Nana Wilson,
+            </Text>
+            <Text style={[styles.text, styles.textSpan1]}>
+              Head of Administration.
+            </Text>
+          </View>
+        </View>
+        {/* <View style={styles.textBox}>
+          <Text style={styles.text}>{admission_text}</Text>
+        </View> */}
         <Text
           style={styles.pageNumber}
           render={({ pageNumber, totalPages }) =>
@@ -119,4 +257,6 @@ Headmaster/Headmistress
 
 AdmissionPDF.propTypes = {
   enrolledStudent: PropTypes.object,
+  currentTerm: PropTypes.object,
+  currentAcademicYear: PropTypes.object,
 };

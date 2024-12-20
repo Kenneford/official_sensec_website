@@ -20,6 +20,37 @@ export const EnrollmentForm = lazyWithSuspense(
   <PageLoading />,
   "EnrollmentFormComponent"
 );
+// For PDF's
+export const PreviewPDF = lazyWithSuspense(
+  () =>
+    import(
+      "../../../pages/enrollment/successPage/PDFDownload/pdfOverviewContainer/PreviewPDF"
+    ).then((module) => {
+      return { default: module.PreviewPDF };
+    }),
+  <PageLoading />,
+  "PreviewPDFComponent"
+);
+export const UndertakingPdfViewer = lazyWithSuspense(
+  () =>
+    import(
+      "../../../pages/enrollment/successPage/PDFDownload/view/UndertakingPdfViewer"
+    ).then((module) => {
+      return { default: module.UndertakingPdfViewer };
+    }),
+  <PageLoading />,
+  "UndertakingPdfViewerComponent"
+);
+export const AdmissionPdfViewer = lazyWithSuspense(
+  () =>
+    import(
+      "../../../pages/enrollment/successPage/PDFDownload/view/AdmissionPdfViewer"
+    ).then((module) => {
+      return { default: module.AdmissionPdfViewer };
+    }),
+  <PageLoading />,
+  "AdmissionPdfViewerComponent"
+);
 // Student Data Update Form
 export const StudentDataUpdateForm = lazyWithSuspense(
   () =>

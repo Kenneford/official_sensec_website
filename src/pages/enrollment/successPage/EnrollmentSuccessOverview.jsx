@@ -43,6 +43,8 @@ import { fetchAllDivisionProgrammes } from "../../../features/academics/programm
 import { Link } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
 import { FetchAllCoreSubjects } from "../../../data/subjects/FetchSubjects";
+import EnrollmentSuccessSidebar from "./sidebar/EnrollmentSuccessSidebar";
+import PDFButtons from "./PDFDownload/pdfButtons/PDFButtons";
 
 export function EnrollmentSuccessOverview({
   setEnroledStudent,
@@ -289,7 +291,19 @@ export function EnrollmentSuccessOverview({
 
   return (
     <Box display={"flex"}>
-      <Box>
+      <EnrollmentSuccessSidebar
+        isMobile={isMobile}
+        setHovered={setHovered}
+        hovered={hovered}
+        drawerWidthExpanded={drawerWidthExpanded}
+        drawerWidthCollapsed={drawerWidthCollapsed}
+        currentTerm={currentTerm}
+        currentAcademicYear={currentAcademicYear}
+        enrolledStudent={enrolledStudent}
+        links={links}
+        current_link={current_link}
+      />
+      {/* <Box>
         {!isMobile && (
           <Drawer
             variant="permanent"
@@ -310,8 +324,8 @@ export function EnrollmentSuccessOverview({
               },
             }}
           >
-            {/* Button to toggle sidebar */}
             <Box
+              // Button to toggle sidebar
               sx={{
                 backgroundColor: "#292929",
                 padding: ".5rem",
@@ -330,7 +344,6 @@ export function EnrollmentSuccessOverview({
                 {"-"}
                 <span>{currentAcademicYear?.yearRange}</span>
               </Box>
-              {/* User Info */}
               <Box className="userInfo">
                 <img
                   src={enrolledStudent?.personalInfo?.profilePicture?.url}
@@ -367,7 +380,7 @@ export function EnrollmentSuccessOverview({
             </Box>
           </Drawer>
         )}
-      </Box>
+      </Box> */}
       <Box
         className="rightWrap"
         width={!isMobile ? "calc(100% - 160px)" : "100%"}
@@ -636,126 +649,7 @@ export function EnrollmentSuccessOverview({
                 </Box>
               </Box>
             </Box>
-            <Box p={"1rem"}>
-              <Box className="docDownloadWrap">
-                <h3>
-                  DOCUMENTS FOR DOWNLOAD (PLEASE DOWNLOAD AND PRINT ALL
-                  DOCUMENTS)
-                </h3>
-                <Box className="docList">
-                  <Grid container spacing={1}>
-                    <Grid item xs={12} sm={4} md={3} lg={3}>
-                      <Button
-                        // variant="outlined"
-                        onClick={() => {
-                          downloadProspectusPDF();
-                          navigate(
-                            "#"
-                            // `/sensec/students/enrollment/online/info/${studentId}/prospectus/pdf`
-                          );
-                        }}
-                        className="docItem"
-                      >
-                        <FileDownloadIcon className="downloadIcon" />
-                        <span>Prospectus</span>
-                      </Button>
-                    </Grid>
-                    <Grid item xs={12} sm={4} md={3} lg={3}>
-                      <Button
-                        onClick={() => {
-                          downloadAdmissionPDF();
-                          navigate(
-                            "#"
-                            // `/sensec/students/enrollment/online/info/${studentId}/admission/pdf`
-                          );
-                        }}
-                        className="docItem"
-                      >
-                        <FileDownloadIcon className="downloadIcon" />
-                        <span>Admission Letter</span>
-                      </Button>
-                    </Grid>
-                    <Grid item xs={12} sm={4} md={3} lg={3}>
-                      <Button
-                        onClick={() => {
-                          downloadStudentProfilePDF();
-                          navigate(
-                            "#"
-                            // `/sensec/students/enrollment/online/info/${studentId}/student_profile/pdf`
-                          );
-                        }}
-                        className="docItem"
-                      >
-                        <FileDownloadIcon className="downloadIcon" />
-                        <span>Personal Profile</span>
-                      </Button>
-                    </Grid>
-                    <Grid item xs={12} sm={4} md={3} lg={3}>
-                      <Button
-                        onClick={() => {
-                          downloadProgrammesPDF();
-                          navigate(
-                            "#"
-                            // `/sensec/students/enrollment/online/info/${studentId}/programmes/pdf`
-                          );
-                        }}
-                        className="docItem"
-                      >
-                        <FileDownloadIcon className="downloadIcon" />
-                        <span>Programme/Subject</span>
-                      </Button>
-                    </Grid>
-                    {/* <PDFViewer>
-                      <UndertakingPDF />
-                    </PDFViewer>{" "}
-                    <PDFDownloadLink
-                      document={<UndertakingPDF />}
-                      fileName="undertaking.pdf"
-                    >
-                      {({ loading }) =>
-                        loading ? (
-                          "Loading document..."
-                        ) : (
-                          <button>Download PDF</button>
-                        )
-                      }
-                    </PDFDownloadLink> */}
-                    <Grid item xs={12} sm={4} md={3} lg={3}>
-                      <Button
-                        onClick={() => {
-                          downloadUndertakingPDF();
-                          navigate(
-                            "#"
-                            // `/sensec/students/enrollment/online/info/${studentId}/undertaken/pdf`
-                          );
-                        }}
-                        className="docItem"
-                      >
-                        <FileDownloadIcon className="downloadIcon" />
-                        <span>Undertaking/Medical</span>
-                      </Button>
-                    </Grid>
-                  </Grid>
-                </Box>
-                {/* <Box className="comeAlongDocsWrap">
-                      <p>
-                        You are expected to come along with the following on the
-                        reporting date:
-                      </p>
-                      <ul>
-                        <li>
-                          Printed copy of your admission letter and a printed copy of
-                          your personal profile form.
-                        </li>
-                        <li>Undertaking and medical status form.</li>
-                        <li>Fully filled placement form.</li>
-                        <li>A copy of your BECE result slip.</li>
-                        <li>Birth/Baptism certificate (Photo-copy)</li>
-                      </ul>
-                      <p>Your admission is NOT complete without these Documents.</p>
-                    </Box> */}
-              </Box>
-            </Box>
+            <PDFButtons />
           </Box>
         </Box>
         <SmallFooter />
