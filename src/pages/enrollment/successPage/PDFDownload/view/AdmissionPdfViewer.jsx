@@ -1,11 +1,9 @@
-import React, { memo } from "react";
+import { memo } from "react";
 import { StyleSheet, PDFViewer, PDFDownloadLink } from "@react-pdf/renderer";
-import ProspectusPDF from "../pdfs/ProspectusPDF";
 import AdmissionPDF from "../pdfs/AdmissionPDF";
 import PropTypes from "prop-types";
 import SmallFooter from "../../../../../components/footer/SmallFooter";
 import { Box, Button } from "@mui/material";
-import LoadingProgress from "../../../../../components/pageLoading/LoadingProgress";
 
 export function AdmissionPdfViewer({
   enrolledStudent,
@@ -20,6 +18,7 @@ export function AdmissionPdfViewer({
     },
   });
   // Wrap the PDFViewer component with React.memo
+  // to prevent prevent pdf reload if state update
   const MemoizedPDFViewer = memo(
     ({ enrolledStudent, currentTerm, currentAcademicYear }) => {
       return (

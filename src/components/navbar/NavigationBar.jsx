@@ -183,7 +183,7 @@ export function NavigationBar({
       path: "/sensec/students/application",
     },
     {
-      name: "Enrolment",
+      name: "Enrollment",
       path: "/sensec/students/enrollment",
     },
     {

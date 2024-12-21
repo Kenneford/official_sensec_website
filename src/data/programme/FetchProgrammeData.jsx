@@ -20,13 +20,11 @@ const FetchAllProgrammes = () => {
   return allProgrammes;
 };
 const FetchAllDivisionProgrammes = ({ programId }) => {
-  console.log(programId?._id);
-
   const allProgrammes = useSelector(getAllDivisionProgrammes);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchAllDivisionProgrammes({ programId: programId?._id }));
+    dispatch(fetchAllDivisionProgrammes(programId));
   }, [dispatch, programId]);
 
   return allProgrammes;
