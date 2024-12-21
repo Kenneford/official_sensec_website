@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "./enrollmentSuccessPage.scss";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import CloseIcon from "@mui/icons-material/Close";
@@ -59,8 +59,8 @@ export function EnrollmentSuccessOverview({
   const allStudents = FetchAllStudents();
   const allCoreSubjects = FetchAllCoreSubjects();
   const allProgrammes = FetchAllProgrammes();
-  const allCreatedDivisionProgrammes = FetchAllCreatedDivisionProgrammes();
-  console.log(allCreatedDivisionProgrammes);
+  const allDivisionProgrammes = FetchAllCreatedDivisionProgrammes();
+  console.log(allDivisionProgrammes);
 
   const nonDivisionPrograms = allProgrammes?.find(
     (program) => !program?.hasDivisions && program
@@ -70,12 +70,18 @@ export function EnrollmentSuccessOverview({
   const enrolledStudent = allStudents?.find(
     (std) => std?.uniqueId === studentId
   );
-  const allDivisionProgrammes = FetchAllDivisionProgrammes({
-    programId: enrolledStudent?.studentSchoolData?.program,
-  });
+  console.log(enrolledStudent?.studentSchoolData?.program?._id);
+  const stdProgram = allProgrammes?.find(
+    (prgrm) => prgrm?._id === enrolledStudent?.studentSchoolData?.program?._id
+  );
+
+  // const allDivisionProgrammes = FetchAllDivisionProgrammes({
+  //   programId: stdProgram?._id,
+  // });
   // const allDivisionProgrammes = useSelector(getAllDivisionProgrammes);
-  const [studentProgramme, setStudentProgramme] = useState("");
-  console.log(allDivisionProgrammes);
+  const [studentProgramme, setStudentProgramme] = useState({});
+  const [programId, setProgramId] = useState({});
+  // console.log(allDivisionProgrammes);
 
   const links = [
     {
@@ -102,159 +108,11 @@ export function EnrollmentSuccessOverview({
   const currentAcademicYear = FetchCurrentAcademicYear();
 
   const [disappear, setDisappear] = useState(false);
-  const downloadProspectusPDF = () => {
-    pdf(<ProspectusPDF enrolledStudent={enrolledStudent} />)
-      .toBlob()
-      .then(
-        (blob) => {
-          try {
-            const save = saveAs(blob, "Senya Senior High School Prospectus");
-            if (save) {
-              return save;
-            }
-          } catch (error) {
-            toast.error("Failed to download PDF!", {
-              position: "top-right",
-              theme: "light",
-              // toastId: successId,
-            });
-            console.log(error);
-          }
-        }
-        // setTimeout(() => {
-        // }, 1000)
-      );
-    // .then(() =>
-    //   navigate(
-    //     `/sensec/students/enrollment/online/info/${studentId}/admission_pdf`
-    //   )
-    // );
-  };
-  const downloadAdmissionPDF = () => {
-    pdf(<AdmissionPDF enrolledStudent={enrolledStudent} />)
-      .toBlob()
-      .then(
-        (blob) => {
-          try {
-            const save = saveAs(blob, "Senya Senior High School Admission");
-            if (save) {
-              return save;
-            }
-          } catch (error) {
-            toast.error("Failed to download PDF!", {
-              position: "top-right",
-              theme: "light",
-              // toastId: successId,
-            });
-            console.log(error);
-          }
-        }
-        // setTimeout(() => {
-        // }, 1000)
-      );
-    // .then(() =>
-    //   navigate(
-    //     `/sensec/students/enrollment/online/info/${studentId}/admission_pdf`
-    //   )
-    // );
-  };
-  const downloadStudentProfilePDF = () => {
-    pdf(<StudentProfilePDF enrolledStudent={enrolledStudent} />)
-      .toBlob()
-      .then(
-        (blob) => {
-          try {
-            const save = saveAs(
-              blob,
-              "Senya Senior High School Student's Profile"
-            );
-            if (save) {
-              return save;
-            }
-          } catch (error) {
-            toast.error("Failed to download PDF!", {
-              position: "top-right",
-              theme: "light",
-              // toastId: successId,
-            });
-            console.log(error);
-          }
-        }
-        // setTimeout(() => {
-        // }, 1000)
-      );
-    // .then(() =>
-    //   navigate(
-    //     `/sensec/students/enrollment/online/info/${studentId}/admission_pdf`
-    //   )
-    // );
-  };
-  const downloadProgrammesPDF = () => {
-    pdf(
-      <ProgrammesPDF
-        enrolledStudent={enrolledStudent}
-        allCoreSubjects={allCoreSubjects}
-        allProgrammes={allProgrammes}
-        nonDivisionPrograms={nonDivisionPrograms}
-        allDivisionProgrammes={allCreatedDivisionProgrammes}
-      />
-    )
-      .toBlob()
-      .then(
-        (blob) => {
-          try {
-            const save = saveAs(blob, "Senya Senior High School Programmes");
-            if (save) {
-              return save;
-            }
-          } catch (error) {
-            toast.error("Failed to download PDF!", {
-              position: "top-right",
-              theme: "light",
-              // toastId: successId,
-            });
-            console.log(error);
-          }
-        }
-        // setTimeout(() => {
-        // }, 1000)
-      );
-    // .then(() =>
-    //   navigate(
-    //     `/sensec/students/enrollment/online/info/${studentId}/admission_pdf`
-    //   )
-    // );
-  };
-  const downloadUndertakingPDF = () => {
-    pdf(<UndertakingPDF enrolledStudent={enrolledStudent} />)
-      .toBlob()
-      .then(
-        (blob) => {
-          try {
-            const save = saveAs(blob, "Senya Senior High School Undertaking");
-            if (save) {
-              return save;
-            }
-          } catch (error) {
-            toast.error("Failed to download PDF!", {
-              position: "top-right",
-              theme: "light",
-              // toastId: successId,
-            });
-            console.log(error);
-          }
-        }
-        // setTimeout(() => {
-        // }, 1000)
-      );
-    // .then(() =>
-    //   navigate(
-    //     `/sensec/students/enrollment/online/info/${studentId}/admission_pdf`
-    //   )
-    // );
-  };
-  console.log(studentProgramme);
 
+  const memoizedCoreSubjects = useMemo(
+    () => allCoreSubjects,
+    [allCoreSubjects]
+  );
   useEffect(() => {
     if (enrolledStudent?.studentSchoolData?.divisionProgram) {
       const studentProgramme = allDivisionProgrammes?.find(
@@ -263,12 +121,14 @@ export function EnrollmentSuccessOverview({
           enrolledStudent?.studentSchoolData?.divisionProgram?._id
       );
       setStudentProgramme(studentProgramme);
+      setProgramId(studentProgramme?.programId);
     } else {
       const studentProgramme = allProgrammes?.find(
         (programme) =>
           programme?._id === enrolledStudent?.studentSchoolData?.program?._id
       );
       setStudentProgramme(studentProgramme);
+      setProgramId(studentProgramme?._id);
     }
   }, [enrolledStudent, allProgrammes, allDivisionProgrammes]);
 
@@ -645,7 +505,16 @@ export function EnrollmentSuccessOverview({
                 </Box>
               </Box>
             </Box>
-            <PDFButtons />
+            <PDFButtons
+              enrolledStudent={enrolledStudent}
+              currentTerm={currentTerm}
+              currentAcademicYear={currentAcademicYear}
+              studentProgramme={studentProgramme}
+              isMobile={isMobile}
+              allCoreSubjects={memoizedCoreSubjects}
+              allProgrammes={allProgrammes}
+              allDivisionProgrammes={allDivisionProgrammes}
+            />
           </Box>
         </Box>
         <SmallFooter />

@@ -1,4 +1,3 @@
-import React from "react";
 import "../scss/prospectusPdf.scss";
 import {
   Document,
@@ -20,7 +19,6 @@ export default function AdmissionPDF({
   console.log(enrolledStudent);
   console.log(studentProgramme);
   const todaysDate = new Date();
-  const currentYear = new Date().getFullYear();
 
   const styles = StyleSheet.create({
     body: {
@@ -245,9 +243,6 @@ export default function AdmissionPDF({
             </Text>
           </View>
         </View>
-        {/* <View style={styles.textBox}>
-          <Text style={styles.text}>{admission_text}</Text>
-        </View> */}
         <Text
           style={styles.pageNumber}
           render={({ pageNumber, totalPages }) =>

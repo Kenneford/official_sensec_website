@@ -63,7 +63,9 @@ export const fetchAllProgrammes = createAsyncThunk(
 
 export const fetchAllDivisionProgrammes = createAsyncThunk(
   "Programme/fetchAllDivisionProgrammes",
-  async ({ programId }, { rejectWithValue }) => {
+  async (programId, { rejectWithValue }) => {
+    console.log(programId);
+
     try {
       const response = await axios.get(
         `${SENSEC_API_ENDPOINT}/academics/programs/${programId}/divisions/fetch_all`

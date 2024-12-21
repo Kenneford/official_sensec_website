@@ -12,7 +12,7 @@ export default function ProgrammesPdfViewer({
   const styles = StyleSheet.create({
     PDFContainer: {
       width: "100%",
-      height: "82vh", //As per your page layout
+      height: "82vh",
     },
   });
   return (

@@ -1,4 +1,3 @@
-import React from "react";
 import "../scss/prospectusPdf.scss";
 import {
   Document,
@@ -140,42 +139,6 @@ export default function UndertakingPDF({ enrolledStudent }) {
       //   fontFamily: "AntonFamily",
     },
   });
-  const undertaking = `
-    I, [Parent/Guardian Name], the parent/guardian of [Student Name], hereby pledge that my 
-    child/ward will abide by all the rules and regulations of Senya Senior High School.
-
-    I agree to ensure the following:
-      1. My child/ward will attend school regularly and punctually.
-      2. My child/ward will respect all school authorities, staff, and students.
-      3. My child/ward will strictly adhere to the school’s dress code.
-      4. My child/ward will participate in all academic and extracurricular activities.
-    
-    Should my child/ward breach any school rules, I understand that disciplinary measures may be taken.
-    
-    Signed: _____________________            Date: ________________
-    Parent/Guardian Name: _________________________
-  `;
-
-  const medical_form = `
-    Student Information:
-      - Full Name: _____________________________
-      - Date of Birth: _____________________________
-    
-    Medical History:
-      - Allergies: ______________________________
-      - Chronic Illnesses: _______________________
-      - Immunization Record: _____________________
-    
-    Physical Examination:
-      - Height: _____________   Weight: _____________
-      - Blood Pressure: _____________
-    
-    Doctor’s Remarks:
-    _____________________________________________________________________________________
-    
-    Doctor’s Name: _____________________________
-    Signature: _______________________      Date: _____________
-  `;
 
   return (
     <Document title="Undertaking_&_Medical_Status.pdf">

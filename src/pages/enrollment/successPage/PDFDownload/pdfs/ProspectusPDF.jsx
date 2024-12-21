@@ -1,4 +1,3 @@
-import React from "react";
 import "../scss/prospectusPdf.scss";
 import {
   Document,
@@ -146,27 +145,6 @@ const styles = StyleSheet.create({
 });
 
 export default function ProspectusPDF({ enrolledStudent }) {
-  // const clothingItems = [
-  //   {
-  //     name: "3 sets of school uniforms",
-  //   },
-  //   {
-  //     name: "2 sets of house attire",
-  //   },
-  //   {
-  //     name: "2 sets of sportswear",
-  //   },
-  //   {
-  //     name: "1 pair of black shoes",
-  //   },
-  //   {
-  //     name: "1 pair of white canvas shoes",
-  //   },
-  //   {
-  //     name: "Black and white socks",
-  //   },
-  // ];
-
   return (
     <Document title={"Prospectus.pdf"}>
       <Page style={styles.body}>

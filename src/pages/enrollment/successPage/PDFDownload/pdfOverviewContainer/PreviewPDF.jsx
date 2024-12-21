@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import "./previewPDF.scss";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { FetchAllStudents } from "../../../../../data/students/FetchAllStudents";
-import { useDispatch } from "react-redux";
 import { Box, useMediaQuery, useTheme } from "@mui/material";
 import { FetchCurrentAcademicTerms } from "../../../../../data/term.year/FetchAcademicTerms";
 import { FetchCurrentAcademicYear } from "../../../../../data/term.year/FetchAcademicYears";
@@ -14,43 +13,23 @@ import UndertakingPdfViewer from "../view/UndertakingPdfViewer";
 import ProgrammesPdfViewer from "../view/ProgrammesPdfViewer";
 import { FetchAllCoreSubjects } from "../../../../../data/subjects/FetchSubjects";
 import {
-  FetchAllDivisionProgrammes,
+  FetchAllCreatedDivisionProgrammes,
   FetchAllProgrammes,
 } from "../../../../../data/programme/FetchProgrammeData";
 
 export function PreviewPDF() {
-  const { studentId, adminCurrentAction, current_link, pdf } = useParams();
+  const { studentId, adminCurrentAction, pdf } = useParams();
   const allStudents = FetchAllStudents();
   const allCoreSubjects = FetchAllCoreSubjects();
   const enrolledStudent = allStudents?.find(
     (std) => std?.uniqueId === studentId
   );
   const allProgrammes = FetchAllProgrammes();
-  const allDivisionProgrammes = FetchAllDivisionProgrammes({
-    programId: enrolledStudent?.studentSchoolData?.program,
-  });
-  const links = [
-    {
-      name: "Overview",
-      ulr: `/sensec/students/enrollment/online/${enrolledStudent?.uniqueId}/success/Overview`,
-    },
-    {
-      name: "View Profile",
-      ulr: `/sensec/students/enrollment/online/${enrolledStudent?.uniqueId}/success/View_Profile`,
-    },
-    {
-      name: "Update",
-      ulr: `/sensec/students/enrollment/online/${enrolledStudent?.uniqueId}/success/Update`,
-    },
-  ];
+  const allDivisionProgrammes = FetchAllCreatedDivisionProgrammes();
+
   const [studentProgramme, setStudentProgramme] = useState({});
   console.log(studentProgramme);
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [hovered, setHovered] = useState(false);
-  const drawerWidthCollapsed = 160; // Collapsed width
-  const drawerWidthExpanded = 300; // Expanded width
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("1024")); // 'md' is typically 900px
   const currentTerm = FetchCurrentAcademicTerms();
@@ -117,15 +96,15 @@ export function PreviewPDF() {
         {pdf === "student_profile" && (
           <StudentProfilePdfViewer enrolledStudent={enrolledStudent} />
         )}
-        {pdf === "undertaking_&_medical_status_pdf" && (
-          <UndertakingPdfViewer enrolledStudent={enrolledStudent} />
-        )}
         {pdf === "programmes_subjects_pdf" && (
           <ProgrammesPdfViewer
             enrolledStudent={enrolledStudent}
             allCoreSubjects={memoizedCoreSubjects}
             allProgrammes={allProgrammes}
           />
+        )}
+        {pdf === "undertaking_&_medical_status_pdf" && (
+          <UndertakingPdfViewer enrolledStudent={enrolledStudent} />
         )}
       </Box>
     </Box>
