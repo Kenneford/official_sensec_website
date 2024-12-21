@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./previewPDF.scss";
 import { useNavigate, useParams } from "react-router-dom";
 import { FetchAllStudents } from "../../../../../data/students/FetchAllStudents";
@@ -13,6 +13,10 @@ import StudentProfilePdfViewer from "../view/StudentProfilePdfViewer";
 import UndertakingPdfViewer from "../view/UndertakingPdfViewer";
 import ProgrammesPdfViewer from "../view/ProgrammesPdfViewer";
 import { FetchAllCoreSubjects } from "../../../../../data/subjects/FetchSubjects";
+import {
+  FetchAllDivisionProgrammes,
+  FetchAllProgrammes,
+} from "../../../../../data/programme/FetchProgrammeData";
 
 export function PreviewPDF() {
   const { studentId, adminCurrentAction, current_link, pdf } = useParams();
@@ -21,6 +25,10 @@ export function PreviewPDF() {
   const enrolledStudent = allStudents?.find(
     (std) => std?.uniqueId === studentId
   );
+  const allProgrammes = FetchAllProgrammes();
+  const allDivisionProgrammes = FetchAllDivisionProgrammes({
+    programId: enrolledStudent?.studentSchoolData?.program,
+  });
   const links = [
     {
       name: "Overview",
@@ -35,6 +43,9 @@ export function PreviewPDF() {
       ulr: `/sensec/students/enrollment/online/${enrolledStudent?.uniqueId}/success/Update`,
     },
   ];
+  const [studentProgramme, setStudentProgramme] = useState({});
+  console.log(studentProgramme);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [hovered, setHovered] = useState(false);
@@ -45,11 +56,33 @@ export function PreviewPDF() {
   const currentTerm = FetchCurrentAcademicTerms();
   const currentAcademicYear = FetchCurrentAcademicYear();
 
+  // Set student's programme
+  useEffect(() => {
+    if (enrolledStudent?.studentSchoolData?.divisionProgram) {
+      const studentProgramme = allDivisionProgrammes?.find(
+        (programme) =>
+          programme?._id ===
+          enrolledStudent?.studentSchoolData?.divisionProgram?._id
+      );
+      setStudentProgramme(studentProgramme);
+    } else {
+      const studentProgramme = allProgrammes?.find(
+        (programme) =>
+          programme?._id === enrolledStudent?.studentSchoolData?.program?._id
+      );
+      setStudentProgramme(studentProgramme);
+    }
+  }, [enrolledStudent, allProgrammes, allDivisionProgrammes]);
+
   const memoizedCoreSubjects = useMemo(
     () => allCoreSubjects,
     [allCoreSubjects]
   );
   const memoizedStudent = useMemo(() => enrolledStudent, [enrolledStudent]);
+  const memoizedStudentProgramme = useMemo(
+    () => studentProgramme,
+    [studentProgramme]
+  );
   const memoizedTerm = useMemo(() => currentTerm, [currentTerm]);
   const memoizedYear = useMemo(
     () => currentAcademicYear,
@@ -75,6 +108,7 @@ export function PreviewPDF() {
             enrolledStudent={enrolledStudent}
             currentTerm={currentTerm}
             currentAcademicYear={currentAcademicYear}
+            studentProgramme={memoizedStudentProgramme}
           />
         )}
         {pdf === "prospectus_pdf" && (
@@ -90,6 +124,7 @@ export function PreviewPDF() {
           <ProgrammesPdfViewer
             enrolledStudent={enrolledStudent}
             allCoreSubjects={memoizedCoreSubjects}
+            allProgrammes={allProgrammes}
           />
         )}
       </Box>

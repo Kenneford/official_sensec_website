@@ -7,6 +7,7 @@ import SmallFooter from "../../../../../components/footer/SmallFooter";
 export default function ProgrammesPdfViewer({
   enrolledStudent,
   allCoreSubjects,
+  allProgrammes,
 }) {
   const styles = StyleSheet.create({
     PDFContainer: {
@@ -71,8 +72,8 @@ export default function ProgrammesPdfViewer({
       </Box>
       <PDFViewer style={styles.PDFContainer}>
         <ProgrammesPDF
-          enrolledStudent={enrolledStudent}
           allCoreSubjects={allCoreSubjects}
+          allProgrammes={allProgrammes}
         />
       </PDFViewer>
       <SmallFooter />
@@ -83,4 +84,5 @@ export default function ProgrammesPdfViewer({
 ProgrammesPdfViewer.propTypes = {
   enrolledStudent: PropTypes.object,
   allCoreSubjects: PropTypes.array,
+  allProgrammes: PropTypes.array,
 };

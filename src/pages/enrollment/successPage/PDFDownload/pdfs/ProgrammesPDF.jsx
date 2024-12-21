@@ -11,7 +11,6 @@ import {
 import PropTypes from "prop-types";
 
 export default function ProgrammesPDF({
-  enrolledStudent,
   allCoreSubjects,
   allProgrammes,
   nonDivisionPrograms,
@@ -45,7 +44,7 @@ export default function ProgrammesPDF({
       //   fontFamily: "AntonFamily",
     },
     text: {
-      marginVertical: 2,
+      // marginVertical: 2,
       fontSize: 14,
       textAlign: "justify",
       color: "#696969",
@@ -98,7 +97,7 @@ export default function ProgrammesPDF({
       fontSize: 16,
       color: "#696969",
       // paddingLeft: 16,
-      marginTop: 5,
+      marginTop: 20,
       marginBottom: 8,
       textDecoration: "underline",
     },
@@ -110,7 +109,7 @@ export default function ProgrammesPDF({
       //   fontFamily: "AntonFamily",
     },
     list: {
-      margin: 0,
+      marginTop: 10,
       padding: 0,
     },
     listItem: {
@@ -118,6 +117,8 @@ export default function ProgrammesPDF({
       paddingLeft: 20,
       position: "relative",
       color: "#696969",
+      fontSize: 14,
+      marginBottom: 5,
     },
     listItemName: {
       // fontWeight: "bold",
@@ -187,7 +188,7 @@ export default function ProgrammesPDF({
             </View>
           ))}
         </View>
-        <Text style={styles.h3}>Core Subjects</Text>
+        {/* <Text style={styles.h3}>Core Subjects</Text>
         <View style={styles.list}>
           {allCoreSubjects?.map((subj) => (
             <View key={subj?._id} style={styles.listItem}>
@@ -195,9 +196,9 @@ export default function ProgrammesPDF({
               <Text>{subj?.subjectName}</Text>
             </View>
           ))}
-        </View>
+        </View> */}
         <Text style={styles.h3}>Programme Subjects</Text>
-        <View style={styles.list}>
+        {/* <View style={styles.list}>
           {nonDivisionPrograms?.map((program) => (
             <View key={program?._id}>
               <Text>{program?.name}</Text>
@@ -209,8 +210,8 @@ export default function ProgrammesPDF({
               ))}
             </View>
           ))}
-        </View>
-        <View style={styles.list}>
+        </View> */}
+        {/* <View style={styles.list}>
           {allDivisionProgrammes?.map((program) => (
             <View key={program?._id}>
               <Text>{program?.divisionName}</Text>
@@ -222,7 +223,7 @@ export default function ProgrammesPDF({
               ))}
             </View>
           ))}
-        </View>
+        </View> */}
 
         <Text style={styles.text}>{programmesText}</Text>
         <Text
