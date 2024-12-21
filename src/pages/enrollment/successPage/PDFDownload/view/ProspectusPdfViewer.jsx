@@ -11,7 +11,7 @@ export default function ProspectusPdfViewer() {
   const styles = StyleSheet.create({
     PDFContainer: {
       width: "100%",
-      height: "82vh", //As per your page layout
+      height: "100%", //As per your page layout
     },
   });
   return (
@@ -64,9 +64,19 @@ export default function ProspectusPdfViewer() {
           </PDFDownloadLink>
         </Box>
       </Box>
-      <PDFViewer style={styles.PDFContainer}>
-        <ProspectusPDF />
-      </PDFViewer>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+          width: "100%",
+        }}
+      >
+        <PDFViewer style={styles.PDFContainer}>
+          <ProspectusPDF />
+        </PDFViewer>
+      </Box>
       <SmallFooter />
     </Box>
   );

@@ -271,12 +271,8 @@ export function EnrollmentSuccessOverview({
       setStudentProgramme(studentProgramme);
     }
   }, [enrolledStudent, allProgrammes, allDivisionProgrammes]);
+
   useEffect(() => {
-    // dispatch(
-    //   fetchAllDivisionProgrammes({
-    //     programId: enrolledStudent?.studentSchoolData?.program?._id,
-    //   })
-    // );
     setDisappear(false);
   }, [dispatch, enrolledStudent]);
 

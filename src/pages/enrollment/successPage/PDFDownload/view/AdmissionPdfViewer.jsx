@@ -11,6 +11,7 @@ export function AdmissionPdfViewer({
   enrolledStudent,
   currentTerm,
   currentAcademicYear,
+  studentProgramme,
 }) {
   const styles = StyleSheet.create({
     PDFContainer: {
@@ -27,6 +28,7 @@ export function AdmissionPdfViewer({
             enrolledStudent={enrolledStudent}
             currentTerm={currentTerm}
             currentAcademicYear={currentAcademicYear}
+            studentProgramme={studentProgramme}
           />
         </PDFViewer>
       );
@@ -34,7 +36,8 @@ export function AdmissionPdfViewer({
     (prevProps, nextProps) =>
       prevProps.enrolledStudent === nextProps.enrolledStudent &&
       prevProps.currentTerm === nextProps.currentTerm &&
-      prevProps.currentAcademicYear === nextProps.currentAcademicYear
+      prevProps.currentAcademicYear === nextProps.currentAcademicYear &&
+      prevProps.studentProgramme === nextProps.studentProgramme
   );
   // Set a display name for debugging
   MemoizedPDFViewer.displayName = "MemoizedPDFViewer";
@@ -60,6 +63,7 @@ export function AdmissionPdfViewer({
                 enrolledStudent={enrolledStudent}
                 currentTerm={currentTerm}
                 currentAcademicYear={currentAcademicYear}
+                studentProgramme={studentProgramme}
               />
             }
             fileName="admission.pdf"
@@ -99,6 +103,7 @@ export function AdmissionPdfViewer({
         enrolledStudent={enrolledStudent}
         currentTerm={currentTerm}
         currentAcademicYear={currentAcademicYear}
+        studentProgramme={studentProgramme}
       />
       <SmallFooter />
     </Box>
@@ -109,4 +114,5 @@ AdmissionPdfViewer.propTypes = {
   enrolledStudent: PropTypes.object,
   currentTerm: PropTypes.object,
   currentAcademicYear: PropTypes.object,
+  studentProgramme: PropTypes.object,
 };

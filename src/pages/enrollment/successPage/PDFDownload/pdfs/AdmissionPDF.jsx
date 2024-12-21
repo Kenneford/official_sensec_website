@@ -15,8 +15,10 @@ export default function AdmissionPDF({
   enrolledStudent,
   currentTerm,
   currentAcademicYear,
+  studentProgramme,
 }) {
   console.log(enrolledStudent);
+  console.log(studentProgramme);
   const todaysDate = new Date();
   const currentYear = new Date().getFullYear();
 
@@ -158,7 +160,9 @@ export default function AdmissionPDF({
             <Text style={styles.text}>
               Congratulations! You&apos;ve been admitted into{" "}
               <Text style={[styles.text, styles.textSpan]}>
-                {enrolledStudent?.studentSchoolData?.program?.name}
+                {studentProgramme?.divisionName
+                  ? studentProgramme?.divisionName
+                  : studentProgramme?.name}
               </Text>{" "}
               programme at Senya Senior High School for the academic year{" "}
               <Text style={[styles.text, styles.textSpan]}>
@@ -259,4 +263,5 @@ AdmissionPDF.propTypes = {
   enrolledStudent: PropTypes.object,
   currentTerm: PropTypes.object,
   currentAcademicYear: PropTypes.object,
+  studentProgramme: PropTypes.object,
 };

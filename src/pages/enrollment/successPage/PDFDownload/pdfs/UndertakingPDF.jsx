@@ -15,9 +15,8 @@ export default function UndertakingPDF({ enrolledStudent }) {
 
   const styles = StyleSheet.create({
     body: {
-      paddingTop: 35,
-      paddingBottom: 65,
       paddingHorizontal: 35,
+      paddingVertical: 25,
     },
     letterBody: {
       marginTop: 35,
@@ -51,6 +50,7 @@ export default function UndertakingPDF({ enrolledStudent }) {
       color: "#555",
     },
     textSpan1: {
+      fontSize: 14,
       fontWeight: "extrabold",
       color: "#555",
     },
@@ -73,7 +73,7 @@ export default function UndertakingPDF({ enrolledStudent }) {
       color: "#292929",
     },
     image: {
-      marginTop: -20,
+      marginTop: -10,
       marginHorizontal: "auto",
       borderRadius: ".4rem",
       width: 40,
@@ -84,8 +84,8 @@ export default function UndertakingPDF({ enrolledStudent }) {
       marginTop: 20,
     },
     underTakingHeader: {
-      marginTop: 10,
-      marginBottom: 3,
+      marginTop: 15,
+      marginBottom: 7,
       fontSize: 16,
       color: "#555",
       textDecoration: "underline",
@@ -94,7 +94,7 @@ export default function UndertakingPDF({ enrolledStudent }) {
       fontSize: 16,
       color: "#696969",
       // paddingLeft: 16,
-      marginTop: 5,
+      marginTop: 0,
       marginBottom: 8,
       textDecoration: "underline",
     },
@@ -116,8 +116,9 @@ export default function UndertakingPDF({ enrolledStudent }) {
     },
     listItemName: {
       // fontWeight: "bold",
+      fontSize: 14,
       color: "#555",
-      marginBottom: 0,
+      marginBottom: 10,
       letterSpacing: 1,
     },
     bullet: {
@@ -189,7 +190,7 @@ export default function UndertakingPDF({ enrolledStudent }) {
           src={enrolledStudent?.personalInfo?.profilePicture.url}
         /> */}
         <View style={styles.underTakingWrap}>
-          <Text style={styles.underTakingHeader}>UNDERTAKING:</Text>
+          <Text style={styles.underTakingHeader}>UNDERTAKING</Text>
           <View style={styles.letterViews}>
             <Text style={styles.text}>
               I, _______________________, the parent/guardian of
@@ -213,7 +214,7 @@ export default function UndertakingPDF({ enrolledStudent }) {
           </View>
           <View style={styles.list}>
             <View style={styles.listItem}>
-              <Text style={styles.bullet}>1.</Text>
+              <Text style={styles.bullet}>2.</Text>
               <Text style={[styles.text, styles.listItem]}>
                 My child/ward will respect all school authorities, staff, and
                 students.
@@ -222,7 +223,7 @@ export default function UndertakingPDF({ enrolledStudent }) {
           </View>
           <View style={styles.list}>
             <View style={styles.listItem}>
-              <Text style={styles.bullet}>1.</Text>
+              <Text style={styles.bullet}>3.</Text>
               <Text style={[styles.text, styles.listItem]}>
                 My child/ward will strictly adhere to the school’s dress code.
               </Text>
@@ -230,7 +231,7 @@ export default function UndertakingPDF({ enrolledStudent }) {
           </View>
           <View style={styles.list}>
             <View style={styles.listItem}>
-              <Text style={styles.bullet}>1.</Text>
+              <Text style={styles.bullet}>4.</Text>
               <Text style={[styles.text, styles.listItem]}>
                 My child/ward will participate in all academic and
                 extracurricular activities.
@@ -253,7 +254,7 @@ export default function UndertakingPDF({ enrolledStudent }) {
           </View>
         </View>
         <View style={styles.underTakingWrap}>
-          <Text style={styles.underTakingHeader}>MEDICAL STATUS:</Text>
+          <Text style={styles.underTakingHeader}>MEDICAL STATUS</Text>
           <View style={styles.letterViews}>
             <Text style={styles.h3}>Student Information:</Text>
             <Text style={[styles.text, styles.textSpan1]}>

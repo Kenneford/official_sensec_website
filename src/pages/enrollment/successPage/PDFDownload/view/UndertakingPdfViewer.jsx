@@ -61,7 +61,7 @@ export default function UndertakingPdfViewer({ enrolledStudent }) {
           </PDFDownloadLink>
         </Box>
       </Box>
-      <PDFViewer style={styles.PDFContainer} sh>
+      <PDFViewer style={styles.PDFContainer}>
         <UndertakingPDF enrolledStudent={enrolledStudent} />
       </PDFViewer>
       <SmallFooter />
