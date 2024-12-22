@@ -22,7 +22,7 @@ export function EnrollmentPage() {
   return (
     <Box>
       {/* School Logo */}
-      <Box
+      {/* <Box
         direction="column"
         sx={{
           display: "flex",
@@ -60,9 +60,9 @@ export function EnrollmentPage() {
             </Typography>
           </Box>
         </Box>
-      </Box>
+      </Box> */}
       {/* Main navbar links */}
-      <Box
+      {/* <Box
         sx={{
           position: "sticky",
           top: 0,
@@ -85,8 +85,23 @@ export function EnrollmentPage() {
           currentLink={currentLink}
           setCurrentLink={setCurrentLink}
         />
-      </Box>
-      <Outlet />
+      </Box> */}
+      <Outlet
+        context={{
+          currentAction,
+          setCurrentAction,
+          currentLink,
+          setCurrentLink,
+          setOpenSubNavLinks,
+          openSubNavLinks,
+          setOpenUserActions,
+          openUserActions,
+          setOpenMenuLinks,
+          openMenuLinks,
+          setOpenSignUpActions,
+          openSignUpActions,
+        }}
+      />
     </Box>
   );
 }

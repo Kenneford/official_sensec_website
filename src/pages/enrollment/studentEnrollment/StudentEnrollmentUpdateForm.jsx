@@ -285,7 +285,7 @@ export function StudentEnrollmentUpdateForm() {
           top: 0,
           backgroundColor: "#fff",
           padding: 0,
-          zIndex: 6,
+          zIndex: 4,
         }}
         minHeight={"4rem"}
       >

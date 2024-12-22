@@ -3,7 +3,7 @@ import "./enrollmentSuccessPage.scss";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import CloseIcon from "@mui/icons-material/Close";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 // import PageLoading from "../../pageLoading/PageLoading";
 import { saveAs } from "file-saver";
 import { pdf, PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
@@ -21,6 +21,7 @@ import { dateFormatter } from "../../../dateFormatter/DateFormatter";
 import { FetchAllStudents } from "../../../data/students/FetchAllStudents";
 import { SideBar } from "../../../components/lazyLoading/auth/AuthLazyComponents";
 import {
+  Avatar,
   Box,
   Button,
   Collapse,
@@ -45,12 +46,34 @@ import { HashLink } from "react-router-hash-link";
 import { FetchAllCoreSubjects } from "../../../data/subjects/FetchSubjects";
 import EnrollmentSuccessSidebar from "./sidebar/EnrollmentSuccessSidebar";
 import PDFButtons from "./PDFDownload/pdfButtons/PDFButtons";
+import { NavigationBar } from "../../../components/navbar/NavigationBar";
 
 export function EnrollmentSuccessOverview({
   setEnroledStudent,
   setCurrentEnrolmentSuccessLink,
   currentEnrolmentSuccessLink,
 }) {
+  const {
+    currentAction,
+    setCurrentAction,
+    currentLink,
+    setCurrentLink,
+    setOpenSubNavLinks,
+    openSubNavLinks,
+    setOpenUserActions,
+    openUserActions,
+    setOpenSignUpActions,
+    openSignUpActions,
+    setOpenMenuLinks,
+    openMenuLinks,
+    // isSidebarOpen,
+    // openSearchModal,
+    // setOpenSearchModal,
+    // hovered,
+    // setHovered,
+    // drawerWidthCollapsed,
+    // drawerWidthExpanded,
+  } = useOutletContext();
   const studentUniqueId = localStorage.getItem("studentUniqueId");
   const { studentId, adminCurrentAction, current_link } = useParams();
   console.log(current_link);
@@ -99,9 +122,6 @@ export function EnrollmentSuccessOverview({
   ];
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [hovered, setHovered] = useState(false);
-  const drawerWidthCollapsed = 160; // Collapsed width
-  const drawerWidthExpanded = 300; // Expanded width
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("1024")); // 'md' is typically 900px
   const currentTerm = FetchCurrentAcademicTerms();
@@ -160,6 +180,71 @@ export function EnrollmentSuccessOverview({
         flexShrink={!adminCurrentAction ? 1 : 0}
         id="enrollmentOverview"
       >
+        {/* School Logo */}
+        <Box
+          direction="column"
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#fff",
+            padding: ".3rem 0",
+            height: "4.5rem",
+          }}
+        >
+          <Box
+            onClick={() => {
+              // Click handler
+              localStorage.removeItem("currentNavLink");
+              navigate("/sensec/homepage");
+            }}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              cursor: "pointer",
+            }}
+          >
+            <Avatar
+              src="/assets/sensec-logo1.png"
+              sx={{ alignItems: "center" }}
+            />
+            <Box sx={{ display: "flex", height: "1.5rem" }}>
+              <Typography variant="h6" color="green">
+                Sen
+              </Typography>
+              <Typography variant="h6" color="#aeae0d">
+                sec
+              </Typography>
+            </Box>
+          </Box>
+        </Box>
+        {/* Main navbar links */}
+        <Box
+          sx={{
+            position: "sticky",
+            top: 0,
+            backgroundColor: "#fff",
+            padding: 0,
+            zIndex: 5,
+          }}
+        >
+          <NavigationBar
+            setOpenSubNavLinks={setOpenSubNavLinks}
+            openSubNavLinks={openSubNavLinks}
+            setOpenUserActions={setOpenUserActions}
+            openUserActions={openUserActions}
+            setOpenSignUpActions={setOpenSignUpActions}
+            openSignUpActions={openSignUpActions}
+            setOpenMenuLinks={setOpenMenuLinks}
+            openMenuLinks={openMenuLinks}
+            currentAction={currentAction}
+            setCurrentAction={setCurrentAction}
+            currentLink={currentLink}
+            setCurrentLink={setCurrentLink}
+          />
+        </Box>
         {!enrolledStudent?.studentSchoolData?.house && !disappear && (
           <Box className="houseAlert">
             <p>
