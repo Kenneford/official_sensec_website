@@ -120,6 +120,26 @@ export function StudentEnrollmentUpdateForm() {
     };
   };
 
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      console.log("Scroll detected:", window.scrollY);
+      if (window.scrollY >= 140) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    console.log(window.scrollY > 10);
+
+    // Cleanup the event listener
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -281,13 +301,14 @@ export function StudentEnrollmentUpdateForm() {
         component={"div"}
         id="adminDashboardHeaderWrap"
         sx={{
-          position: "sticky",
+          position: isScrolled ? "sticky" : "",
           top: 0,
           backgroundColor: "#fff",
           padding: 0,
-          zIndex: 4,
+          zIndex: 5,
+          mb: "3.5rem",
         }}
-        minHeight={"4rem"}
+        minHeight={"3.5rem"}
       >
         <h1 className="dashAction">
           Enrollment / <span>Update</span>
