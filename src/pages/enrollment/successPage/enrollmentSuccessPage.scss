@@ -801,6 +801,8 @@
               list-style: circle;
               font-size: 0.9em;
               color: #696969;
+              line-height: 1.2rem;
+              margin-bottom: 0.5rem;
               span {
                 font-size: 0.9em;
                 color: #696969;
@@ -915,23 +917,70 @@
       font-size: 1em;
       color: #696969;
       margin-bottom: 0.5rem;
-      padding-left: 1rem;
+      margin-top: 1rem;
+      padding-left: 0.5rem;
+      // text-align: center;
     }
-    .tableHeader {
-      background-color: #555;
-      .headerCell {
-        color: #fff;
-        padding: 0.6rem 1rem;
-        font-size: 0.9em;
-        // text-align: center;
-      }
+    .headerCell {
+      background-color: #7b7b7b;
+      color: #fff;
+      padding: 0.6rem 1rem;
+      font-size: 0.9em;
+      font-weight: 500;
+      white-space: nowrap;
+      text-align: left; /* Align left for vertical consistency */
+      vertical-align: top; /* Align cells to the top of each row */
+      width: 40%; /* Allocate space for headers */
     }
-    .tableBody {
-      .bodyCell {
-        padding: 0.4rem 1rem;
-        font-size: 0.7em;
-        // text-align: center;
-      }
+    .bodyCell {
+      padding: 0.6rem 1rem;
+      font-size: 0.8em;
+      white-space: nowrap;
+      text-align: left; /* Align left for body items */
+      vertical-align: top; /* Align cells to the top of each row */
+      width: 60%; /* Allocate space for body values */
+      background-color: #f0f0f0;
     }
   }
+  .css-1ld3b9g-MuiGrid-root > .MuiGrid-item {
+    padding-top: 0;
+  }
+}
+.enrollmentDataOverview {
+  // padding-top: 5rem;
+}
+#adminDashboardHeaderWrap {
+  font-size: calc(0.7rem + 1vmin);
+  // z-index: 6;
+  background-color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #cccc;
+  padding: 1rem 1rem;
+  min-height: 4rem;
+  h1.dashAction {
+    color: #696969;
+    padding: unset;
+    text-transform: uppercase;
+    font-size: 1em;
+    // min-height: 3.5rem;
+    span {
+      color: #a09f9f;
+      font-size: 0.8em;
+    }
+  }
+}
+
+h1.dashAction {
+  color: #696969;
+  padding: unset;
+  text-transform: uppercase;
+  font-size: 1em;
+  span {
+    color: #a09f9f;
+    font-size: 0.8em;
+  }
+}
+#enrollmentProfileOverview {
 }

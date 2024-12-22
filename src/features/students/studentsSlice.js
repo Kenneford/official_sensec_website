@@ -34,6 +34,38 @@ export const studentEnrollment = createAsyncThunk(
     }
   }
 );
+export const studentPersonalDataUpdate = createAsyncThunk(
+  "Student/studentPersonalDataUpdate",
+  async ({ updateData }, { rejectWithValue }) => {
+    console.log(updateData);
+
+    try {
+      const res = await axios.put(
+        `${SENSEC_API_ENDPOINT}/students/${updateData?.studentId}/personal_data/update`,
+        { updateData }
+      );
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data);
+    }
+  }
+);
+export const studentSchoolDataUpdate = createAsyncThunk(
+  "Student/studentSchoolDataUpdate",
+  async ({ updateData }, { rejectWithValue }) => {
+    console.log(updateData);
+
+    try {
+      const res = await axios.put(
+        `${SENSEC_API_ENDPOINT}/students/${updateData?.studentId}/school_data/update`,
+        { updateData }
+      );
+      return res.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data);
+    }
+  }
+);
 export const approveStudentEnrollment = createAsyncThunk(
   "Student/approveStudentEnrollment",
   async ({ studentId, enrollmentApprovedBy }, { rejectWithValue }) => {
@@ -103,6 +135,14 @@ const studentSlice = createSlice({
         error: "",
       };
     },
+    resetEnrolmentUpdateState(state) {
+      return {
+        ...state,
+        updateStatus: "",
+        successMessage: "",
+        error: "",
+      };
+    },
     resetEnrolmentApprovalState(state) {
       return {
         ...state,
@@ -154,6 +194,48 @@ const studentSlice = createSlice({
       return {
         ...state,
         enrollmentStatus: "rejected",
+        error: action.payload,
+      };
+    });
+    // Update Student Personal Data
+    builder.addCase(studentPersonalDataUpdate.pending, (state) => {
+      return { ...state, updateStatus: "pending" };
+    });
+    builder.addCase(studentPersonalDataUpdate.fulfilled, (state, action) => {
+      if (action.payload) {
+        return {
+          ...state,
+          updatedStudent: action.payload.updatedStudent,
+          successMessage: action.payload.successMessage,
+          updateStatus: "success",
+        };
+      } else return state;
+    });
+    builder.addCase(studentPersonalDataUpdate.rejected, (state, action) => {
+      return {
+        ...state,
+        updateStatus: "rejected",
+        error: action.payload,
+      };
+    });
+    // Update Student School Data
+    builder.addCase(studentSchoolDataUpdate.pending, (state) => {
+      return { ...state, updateStatus: "pending" };
+    });
+    builder.addCase(studentSchoolDataUpdate.fulfilled, (state, action) => {
+      if (action.payload) {
+        return {
+          ...state,
+          updatedStudent: action.payload.updatedStudent,
+          successMessage: action.payload.successMessage,
+          updateStatus: "success",
+        };
+      } else return state;
+    });
+    builder.addCase(studentSchoolDataUpdate.rejected, (state, action) => {
+      return {
+        ...state,
+        updateStatus: "rejected",
         error: action.payload,
       };
     });
@@ -252,6 +334,7 @@ const studentSlice = createSlice({
 
 export const {
   resetEnrolmentState,
+  resetEnrolmentUpdateState,
   resetEnrolmentApprovalState,
   resetMultiApprovalState,
   resetMultiRejectionState,

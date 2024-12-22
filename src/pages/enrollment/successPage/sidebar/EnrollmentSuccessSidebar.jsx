@@ -2,26 +2,34 @@ import { Box, Collapse, Drawer, useMediaQuery, useTheme } from "@mui/material";
 import { HashLink } from "react-router-hash-link";
 import PropTypes from "prop-types";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
 
 export default function EnrollmentSuccessSidebar({
   currentTerm,
   currentAcademicYear,
   enrolledStudent,
+  current_link,
 }) {
-  const { current_link } = useParams();
+  const scrollWithOffset = (el) => {
+    const yCoordinate = el.getBoundingClientRect().top + window.scrollY;
+    const yOffset = 150;
+    window.scrollTo({ top: yCoordinate + yOffset, behavior: "smooth" });
+  };
+  //THIS REMOVES THE HASHLINK TAG FROM THE URL
+  if (window.location.hash) {
+    window.history.replaceState("", document.title, window.location.pathname);
+  }
   const links = [
     {
       name: "Overview",
-      ulr: `/sensec/students/enrollment/online/${enrolledStudent?.uniqueId}/success/Overview`,
+      ulr: `/sensec/students/enrollment/online/${enrolledStudent?.uniqueId}/success/Overview#enrollmentOverview`,
     },
     {
       name: "View Profile",
-      ulr: `/sensec/students/enrollment/online/${enrolledStudent?.uniqueId}/success/View_Profile`,
+      ulr: `/sensec/students/enrollment/online/${enrolledStudent?.uniqueId}/success/View_Profile#enrollmentProfile`,
     },
     {
       name: "Update",
-      ulr: `/sensec/students/enrollment/online/${enrolledStudent?.uniqueId}/success/Update`,
+      ulr: `/sensec/students/enrollment/online/${enrolledStudent?.uniqueId}/success/Update#enrollmentDataUpdate`,
     },
   ];
   const [hovered, setHovered] = useState(false);
@@ -29,6 +37,7 @@ export default function EnrollmentSuccessSidebar({
   const drawerWidthExpanded = 300; // Expanded width
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("1024"));
+
   return (
     <Box>
       {!isMobile && (
@@ -94,6 +103,8 @@ export default function EnrollmentSuccessSidebar({
             {links?.map((link) => (
               <HashLink
                 to={link?.ulr}
+                smooth
+                // scroll={scrollWithOffset}
                 key={link?.name}
                 className={
                   current_link &&

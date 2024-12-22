@@ -148,100 +148,17 @@ export function EnrollmentSuccessOverview({
   return (
     <Box display={"flex"}>
       <EnrollmentSuccessSidebar
-        isMobile={isMobile}
-        setHovered={setHovered}
-        hovered={hovered}
-        drawerWidthExpanded={drawerWidthExpanded}
-        drawerWidthCollapsed={drawerWidthCollapsed}
         currentTerm={currentTerm}
         currentAcademicYear={currentAcademicYear}
         enrolledStudent={enrolledStudent}
-        links={links}
         current_link={current_link}
       />
-      {/* <Box>
-        {!isMobile && (
-          <Drawer
-            variant="permanent"
-            anchor="left"
-            onMouseEnter={() => setHovered(true)}
-            onMouseLeave={() => setHovered(false)}
-            className="sidebar"
-            sx={{
-              "& .MuiDrawer-paper": {
-                position: "fixed", // Fix the drawer to the viewport
-                top: 0,
-                left: 0,
-                height: "100vh",
-                width: hovered ? drawerWidthExpanded : drawerWidthCollapsed, // Expand on hover
-                transition: "width 0.3s", // Smooth width transition
-                overflowX: "hidden", // Prevent content from spilling
-                backgroundColor: "#292929", // Optional background color
-              },
-            }}
-          >
-            <Box
-              // Button to toggle sidebar
-              sx={{
-                backgroundColor: "#292929",
-                padding: ".5rem",
-                borderBottom: "2px solid #fff",
-              }}
-            >
-              <Box
-                sx={{
-                  textAlign: "center",
-                  color: "#696969",
-                  pt: 1,
-                  fontSize: "1rem",
-                }}
-              >
-                <span>{currentTerm?.name}</span>
-                {"-"}
-                <span>{currentAcademicYear?.yearRange}</span>
-              </Box>
-              <Box className="userInfo">
-                <img
-                  src={enrolledStudent?.personalInfo?.profilePicture?.url}
-                  alt=""
-                />
-                {hovered && (
-                  <Collapse
-                    in={hovered}
-                    className="infoText"
-                    //   sx={{
-                    //     transition: "0.5s ease", // Smooth transition when toggling
-                    //   }}
-                  >
-                    <span>{enrolledStudent?.personalInfo?.fullName}</span>
-                  </Collapse>
-                )}
-              </Box>
-            </Box>
-            <Box className="links">
-              {links?.map((link) => (
-                <HashLink
-                  to={link?.ulr}
-                  key={link?.name}
-                  className={
-                    current_link &&
-                    current_link?.replace(/_/g, " ") !== link?.name
-                      ? "link"
-                      : "link active"
-                  }
-                >
-                  {link?.name}
-                </HashLink>
-              ))}
-            </Box>
-          </Drawer>
-        )}
-      </Box> */}
       <Box
         className="rightWrap"
         width={!isMobile ? "calc(100% - 160px)" : "100%"}
         ml={!isMobile ? "160px" : 0}
         flexShrink={!adminCurrentAction ? 1 : 0}
+        id="enrollmentOverview"
       >
         {!enrolledStudent?.studentSchoolData?.house && !disappear && (
           <Box className="houseAlert">
@@ -484,10 +401,10 @@ export function EnrollmentSuccessOverview({
                   </Box>
                 </Box>
                 <Box className="comeAlongDocsWrap" p={"1rem"}>
-                  <p style={{ color: "#696969", fontWeight: "500" }}>
+                  <h2 style={{ color: "#696969", fontWeight: "500" }}>
                     You are expected to come along with the following on the
                     reporting date:
-                  </p>
+                  </h2>
                   <ul>
                     <li>
                       Printed copy of your admission letter and a printed copy
@@ -515,6 +432,57 @@ export function EnrollmentSuccessOverview({
               allProgrammes={allProgrammes}
               allDivisionProgrammes={allDivisionProgrammes}
             />
+            {isMobile && (
+              <Box
+                display={"flex"}
+                flexDirection={"column"}
+                alignItems={"center"}
+              >
+                <p
+                  style={{
+                    color: "#696969",
+                    padding: ".5rem 0",
+                  }}
+                >
+                  Click{" "}
+                  <HashLink
+                    to={`/sensec/students/enrollment/online/${enrolledStudent?.uniqueId}/success/View_Profile#enrollmentProfile`}
+                    style={{
+                      maxWidth: "15rem",
+                      "&:hover": { backgroundColor: "transparent" },
+                      color: "#088dc2",
+                      marginBottom: ".5rem",
+                    }}
+                  >
+                    here
+                  </HashLink>{" "}
+                  to view your enrollment profile.
+                </p>
+                <p
+                  style={{
+                    color: "#696969",
+                    padding: ".5rem 0",
+                  }}
+                >
+                  Click{" "}
+                  <HashLink
+                    to={`/sensec/students/enrollment/online/${enrolledStudent?.uniqueId}/success/Update#enrollmentDataUpdate`}
+                    style={{
+                      maxWidth: "15rem",
+                      "&:hover": { backgroundColor: "transparent" },
+                      color: "#088dc2",
+                    }}
+                    // onClick={() =>
+                    //   navigate(
+                    //   )
+                    // }
+                  >
+                    here
+                  </HashLink>{" "}
+                  to update your enrollment data
+                </p>
+              </Box>
+            )}
           </Box>
         </Box>
         <SmallFooter />

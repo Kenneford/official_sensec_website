@@ -62,6 +62,16 @@ export const StudentDataUpdateForm = lazyWithSuspense(
   <PageLoading />,
   "StudentDataUpdateFormComponent"
 );
+export const StudentEnrollmentUpdateForm = lazyWithSuspense(
+  () =>
+    import(
+      "../../../pages/enrollment/studentEnrollment/StudentEnrollmentUpdateForm"
+    ).then((module) => {
+      return { default: module.StudentEnrollmentUpdateForm };
+    }),
+  <PageLoading />,
+  "StudentEnrollmentUpdateFormComponent"
+);
 // Student Parent Form
 export const ParentForm = lazyWithSuspense(
   () =>

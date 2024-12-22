@@ -1,0 +1,33 @@
+#adminDashboardHeaderWrap {
+  font-size: calc(0.7rem + 1vmin);
+  z-index: 6;
+  background-color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #cccc;
+  padding: 1rem 1rem;
+  min-height: 4rem;
+  h1.dashAction {
+    color: #696969;
+    padding: unset;
+    text-transform: uppercase;
+    font-size: 1em;
+    // min-height: 3.5rem;
+    span {
+      color: #a09f9f;
+      font-size: 0.8em;
+    }
+  }
+}
+
+h1.dashAction {
+  color: #696969;
+  padding: unset;
+  text-transform: uppercase;
+  font-size: 1em;
+  span {
+    color: #a09f9f;
+    font-size: 0.8em;
+  }
+}
