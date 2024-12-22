@@ -3,20 +3,22 @@ import "./smallFooter.scss";
 
 export default function SmallFooter() {
   return (
-    <Box id="smallFooterWrap">
-      <Box className="smallFooterContent">
-        <p>
-          Copyright &copy;2023 <span style={{ color: "#0fc80f" }}>Sen</span>
-          <span style={{ color: "yellow" }}>sec</span>
-        </p>
-        <div
+    // <Box id="smallFooterWrap">
+    <Box className="smallFooterContent">
+      <p>
+        Copyright &copy;2023 <span style={{ color: "#0fc80f" }}>Sen</span>
+        <span style={{ color: "yellow" }}>sec</span>
+        <span
           style={{
             border: "1px solid #fff",
             height: "15px",
+            margin: "0 .5rem",
           }}
-        ></div>
-        <p>All Rights Reserved.</p>
-      </Box>
+        ></span>
+        All Rights Reserved.
+      </p>
+      {/* <p>All Rights Reserved.</p> */}
     </Box>
+    // </Box>
   );
 }

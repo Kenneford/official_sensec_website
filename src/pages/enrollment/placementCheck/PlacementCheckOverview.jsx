@@ -22,8 +22,8 @@ import {
 import { dateFormatter } from "../../../dateFormatter/DateFormatter";
 import SmallFooter from "../../../components/footer/SmallFooter";
 import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { parseISO } from "date-fns";
 import dayjs from "dayjs";
 
@@ -152,7 +152,8 @@ export function PlacementCheckOverview() {
   useEffect(() => {
     dispatch(fetchAllPlacementStudents());
     dispatch(fetchAllUsers());
-  }, [dispatch, studentUniqueId]);
+  }, [dispatch]);
+
   // Update status check
   useEffect(() => {
     if (updateStatus === "pending") {

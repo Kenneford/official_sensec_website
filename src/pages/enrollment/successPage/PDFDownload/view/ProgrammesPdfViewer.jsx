@@ -3,6 +3,7 @@ import ProgrammesPDF from "../pdfs/ProgrammesPDF";
 import PropTypes from "prop-types";
 import { Box, Button } from "@mui/material";
 import SmallFooter from "../../../../../components/footer/SmallFooter";
+import { memo } from "react";
 
 export default function ProgrammesPdfViewer({
   enrolledStudent,
@@ -12,9 +13,30 @@ export default function ProgrammesPdfViewer({
   const styles = StyleSheet.create({
     PDFContainer: {
       width: "100%",
-      height: "82vh",
+      height: "100%",
     },
   });
+  // Wrap the PDFViewer component with React.memo
+  // to prevent prevent pdf reload if state update
+  const MemoizedPDFViewer = memo(
+    ({ enrolledStudent }) => {
+      return (
+        <PDFViewer style={styles.PDFContainer}>
+          <ProgrammesPDF
+            enrolledStudent={enrolledStudent}
+            allCoreSubjects={allCoreSubjects}
+            allProgrammes={allProgrammes}
+          />
+        </PDFViewer>
+      );
+    },
+    (prevProps, nextProps) =>
+      prevProps.enrolledStudent === nextProps.enrolledStudent &&
+      prevProps.allCoreSubjects === nextProps.allCoreSubjects &&
+      prevProps.allProgrammes === nextProps.allProgrammes
+  );
+  // Set a display name for debugging
+  MemoizedPDFViewer.displayName = "MemoizedPDFViewer";
   return (
     <Box>
       <Box
@@ -35,6 +57,7 @@ export default function ProgrammesPdfViewer({
               <ProgrammesPDF
                 enrolledStudent={enrolledStudent}
                 allCoreSubjects={allCoreSubjects}
+                allProgrammes={allProgrammes}
               />
             }
             fileName="programme.pdf"
@@ -70,12 +93,21 @@ export default function ProgrammesPdfViewer({
           </PDFDownloadLink>
         </Box>
       </Box>
-      <PDFViewer style={styles.PDFContainer}>
-        <ProgrammesPDF
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100%",
+          height: "72.9vh",
+        }}
+      >
+        <MemoizedPDFViewer
+          enrolledStudent={enrolledStudent}
           allCoreSubjects={allCoreSubjects}
           allProgrammes={allProgrammes}
         />
-      </PDFViewer>
+      </Box>
       <SmallFooter />
     </Box>
   );

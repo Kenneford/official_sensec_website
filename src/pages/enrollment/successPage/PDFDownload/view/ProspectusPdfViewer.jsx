@@ -4,6 +4,7 @@ import SmallFooter from "../../../../../components/footer/SmallFooter";
 import { Box, Button } from "@mui/material";
 import PageLoading from "../../../../../components/pageLoading/PageLoading";
 import LoadingProgress from "../../../../../components/pageLoading/LoadingProgress";
+import { memo } from "react";
 // import PropTypes from "prop-types";
 
 export default function ProspectusPdfViewer() {
@@ -11,9 +12,27 @@ export default function ProspectusPdfViewer() {
   const styles = StyleSheet.create({
     PDFContainer: {
       width: "100%",
-      height: "100%", //As per your page layout
+      height: "100%",
     },
   });
+  // Wrap the PDFViewer component with React.memo
+  // to prevent prevent pdf reload if state update
+  const MemoizedPDFViewer = memo(
+    () => {
+      return (
+        <PDFViewer style={styles.PDFContainer}>
+          <ProspectusPDF />
+        </PDFViewer>
+      );
+    },
+    (prevProps, nextProps) =>
+      prevProps.enrolledStudent === nextProps.enrolledStudent &&
+      prevProps.currentTerm === nextProps.currentTerm &&
+      prevProps.currentAcademicYear === nextProps.currentAcademicYear &&
+      prevProps.studentProgramme === nextProps.studentProgramme
+  );
+  // Set a display name for debugging
+  MemoizedPDFViewer.displayName = "MemoizedPDFViewer";
   return (
     <Box>
       <Box
@@ -69,13 +88,11 @@ export default function ProspectusPdfViewer() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          height: "100vh",
           width: "100%",
+          height: "72.9vh",
         }}
       >
-        <PDFViewer style={styles.PDFContainer}>
-          <ProspectusPDF />
-        </PDFViewer>
+        <MemoizedPDFViewer />
       </Box>
       <SmallFooter />
     </Box>

@@ -13,6 +13,8 @@ import { useParams } from "react-router-dom";
 import { FetchAllStudents } from "../../../data/students/FetchAllStudents";
 import { HashLink } from "react-router-hash-link";
 import { StudentDataUpdateForm } from "../studentEnrollment/StudentDataUpdateForm";
+import { StudentEnrollmentUpdateForm } from "../../../components/lazyLoading/student/StudentsLazyLoadingComponents";
+import EnrollmentSuccessSidebar from "./sidebar/EnrollmentSuccessSidebar";
 
 export default function UpdateEnrollmentData() {
   const { studentId, adminCurrentAction, current_link } = useParams();
@@ -24,15 +26,15 @@ export default function UpdateEnrollmentData() {
   const links = [
     {
       name: "Overview",
-      ulr: `/sensec/students/enrollment/online/${enrolledStudent?.uniqueId}/success/Overview`,
+      ulr: `/sensec/students/enrollment/online/${enrolledStudent?.uniqueId}/success/Overview#enrollmentOverview`,
     },
     {
       name: "View Profile",
-      ulr: `/sensec/students/enrollment/online/${enrolledStudent?.uniqueId}/success/View_Profile`,
+      ulr: `/sensec/students/enrollment/online/${enrolledStudent?.uniqueId}/success/View_Profile#enrollmentProfile`,
     },
     {
       name: "Update",
-      ulr: `/sensec/students/enrollment/online/${enrolledStudent?.uniqueId}/success/Update`,
+      ulr: `/sensec/students/enrollment/online/${enrolledStudent?.uniqueId}/success/Update#enrollmentDataUpdate`,
     },
   ];
   const [hovered, setHovered] = useState(false);
@@ -45,92 +47,26 @@ export default function UpdateEnrollmentData() {
 
   return (
     <Box display={"flex"}>
-      <Box>
-        {!isMobile && (
-          <Drawer
-            variant="permanent"
-            anchor="left"
-            onMouseEnter={() => setHovered(true)}
-            onMouseLeave={() => setHovered(false)}
-            className="sidebar"
-            sx={{
-              "& .MuiDrawer-paper": {
-                position: "fixed", // Fix the drawer to the viewport
-                top: 0,
-                left: 0,
-                height: "100vh",
-                width: hovered ? drawerWidthExpanded : drawerWidthCollapsed, // Expand on hover
-                transition: "width 0.3s", // Smooth width transition
-                overflowX: "hidden", // Prevent content from spilling
-                backgroundColor: "#292929", // Optional background color
-              },
-            }}
-          >
-            {/* Button to toggle sidebar */}
-            <Box
-              sx={{
-                backgroundColor: "#292929",
-                padding: ".5rem",
-                borderBottom: "2px solid #fff",
-              }}
-            >
-              <Box
-                sx={{
-                  textAlign: "center",
-                  color: "#696969",
-                  pt: 1,
-                  fontSize: "1rem",
-                }}
-              >
-                <span>{currentTerm?.name}</span>
-                {"-"}
-                <span>{currentAcademicYear?.yearRange}</span>
-              </Box>
-              {/* User Info */}
-              <Box className="userInfo">
-                <img
-                  src={enrolledStudent?.personalInfo?.profilePicture?.url}
-                  alt=""
-                />
-                {hovered && (
-                  <Collapse
-                    in={hovered}
-                    className="infoText"
-                    //   sx={{
-                    //     transition: "0.5s ease", // Smooth transition when toggling
-                    //   }}
-                  >
-                    <span>{enrolledStudent?.personalInfo?.fullName}</span>
-                  </Collapse>
-                )}
-              </Box>
-            </Box>
-            <Box className="links">
-              {links?.map((link) => (
-                <HashLink
-                  to={link?.ulr}
-                  key={link?.name}
-                  className={
-                    current_link &&
-                    current_link?.replace(/_/g, " ") !== link?.name
-                      ? "link"
-                      : "link active"
-                  }
-                >
-                  {link?.name}
-                </HashLink>
-              ))}
-            </Box>
-          </Drawer>
-        )}
-      </Box>
+      <EnrollmentSuccessSidebar
+        isMobile={isMobile}
+        setHovered={setHovered}
+        hovered={hovered}
+        drawerWidthExpanded={drawerWidthExpanded}
+        drawerWidthCollapsed={drawerWidthCollapsed}
+        currentTerm={currentTerm}
+        currentAcademicYear={currentAcademicYear}
+        enrolledStudent={enrolledStudent}
+        links={links}
+        current_link={current_link}
+      />
       <Box
         className="rightWrap"
         width={!isMobile ? "calc(100% - 160px)" : "100%"}
         ml={!isMobile ? "160px" : 0}
         flexShrink={!adminCurrentAction ? 1 : 0}
+        id="enrollmentDataUpdate"
       >
-        <StudentDataUpdateForm />
+        <StudentEnrollmentUpdateForm />
       </Box>
     </Box>
   );

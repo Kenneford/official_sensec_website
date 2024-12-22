@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useState } from "react";
 import "./studentEnrollment.scss";
+import "./enrollmentUpdate.scss";
 import {
   ContainerBox,
   CustomMobileDatePicker,
@@ -14,15 +15,23 @@ import {
   InputAdornment,
   Typography,
 } from "@mui/material";
-import { resetEnrolmentState } from "../../../features/students/studentsSlice";
+import {
+  resetEnrolmentState,
+  resetEnrolmentUpdateState,
+  studentPersonalDataUpdate,
+  studentSchoolDataUpdate,
+} from "../../../features/students/studentsSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { FetchAllProgrammes } from "../../../data/programme/FetchProgrammeData";
+import {
+  FetchAllCreatedDivisionProgrammes,
+  FetchAllProgrammes,
+} from "../../../data/programme/FetchProgrammeData";
 import { getAllDivisionProgrammes } from "../../../features/academics/programmeSlice";
 import { FetchAllClassLevels } from "../../../data/class/FetchClassLevel";
 import { FetchAllBatches } from "../../../data/batch/FetchBatch";
 import { toast } from "react-toastify";
 import LoadingProgress from "../../../components/pageLoading/LoadingProgress";
-import { TaskAlt } from "@mui/icons-material";
+import { ArrowBack, TaskAlt } from "@mui/icons-material";
 import Redirection from "../../../components/pageLoading/Redirection";
 import { useNavigate, useParams } from "react-router-dom";
 import { getAuthUser } from "../../../features/auth/authSlice";
@@ -30,8 +39,9 @@ import { FetchAllStudents } from "../../../data/students/FetchAllStudents";
 import dayjs from "dayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import SmallFooter from "../../../components/footer/SmallFooter";
 
-export function StudentDataUpdateForm() {
+export function StudentEnrollmentUpdateForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const authUser = useSelector(getAuthUser);
@@ -43,8 +53,8 @@ export function StudentDataUpdateForm() {
   const allProgrammes = FetchAllProgrammes();
   const allClassLevels = FetchAllClassLevels();
   const allBatches = FetchAllBatches();
-  const allDivisionProgrammes = useSelector(getAllDivisionProgrammes);
-  const { enrollmentStatus, error, successMessage } = useSelector(
+  const allDivisionProgrammes = FetchAllCreatedDivisionProgrammes();
+  const { updateStatus, error, successMessage } = useSelector(
     (state) => state.student
   );
   console.log(allProgrammes);
@@ -59,7 +69,8 @@ export function StudentDataUpdateForm() {
   const [redirecting, setRedirecting] = useState("");
 
   const [updateSchoolData, setUpdateSchoolData] = useState(false);
-  console.log(updateSchoolData);
+  const [newProgrammeSelected, setNewProgrammeSelected] = useState({});
+  console.log(newProgrammeSelected);
 
   const foundStudent = allStudents?.find(
     (std) => std?.uniqueId === studentUniqueId
@@ -102,10 +113,10 @@ export function StudentDataUpdateForm() {
       // console.log(reader.result);
       setImagePreview(reader.result);
 
-      setStudent({
-        ...student,
-        profilePicture: reader.result,
-      });
+      //   setStudent({
+      //     ...student,
+      //     profilePicture: reader.result,
+      //   });
     };
   };
 
@@ -142,46 +153,64 @@ export function StudentDataUpdateForm() {
   const psDOB = student?.dateOfBirth
     ? new Date(student?.dateOfBirth).toISOString()
     : "";
-  // Handle enrollment
+  // Handle persoanal data update
   const handleSubmit = (event) => {
     event.preventDefault();
-    const data = {
-      uniqueId: foundStudent?.uniqueId,
-      firstName: foundStudent?.personalInfo?.firstName,
-      lastName: foundStudent?.personalInfo?.lastName,
-      otherName: foundStudent?.personalInfo?.otherName,
+    const updateData = {
+      studentId: student?.uniqueId,
+      firstName: student?.personalInfo?.firstName,
+      lastName: student?.personalInfo?.lastName,
+      otherName: student?.personalInfo?.otherName,
       dateOfBirth: student?.dateOfBirth.toISOString(),
-      placeOfBirth: foundStudent?.personalInfo?.placeOfBirth,
-      nationality: foundStudent?.personalInfo?.nationality,
-      gender: foundStudent?.personalInfo?.gender,
-      profilePicture: foundStudent?.personalInfo?.profilePicture?.url,
+      placeOfBirth: student?.personalInfo?.placeOfBirth,
+      nationality: student?.personalInfo?.nationality,
+      gender: student?.personalInfo?.gender,
+      profilePicture: imagePreview
+        ? imagePreview
+        : student?.personalInfo?.profilePicture?.url,
       // School Data
-      jhsAttended: foundStudent?.studentSchoolData?.jhsAttended,
-      completedJhs: foundStudent?.studentSchoolData?.completedJhs,
-      jhsIndexNo: foundStudent?.studentSchoolData?.jhsIndexNo,
+      //   jhsAttended: student?.studentSchoolData?.jhsAttended,
+      //   completedJhs: student?.studentSchoolData?.completedJhs,
+      //   jhsIndexNo: student?.studentSchoolData?.jhsIndexNo,
+      //   program: student?.programId,
+      //   currentClassLevel: student?.classLevelId,
+      //   batch: student?.batchId,
+      // Status
+      height: student?.status?.height,
+      weight: student?.status?.weight,
+      complexion: student?.status?.complexion,
+      motherTongue: student?.status?.motherTongue,
+      otherTongue: student?.status?.otherTongue,
+      // Contact Address
+      homeTown: student?.contactAddress?.homeTown,
+      district: student?.contactAddress?.district,
+      region: student?.contactAddress?.region,
+      currentCity: student?.contactAddress?.currentCity,
+      residentialAddress: student?.contactAddress?.residentialAddress,
+      gpsAddress: student?.contactAddress?.gpsAddress,
+      mobile: student?.contactAddress?.mobile,
+      email: student?.contactAddress?.email,
+      lastUpdatedBy: authUser?.id,
+    };
+    console.log(updateData);
+    dispatch(studentPersonalDataUpdate({ updateData }));
+  };
+  const handleSchoolDataUpdate = (e) => {
+    e.preventDefault();
+    const updateData = {
+      studentId: student?.uniqueId,
+      jhsAttended: student?.studentSchoolData?.jhsAttended,
+      completedJhs: student?.studentSchoolData?.completedJhs,
+      jhsIndexNo: student?.studentSchoolData?.jhsIndexNo,
       program: student?.programId,
+      programDivision: student?.divisionProgramId,
       currentClassLevel: student?.classLevelId,
       batch: student?.batchId,
-      // Status
-      height: foundStudent?.status?.height,
-      weight: foundStudent?.status?.weight,
-      complexion: foundStudent?.status?.complexion,
-      motherTongue: foundStudent?.status?.motherTongue,
-      otherTongue: foundStudent?.status?.otherTongue,
-      residentialStatus: foundStudent?.status?.residentialStatus,
-      // Contact Address
-      homeTown: foundStudent?.contactAddress?.homeTown,
-      district: foundStudent?.contactAddress?.district,
-      region: foundStudent?.contactAddress?.region,
-      currentCity: foundStudent?.contactAddress?.currentCity,
-      residentialAddress: foundStudent?.contactAddress?.residentialAddress,
-      gpsAddress: foundStudent?.contactAddress?.gpsAddress,
-      mobile: foundStudent?.contactAddress?.mobile,
-      email: foundStudent?.contactAddress?.email,
+      residentialStatus: student?.status?.residentialStatus,
+      lastUpdatedBy: authUser?.id,
     };
-    console.log(data);
-
-    // dispatch(studentEnrollment(data));
+    console.log(updateData);
+    dispatch(studentSchoolDataUpdate({ updateData }));
   };
 
   // Reinitialize state when foundStudent changes
@@ -193,6 +222,8 @@ export function StudentDataUpdateForm() {
           ? dayjs(foundStudent?.personalInfo?.dateOfBirth)
           : dayjs("MM/DD/YYYY"),
         programId: foundStudent?.studentSchoolData?.program?._id,
+        divisionProgramId:
+          foundStudent?.studentSchoolData?.divisionProgram?._id,
         batchId: foundStudent?.studentSchoolData?.batch?._id,
         classLevelId: foundStudent?.studentSchoolData?.currentClassLevel?._id,
       };
@@ -202,12 +233,20 @@ export function StudentDataUpdateForm() {
     }
   }, [foundStudent]);
 
-  // Handle enrollment status check
   useEffect(() => {
-    if (enrollmentStatus === "pending") {
+    if (student?.programId) {
+      const programFound = allProgrammes?.find(
+        (program) => program?._id === student?.programId
+      );
+      setNewProgrammeSelected(programFound);
+    }
+  }, [student, allProgrammes]);
+  // Handle enrollment update status check
+  useEffect(() => {
+    if (updateStatus === "pending") {
       setLoadingComplete(false);
     }
-    if (enrollmentStatus === "rejected") {
+    if (updateStatus === "rejected") {
       setTimeout(() => {
         error?.errorMessage?.message?.map((err) =>
           toast.error(err, {
@@ -219,121 +258,53 @@ export function StudentDataUpdateForm() {
       }, 2000);
       setTimeout(() => {
         setLoadingComplete(null);
-        dispatch(resetEnrolmentState());
+        dispatch(resetEnrolmentUpdateState());
       }, 3000);
       return;
     }
-    if (enrollmentStatus === "success") {
+    if (updateStatus === "success") {
       setTimeout(() => {
         setLoadingComplete(true);
       }, 3000);
       setTimeout(() => {
-        setRedirecting(true);
-      }, 6000);
-      setTimeout(() => {
-        if (authUser?.roles?.includes("admin")) {
-          navigate(
-            `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/new_enrollment/parent/add`
-          );
-        } else {
-          navigate(
-            `/sensec/students/enrollment/online/${student?.uniqueId}/parent/add`
-          );
-        }
-      }, 9000);
+        setLoadingComplete(null);
+        dispatch(resetEnrolmentUpdateState());
+        setUpdateSchoolData(false);
+      }, 7000);
     }
-  }, [
-    navigate,
-    dispatch,
-    enrollmentStatus,
-    error,
-    successMessage,
-    loadingComplete,
-    student,
-    adminCurrentAction,
-    adminCurrentLink,
-    authUser,
-  ]);
+  }, [navigate, dispatch, updateStatus, error, loadingComplete]);
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       {/* Current dashboard title */}
-      {adminCurrentAction && adminCurrentLink && (
-        <Box
-          component={"div"}
-          id="adminDashboardHeaderWrap"
-          sx={{
-            position: "sticky",
-            top: 0,
-            backgroundColor: "#fff",
-            padding: 0,
-            // zIndex: 1,
-          }}
-          minHeight={"4rem"}
-        >
-          <h1 className="dashAction">
-            {adminCurrentAction?.replace(/_/g, "-")} / <span>Update</span>
-          </h1>
-        </Box>
-      )}
+      <Box
+        component={"div"}
+        id="adminDashboardHeaderWrap"
+        sx={{
+          position: "sticky",
+          top: 0,
+          backgroundColor: "#fff",
+          padding: 0,
+          zIndex: 6,
+        }}
+        minHeight={"4rem"}
+      >
+        <h1 className="dashAction">
+          Enrollment / <span>Update</span>
+        </h1>
+      </Box>
       <ContainerBox
         component="div"
         id="studentEnrollmentWrap"
         sx={{
           width: { xs: "100%", sm: "95%", md: "90%", lg: "90%", xl: "75%" },
           margin: "auto",
-          paddingTop: "2rem",
+          paddingTop: "unset",
           display: "flex",
           flexDirection: "column",
           position: "relative",
         }}
       >
-        {studentId && (
-          <Typography
-            variant="h6"
-            sx={{
-              textTransform: "uppercase",
-              textAlign: "center",
-              color: "#696969",
-              fontSize: "1em",
-            }}
-          >
-            Update Data
-          </Typography>
-        )}
-        {!studentId && (
-          <Typography
-            variant="h6"
-            sx={{
-              display: "flex",
-              // flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              textTransform: "capitalize",
-              // textAlign: "center",
-              color: "#696969",
-              fontSize: "1em",
-            }}
-          >
-            To update student&apos;s school data, click
-            <span
-              style={{
-                color: "#0bbad9",
-                cursor: "pointer",
-                // textTransform: "capitalize",
-                marginLeft: 4,
-              }}
-              onClick={() => setUpdateSchoolData((data) => !data)}
-            >
-              {/* <Button
-                sx={{ bgcolor: "transparent", textTransform: "capitalize" }}
-                onClick={() => setUpdateSchoolData((data) => !data)}
-              > */}
-              here...
-              {/* </Button> */}
-            </span>
-          </Typography>
-        )}
         {!updateSchoolData && (
           <Box
             component="div"
@@ -348,6 +319,38 @@ export function StudentDataUpdateForm() {
               backgroundColor: "#f9f9f9",
             }}
           >
+            <Typography
+              variant="h6"
+              sx={{
+                // display: "flex",
+                // // flexDirection: "column",
+                // justifyContent: "center",
+                // alignItems: "center",
+                textTransform: "capitalize",
+                textAlign: "center",
+                color: "#696969",
+                fontSize: "1em",
+                marginBottom: ".5rem",
+              }}
+            >
+              To update your school data, click
+              <span
+                style={{
+                  color: "#0bbad9",
+                  cursor: "pointer",
+                  textTransform: "capitalize",
+                  marginLeft: 5,
+                }}
+                onClick={() => setUpdateSchoolData((data) => !data)}
+              >
+                {/* <Button
+                sx={{ bgcolor: "transparent", textTransform: "capitalize" }}
+                onClick={() => setUpdateSchoolData((data) => !data)}
+              > */}
+                Here...
+                {/* </Button> */}
+              </span>
+            </Typography>
             <form
               onSubmit={handleSubmit}
               style={{
@@ -369,7 +372,6 @@ export function StudentDataUpdateForm() {
                     name="personalInfo.firstName"
                     value={student?.personalInfo?.firstName || ""}
                     onChange={handleChange}
-                    disabled={!authUser?.roles?.includes("admin")}
                     className="textField"
                     // InputProps={{
                     //   readOnly: !authUser?.roles?.includes("admin"),
@@ -384,7 +386,6 @@ export function StudentDataUpdateForm() {
                     name="personalInfo.lastName"
                     value={student?.personalInfo?.lastName || ""}
                     onChange={handleChange}
-                    disabled={!authUser?.roles?.includes("admin")}
                   />
                 </Grid>
                 {/* Student Other Name */}
@@ -395,7 +396,6 @@ export function StudentDataUpdateForm() {
                     name="personalInfo.otherName"
                     value={student?.personalInfo?.otherName || ""}
                     onChange={handleChange}
-                    disabled={!authUser?.roles?.includes("admin")}
                   />
                 </Grid>
                 {/* Place Of Birth */}
@@ -406,7 +406,6 @@ export function StudentDataUpdateForm() {
                     name="personalInfo.placeOfBirth"
                     value={student?.personalInfo?.placeOfBirth || ""}
                     onChange={handleChange}
-                    disabled={!authUser?.roles?.includes("admin")}
                   />
                 </Grid>
                 {/* Date Of Birth */}
@@ -417,7 +416,6 @@ export function StudentDataUpdateForm() {
                     // inputFormat="MM/dd/yyyy"
                     value={student?.dateOfBirth || dayjs("MM/DD/YYYY")}
                     onChange={handleDateChange}
-                    disabled={!authUser?.roles?.includes("admin")}
                     maxDate={dayjs()}
                     slots={{
                       input: (params) => <CustomTextField {...params} />,
@@ -442,7 +440,6 @@ export function StudentDataUpdateForm() {
                     name="personalInfo.nationality"
                     value={student?.personalInfo?.nationality || ""}
                     onChange={handleChange}
-                    disabled={!authUser?.roles?.includes("admin")}
                   />
                 </Grid>
                 {/* Gender Selection */}
@@ -454,7 +451,6 @@ export function StudentDataUpdateForm() {
                     name="personalInfo.gender"
                     value={student?.personalInfo?.gender || ""}
                     onChange={handleChange}
-                    disabled={!authUser?.roles?.includes("admin")}
                   >
                     <MenuItem value="Male">Male</MenuItem>
                     <MenuItem value="Female">Female</MenuItem>
@@ -469,7 +465,6 @@ export function StudentDataUpdateForm() {
                     name="status.motherTongue"
                     value={student?.status?.motherTongue || ""}
                     onChange={handleChange}
-                    disabled={!authUser?.roles?.includes("admin")}
                   >
                     <MenuItem value="Twi">Twi</MenuItem>
                     <MenuItem value="Fante">Fante</MenuItem>
@@ -497,7 +492,6 @@ export function StudentDataUpdateForm() {
                     name="status.otherTongue"
                     value={student?.status?.otherTongue || ""}
                     onChange={handleChange}
-                    disabled={!authUser?.roles?.includes("admin")}
                   >
                     <MenuItem value="English">English</MenuItem>
                     <MenuItem value="French">French</MenuItem>
@@ -517,7 +511,6 @@ export function StudentDataUpdateForm() {
                     name="status.complexion"
                     value={student?.status?.complexion || ""}
                     onChange={handleChange}
-                    disabled={!authUser?.roles?.includes("admin")}
                   >
                     <MenuItem value="Very Fair">Very Fair</MenuItem>
                     <MenuItem value="Fair">Fair</MenuItem>
@@ -535,7 +528,6 @@ export function StudentDataUpdateForm() {
                     name="status.height"
                     value={student?.status?.height || ""}
                     onChange={handleChange}
-                    disabled={!authUser?.roles?.includes("admin")}
                     slotProps={{
                       input: {
                         endAdornment: (
@@ -553,7 +545,6 @@ export function StudentDataUpdateForm() {
                     name="status.weight"
                     value={student?.status?.weight || ""}
                     onChange={handleChange}
-                    disabled={!authUser?.roles?.includes("admin")}
                     slotProps={{
                       input: {
                         endAdornment: (
@@ -572,7 +563,6 @@ export function StudentDataUpdateForm() {
                     name="contactAddress.region"
                     value={student?.contactAddress?.region || ""}
                     onChange={handleChange}
-                    disabled={!authUser?.roles?.includes("admin")}
                   >
                     <MenuItem value="Greater Accra">Greater Accra</MenuItem>
                     <MenuItem value="Ashanti">Ashanti</MenuItem>
@@ -600,7 +590,6 @@ export function StudentDataUpdateForm() {
                     name="contactAddress.homeTown"
                     value={student?.contactAddress?.homeTown || ""}
                     onChange={handleChange}
-                    disabled={!authUser?.roles?.includes("admin")}
                   />
                 </Grid>
                 {/* House Address */}
@@ -611,7 +600,6 @@ export function StudentDataUpdateForm() {
                     name="contactAddress.residentialAddress"
                     value={student?.contactAddress?.residentialAddress || ""}
                     onChange={handleChange}
-                    disabled={!authUser?.roles?.includes("admin")}
                   />
                 </Grid>
                 {/* District */}
@@ -622,7 +610,6 @@ export function StudentDataUpdateForm() {
                     name="contactAddress.district"
                     value={student?.contactAddress?.district || ""}
                     onChange={handleChange}
-                    disabled={!authUser?.roles?.includes("admin")}
                   />
                 </Grid>
                 {/* Current City */}
@@ -633,7 +620,6 @@ export function StudentDataUpdateForm() {
                     name="contactAddress.currentCity"
                     value={student?.contactAddress?.currentCity || ""}
                     onChange={handleChange}
-                    disabled={!authUser?.roles?.includes("admin")}
                   />
                 </Grid>
                 {/* GPS Address */}
@@ -644,7 +630,6 @@ export function StudentDataUpdateForm() {
                     name="contactAddress.gpsAddress"
                     value={student?.contactAddress?.gpsAddress || ""}
                     onChange={handleChange}
-                    disabled={!authUser?.roles?.includes("admin")}
                   />
                 </Grid>
                 {/* Email */}
@@ -655,7 +640,6 @@ export function StudentDataUpdateForm() {
                     name="contactAddress.email"
                     value={student?.contactAddress?.email || ""}
                     onChange={handleChange}
-                    disabled={!authUser?.roles?.includes("admin")}
                   />
                 </Grid>
                 {/* Mobile */}
@@ -666,154 +650,7 @@ export function StudentDataUpdateForm() {
                     name="contactAddress.mobile"
                     value={student?.contactAddress?.mobile || ""}
                     onChange={handleChange}
-                    disabled={!authUser?.roles?.includes("admin")}
                   />
-                </Grid>
-                {/* JHS Attended */}
-                <Grid item xs={12} sm={6} md={4} lg={4}>
-                  <CustomTextField
-                    fullWidth
-                    label="JHS Attended"
-                    name="studentSchoolData.jhsAttended"
-                    value={student?.studentSchoolData?.jhsAttended || ""}
-                    onChange={handleChange}
-                    disabled={!authUser?.roles?.includes("admin")}
-                  />
-                </Grid>
-                {/* JHS Graduated Year */}
-                <Grid item xs={12} sm={6} md={4} lg={4}>
-                  <CustomTextField
-                    fullWidth
-                    label="Year Graduated [ JHS ]"
-                    name="studentSchoolData.completedJhs"
-                    value={student?.studentSchoolData?.completedJhs || ""}
-                    onChange={handleChange}
-                    disabled={!authUser?.roles?.includes("admin")}
-                  />
-                </Grid>
-                {/* JHS Index No. */}
-                <Grid item xs={12} sm={6} md={4} lg={4}>
-                  <CustomTextField
-                    fullWidth
-                    label="JHS Index No."
-                    name="studentSchoolData.jhsIndexNo"
-                    value={student?.studentSchoolData?.jhsIndexNo || ""}
-                    onChange={handleChange}
-                    disabled
-                  />
-                </Grid>
-                {/* Programme Selection */}
-                <Grid item xs={12} sm={6} md={4} lg={4}>
-                  <CustomTextField
-                    select
-                    fullWidth
-                    label="Select Programme"
-                    name="programId"
-                    value={
-                      allProgrammes?.some(
-                        (program) => program._id === student?.programId
-                      )
-                        ? student?.programId
-                        : ""
-                    }
-                    onChange={handleChange}
-                    disabled={!authUser?.roles?.includes("admin")}
-                  >
-                    {allProgrammes?.map((programme) => (
-                      <MenuItem key={programme?._id} value={programme?._id}>
-                        {programme?.name}
-                      </MenuItem>
-                    ))}
-                  </CustomTextField>
-                </Grid>
-                {/* Division Program (conditional) */}
-                {/* {allDivisionProgrammes && allDivisionProgrammes?.length > 0 && (
-                <Grid item xs={12} sm={6} md={4} lg={4}>
-                  <CustomTextField
-                    select
-                    fullWidth
-                    label="Division Program"
-                    name="divisionProgram"
-                    value={student?.studentSchoolData?.divisionProgram || ""}
-                    onChange={handleChange}
-                  disabled={!authUser?.roles?.includes("admin")}
-                    //   required
-                  >
-                    {allDivisionProgrammes?.map((programme) => (
-                      <MenuItem key={programme?._id} value={programme?._id}>
-                        {programme?.divisionName}
-                      </MenuItem>
-                    ))}
-                  </CustomTextField>
-                </Grid>
-              )} */}
-                {/* Class Level Selection */}
-                <Grid item xs={12} sm={6} md={4} lg={4}>
-                  <CustomTextField
-                    select
-                    fullWidth
-                    label="Class Level"
-                    name="classLevelId"
-                    value={
-                      allClassLevels?.some(
-                        (cLevel) => cLevel._id === student?.classLevelId
-                      )
-                        ? student?.classLevelId
-                        : ""
-                    }
-                    onChange={handleChange}
-                    disabled={!authUser?.roles?.includes("admin")}
-                  >
-                    {allClassLevels?.map((cLevel) => (
-                      <MenuItem key={cLevel?._id} value={cLevel?._id}>
-                        {cLevel?.name}
-                      </MenuItem>
-                    ))}
-                  </CustomTextField>
-                </Grid>
-                {/* Batch Selection */}
-                <Grid item xs={12} sm={6} md={4} lg={4}>
-                  <CustomTextField
-                    select
-                    fullWidth
-                    label="Batch"
-                    name="batchId"
-                    value={
-                      allBatches?.some(
-                        (batch) => batch._id === student?.batchId
-                      )
-                        ? student?.batchId
-                        : ""
-                    }
-                    onChange={handleChange}
-                    disabled={!authUser?.roles?.includes("admin")}
-                  >
-                    {allBatches?.map((batch) => (
-                      <MenuItem key={batch?._id} value={batch?._id}>
-                        {batch?.yearRange}
-                      </MenuItem>
-                    ))}
-                  </CustomTextField>
-                </Grid>
-                {/* Residential Status Selection */}
-                <Grid item xs={12} sm={6} md={4} lg={4}>
-                  <CustomTextField
-                    select
-                    fullWidth
-                    label="Residential Status"
-                    name="status.residentialStatus"
-                    value={student?.status?.residentialStatus || ""}
-                    onChange={handleChange}
-                    disabled={!authUser?.roles?.includes("admin")}
-                  >
-                    <MenuItem value="Day">Day</MenuItem>
-                    <MenuItem value="Boarding">Boarding</MenuItem>
-                    <MenuItem value="Hostel">Hostel</MenuItem>
-                    <MenuItem value="Private">Private</MenuItem>
-                    <MenuItem value="Lecturers Bangalow">
-                      Lecturers Bangalow
-                    </MenuItem>
-                  </CustomTextField>
                 </Grid>
                 {/* Student User Name */}
                 <Grid item xs={12} sm={6} md={4} lg={4}>
@@ -823,7 +660,6 @@ export function StudentDataUpdateForm() {
                     name="userSignUpDetails.userName"
                     value={student?.userSignUpDetails?.userName || ""}
                     onChange={handleChange}
-                    disabled={!authUser?.roles?.includes("admin")}
                     className="textField"
                     InputProps={{
                       readOnly: authUser?.uniqueId !== student?.uniqueId,
@@ -905,17 +741,14 @@ export function StudentDataUpdateForm() {
                     {loadingComplete === false && (
                       <LoadingProgress color={"#fff"} size={"1.5rem"} />
                     )}
-                    {loadingComplete === true &&
-                      enrollmentStatus === "success" &&
-                      !redirecting && (
-                        <>
-                          <span>Successful</span> <TaskAlt />
-                        </>
-                      )}
-                    {loadingComplete === null && "Save Changes"}
-                    {redirecting && (
-                      <Redirection color={"#fff"} size={"1.5rem"} />
+                    {loadingComplete === true && updateStatus === "success" && (
+                      <>
+                        <span>Updated Successfully</span> <TaskAlt />
+                      </>
                     )}
+                    {loadingComplete === null &&
+                      updateStatus !== "success" &&
+                      "Save Changes"}
                   </Button>
                 </Grid>
               </Grid>
@@ -936,8 +769,33 @@ export function StudentDataUpdateForm() {
               backgroundColor: "#f9f9f9",
             }}
           >
+            <Typography
+              variant="h6"
+              sx={{
+                display: "flex",
+                // flexDirection: "column",
+                // justifyContent: "center",
+                alignItems: "center",
+                textTransform: "capitalize",
+                // textAlign: "center",
+                color: "#696969",
+                fontSize: "1em",
+                marginBottom: "1rem",
+              }}
+            >
+              <Button
+                sx={{
+                  bgcolor: "#292929",
+                  textTransform: "capitalize",
+                  color: "#fff",
+                }}
+                onClick={() => setUpdateSchoolData((data) => !data)}
+              >
+                <ArrowBack />
+              </Button>
+            </Typography>
             <form
-              onSubmit={handleSubmit}
+              onSubmit={handleSchoolDataUpdate}
               style={{
                 display: "flex",
                 flexDirection: "column",
@@ -957,7 +815,6 @@ export function StudentDataUpdateForm() {
                     name="studentSchoolData.jhsAttended"
                     value={student?.studentSchoolData?.jhsAttended || ""}
                     onChange={handleChange}
-                    disabled={!authUser?.roles?.includes("admin")}
                   />
                 </Grid>
                 {/* JHS Graduated Year */}
@@ -968,7 +825,6 @@ export function StudentDataUpdateForm() {
                     name="studentSchoolData.completedJhs"
                     value={student?.studentSchoolData?.completedJhs || ""}
                     onChange={handleChange}
-                    disabled={!authUser?.roles?.includes("admin")}
                   />
                 </Grid>
                 {/* JHS Index No. */}
@@ -997,7 +853,6 @@ export function StudentDataUpdateForm() {
                         : ""
                     }
                     onChange={handleChange}
-                    disabled={!authUser?.roles?.includes("admin")}
                   >
                     {allProgrammes?.map((programme) => (
                       <MenuItem key={programme?._id} value={programme?._id}>
@@ -1007,26 +862,33 @@ export function StudentDataUpdateForm() {
                   </CustomTextField>
                 </Grid>
                 {/* Division Program (conditional) */}
-                {/* {allDivisionProgrammes && allDivisionProgrammes?.length > 0 && (
-                <Grid item xs={12} sm={6} md={4} lg={4}>
-                  <CustomTextField
-                    select
-                    fullWidth
-                    label="Division Program"
-                    name="divisionProgram"
-                    value={student?.studentSchoolData?.divisionProgram || ""}
-                    onChange={handleChange}
-                  disabled={!authUser?.roles?.includes("admin")}
-                    //   required
-                  >
-                    {allDivisionProgrammes?.map((programme) => (
-                      <MenuItem key={programme?._id} value={programme?._id}>
-                        {programme?.divisionName}
-                      </MenuItem>
-                    ))}
-                  </CustomTextField>
-                </Grid>
-              )} */}
+                {newProgrammeSelected?.hasDivisions === "true" && (
+                  <Grid item xs={12} sm={6} md={4} lg={4}>
+                    <CustomTextField
+                      select
+                      fullWidth
+                      label="Division Program"
+                      name="divisionProgramId"
+                      value={
+                        allDivisionProgrammes?.some(
+                          (program) =>
+                            program._id === student?.divisionProgramId
+                        )
+                          ? student?.divisionProgramId
+                          : ""
+                      }
+                      onChange={handleChange}
+
+                      //   required
+                    >
+                      {allDivisionProgrammes?.map((programme) => (
+                        <MenuItem key={programme?._id} value={programme?._id}>
+                          {programme?.divisionName}
+                        </MenuItem>
+                      ))}
+                    </CustomTextField>
+                  </Grid>
+                )}
                 {/* Class Level Selection */}
                 <Grid item xs={12} sm={6} md={4} lg={4}>
                   <CustomTextField
@@ -1042,7 +904,6 @@ export function StudentDataUpdateForm() {
                         : ""
                     }
                     onChange={handleChange}
-                    disabled={!authUser?.roles?.includes("admin")}
                   >
                     {allClassLevels?.map((cLevel) => (
                       <MenuItem key={cLevel?._id} value={cLevel?._id}>
@@ -1066,7 +927,6 @@ export function StudentDataUpdateForm() {
                         : ""
                     }
                     onChange={handleChange}
-                    disabled={!authUser?.roles?.includes("admin")}
                   >
                     {allBatches?.map((batch) => (
                       <MenuItem key={batch?._id} value={batch?._id}>
@@ -1084,7 +944,6 @@ export function StudentDataUpdateForm() {
                     name="status.residentialStatus"
                     value={student?.status?.residentialStatus || ""}
                     onChange={handleChange}
-                    disabled={!authUser?.roles?.includes("admin")}
                   >
                     <MenuItem value="Day">Day</MenuItem>
                     <MenuItem value="Boarding">Boarding</MenuItem>
@@ -1096,63 +955,6 @@ export function StudentDataUpdateForm() {
                   </CustomTextField>
                 </Grid>
 
-                {/* Submit Button */}
-                <Grid item xs={12}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Grid item xs={12} sm={4}>
-                      <Button
-                        variant="contained"
-                        component="label"
-                        fullWidth
-                        sx={{
-                          textTransform: "capitalize",
-                          backgroundColor: "#292929",
-                          padding: "1rem",
-                        }}
-                      >
-                        Change Image
-                        <input
-                          type="file"
-                          hidden
-                          accept="image/*"
-                          onChange={handleImageFileUpload}
-                        />
-                      </Button>
-                    </Grid>
-                    <Grid item xs={12} sm={4}>
-                      {/* {imagePreview && ( */}
-                      <Box
-                        display="flex"
-                        justifyContent="center"
-                        alignItems="center"
-                        height="100%"
-                      >
-                        <Avatar
-                          src={
-                            imagePreview
-                              ? imagePreview
-                              : student?.personalInfo?.profilePicture?.url
-                          }
-                          alt="Profile Preview"
-                          sx={{
-                            width: "6rem",
-                            height: "6rem",
-                            borderRadius: ".4rem",
-                            border: "1px solid #696969",
-                            padding: ".2rem",
-                          }}
-                        />
-                      </Box>
-                      {/* )} */}
-                    </Grid>
-                  </Box>
-                </Grid>
                 {/* Submit Button */}
                 <Grid item xs={12}>
                   <Button
@@ -1170,17 +972,14 @@ export function StudentDataUpdateForm() {
                     {loadingComplete === false && (
                       <LoadingProgress color={"#fff"} size={"1.5rem"} />
                     )}
-                    {loadingComplete === true &&
-                      enrollmentStatus === "success" &&
-                      !redirecting && (
-                        <>
-                          <span>Successful</span> <TaskAlt />
-                        </>
-                      )}
-                    {loadingComplete === null && "Save Changes"}
-                    {redirecting && (
-                      <Redirection color={"#fff"} size={"1.5rem"} />
+                    {loadingComplete === true && updateStatus === "success" && (
+                      <>
+                        <span>Updated Successfully</span> <TaskAlt />
+                      </>
                     )}
+                    {loadingComplete === null &&
+                      updateStatus !== "success" &&
+                      "Save Changes"}
                   </Button>
                 </Grid>
               </Grid>
@@ -1188,6 +987,7 @@ export function StudentDataUpdateForm() {
           </Box>
         )}
       </ContainerBox>
+      <SmallFooter />
     </LocalizationProvider>
   );
 }

@@ -156,10 +156,10 @@ export default function PageNavigation() {
               path: "online/:studentId/success/:current_link/:pdf",
               element: <PreviewPDF />,
             },
-            {
-              path: "online/:studentId/success/data_overview",
-              element: <StudentDataOverview />,
-            },
+            // {
+            //   path: "online/:studentId/success/data_overview",
+            //   element: <StudentDataOverview />,
+            // },
             { path: "*", element: <PageNotFound /> },
           ],
         },

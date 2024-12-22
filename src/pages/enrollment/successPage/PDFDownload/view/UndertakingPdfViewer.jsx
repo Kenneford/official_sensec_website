@@ -3,14 +3,33 @@ import UndertakingPDF from "../pdfs/UndertakingPDF";
 import PropTypes from "prop-types";
 import { Box, Button } from "@mui/material";
 import SmallFooter from "../../../../../components/footer/SmallFooter";
+import { memo } from "react";
 
 export default function UndertakingPdfViewer({ enrolledStudent }) {
   const styles = StyleSheet.create({
     PDFContainer: {
       width: "100%",
-      height: "82vh",
+      height: "100%",
     },
   });
+  // Wrap the PDFViewer component with React.memo
+  // to prevent prevent pdf reload if state update
+  const MemoizedPDFViewer = memo(
+    ({ enrolledStudent }) => {
+      return (
+        <PDFViewer style={styles.PDFContainer}>
+          <UndertakingPDF enrolledStudent={enrolledStudent} />
+        </PDFViewer>
+      );
+    },
+    (prevProps, nextProps) =>
+      prevProps.enrolledStudent === nextProps.enrolledStudent &&
+      prevProps.currentTerm === nextProps.currentTerm &&
+      prevProps.currentAcademicYear === nextProps.currentAcademicYear &&
+      prevProps.studentProgramme === nextProps.studentProgramme
+  );
+  // Set a display name for debugging
+  MemoizedPDFViewer.displayName = "MemoizedPDFViewer";
   return (
     <Box>
       <Box
@@ -61,9 +80,17 @@ export default function UndertakingPdfViewer({ enrolledStudent }) {
           </PDFDownloadLink>
         </Box>
       </Box>
-      <PDFViewer style={styles.PDFContainer}>
-        <UndertakingPDF enrolledStudent={enrolledStudent} />
-      </PDFViewer>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100%",
+          height: "72.9vh",
+        }}
+      >
+        <MemoizedPDFViewer enrolledStudent={enrolledStudent} />
+      </Box>
       <SmallFooter />
     </Box>
   );

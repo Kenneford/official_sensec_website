@@ -14,7 +14,7 @@ export function AdmissionPdfViewer({
   const styles = StyleSheet.create({
     PDFContainer: {
       width: "100%",
-      height: "82vh", //As per your page layout
+      height: "100%",
     },
   });
   // Wrap the PDFViewer component with React.memo
@@ -98,12 +98,22 @@ export function AdmissionPdfViewer({
           </PDFDownloadLink>
         </Box>
       </Box>
-      <MemoizedPDFViewer
-        enrolledStudent={enrolledStudent}
-        currentTerm={currentTerm}
-        currentAcademicYear={currentAcademicYear}
-        studentProgramme={studentProgramme}
-      />
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100%",
+          height: "72.9vh",
+        }}
+      >
+        <MemoizedPDFViewer
+          enrolledStudent={enrolledStudent}
+          currentTerm={currentTerm}
+          currentAcademicYear={currentAcademicYear}
+          studentProgramme={studentProgramme}
+        />
+      </Box>
       <SmallFooter />
     </Box>
   );
