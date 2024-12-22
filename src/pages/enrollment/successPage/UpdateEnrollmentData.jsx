@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Box,
   Collapse,
   Drawer,
@@ -9,16 +10,32 @@ import {
 import React, { useState } from "react";
 import { FetchCurrentAcademicTerms } from "../../../data/term.year/FetchAcademicTerms";
 import { FetchCurrentAcademicYear } from "../../../data/term.year/FetchAcademicYears";
-import { useParams } from "react-router-dom";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { FetchAllStudents } from "../../../data/students/FetchAllStudents";
 import { HashLink } from "react-router-hash-link";
 import { StudentDataUpdateForm } from "../studentEnrollment/StudentDataUpdateForm";
 import { StudentEnrollmentUpdateForm } from "../../../components/lazyLoading/student/StudentsLazyLoadingComponents";
 import EnrollmentSuccessSidebar from "./sidebar/EnrollmentSuccessSidebar";
+import { NavigationBar } from "../../../components/navbar/NavigationBar";
 
 export default function UpdateEnrollmentData() {
+  const {
+    currentAction,
+    setCurrentAction,
+    currentLink,
+    setCurrentLink,
+    setOpenSubNavLinks,
+    openSubNavLinks,
+    setOpenUserActions,
+    openUserActions,
+    setOpenSignUpActions,
+    openSignUpActions,
+    setOpenMenuLinks,
+    openMenuLinks,
+  } = useOutletContext();
   const { studentId, adminCurrentAction, current_link } = useParams();
   const allStudents = FetchAllStudents();
+  const navigate = useNavigate();
   const enrolledStudent = allStudents?.find(
     (std) => std?.uniqueId === studentId
   );
@@ -66,6 +83,71 @@ export default function UpdateEnrollmentData() {
         flexShrink={!adminCurrentAction ? 1 : 0}
         id="enrollmentDataUpdate"
       >
+        {/* School Logo */}
+        <Box
+          direction="column"
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#fff",
+            padding: ".3rem 0",
+            height: "4.5rem",
+          }}
+        >
+          <Box
+            onClick={() => {
+              // Click handler
+              localStorage.removeItem("currentNavLink");
+              navigate("/sensec/homepage");
+            }}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              cursor: "pointer",
+            }}
+          >
+            <Avatar
+              src="/assets/sensec-logo1.png"
+              sx={{ alignItems: "center" }}
+            />
+            <Box sx={{ display: "flex", height: "1.5rem" }}>
+              <Typography variant="h6" color="green">
+                Sen
+              </Typography>
+              <Typography variant="h6" color="#aeae0d">
+                sec
+              </Typography>
+            </Box>
+          </Box>
+        </Box>
+        {/* Main navbar links */}
+        <Box
+          sx={{
+            // display: isScrolled ? "none" : "block",
+            top: 0,
+            backgroundColor: "#fff",
+            padding: 0,
+            // zIndex: 5,
+          }}
+        >
+          <NavigationBar
+            setOpenSubNavLinks={setOpenSubNavLinks}
+            openSubNavLinks={openSubNavLinks}
+            setOpenUserActions={setOpenUserActions}
+            openUserActions={openUserActions}
+            setOpenSignUpActions={setOpenSignUpActions}
+            openSignUpActions={openSignUpActions}
+            setOpenMenuLinks={setOpenMenuLinks}
+            openMenuLinks={openMenuLinks}
+            currentAction={currentAction}
+            setCurrentAction={setCurrentAction}
+            currentLink={currentLink}
+            setCurrentLink={setCurrentLink}
+          />
+        </Box>
         <StudentEnrollmentUpdateForm />
       </Box>
     </Box>

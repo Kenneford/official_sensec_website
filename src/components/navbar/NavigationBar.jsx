@@ -227,6 +227,27 @@ export function NavigationBar({
     window.history.replaceState("", document.title, window.location.pathname);
   }
 
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      console.log("Scroll detected:", window.scrollY);
+      if (window.scrollY >= 140) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    console.log(window.scrollY > 10);
+
+    // Cleanup the event listener
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   const handleLogout = (e) => {
     e.preventDefault();
     if (authUser) {
@@ -394,84 +415,86 @@ export function NavigationBar({
               )}
             </Box>
           )}
-          {openMenuLinks && (
-            <Box id="smallScreenMenu">
-              <li>
-                {userInfo &&
-                  menuLinks?.map((link) => (
-                    <HashLink
-                      key={link?.name}
-                      className={
-                        currentNavLink && link?.name === currentNavLink
-                          ? "menuList selected"
-                          : "menuList"
-                      }
-                      to={
-                        link?.name === "Dashboard" &&
-                        userInfo?.adminStatusExtend?.isAdmin
-                          ? link?.path?.admin
-                          : link?.name === "Dashboard" &&
-                            userInfo?.teacherStatusExtend?.isTeacher
-                          ? link?.path?.teacher
-                          : link?.name === "Dashboard" &&
-                            userInfo?.nTStaffStatusExtend?.isNTStaff
-                          ? link?.path?.nt_Staff
-                          : link?.name === "Dashboard" &&
-                            userInfo?.studentStatusExtend?.isStudent
-                          ? link?.path?.student
-                          : link?.name === "Employment" &&
-                            userInfo?.adminStatusExtend?.isAdmin
-                          ? link?.path?.admin
-                          : link?.name === "Employment" && !userInfo
-                          ? link?.path?.others
-                          : link?.path
-                      }
-                      onClick={() => {
-                        localStorage.setItem("currentNavLink", link?.name);
-                      }}
-                    >
-                      {link?.name}
-                    </HashLink>
-                  ))}
-                {!userInfo &&
-                  filteredMenuLinks?.map((link) => (
-                    <NavHashLink
-                      key={link?.name}
-                      className={
-                        currentNavLink && link?.name === currentNavLink
-                          ? "menuList selected"
-                          : "menuList"
-                      }
-                      to={
-                        link?.name === "Dashboard" &&
-                        userInfo?.adminStatusExtend?.isAdmin
-                          ? link?.path?.admin
-                          : link?.name === "Dashboard" &&
-                            userInfo?.teacherStatusExtend?.isTeacher
-                          ? link?.path?.teacher
-                          : link?.name === "Dashboard" &&
-                            userInfo?.nTStaffStatusExtend?.isNTStaff
-                          ? link?.path?.nt_Staff
-                          : link?.name === "Dashboard" &&
-                            userInfo?.studentStatusExtend?.isStudent
-                          ? link?.path?.student
-                          : link?.name === "Employment" &&
-                            userInfo?.adminStatusExtend?.isAdmin
-                          ? link?.path?.admin
-                          : link?.name === "Employment" && !userInfo
-                          ? link?.path?.others
-                          : link?.path
-                      }
-                      onClick={() =>
-                        localStorage.setItem("currentNavLink", link?.name)
-                      }
-                    >
-                      {link?.name}
-                    </NavHashLink>
-                  ))}
-              </li>
-            </Box>
-          )}
+          <Box display={isScrolled ? "none" : "block"}>
+            {openMenuLinks && (
+              <Box id="smallScreenMenu">
+                <li>
+                  {userInfo &&
+                    menuLinks?.map((link) => (
+                      <HashLink
+                        key={link?.name}
+                        className={
+                          currentNavLink && link?.name === currentNavLink
+                            ? "menuList selected"
+                            : "menuList"
+                        }
+                        to={
+                          link?.name === "Dashboard" &&
+                          userInfo?.adminStatusExtend?.isAdmin
+                            ? link?.path?.admin
+                            : link?.name === "Dashboard" &&
+                              userInfo?.teacherStatusExtend?.isTeacher
+                            ? link?.path?.teacher
+                            : link?.name === "Dashboard" &&
+                              userInfo?.nTStaffStatusExtend?.isNTStaff
+                            ? link?.path?.nt_Staff
+                            : link?.name === "Dashboard" &&
+                              userInfo?.studentStatusExtend?.isStudent
+                            ? link?.path?.student
+                            : link?.name === "Employment" &&
+                              userInfo?.adminStatusExtend?.isAdmin
+                            ? link?.path?.admin
+                            : link?.name === "Employment" && !userInfo
+                            ? link?.path?.others
+                            : link?.path
+                        }
+                        onClick={() => {
+                          localStorage.setItem("currentNavLink", link?.name);
+                        }}
+                      >
+                        {link?.name}
+                      </HashLink>
+                    ))}
+                  {!userInfo &&
+                    filteredMenuLinks?.map((link) => (
+                      <NavHashLink
+                        key={link?.name}
+                        className={
+                          currentNavLink && link?.name === currentNavLink
+                            ? "menuList selected"
+                            : "menuList"
+                        }
+                        to={
+                          link?.name === "Dashboard" &&
+                          userInfo?.adminStatusExtend?.isAdmin
+                            ? link?.path?.admin
+                            : link?.name === "Dashboard" &&
+                              userInfo?.teacherStatusExtend?.isTeacher
+                            ? link?.path?.teacher
+                            : link?.name === "Dashboard" &&
+                              userInfo?.nTStaffStatusExtend?.isNTStaff
+                            ? link?.path?.nt_Staff
+                            : link?.name === "Dashboard" &&
+                              userInfo?.studentStatusExtend?.isStudent
+                            ? link?.path?.student
+                            : link?.name === "Employment" &&
+                              userInfo?.adminStatusExtend?.isAdmin
+                            ? link?.path?.admin
+                            : link?.name === "Employment" && !userInfo
+                            ? link?.path?.others
+                            : link?.path
+                        }
+                        onClick={() =>
+                          localStorage.setItem("currentNavLink", link?.name)
+                        }
+                      >
+                        {link?.name}
+                      </NavHashLink>
+                    ))}
+                </li>
+              </Box>
+            )}
+          </Box>
         </Box>
         {/* Navbar Link */}
         <Box
@@ -541,7 +564,7 @@ export function NavigationBar({
                     )}
                   </Button>
                   {link?.name === "others" && (
-                    <div id="otherLinks">
+                    <Box id="otherLinks">
                       <button
                         className={
                           //   Change text color on button click
@@ -558,106 +581,116 @@ export function NavigationBar({
                             <ExpandLessIcon className="expandMoreIcon" />
                           )} */}
                       </button>
-                      <div className="subNav" style={{ zIndex: 3 }}>
-                        {openSubNavLinks && (
-                          <div
-                            className={
-                              openSubNavLinks
-                                ? "openSubNavLinks"
-                                : "closeSubNavLinks"
-                            }
-                          >
-                            {userInfo &&
-                              otherLinks?.map((link) => (
-                                <HashLink
-                                  key={link?.name}
-                                  className={
-                                    currentOtherNavLink &&
-                                    link?.name === currentOtherNavLink
-                                      ? "otherLinkSelected selected"
-                                      : "otherLinkSelected"
-                                  }
-                                  to={
-                                    link?.name === "Dashboard" &&
-                                    userInfo?.adminStatusExtend?.isAdmin
-                                      ? link?.path?.admin
-                                      : link?.name === "Dashboard" &&
-                                        userInfo?.teacherStatusExtend?.isTeacher
-                                      ? link?.path?.teacher
-                                      : link?.name === "Dashboard" &&
-                                        userInfo?.nTStaffStatusExtend?.isNTStaff
-                                      ? link?.path?.nt_Staff
-                                      : link?.name === "Dashboard" &&
-                                        userInfo?.studentStatusExtend?.isStudent
-                                      ? link?.path?.student
-                                      : link?.name === "Employment" &&
-                                        userInfo?.adminStatusExtend?.isAdmin
-                                      ? link?.path?.admin
-                                      : link?.name === "Employment" && !userInfo
-                                      ? link?.path?.others
-                                      : link?.path
-                                  }
-                                  onClick={() => {
-                                    localStorage.setItem(
-                                      "currentOtherNavLink",
-                                      link?.name
-                                    );
-                                    if (
+                      <Box className="subNav" style={{ zIndex: 3 }}>
+                        <Box display={isScrolled ? "none" : "block"}>
+                          {openSubNavLinks && (
+                            <Box
+                              className={
+                                openSubNavLinks
+                                  ? "openSubNavLinks"
+                                  : "closeSubNavLinks"
+                              }
+                            >
+                              {userInfo &&
+                                otherLinks?.map((link) => (
+                                  <HashLink
+                                    key={link?.name}
+                                    className={
+                                      currentOtherNavLink &&
+                                      link?.name === currentOtherNavLink
+                                        ? "otherLinkSelected selected"
+                                        : "otherLinkSelected"
+                                    }
+                                    to={
                                       link?.name === "Dashboard" &&
                                       userInfo?.adminStatusExtend?.isAdmin
-                                    ) {
-                                      setCurrentAction("Dashboard");
-                                      setCurrentLink("Overview");
+                                        ? link?.path?.admin
+                                        : link?.name === "Dashboard" &&
+                                          userInfo?.teacherStatusExtend
+                                            ?.isTeacher
+                                        ? link?.path?.teacher
+                                        : link?.name === "Dashboard" &&
+                                          userInfo?.nTStaffStatusExtend
+                                            ?.isNTStaff
+                                        ? link?.path?.nt_Staff
+                                        : link?.name === "Dashboard" &&
+                                          userInfo?.studentStatusExtend
+                                            ?.isStudent
+                                        ? link?.path?.student
+                                        : link?.name === "Employment" &&
+                                          userInfo?.adminStatusExtend?.isAdmin
+                                        ? link?.path?.admin
+                                        : link?.name === "Employment" &&
+                                          !userInfo
+                                        ? link?.path?.others
+                                        : link?.path
                                     }
-                                  }}
-                                >
-                                  {link?.name}
-                                </HashLink>
-                              ))}
-                            {!userInfo &&
-                              filteredOtherLinks?.map((link) => (
-                                <HashLink
-                                  key={link?.name}
-                                  className={
-                                    currentOtherNavLink &&
-                                    link?.name === currentOtherNavLink
-                                      ? "otherLinkSelected selected"
-                                      : "otherLinkSelected"
-                                  }
-                                  to={
-                                    link?.name === "Dashboard" &&
-                                    userInfo?.adminStatusExtend?.isAdmin
-                                      ? link?.path?.admin
-                                      : link?.name === "Dashboard" &&
-                                        userInfo?.teacherStatusExtend?.isTeacher
-                                      ? link?.path?.teacher
-                                      : link?.name === "Dashboard" &&
-                                        userInfo?.nTStaffStatusExtend?.isNTStaff
-                                      ? link?.path?.nt_Staff
-                                      : link?.name === "Dashboard" &&
-                                        userInfo?.studentStatusExtend?.isStudent
-                                      ? link?.path?.student
-                                      : link?.name === "Employment" &&
+                                    onClick={() => {
+                                      localStorage.setItem(
+                                        "currentOtherNavLink",
+                                        link?.name
+                                      );
+                                      if (
+                                        link?.name === "Dashboard" &&
                                         userInfo?.adminStatusExtend?.isAdmin
-                                      ? link?.path?.admin
-                                      : link?.name === "Employment" && !userInfo
-                                      ? link?.path?.others
-                                      : link?.path
-                                  }
-                                  onClick={() =>
-                                    localStorage.setItem(
-                                      "currentOtherNavLink",
-                                      link?.name
-                                    )
-                                  }
-                                >
-                                  {link?.name}
-                                </HashLink>
-                              ))}
-                          </div>
-                        )}
-                      </div>
-                    </div>
+                                      ) {
+                                        setCurrentAction("Dashboard");
+                                        setCurrentLink("Overview");
+                                      }
+                                    }}
+                                  >
+                                    {link?.name}
+                                  </HashLink>
+                                ))}
+                              {!userInfo &&
+                                filteredOtherLinks?.map((link) => (
+                                  <HashLink
+                                    key={link?.name}
+                                    className={
+                                      currentOtherNavLink &&
+                                      link?.name === currentOtherNavLink
+                                        ? "otherLinkSelected selected"
+                                        : "otherLinkSelected"
+                                    }
+                                    to={
+                                      link?.name === "Dashboard" &&
+                                      userInfo?.adminStatusExtend?.isAdmin
+                                        ? link?.path?.admin
+                                        : link?.name === "Dashboard" &&
+                                          userInfo?.teacherStatusExtend
+                                            ?.isTeacher
+                                        ? link?.path?.teacher
+                                        : link?.name === "Dashboard" &&
+                                          userInfo?.nTStaffStatusExtend
+                                            ?.isNTStaff
+                                        ? link?.path?.nt_Staff
+                                        : link?.name === "Dashboard" &&
+                                          userInfo?.studentStatusExtend
+                                            ?.isStudent
+                                        ? link?.path?.student
+                                        : link?.name === "Employment" &&
+                                          userInfo?.adminStatusExtend?.isAdmin
+                                        ? link?.path?.admin
+                                        : link?.name === "Employment" &&
+                                          !userInfo
+                                        ? link?.path?.others
+                                        : link?.path
+                                    }
+                                    onClick={() =>
+                                      localStorage.setItem(
+                                        "currentOtherNavLink",
+                                        link?.name
+                                      )
+                                    }
+                                  >
+                                    {link?.name}
+                                  </HashLink>
+                                ))}
+                            </Box>
+                          )}
+                        </Box>
+                      </Box>
+                    </Box>
                   )}
                 </Box>
               ))}

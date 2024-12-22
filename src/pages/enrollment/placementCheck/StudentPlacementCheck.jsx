@@ -1,7 +1,7 @@
 import { ContainerBox, CustomTextField } from "../../../muiStyling/muiStyling";
 import "../studentPlacementVerification/studentPlacementVerification.scss";
-import { useNavigate } from "react-router-dom";
-import { Button, Grid, Box, Typography } from "@mui/material";
+import { useNavigate, useOutletContext } from "react-router-dom";
+import { Button, Grid, Box, Typography, Avatar } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -13,8 +13,23 @@ import LoadingProgress from "../../../components/pageLoading/LoadingProgress";
 import Redirection from "../../../components/pageLoading/Redirection";
 import { TaskAlt } from "@mui/icons-material";
 import { toast } from "react-toastify";
+import { NavigationBar } from "../../../components/navbar/NavigationBar";
 
 export function StudentPlacementCheck() {
+  const {
+    currentAction,
+    setCurrentAction,
+    currentLink,
+    setCurrentLink,
+    setOpenSubNavLinks,
+    openSubNavLinks,
+    setOpenUserActions,
+    openUserActions,
+    setOpenSignUpActions,
+    openSignUpActions,
+    setOpenMenuLinks,
+    openMenuLinks,
+  } = useOutletContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const allPlacementStudents = useSelector(getAllPlacementStudents);
@@ -122,107 +137,177 @@ export function StudentPlacementCheck() {
   ]);
 
   return (
-    <ContainerBox
-      component="div"
-      id="placementVerificationWrap"
-      sx={{
-        px: { xs: ".5rem", sm: "auto" },
-      }}
-    >
-      <h1 style={{ textAlign: "center", color: "#696969", fontSize: "1.5rem" }}>
-        Student Placement Check
-      </h1>
+    <>
+      {/* School Logo */}
       <Box
-        component="div"
-        id="placementFormWrap"
+        direction="column"
         sx={{
-          maxWidth: 600,
-          mx: { xs: "0", sm: "auto" },
-          mt: 3,
-          p: { xs: 1, sm: 2 },
-          border: "1px solid #ccc",
-          borderRadius: "8px",
-          backgroundColor: "#f9f9f9",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff",
+          padding: ".3rem 0",
+          height: "4.5rem",
         }}
       >
         <Box
-          component="form"
-          autoComplete="off"
-          onSubmit={handleSubmit}
-          style={{
-            // backgroundColor: "red",
-            padding: ".5rem ",
+          onClick={() => {
+            // Click handler
+            localStorage.removeItem("currentNavLink");
+            navigate("/sensec/homepage");
+          }}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            cursor: "pointer",
           }}
         >
-          <Typography
-            variant="h6"
-            component={"h3"}
-            mb={3}
-            color="#696969"
-            fontSize={"1.1rem"}
-            lineHeight={"1.2em"}
-            letterSpacing={"1px"}
-            // textAlign={"center"}
-          >
-            Kindly enter your JHS index number to check for your placement into
-            Senya Senior High School.
-          </Typography>
-          <Grid container spacing={3}>
-            {/* Student Index No */}
-            <Grid item xs={12} sm={6}>
-              <CustomTextField
-                fullWidth
-                label="JHS Index No."
-                name="jhsIndexNo"
-                value={formData?.jhsIndexNo}
-                onChange={handleChange}
-                required
-                error={jhsIndexNoError}
-                helperText={
-                  jhsIndexNoError ? "Invalid student index number!" : ""
-                }
-                sx={{
-                  "& .MuiInputLabel-asterisk": {
-                    color:
-                      formData?.jhsIndexNo && !jhsIndexNoError
-                        ? "green"
-                        : "red", // Change the asterisk color to red
-                  },
-                }}
-              />
-            </Grid>
-            {/* Submit Button */}
-            <Grid item xs={12}>
-              <Button
-                variant="contained"
-                color="success"
-                type="submit"
-                fullWidth
-                sx={{
-                  height: "3.5rem",
-                  letterSpacing: "1px",
-                  textTransform: "capitalize",
-                  fontSize: "1em",
-                }}
-              >
-                {loadingComplete === false && (
-                  <LoadingProgress color={"#fff"} size={"1.5rem"} />
-                )}
-                {loadingComplete === true &&
-                  checkStatus === "success" &&
-                  !redirecting && (
-                    <>
-                      <span>Successful</span> <TaskAlt />
-                    </>
-                  )}
-                {redirecting && <Redirection color={"#fff"} size={"1.5rem"} />}
-                {loadingComplete === null && "Check Placement"}
-              </Button>
-            </Grid>
-          </Grid>
+          <Avatar
+            src="/assets/sensec-logo1.png"
+            sx={{ alignItems: "center" }}
+          />
+          <Box sx={{ display: "flex", height: "1.5rem" }}>
+            <Typography variant="h6" color="green">
+              Sen
+            </Typography>
+            <Typography variant="h6" color="#aeae0d">
+              sec
+            </Typography>
+          </Box>
         </Box>
       </Box>
-      {/* <Button
+      {/* Main navbar links */}
+      <Box
+        sx={{
+          position: "sticky",
+          top: 0,
+          backgroundColor: "#fff",
+          padding: 0,
+          zIndex: 5,
+        }}
+      >
+        <NavigationBar
+          setOpenSubNavLinks={setOpenSubNavLinks}
+          openSubNavLinks={openSubNavLinks}
+          setOpenUserActions={setOpenUserActions}
+          openUserActions={openUserActions}
+          setOpenSignUpActions={setOpenSignUpActions}
+          openSignUpActions={openSignUpActions}
+          setOpenMenuLinks={setOpenMenuLinks}
+          openMenuLinks={openMenuLinks}
+          currentAction={currentAction}
+          setCurrentAction={setCurrentAction}
+          currentLink={currentLink}
+          setCurrentLink={setCurrentLink}
+        />
+      </Box>
+      <ContainerBox
+        component="div"
+        id="placementVerificationWrap"
+        sx={{
+          px: { xs: ".5rem", sm: "auto" },
+        }}
+      >
+        <h1
+          style={{ textAlign: "center", color: "#696969", fontSize: "1.5rem" }}
+        >
+          Student Placement Check
+        </h1>
+        <Box
+          component="div"
+          id="placementFormWrap"
+          sx={{
+            maxWidth: 600,
+            mx: { xs: "0", sm: "auto" },
+            mt: 3,
+            p: { xs: 1, sm: 2 },
+            border: "1px solid #ccc",
+            borderRadius: "8px",
+            backgroundColor: "#f9f9f9",
+          }}
+        >
+          <Box
+            component="form"
+            autoComplete="off"
+            onSubmit={handleSubmit}
+            style={{
+              // backgroundColor: "red",
+              padding: ".5rem ",
+            }}
+          >
+            <Typography
+              variant="h6"
+              component={"h3"}
+              mb={3}
+              color="#696969"
+              fontSize={"1.1rem"}
+              lineHeight={"1.2em"}
+              letterSpacing={"1px"}
+              // textAlign={"center"}
+            >
+              Kindly enter your JHS index number to check for your placement
+              into Senya Senior High School.
+            </Typography>
+            <Grid container spacing={3}>
+              {/* Student Index No */}
+              <Grid item xs={12} sm={6}>
+                <CustomTextField
+                  fullWidth
+                  label="JHS Index No."
+                  name="jhsIndexNo"
+                  value={formData?.jhsIndexNo}
+                  onChange={handleChange}
+                  required
+                  error={jhsIndexNoError}
+                  helperText={
+                    jhsIndexNoError ? "Invalid student index number!" : ""
+                  }
+                  sx={{
+                    "& .MuiInputLabel-asterisk": {
+                      color:
+                        formData?.jhsIndexNo && !jhsIndexNoError
+                          ? "green"
+                          : "red", // Change the asterisk color to red
+                    },
+                  }}
+                />
+              </Grid>
+              {/* Submit Button */}
+              <Grid item xs={12}>
+                <Button
+                  variant="contained"
+                  color="success"
+                  type="submit"
+                  fullWidth
+                  sx={{
+                    height: "3.5rem",
+                    letterSpacing: "1px",
+                    textTransform: "capitalize",
+                    fontSize: "1em",
+                  }}
+                >
+                  {loadingComplete === false && (
+                    <LoadingProgress color={"#fff"} size={"1.5rem"} />
+                  )}
+                  {loadingComplete === true &&
+                    checkStatus === "success" &&
+                    !redirecting && (
+                      <>
+                        <span>Successful</span> <TaskAlt />
+                      </>
+                    )}
+                  {redirecting && (
+                    <Redirection color={"#fff"} size={"1.5rem"} />
+                  )}
+                  {loadingComplete === null && "Check Placement"}
+                </Button>
+              </Grid>
+            </Grid>
+          </Box>
+        </Box>
+        {/* <Button
         variant="contained"
         size="sm"
         sx={{ bgcolor: "green" }}
@@ -230,6 +315,7 @@ export function StudentPlacementCheck() {
       >
         Enroll
       </Button> */}
-    </ContainerBox>
+      </ContainerBox>
+    </>
   );
 }

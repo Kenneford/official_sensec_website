@@ -1,7 +1,7 @@
 import { ContainerBox, CustomTextField } from "../../../muiStyling/muiStyling";
 import "./studentPlacementVerification.scss";
-import { useNavigate, useParams } from "react-router-dom";
-import { Button, Grid, Box, Typography } from "@mui/material";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
+import { Button, Grid, Box, Typography, Avatar } from "@mui/material";
 import { useEffect, useState } from "react";
 import {
   fetchAllPlacementStudents,
@@ -16,8 +16,23 @@ import { TaskAlt } from "@mui/icons-material";
 import Redirection from "../../../components/pageLoading/Redirection";
 import LoadingProgress from "../../../components/pageLoading/LoadingProgress";
 import { getAuthUser } from "../../../features/auth/authSlice";
+import { NavigationBar } from "../../../components/navbar/NavigationBar";
 
 export function StudentPlacementVerification() {
+  const {
+    currentAction,
+    setCurrentAction,
+    currentLink,
+    setCurrentLink,
+    setOpenSubNavLinks,
+    openSubNavLinks,
+    setOpenUserActions,
+    openUserActions,
+    setOpenSignUpActions,
+    openSignUpActions,
+    setOpenMenuLinks,
+    openMenuLinks,
+  } = useOutletContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { adminCurrentAction, adminCurrentLink } = useParams();
@@ -306,6 +321,71 @@ export function StudentPlacementVerification() {
 
   return (
     <>
+      {/* School Logo */}
+      <Box
+        direction="column"
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff",
+          padding: ".3rem 0",
+          height: "4.5rem",
+        }}
+      >
+        <Box
+          onClick={() => {
+            // Click handler
+            localStorage.removeItem("currentNavLink");
+            navigate("/sensec/homepage");
+          }}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            cursor: "pointer",
+          }}
+        >
+          <Avatar
+            src="/assets/sensec-logo1.png"
+            sx={{ alignItems: "center" }}
+          />
+          <Box sx={{ display: "flex", height: "1.5rem" }}>
+            <Typography variant="h6" color="green">
+              Sen
+            </Typography>
+            <Typography variant="h6" color="#aeae0d">
+              sec
+            </Typography>
+          </Box>
+        </Box>
+      </Box>
+      {/* Main navbar links */}
+      <Box
+        sx={{
+          position: "sticky",
+          top: 0,
+          backgroundColor: "#fff",
+          padding: 0,
+          zIndex: 5,
+        }}
+      >
+        <NavigationBar
+          setOpenSubNavLinks={setOpenSubNavLinks}
+          openSubNavLinks={openSubNavLinks}
+          setOpenUserActions={setOpenUserActions}
+          openUserActions={openUserActions}
+          setOpenSignUpActions={setOpenSignUpActions}
+          openSignUpActions={openSignUpActions}
+          setOpenMenuLinks={setOpenMenuLinks}
+          openMenuLinks={openMenuLinks}
+          currentAction={currentAction}
+          setCurrentAction={setCurrentAction}
+          currentLink={currentLink}
+          setCurrentLink={setCurrentLink}
+        />
+      </Box>
       {/* Current dashboard title */}
       {adminCurrentAction && adminCurrentLink && (
         <Box

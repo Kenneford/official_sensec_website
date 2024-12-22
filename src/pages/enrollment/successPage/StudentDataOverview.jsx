@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Paper,
   Table,
@@ -18,8 +18,10 @@ import {
   Collapse,
   useTheme,
   Grid,
+  Avatar,
+  Typography,
 } from "@mui/material";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { FetchAllStudents } from "../../../data/students/FetchAllStudents";
 import { FetchCurrentAcademicTerms } from "../../../data/term.year/FetchAcademicTerms";
 import { FetchCurrentAcademicYear } from "../../../data/term.year/FetchAcademicYears";
@@ -28,8 +30,23 @@ import { ContainerBox } from "../../../muiStyling/muiStyling";
 import { dateFormatter } from "../../../dateFormatter/DateFormatter";
 import EnrollmentSuccessSidebar from "./sidebar/EnrollmentSuccessSidebar";
 import SmallFooter from "../../../components/footer/SmallFooter";
+import { NavigationBar } from "../../../components/navbar/NavigationBar";
 
 export function StudentDataOverview() {
+  const {
+    currentAction,
+    setCurrentAction,
+    currentLink,
+    setCurrentLink,
+    setOpenSubNavLinks,
+    openSubNavLinks,
+    setOpenUserActions,
+    openUserActions,
+    setOpenSignUpActions,
+    openSignUpActions,
+    setOpenMenuLinks,
+    openMenuLinks,
+  } = useOutletContext();
   const { studentId, adminCurrentAction, current_link } = useParams();
   const navigate = useNavigate();
   const allStudents = FetchAllStudents();
@@ -66,6 +83,27 @@ export function StudentDataOverview() {
     { field: "Address", value: "123 Main St", editable: false },
   ]);
 
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      console.log("Scroll detected:", window.scrollY);
+      if (window.scrollY >= 140) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    console.log(window.scrollY > 10);
+
+    // Cleanup the event listener
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   const handleChange = (index, newValue) => {
     const updatedData = [...data];
     updatedData[index].value = newValue;
@@ -96,17 +134,82 @@ export function StudentDataOverview() {
           flexShrink={!adminCurrentAction ? 1 : 0}
           id="enrollmentProfile"
         >
+          {/* School Logo */}
+          <Box
+            direction="column"
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "#fff",
+              padding: ".3rem 0",
+              height: "4.5rem",
+            }}
+          >
+            <Box
+              onClick={() => {
+                // Click handler
+                localStorage.removeItem("currentNavLink");
+                navigate("/sensec/homepage");
+              }}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                cursor: "pointer",
+              }}
+            >
+              <Avatar
+                src="/assets/sensec-logo1.png"
+                sx={{ alignItems: "center" }}
+              />
+              <Box sx={{ display: "flex", height: "1.5rem" }}>
+                <Typography variant="h6" color="green">
+                  Sen
+                </Typography>
+                <Typography variant="h6" color="#aeae0d">
+                  sec
+                </Typography>
+              </Box>
+            </Box>
+          </Box>
+          {/* Main navbar links */}
+          <Box
+            sx={{
+              // display: isScrolled ? "none" : "block",
+              top: 0,
+              backgroundColor: "#fff",
+              padding: 0,
+              // zIndex: 5,
+            }}
+          >
+            <NavigationBar
+              setOpenSubNavLinks={setOpenSubNavLinks}
+              openSubNavLinks={openSubNavLinks}
+              setOpenUserActions={setOpenUserActions}
+              openUserActions={openUserActions}
+              setOpenSignUpActions={setOpenSignUpActions}
+              openSignUpActions={openSignUpActions}
+              setOpenMenuLinks={setOpenMenuLinks}
+              openMenuLinks={openMenuLinks}
+              currentAction={currentAction}
+              setCurrentAction={setCurrentAction}
+              currentLink={currentLink}
+              setCurrentLink={setCurrentLink}
+            />
+          </Box>
           {/* Current dashboard title */}
           <Box
             component={"div"}
             id="adminDashboardHeaderWrap"
             sx={{
-              position: "sticky",
+              position: isScrolled ? "sticky" : "",
               top: 0,
               backgroundColor: "#fff",
               padding: 0,
-              zIndex: 6,
-              mb: "4rem",
+              zIndex: 5,
+              mb: "3.5rem",
             }}
             minHeight={"4rem"}
           >
