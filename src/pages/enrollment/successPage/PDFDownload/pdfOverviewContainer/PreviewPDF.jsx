@@ -18,7 +18,7 @@ import {
 } from "../../../../../data/programme/FetchProgrammeData";
 
 export function PreviewPDF() {
-  const { studentId, adminCurrentAction, pdf } = useParams();
+  const { studentId, adminCurrentAction, current_link, pdf } = useParams();
   const allStudents = FetchAllStudents();
   const allCoreSubjects = FetchAllCoreSubjects();
   const enrolledStudent = allStudents?.find(
@@ -74,6 +74,7 @@ export function PreviewPDF() {
         currentTerm={memoizedTerm}
         currentAcademicYear={memoizedYear}
         enrolledStudent={memoizedStudent}
+        current_link={current_link}
       />
       <Box
         mt={"unset"}
