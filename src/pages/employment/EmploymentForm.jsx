@@ -776,8 +776,8 @@ export function EmploymentForm() {
                   <MenuItem value="Boarding">Boarding</MenuItem>
                   <MenuItem value="Hostel">Hostel</MenuItem>
                   <MenuItem value="Private">Private</MenuItem>
-                  <MenuItem value="Lecturers Bangalow">
-                    Lecturers Bangalow
+                  <MenuItem value="Lecturers Bungalow">
+                    Lecturers Bungalow
                   </MenuItem>
                 </CustomTextField>
               </Grid>

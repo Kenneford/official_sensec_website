@@ -25,10 +25,6 @@ export function AdminSidebar({ hovered, currentTerm, currentAcademicYear }) {
     (user) => user?.uniqueId === authUser?.uniqueId
   );
 
-  useEffect(() => {
-    dispatch(fetchAllUsers());
-  }, [dispatch]);
-
   return (
     <>
       {/* User Info */}
@@ -36,56 +32,39 @@ export function AdminSidebar({ hovered, currentTerm, currentAcademicYear }) {
         sx={{
           backgroundColor: "#292929",
           padding: ".5rem",
-          // position: "fixed",
-          // top: navbar ? "4.5rem" : "9rem",
-          // width: "inherit",
-          // height: "100vh",
-          // left: "0",
-          // zIndex: "1",
           borderBottom: "2px solid #02b202",
         }}
       >
-        <Box
-          sx={{
-            textAlign: "center",
-            color: "#696969",
-            pt: 1,
-            fontSize: "1rem",
-          }}
-        >
-          <span>{currentTerm?.name}</span>
-          {"-"}
-          <span>{currentAcademicYear?.yearRange}</span>
-        </Box>
-        {/* <IconButton
-          sx={{
-            position: "absolute",
-            top: ".5rem",
-            right: "0",
-            color: "#fff",
-          }}
-          onClick={toggleSidebar}
-        >
-          {!isSidebarOpen ? (
-            <ArrowForward
-              sx={{
-                transition: "width 0.5s ease", // Smooth transition when toggling
-              }}
-            />
-          ) : (
-            <ArrowBack
-              sx={{
-                transition: "width 0.5s ease", // Smooth transition when toggling
-              }}
-            />
-          )}
-        </IconButton> */}
+        {currentTerm && currentAcademicYear ? (
+          <Box
+            sx={{
+              textAlign: "center",
+              color: "#696969",
+              pt: 1,
+              fontSize: "1rem",
+            }}
+          >
+            <span>{currentTerm?.name}</span>
+            {"-"}
+            <span>{currentAcademicYear?.yearRange}</span>
+          </Box>
+        ) : (
+          <Box
+            sx={{
+              textAlign: "center",
+              color: "#696969",
+              pt: 1,
+              fontSize: "1rem",
+            }}
+          >
+            <span>On Vacations/Break</span>
+          </Box>
+        )}
         {/* User Info */}
         <Box className="userInfo">
           <img src={authUser?.personalInfo?.profilePicture?.url} alt="" />
           {hovered && (
-            <Collapse
-              in={hovered}
+            <Box
               className="infoText"
               //   sx={{
               //     transition: "0.5s ease", // Smooth transition when toggling
@@ -100,7 +79,7 @@ export function AdminSidebar({ hovered, currentTerm, currentAcademicYear }) {
                   ({authAdminInfo?.status.positionHolding})
                 </Typography>
               )}
-            </Collapse>
+            </Box>
           )}
         </Box>
       </Box>

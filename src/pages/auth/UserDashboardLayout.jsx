@@ -1,6 +1,6 @@
 import { Outlet, useOutletContext } from "react-router-dom";
 import { Box, useMediaQuery, useTheme } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { SideBar } from "../../components/sidebar/SideBar";
 
 export function UserDashboardLayout() {
@@ -22,7 +22,6 @@ export function UserDashboardLayout() {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [currentAction, setCurrentAction] = useState("");
   const [currentLink, setCurrentLink] = useState("");
-  const [hovered, setHovered] = useState(false);
   const drawerWidthCollapsed = 160; // Collapsed width
   const drawerWidthExpanded = 300; // Expanded width
 
@@ -53,8 +52,6 @@ export function UserDashboardLayout() {
             setCurrentAction={setCurrentAction}
             currentLink={currentLink}
             setCurrentLink={setCurrentLink}
-            hovered={hovered}
-            setHovered={setHovered}
             drawerWidthCollapsed={drawerWidthCollapsed}
             drawerWidthExpanded={drawerWidthExpanded}
           />
@@ -83,8 +80,6 @@ export function UserDashboardLayout() {
             openMenuLinks,
             openSearchModal,
             setOpenSearchModal,
-            hovered,
-            setHovered,
             drawerWidthCollapsed,
             drawerWidthExpanded,
           }}

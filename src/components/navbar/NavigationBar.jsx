@@ -231,7 +231,6 @@ export function NavigationBar({
 
   useEffect(() => {
     const handleScroll = () => {
-      console.log("Scroll detected:", window.scrollY);
       if (window.scrollY >= 140) {
         setIsScrolled(true);
       } else {

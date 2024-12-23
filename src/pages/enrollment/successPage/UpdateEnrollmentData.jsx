@@ -1,19 +1,15 @@
 import {
   Avatar,
   Box,
-  Collapse,
-  Drawer,
   Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import React, { useState } from "react";
+import { useState } from "react";
 import { FetchCurrentAcademicTerms } from "../../../data/term.year/FetchAcademicTerms";
 import { FetchCurrentAcademicYear } from "../../../data/term.year/FetchAcademicYears";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { FetchAllStudents } from "../../../data/students/FetchAllStudents";
-import { HashLink } from "react-router-hash-link";
-import { StudentDataUpdateForm } from "../studentEnrollment/StudentDataUpdateForm";
 import { StudentEnrollmentUpdateForm } from "../../../components/lazyLoading/student/StudentsLazyLoadingComponents";
 import EnrollmentSuccessSidebar from "./sidebar/EnrollmentSuccessSidebar";
 import { NavigationBar } from "../../../components/navbar/NavigationBar";
@@ -124,15 +120,7 @@ export default function UpdateEnrollmentData() {
           </Box>
         </Box>
         {/* Main navbar links */}
-        <Box
-          sx={{
-            // display: isScrolled ? "none" : "block",
-            top: 0,
-            backgroundColor: "#fff",
-            padding: 0,
-            // zIndex: 5,
-          }}
-        >
+        <Box>
           <NavigationBar
             setOpenSubNavLinks={setOpenSubNavLinks}
             openSubNavLinks={openSubNavLinks}

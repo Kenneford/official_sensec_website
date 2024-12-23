@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./studentEnrollment.scss";
 import "./enrollmentUpdate.scss";
 import {
@@ -16,7 +16,6 @@ import {
   Typography,
 } from "@mui/material";
 import {
-  resetEnrolmentState,
   resetEnrolmentUpdateState,
   studentPersonalDataUpdate,
   studentSchoolDataUpdate,
@@ -26,13 +25,11 @@ import {
   FetchAllCreatedDivisionProgrammes,
   FetchAllProgrammes,
 } from "../../../data/programme/FetchProgrammeData";
-import { getAllDivisionProgrammes } from "../../../features/academics/programmeSlice";
 import { FetchAllClassLevels } from "../../../data/class/FetchClassLevel";
 import { FetchAllBatches } from "../../../data/batch/FetchBatch";
 import { toast } from "react-toastify";
 import LoadingProgress from "../../../components/pageLoading/LoadingProgress";
 import { ArrowBack, TaskAlt } from "@mui/icons-material";
-import Redirection from "../../../components/pageLoading/Redirection";
 import { useNavigate, useParams } from "react-router-dom";
 import { getAuthUser } from "../../../features/auth/authSlice";
 import { FetchAllStudents } from "../../../data/students/FetchAllStudents";
@@ -44,58 +41,38 @@ import SmallFooter from "../../../components/footer/SmallFooter";
 export function StudentEnrollmentUpdateForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const authUser = useSelector(getAuthUser);
-  console.log(authUser);
+  const { adminCurrentLink, studentId } = useParams();
 
-  const { adminCurrentAction, adminCurrentLink, studentId } = useParams();
-  const studentUniqueId = adminCurrentLink || studentId;
+  // Redux state data fetching
+  const authUser = useSelector(getAuthUser);
   const allStudents = FetchAllStudents();
   const allProgrammes = FetchAllProgrammes();
   const allClassLevels = FetchAllClassLevels();
   const allBatches = FetchAllBatches();
   const allDivisionProgrammes = FetchAllCreatedDivisionProgrammes();
-  const { updateStatus, error, successMessage } = useSelector(
-    (state) => state.student
-  );
-  console.log(allProgrammes);
+  const { updateStatus, error } = useSelector((state) => state.student);
 
   // Student Update state
   const [student, setStudent] = useState(null);
-  console.log(student?.programId);
-  console.log(student);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [updateSchoolData, setUpdateSchoolData] = useState(false);
+  const [newProgrammeSelected, setNewProgrammeSelected] = useState({});
 
   // Handle Process State
   const [loadingComplete, setLoadingComplete] = useState(null);
-  const [redirecting, setRedirecting] = useState("");
+  const [isScrolled, setIsScrolled] = useState(false);
 
-  const [updateSchoolData, setUpdateSchoolData] = useState(false);
-  const [newProgrammeSelected, setNewProgrammeSelected] = useState({});
-  console.log(newProgrammeSelected);
+  // Get student's ID
+  const studentUniqueId = adminCurrentLink || studentId;
 
+  // Find student by unique ID
   const foundStudent = allStudents?.find(
     (std) => std?.uniqueId === studentUniqueId
   );
   console.log(foundStudent);
   console.log(foundStudent?.studentSchoolData?.batch?._id);
 
-  // Convert the birth date string to a JavaScript Date object
-  const dateObject = foundStudent?.personalInfo?.dateOfBirth
-    ? new Date(foundStudent?.personalInfo?.dateOfBirth).toISOString()
-    : "";
-  // Format the date to yyyy-MM-dd format
-  const formattedDate = dateObject?.split("T")[0];
-
-  // Find student's programme
-  const studentProgramme = allProgrammes?.find(
-    (programme) => programme?._id === student?.program
-  );
-  // Find student's division programme
-  const selectedDivisionProgramme = allDivisionProgrammes?.find(
-    (programme) => programme?._id === student?.divisionProgram
-  );
-
-  const [imagePreview, setImagePreview] = useState(null);
-
+  // Handle image change
   const handleImageFileUpload = (e) => {
     const file = e.target.files[0];
     const maxSize = 5 * 1024 * 1024; // 5MB
@@ -112,16 +89,10 @@ export function StudentEnrollmentUpdateForm() {
     reader.onloadend = () => {
       // console.log(reader.result);
       setImagePreview(reader.result);
-
-      //   setStudent({
-      //     ...student,
-      //     profilePicture: reader.result,
-      //   });
     };
   };
 
-  const [isScrolled, setIsScrolled] = useState(false);
-
+  // Handle scroll detection
   useEffect(() => {
     const handleScroll = () => {
       console.log("Scroll detected:", window.scrollY);
@@ -140,6 +111,8 @@ export function StudentEnrollmentUpdateForm() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  // Handle input value change
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -162,6 +135,7 @@ export function StudentEnrollmentUpdateForm() {
     }
   };
 
+  // Handle date change
   const handleDateChange = (date) => {
     if (dayjs(date).isValid()) {
       setStudent((prev) => ({
@@ -170,10 +144,8 @@ export function StudentEnrollmentUpdateForm() {
       }));
     }
   };
-  const psDOB = student?.dateOfBirth
-    ? new Date(student?.dateOfBirth).toISOString()
-    : "";
-  // Handle persoanal data update
+
+  // Handle personal data update
   const handleSubmit = (event) => {
     event.preventDefault();
     const updateData = {
@@ -188,13 +160,6 @@ export function StudentEnrollmentUpdateForm() {
       profilePicture: imagePreview
         ? imagePreview
         : student?.personalInfo?.profilePicture?.url,
-      // School Data
-      //   jhsAttended: student?.studentSchoolData?.jhsAttended,
-      //   completedJhs: student?.studentSchoolData?.completedJhs,
-      //   jhsIndexNo: student?.studentSchoolData?.jhsIndexNo,
-      //   program: student?.programId,
-      //   currentClassLevel: student?.classLevelId,
-      //   batch: student?.batchId,
       // Status
       height: student?.status?.height,
       weight: student?.status?.weight,
@@ -215,6 +180,8 @@ export function StudentEnrollmentUpdateForm() {
     console.log(updateData);
     dispatch(studentPersonalDataUpdate({ updateData }));
   };
+
+  // Update school data function
   const handleSchoolDataUpdate = (e) => {
     e.preventDefault();
     const updateData = {
@@ -235,7 +202,10 @@ export function StudentEnrollmentUpdateForm() {
 
   // Reinitialize state when foundStudent changes
   useEffect(() => {
-    if (foundStudent) {
+    if (
+      foundStudent &&
+      (!student || foundStudent.uniqueId !== student.uniqueId)
+    ) {
       const formattedStudent = {
         ...foundStudent,
         dateOfBirth: dayjs(foundStudent?.personalInfo?.dateOfBirth).isValid()
@@ -248,11 +218,10 @@ export function StudentEnrollmentUpdateForm() {
         classLevelId: foundStudent?.studentSchoolData?.currentClassLevel?._id,
       };
       setStudent(formattedStudent);
-    } else {
-      setStudent(null); // No student found
     }
-  }, [foundStudent]);
+  }, [foundStudent, student]);
 
+  // Set newly selected programme
   useEffect(() => {
     if (student?.programId) {
       const programFound = allProgrammes?.find(
@@ -261,6 +230,7 @@ export function StudentEnrollmentUpdateForm() {
       setNewProgrammeSelected(programFound);
     }
   }, [student, allProgrammes]);
+
   // Handle enrollment update status check
   useEffect(() => {
     if (updateStatus === "pending") {
@@ -316,7 +286,7 @@ export function StudentEnrollmentUpdateForm() {
       </Box>
       <ContainerBox
         component="div"
-        id="studentEnrollmentWrap"
+        // id="studentEnrollmentWrap"
         sx={{
           width: { xs: "100%", sm: "95%", md: "90%", lg: "90%", xl: "75%" },
           margin: "auto",
@@ -338,6 +308,7 @@ export function StudentEnrollmentUpdateForm() {
               border: "1px solid #ccc",
               borderRadius: "8px",
               backgroundColor: "#f9f9f9",
+              marginTop: "unset",
             }}
           >
             <Typography
@@ -441,15 +412,8 @@ export function StudentEnrollmentUpdateForm() {
                     slots={{
                       input: (params) => <CustomTextField {...params} />,
                     }}
-                    required
-                    error={false} // Make sure this is false
-                    helperText="" // Optionally clear helper text
                     sx={{
                       width: "100%",
-                      cursor: "pointer",
-                      "& .MuiInputLabel-asterisk": {
-                        color: foundStudent?.dateOfBirth ? "green" : "red", // Change the asterisk color to red
-                      },
                     }}
                   />
                 </Grid>
@@ -674,19 +638,21 @@ export function StudentEnrollmentUpdateForm() {
                   />
                 </Grid>
                 {/* Student User Name */}
-                <Grid item xs={12} sm={6} md={4} lg={4}>
-                  <CustomTextField
-                    fullWidth
-                    label="Username"
-                    name="userSignUpDetails.userName"
-                    value={student?.userSignUpDetails?.userName || ""}
-                    onChange={handleChange}
-                    className="textField"
-                    InputProps={{
-                      readOnly: authUser?.uniqueId !== student?.uniqueId,
-                    }}
-                  />
-                </Grid>
+                {foundStudent?.signedUp && (
+                  <Grid item xs={12} sm={6} md={4} lg={4}>
+                    <CustomTextField
+                      fullWidth
+                      label="Username"
+                      name="userSignUpDetails.userName"
+                      value={student?.userSignUpDetails?.userName || ""}
+                      onChange={handleChange}
+                      className="textField"
+                      InputProps={{
+                        readOnly: authUser?.uniqueId !== student?.uniqueId,
+                      }}
+                    />
+                  </Grid>
+                )}
 
                 {/* Submit Button */}
                 <Grid item xs={12}>
@@ -903,9 +869,17 @@ export function StudentEnrollmentUpdateForm() {
                       //   required
                     >
                       {allDivisionProgrammes?.map((programme) => (
-                        <MenuItem key={programme?._id} value={programme?._id}>
-                          {programme?.divisionName}
-                        </MenuItem>
+                        <>
+                          {programme?.programId ===
+                            newProgrammeSelected?._id && (
+                            <MenuItem
+                              key={programme?._id}
+                              value={programme?._id}
+                            >
+                              {programme?.divisionName}
+                            </MenuItem>
+                          )}
+                        </>
                       ))}
                     </CustomTextField>
                   </Grid>
@@ -970,8 +944,8 @@ export function StudentEnrollmentUpdateForm() {
                     <MenuItem value="Boarding">Boarding</MenuItem>
                     <MenuItem value="Hostel">Hostel</MenuItem>
                     <MenuItem value="Private">Private</MenuItem>
-                    <MenuItem value="Lecturers Bangalow">
-                      Lecturers Bangalow
+                    <MenuItem value="Lecturers Bungalow">
+                      Lecturers Bungalow
                     </MenuItem>
                   </CustomTextField>
                 </Grid>

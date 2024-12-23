@@ -6,7 +6,8 @@ export default function SmallFooter() {
     // <Box id="smallFooterWrap">
     <Box className="smallFooterContent">
       <p>
-        Copyright &copy;2023 <span style={{ color: "#0fc80f" }}>Sen</span>
+        Copyright &copy;2023{" "}
+        <span style={{ color: "#0fc80f", marginLeft: ".3rem" }}>Sen</span>
         <span style={{ color: "yellow" }}>sec</span>
         <span
           style={{
