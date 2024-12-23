@@ -7,8 +7,11 @@ const FetchAllUsers = () => {
   const allUsers = useSelector(getAllUsers);
 
   useEffect(() => {
-    dispatch(fetchAllUsers());
-  }, [dispatch]);
+    if (!allUsers || allUsers?.length === 0) {
+      dispatch(fetchAllUsers());
+    }
+    // dispatch(fetchAllUsers());
+  }, [dispatch, allUsers]);
 
   return allUsers;
 };

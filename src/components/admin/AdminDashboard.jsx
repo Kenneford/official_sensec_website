@@ -56,115 +56,91 @@ export function AdminDashboard() {
 
   const { pathname } = useLocation();
 
-  const [pageScrolled, setPageScrolled] = useState(false);
-  const [fixedNavbar, setFixedNavbar] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
-  const dashWidth = window?.innerWidth - 136;
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY >= 140) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
 
-  //FUNCTION TO CHECK PAGE SCROLL
-  const detectPageScroll = () => {
-    if (window.scrollY >= 25) {
-      setPageScrolled(true);
-    } else {
-      setPageScrolled(false);
-    }
-    if (window.scrollY >= 25) {
-      setFixedNavbar(true);
-    } else {
-      setFixedNavbar(false);
-    }
-  };
-  window.addEventListener("scroll", detectPageScroll);
+    window.addEventListener("scroll", handleScroll);
+    console.log(window.scrollY > 10);
+
+    // Cleanup the event listener
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
-    <Box
-      // overflow={"hidden"}
-      // component="main"
-      // sx={{
-      //   // flex: 5,
-      //   // marginLeft: { xs: "0", sm: "20%" }, // The sidebar width
-      //   // padding: "1rem",
-      //   width: isSidebarOpen ? "80%" : "92.2%",
-      //   // flexGrow: 1,
-      //   marginLeft: isSidebarOpen ? "20%" : "8.5rem", // Adjust margin based on sidebar state
-      //   // padding: "16px",
-      //   transition: "margin-left 0.5s ease", // Smooth transition for main content
-      //   // Apply only when the device is in landscape and has a max-height (smaller screens)
-      //   "@media screen and (max-width: 1024px) and (orientation: landscape)": {
-      //     marginLeft: "0%", // Adjust margin based on sidebar state,
-      //     width: "100%",
-      //   },
-
-      //   // Apply only when the device is in portrait and has a max-height (smaller screens)
-      //   "@media screen and (max-width: 1024px) and (orientation: portrait)": {
-      //     marginLeft: "0%", // Adjust margin based on sidebar state,
-      //     width: "100%",
-      //   },
-      //   "@media screen and (min-width: 1024px) (max-width: 1200px) and (orientation: landscape)":
-      //     {
-      //       marginLeft: isSidebarOpen ? "20%" : "8.5rem", // Adjust margin based on sidebar state,
-      //     },
-      //   // minHeight: "100vh",
-      // }}
-      bgcolor={"#fff"}
-    >
-      <Stack
-        direction="column"
+    <Box bgcolor={"#fff"}>
+      <Box
         sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#fff",
-          padding: ".3rem 0",
-          height: "4.5rem",
+          position: isScrolled ? "none" : "block",
         }}
       >
-        <Box
-          onClick={() => {
-            // Click handler
-            localStorage.removeItem("currentNavLink");
-            navigate("/sensec/homepage");
-          }}
+        <Stack
+          direction="column"
           sx={{
             display: "flex",
-            flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            cursor: "pointer",
+            backgroundColor: "#fff",
+            padding: ".3rem 0",
+            height: "4.5rem",
           }}
         >
-          <Avatar
-            src="/assets/sensec-logo1.png"
-            sx={{ alignItems: "center" }}
-          />
-          <Box sx={{ display: "flex", height: "1.5rem" }}>
-            <Typography variant="h6" color="green">
-              Sen
-            </Typography>
-            <Typography variant="h6" color="#aeae0d">
-              sec
-            </Typography>
+          <Box
+            onClick={() => {
+              // Click handler
+              localStorage.removeItem("currentNavLink");
+              navigate("/sensec/homepage");
+            }}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              cursor: "pointer",
+            }}
+          >
+            <Avatar
+              src="/assets/sensec-logo1.png"
+              sx={{ alignItems: "center" }}
+            />
+            <Box sx={{ display: "flex", height: "1.5rem" }}>
+              <Typography variant="h6" color="green">
+                Sen
+              </Typography>
+              <Typography variant="h6" color="#aeae0d">
+                sec
+              </Typography>
+            </Box>
           </Box>
+        </Stack>
+        <Box>
+          <NavigationBar
+            setOpenSubNavLinks={setOpenSubNavLinks}
+            openSubNavLinks={openSubNavLinks}
+            setOpenUserActions={setOpenUserActions}
+            openUserActions={openUserActions}
+            setOpenSignUpActions={setOpenSignUpActions}
+            openSignUpActions={openSignUpActions}
+            setOpenMenuLinks={setOpenMenuLinks}
+            openMenuLinks={openMenuLinks}
+            currentAction={currentAction}
+            setCurrentAction={setCurrentAction}
+            currentLink={currentLink}
+            setCurrentLink={setCurrentLink}
+            isSidebarOpen={isSidebarOpen}
+            openSearchModal={openSearchModal}
+            setOpenSearchModal={setOpenSearchModal}
+          />
         </Box>
-      </Stack>
-      <Box display={fixedNavbar ? "none" : "flex"}>
-        <NavigationBar
-          setOpenSubNavLinks={setOpenSubNavLinks}
-          openSubNavLinks={openSubNavLinks}
-          setOpenUserActions={setOpenUserActions}
-          openUserActions={openUserActions}
-          setOpenSignUpActions={setOpenSignUpActions}
-          openSignUpActions={openSignUpActions}
-          setOpenMenuLinks={setOpenMenuLinks}
-          openMenuLinks={openMenuLinks}
-          currentAction={currentAction}
-          setCurrentAction={setCurrentAction}
-          currentLink={currentLink}
-          setCurrentLink={setCurrentLink}
-          isSidebarOpen={isSidebarOpen}
-          openSearchModal={openSearchModal}
-          setOpenSearchModal={setOpenSearchModal}
-        />
       </Box>
       {/* Show component based on current dashboard link */}
       <Box

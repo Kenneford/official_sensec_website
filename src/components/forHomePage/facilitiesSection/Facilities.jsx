@@ -105,7 +105,7 @@ export default function FacilitiesSection() {
                 }}
               >
                 <Box className="colorOverlay">
-                  <h4>Dometories</h4>
+                  <h4>Dormitories</h4>
                   <Link to={"/sensec/facility?="}>
                     <button>View</button>
                   </Link>

@@ -1,6 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import "./assignLecturer.scss";
-import { ContainerBox, CustomTextField } from "../../muiStyling/muiStyling";
+import {
+  ContainerBox,
+  CustomMobileDatePicker,
+  CustomTextField,
+} from "../../muiStyling/muiStyling";
 import {
   MenuItem,
   Button,
@@ -8,122 +12,87 @@ import {
   Box,
   Avatar,
   InputAdornment,
-  Typography,
 } from "@mui/material";
-import {
-  resetEnrolmentState,
-  studentEnrollment,
-} from "../../features/students/studentsSlice";
+import { resetEnrolmentState } from "../../features/students/studentsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { FetchAllProgrammes } from "../../data/programme/FetchProgrammeData";
-import {
-  fetchAllDivisionProgrammes,
-  getAllDivisionProgrammes,
-} from "../../features/academics/programmeSlice";
-import { FetchAllBatches } from "../../data/batch/FetchBatch";
-import {
-  fetchAllPlacementStudents,
-  getAllPlacementStudents,
-} from "../../features/academics/placementSlice";
+import { fetchAllPlacementStudents } from "../../features/academics/placementSlice";
 import { toast } from "react-toastify";
 import LoadingProgress from "../../components/pageLoading/LoadingProgress";
 import { TaskAlt } from "@mui/icons-material";
 import Redirection from "../../components/pageLoading/Redirection";
 import { useNavigate, useParams } from "react-router-dom";
 import { getAuthUser } from "../../features/auth/authSlice";
-import { newEmployee } from "../../features/employments/employmentSlice";
-import { FetchAllAdmins } from "../../data/admins/FetchAdmins";
 import { FetchAllEmployees } from "../../data/allUsers/FetchAllUsers";
 import { FetchAllClassSections } from "../../data/class/FetchClassSections";
+import dayjs from "dayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 export function EmployeeDataUpdateForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const authUser = useSelector(getAuthUser);
-  const { studentIndexNo, adminCurrentAction, adminCurrentLink } = useParams();
+  const { adminCurrentAction, adminCurrentLink } = useParams();
   const allProgrammes = FetchAllProgrammes();
   const allEmployees = FetchAllEmployees();
   const allClassSections = FetchAllClassSections();
-  const allBatches = FetchAllBatches();
-  const allDivisionProgrammes = useSelector(getAllDivisionProgrammes);
-  const allPlacementStudents = useSelector(getAllPlacementStudents);
   const { enrollmentStatus, error, successMessage } = useSelector(
     (state) => state.student
   );
 
-  //Get current year and random number for student's unique-Id
-  const currentYear = new Date().getFullYear();
-  const nextYear = currentYear + 1;
-  const num = Math.floor(10000 + Math.random() * 90000);
-  const academicYear = `${currentYear} / ${nextYear}`;
-
-  // Dynamically calculate academic year base on current month of the Year
-  const getAcademicYears = () => {
-    const currentYear = new Date().getFullYear();
-    const startYear = 2024;
-    const currentMonth = new Date().getMonth();
-
-    // If the current month is September or later, increment the end year for the academic range
-    const endYear = currentMonth >= 8 ? currentYear : currentYear - 1;
-    const academicYears = [];
-
-    // Generate academic years from 2020 up to the calculated end year
-    for (let year = startYear; year <= endYear; year++) {
-      academicYears.push(`${year}/${year + 1}`);
-    }
-
-    return academicYears;
-  };
-  const academicYears = getAcademicYears();
+  // Employee Update state
+  const [employee, setEmployee] = useState(null);
+  console.log(employee);
 
   // Handle Process State
   const [loadingComplete, setLoadingComplete] = useState(null);
   const [redirecting, setRedirecting] = useState("");
 
-  // New Employee state
-  const [userID, setUserID] = useState("");
   // Get selected admin ID
   const employeeId = adminCurrentLink;
-  const foundAdmin = allEmployees?.find((adm) => adm?.uniqueId === employeeId);
-  console.log(foundAdmin);
+  const foundEmployee = allEmployees?.find(
+    (adm) => adm?.uniqueId === employeeId
+  );
+  console.log(foundEmployee);
 
   // Convert the birth date string to a JavaScript Date object
-  const dateObject = foundAdmin?.personalInfo?.dateOfBirth
-    ? new Date(foundAdmin?.personalInfo?.dateOfBirth).toISOString()
+  const dateObject = foundEmployee?.personalInfo?.dateOfBirth
+    ? new Date(foundEmployee?.personalInfo?.dateOfBirth).toISOString()
     : "";
   // Format the date to yyyy-MM-dd format
   const formattedDate = dateObject?.split("T")[0];
 
   const [newEmployment, setNewEmployment] = useState({
-    uniqueId: foundAdmin?.uniqueId,
-    firstName: foundAdmin?.personalInfo?.firstName,
-    lastName: foundAdmin?.personalInfo?.lastName,
-    otherName: foundAdmin?.personalInfo?.otherName,
+    uniqueId: foundEmployee?.uniqueId,
+    firstName: foundEmployee?.personalInfo?.firstName,
+    lastName: foundEmployee?.personalInfo?.lastName,
+    otherName: foundEmployee?.personalInfo?.otherName,
     dateOfBirth: formattedDate,
-    placeOfBirth: foundAdmin?.personalInfo?.placeOfBirth,
-    nationality: foundAdmin?.personalInfo?.nationality,
-    gender: foundAdmin?.personalInfo?.gender,
-    profilePicture: foundAdmin?.personalInfo?.profilePicture?.url,
+    placeOfBirth: foundEmployee?.personalInfo?.placeOfBirth,
+    nationality: foundEmployee?.personalInfo?.nationality,
+    gender: foundEmployee?.personalInfo?.gender,
+    profilePicture: foundEmployee?.personalInfo?.profilePicture?.url,
     // School Data
-    typeOfEmployment: foundAdmin?.employment?.employmentType,
-    program: foundAdmin?.lecturerSchoolData?.program?._id,
-    classSection: foundAdmin?.lecturerSchoolData?.classLevelHandling?._id,
+    typeOfEmployment: foundEmployee?.employment?.employmentType,
+    program: foundEmployee?.lecturerSchoolData?.program?._id,
+    classSection: foundEmployee?.lecturerSchoolData?.classLevelHandling?._id,
     // Status
-    height: foundAdmin?.status?.height,
-    weight: foundAdmin?.status?.weight,
-    complexion: foundAdmin?.status?.complexion,
-    motherTongue: foundAdmin?.status?.motherTongue,
-    otherTongue: foundAdmin?.status?.otherTongue,
-    residentialStatus: foundAdmin?.status?.residentialStatus,
+    height: foundEmployee?.status?.height,
+    weight: foundEmployee?.status?.weight,
+    complexion: foundEmployee?.status?.complexion,
+    motherTongue: foundEmployee?.status?.motherTongue,
+    otherTongue: foundEmployee?.status?.otherTongue,
+    residentialStatus: foundEmployee?.status?.residentialStatus,
     // Contact Address
-    homeTown: foundAdmin?.contactAddress?.homeTown,
-    district: foundAdmin?.contactAddress?.district,
-    region: foundAdmin?.contactAddress?.region,
-    currentCity: foundAdmin?.contactAddress?.currentCity,
-    residentialAddress: foundAdmin?.contactAddress?.residentialAddress,
-    gpsAddress: foundAdmin?.contactAddress?.gpsAddress,
-    mobile: foundAdmin?.contactAddress?.mobile,
-    email: foundAdmin?.contactAddress?.email,
+    homeTown: foundEmployee?.contactAddress?.homeTown,
+    district: foundEmployee?.contactAddress?.district,
+    region: foundEmployee?.contactAddress?.region,
+    currentCity: foundEmployee?.contactAddress?.currentCity,
+    residentialAddress: foundEmployee?.contactAddress?.residentialAddress,
+    gpsAddress: foundEmployee?.contactAddress?.gpsAddress,
+    mobile: foundEmployee?.contactAddress?.mobile,
+    email: foundEmployee?.contactAddress?.email,
   });
 
   const [imagePreview, setImagePreview] = useState(null);
@@ -138,98 +107,100 @@ export function EmployeeDataUpdateForm() {
       return;
     }
     if (e.target.files.length !== 0) {
-      setNewEmployment({ ...newEmployment, [e.target.name]: file });
+      setEmployee({ ...employee, [e.target.name]: file });
     }
     const reader = new FileReader();
     reader.readAsDataURL(e.target.files[0]);
     reader.onloadend = () => {
       // console.log(reader.result);
       setImagePreview(reader.result);
-
-      setNewEmployment({
-        ...newEmployment,
-        profilePicture: reader.result,
-      });
     };
   };
-  // Helper function to generate new unique-Id for new employee
-  const generateUniqueId = (employmentType, fName, lName) => {
-    let prefix = "";
-    switch (employmentType) {
-      case "Administration":
-        prefix = "ADM";
-        break;
-      case "Teaching Staff":
-        prefix = "LCT";
-        break;
-      case "Non-Teaching Staff":
-        prefix = "NTS";
-        break;
-      default:
-        prefix = "EMP"; // Unknown or unspecified
-    }
-    // Get current year
-    const currentYear = new Date().getFullYear();
-    // Get initials from the first and last names
-    const firstNameInitial = fName ? fName?.charAt(0)?.toUpperCase() : "";
-    const lastNameInitial = lName ? lName?.charAt(0)?.toUpperCase() : "";
-    // Generate a unique suffix using current timestamp or random number
-    const uniqueSuffix = Date.now().toString().slice(-5); // Take last 5 digits for brevity
-    return `${prefix}-${uniqueSuffix}${firstNameInitial}${lastNameInitial}-${currentYear}`;
-  };
   // Handle input value change
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setNewEmployment({
-      ...newEmployment,
-      [name]: value,
-    });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    // Handle nested fields like "personalInfo.lastName"
+    if (name.includes(".")) {
+      const [parentKey, childKey] = name.split(".");
+      setEmployee((prevEmployee) => ({
+        ...prevEmployee,
+        [parentKey]: {
+          ...prevEmployee[parentKey],
+          [childKey]: value,
+        },
+      }));
+    } else {
+      // Handle top-level fields
+      setEmployee((prevEmployee) => ({
+        ...prevEmployee,
+        [name]: value,
+      }));
+    }
+  };
+  // Handle date change
+  const handleDateChange = (date) => {
+    if (dayjs(date).isValid()) {
+      setEmployee((prev) => ({
+        ...prev,
+        dateOfBirth: date, // Store the Date object directly
+      }));
+    }
   };
 
-  // Use useEffect to automatically update the userID when any of the dependencies change
+  // Reinitialize state when foundStudent changes
   useEffect(() => {
-    const newId = generateUniqueId(
-      newEmployment?.typeOfEmployment,
-      newEmployment?.firstName,
-      newEmployment?.lastName
-    );
-    setUserID(newId);
-  }, [newEmployment]); // Dependencies
+    if (
+      foundEmployee &&
+      (!employee || foundEmployee.uniqueId !== employee.uniqueId)
+    ) {
+      const formattedStudent = {
+        ...foundEmployee,
+        dateOfBirth: dayjs(foundEmployee?.personalInfo?.dateOfBirth).isValid()
+          ? dayjs(foundEmployee?.personalInfo?.dateOfBirth)
+          : dayjs("MM/DD/YYYY"),
+        programId: foundEmployee?.lecturerSchoolData?.program?._id,
+        classSectionId:
+          foundEmployee?.lectureSchoolData?.classLevelHandling?._id,
+      };
+      setEmployee(formattedStudent);
+    }
+  }, [foundEmployee, employee]);
 
   // Persist admin update state
   useEffect(() => {
     setNewEmployment({
-      uniqueId: foundAdmin?.uniqueId,
-      firstName: foundAdmin?.personalInfo?.firstName,
-      lastName: foundAdmin?.personalInfo?.lastName,
-      otherName: foundAdmin?.personalInfo?.otherName,
+      uniqueId: foundEmployee?.uniqueId,
+      firstName: foundEmployee?.personalInfo?.firstName,
+      lastName: foundEmployee?.personalInfo?.lastName,
+      otherName: foundEmployee?.personalInfo?.otherName,
       dateOfBirth: formattedDate,
-      placeOfBirth: foundAdmin?.personalInfo?.placeOfBirth,
-      nationality: foundAdmin?.personalInfo?.nationality,
-      gender: foundAdmin?.personalInfo?.gender,
-      profilePicture: foundAdmin?.personalInfo?.profilePicture?.url,
+      placeOfBirth: foundEmployee?.personalInfo?.placeOfBirth,
+      nationality: foundEmployee?.personalInfo?.nationality,
+      gender: foundEmployee?.personalInfo?.gender,
+      profilePicture: foundEmployee?.personalInfo?.profilePicture?.url,
       // School Data
-      typeOfEmployment: foundAdmin?.employment?.employmentType,
-      program: foundAdmin?.lecturerSchoolData?.program?._id,
-      classSection: foundAdmin?.lecturerSchoolData?.classLevelHandling?._id,
+      typeOfEmployment: foundEmployee?.employment?.employmentType,
+      program: foundEmployee?.lecturerSchoolData?.program?._id,
+      classSection: foundEmployee?.lecturerSchoolData?.classLevelHandling?._id,
       // Status
-      height: foundAdmin?.status?.height,
-      weight: foundAdmin?.status?.weight,
-      complexion: foundAdmin?.status?.complexion,
-      motherTongue: foundAdmin?.status?.motherTongue,
-      otherTongue: foundAdmin?.status?.otherTongue,
-      residentialStatus: foundAdmin?.status?.residentialStatus,
+      height: foundEmployee?.status?.height,
+      weight: foundEmployee?.status?.weight,
+      complexion: foundEmployee?.status?.complexion,
+      motherTongue: foundEmployee?.status?.motherTongue,
+      otherTongue: foundEmployee?.status?.otherTongue,
+      residentialStatus: foundEmployee?.status?.residentialStatus,
       // Contact Address
-      homeTown: foundAdmin?.contactAddress?.homeTown,
-      district: foundAdmin?.contactAddress?.district,
-      region: foundAdmin?.contactAddress?.region,
-      currentCity: foundAdmin?.contactAddress?.currentCity,
-      residentialAddress: foundAdmin?.contactAddress?.residentialAddress,
-      gpsAddress: foundAdmin?.contactAddress?.gpsAddress,
-      mobile: foundAdmin?.contactAddress?.mobile,
-      email: foundAdmin?.contactAddress?.email,
+      homeTown: foundEmployee?.contactAddress?.homeTown,
+      district: foundEmployee?.contactAddress?.district,
+      region: foundEmployee?.contactAddress?.region,
+      currentCity: foundEmployee?.contactAddress?.currentCity,
+      residentialAddress: foundEmployee?.contactAddress?.residentialAddress,
+      gpsAddress: foundEmployee?.contactAddress?.gpsAddress,
+      mobile: foundEmployee?.contactAddress?.mobile,
+      email: foundEmployee?.contactAddress?.email,
     });
-  }, [foundAdmin, formattedDate]); // Dependencies
+  }, [foundEmployee, formattedDate]); // Dependencies
 
   // Handle employment
   const handleSubmit = (event) => {
@@ -269,11 +240,6 @@ export function EmployeeDataUpdateForm() {
 
   // Fetch needed data
   useEffect(() => {
-    if (newEmployment?.program) {
-      dispatch(
-        fetchAllDivisionProgrammes({ programId: newEmployment?.program })
-      );
-    }
     dispatch(fetchAllPlacementStudents());
   }, [dispatch, newEmployment]);
 
@@ -331,7 +297,7 @@ export function EmployeeDataUpdateForm() {
   ]);
 
   return (
-    <>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
       {/* Current dashboard title */}
       {adminCurrentAction && adminCurrentLink && (
         <Box
@@ -363,32 +329,6 @@ export function EmployeeDataUpdateForm() {
           position: "relative",
         }}
       >
-        {!adminCurrentAction && (
-          <Box mb={2}>
-            <Typography
-              variant="h4"
-              fontSize={{ xs: "1.4rem", sm: "1.7rem" }}
-              color="#696969"
-              textAlign={"center"}
-              letterSpacing={1}
-              fontWeight={500}
-            >
-              New Employment
-            </Typography>
-            <Typography
-              variant="h6"
-              textAlign={"center"}
-              color="#696969"
-              fontSize={{ xs: ".9rem", sm: "1rem" }}
-            >
-              ({" "}
-              <span style={{ fontWeight: "500" }}>
-                {currentYear}/{currentYear + 1}
-              </span>{" "}
-              Academic Year )
-            </Typography>
-          </Box>
-        )}
         <Box
           component="div"
           id="enrollmentFormWrap"
@@ -420,13 +360,15 @@ export function EmployeeDataUpdateForm() {
                 <CustomTextField
                   fullWidth
                   label="First Name"
-                  name="firstName"
-                  value={newEmployment?.firstName || ""}
+                  name="personalInfo.firstName"
+                  value={employee?.personalInfo?.firstName || ""}
                   onChange={handleChange}
                   className="textField"
                   sx={{
                     "& .MuiInputLabel-asterisk": {
-                      color: newEmployment?.firstName ? "green" : "red", // Change the asterisk color to red
+                      color: employee?.personalInfo?.firstName
+                        ? "green"
+                        : "red", // Change the asterisk color to red
                     },
                   }}
                 />
@@ -436,12 +378,12 @@ export function EmployeeDataUpdateForm() {
                 <CustomTextField
                   fullWidth
                   label="Surname"
-                  name="lastName"
-                  value={newEmployment?.lastName || ""}
+                  name="personalInfo.lastName"
+                  value={employee?.personalInfo?.lastName || ""}
                   onChange={handleChange}
                   sx={{
                     "& .MuiInputLabel-asterisk": {
-                      color: newEmployment?.lastName ? "green" : "red", // Change the asterisk color to red
+                      color: employee?.personalInfo?.lastName ? "green" : "red", // Change the asterisk color to red
                     },
                   }}
                 />
@@ -451,8 +393,8 @@ export function EmployeeDataUpdateForm() {
                 <CustomTextField
                   fullWidth
                   label="Other Name"
-                  name="otherName"
-                  value={newEmployment?.otherName || ""}
+                  name="personalInfo.otherName"
+                  value={employee?.personalInfo?.otherName || ""}
                   onChange={handleChange}
                 />
               </Grid>
@@ -461,25 +403,36 @@ export function EmployeeDataUpdateForm() {
                 <CustomTextField
                   fullWidth
                   label="Place Of Birth"
-                  name="placeOfBirth"
-                  value={newEmployment?.placeOfBirth || ""}
+                  name="personalInfo.placeOfBirth"
+                  value={employee?.personalInfo?.placeOfBirth || ""}
                   onChange={handleChange}
                   sx={{
                     "& .MuiInputLabel-asterisk": {
-                      color: newEmployment?.placeOfBirth ? "green" : "red", // Change the asterisk color to red
+                      color: employee?.personalInfo?.placeOfBirth
+                        ? "green"
+                        : "red", // Change the asterisk color to red
                     },
                   }}
                 />
               </Grid>
               {/* Date Of Birth */}
               <Grid item xs={12} sm={6} md={4} lg={4}>
-                <CustomTextField
-                  fullWidth
-                  // label="DD/MM/YYYY"
+                <CustomMobileDatePicker
+                  label={<span>Date of Birth </span>}
                   name="dateOfBirth"
-                  type="date"
-                  value={newEmployment?.dateOfBirth || ""}
-                  onChange={handleChange}
+                  // inputFormat="MM/dd/yyyy"
+                  value={employee?.dateOfBirth || dayjs("MM/DD/YYYY")}
+                  onChange={handleDateChange}
+                  maxDate={dayjs()}
+                  slots={{
+                    input: (params) => <CustomTextField {...params} />,
+                  }}
+                  // required
+                  // error={false} // Make sure this is false
+                  // helperText="" // Optionally clear helper text
+                  sx={{
+                    width: "100%",
+                  }}
                 />
               </Grid>
               {/* Nationality */}
@@ -487,8 +440,8 @@ export function EmployeeDataUpdateForm() {
                 <CustomTextField
                   fullWidth
                   label="Nationality"
-                  name="nationality"
-                  value={newEmployment?.nationality || ""}
+                  name="personalInfo.nationality"
+                  value={employee?.personalInfo?.nationality || ""}
                   onChange={handleChange}
                 />
               </Grid>
@@ -498,8 +451,8 @@ export function EmployeeDataUpdateForm() {
                   select
                   fullWidth
                   label="Gender"
-                  name="gender"
-                  value={newEmployment?.gender || ""}
+                  name="personalInfo.gender"
+                  value={employee?.personalInfo?.gender || ""}
                   onChange={handleChange}
                 >
                   <MenuItem value="Male">Male</MenuItem>
@@ -512,8 +465,8 @@ export function EmployeeDataUpdateForm() {
                   select
                   fullWidth
                   label="Mother Tongue"
-                  name="motherTongue"
-                  value={newEmployment?.motherTongue || ""}
+                  name="status.motherTongue"
+                  value={employee?.status?.motherTongue || ""}
                   onChange={handleChange}
                 >
                   <MenuItem value="Twi">Twi</MenuItem>
@@ -539,8 +492,8 @@ export function EmployeeDataUpdateForm() {
                   select
                   fullWidth
                   label="Other Tongue"
-                  name="otherTongue"
-                  value={newEmployment?.otherTongue || ""}
+                  name="status.otherTongue"
+                  value={employee?.status?.otherTongue || ""}
                   onChange={handleChange}
                 >
                   <MenuItem value="English">English</MenuItem>
@@ -558,8 +511,8 @@ export function EmployeeDataUpdateForm() {
                   select
                   fullWidth
                   label="Complexion"
-                  name="complexion"
-                  value={newEmployment?.complexion || ""}
+                  name="status.complexion"
+                  value={employee?.status?.complexion || ""}
                   onChange={handleChange}
                 >
                   <MenuItem value="Very Fair">Very Fair</MenuItem>
@@ -575,8 +528,8 @@ export function EmployeeDataUpdateForm() {
                 <CustomTextField
                   fullWidth
                   label="Height"
-                  name="height"
-                  value={newEmployment?.height || ""}
+                  name="status.height"
+                  value={employee?.status?.height || ""}
                   onChange={handleChange}
                   slotProps={{
                     input: {
@@ -592,8 +545,8 @@ export function EmployeeDataUpdateForm() {
                 <CustomTextField
                   fullWidth
                   label="Weight"
-                  name="weight"
-                  value={newEmployment?.weight || ""}
+                  name="status.weight"
+                  value={employee?.status?.weight || ""}
                   onChange={handleChange}
                   slotProps={{
                     input: {
@@ -610,8 +563,8 @@ export function EmployeeDataUpdateForm() {
                   fullWidth
                   select
                   label="Region"
-                  name="region"
-                  value={newEmployment?.region || ""}
+                  name="contactAddress.region"
+                  value={employee?.contactAddress?.region || ""}
                   onChange={handleChange}
                 >
                   <MenuItem value="Greater Accra">Greater Accra</MenuItem>
@@ -637,8 +590,8 @@ export function EmployeeDataUpdateForm() {
                 <CustomTextField
                   fullWidth
                   label="HomeTown"
-                  name="homeTown"
-                  value={newEmployment?.homeTown || ""}
+                  name="contactAddress.homeTown"
+                  value={employee?.contactAddress?.homeTown || ""}
                   onChange={handleChange}
                 />
               </Grid>
@@ -647,8 +600,8 @@ export function EmployeeDataUpdateForm() {
                 <CustomTextField
                   fullWidth
                   label="District"
-                  name="district"
-                  value={newEmployment?.district || ""}
+                  name="contactAddress.district"
+                  value={employee?.contactAddress?.district || ""}
                   onChange={handleChange}
                 />
               </Grid>
@@ -657,8 +610,8 @@ export function EmployeeDataUpdateForm() {
                 <CustomTextField
                   fullWidth
                   label="Current City"
-                  name="currentCity"
-                  value={newEmployment?.currentCity || ""}
+                  name="contactAddress.currentCity"
+                  value={employee?.contactAddress?.currentCity || ""}
                   onChange={handleChange}
                 />
               </Grid>
@@ -667,8 +620,8 @@ export function EmployeeDataUpdateForm() {
                 <CustomTextField
                   fullWidth
                   label="House Address"
-                  name="residentialAddress"
-                  value={newEmployment?.residentialAddress || ""}
+                  name="contactAddress.residentialAddress"
+                  value={employee?.contactAddress?.residentialAddress || ""}
                   onChange={handleChange}
                 />
               </Grid>
@@ -677,8 +630,8 @@ export function EmployeeDataUpdateForm() {
                 <CustomTextField
                   fullWidth
                   label="GPS Address"
-                  name="gpsAddress"
-                  value={newEmployment?.gpsAddress || ""}
+                  name="contactAddress.gpsAddress"
+                  value={employee?.contactAddress?.gpsAddress || ""}
                   onChange={handleChange}
                 />
               </Grid>
@@ -687,8 +640,8 @@ export function EmployeeDataUpdateForm() {
                 <CustomTextField
                   fullWidth
                   label="Email"
-                  name="email"
-                  value={newEmployment?.email || ""}
+                  name="contactAddress.email"
+                  value={employee?.contactAddress?.email || ""}
                   onChange={handleChange}
                 />
               </Grid>
@@ -697,8 +650,8 @@ export function EmployeeDataUpdateForm() {
                 <CustomTextField
                   fullWidth
                   label="Mobile"
-                  name="mobile"
-                  value={newEmployment?.mobile || ""}
+                  name="contactAddress.mobile"
+                  value={employee?.contactAddress?.mobile || ""}
                   onChange={handleChange}
                 />
               </Grid>
@@ -708,8 +661,8 @@ export function EmployeeDataUpdateForm() {
                   select
                   fullWidth
                   label="Employment Type"
-                  name="typeOfEmployment"
-                  value={newEmployment?.typeOfEmployment || ""}
+                  name="employment.employmentType"
+                  value={employee?.employment?.employmentType || ""}
                   onChange={handleChange}
                 >
                   <MenuItem value="Administration">Administration</MenuItem>
@@ -720,14 +673,20 @@ export function EmployeeDataUpdateForm() {
                 </CustomTextField>
               </Grid>
               {/* Programme Selection */}
-              {newEmployment?.program && (
+              {employee?.lecturerSchoolData?.program && (
                 <Grid item xs={12} sm={6} md={4} lg={4}>
                   <CustomTextField
                     select
                     fullWidth
                     label="Select Programme"
-                    name="program"
-                    value={newEmployment?.program || ""}
+                    name="programId"
+                    value={
+                      allProgrammes?.some(
+                        (program) => program._id === employee?.programId
+                      )
+                        ? employee?.programId
+                        : ""
+                    }
                     onChange={handleChange}
                   >
                     {allProgrammes?.map((programme) => (
@@ -739,22 +698,30 @@ export function EmployeeDataUpdateForm() {
                 </Grid>
               )}
               {/* Class Level Selection */}
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <CustomTextField
-                  select
-                  fullWidth
-                  label="Assign Class"
-                  name="classSection"
-                  value={newEmployment?.classSection || ""}
-                  onChange={handleChange}
-                >
-                  {allClassSections?.map((cLevel) => (
-                    <MenuItem key={cLevel?._id} value={cLevel?._id}>
-                      {cLevel?.label} - {cLevel?.sectionName}
-                    </MenuItem>
-                  ))}
-                </CustomTextField>
-              </Grid>
+              {foundEmployee?.roles?.includes("lecturer") && (
+                <Grid item xs={12} sm={6} md={4} lg={4}>
+                  <CustomTextField
+                    select
+                    fullWidth
+                    label="Assign Class"
+                    name="classSectionId"
+                    value={
+                      allClassSections?.some(
+                        (program) => program._id === employee?.classSectionId
+                      )
+                        ? employee?.classSectionId
+                        : ""
+                    }
+                    onChange={handleChange}
+                  >
+                    {allClassSections?.map((cLevel) => (
+                      <MenuItem key={cLevel?._id} value={cLevel?._id}>
+                        {cLevel?.label} - {cLevel?.sectionName}
+                      </MenuItem>
+                    ))}
+                  </CustomTextField>
+                </Grid>
+              )}
               {/* Residential Status Selection */}
               <Grid item xs={12} sm={6} md={4} lg={4}>
                 <CustomTextField
@@ -762,15 +729,15 @@ export function EmployeeDataUpdateForm() {
                   fullWidth
                   label="Residential Status"
                   name="residentialStatus"
-                  value={newEmployment?.residentialStatus || ""}
+                  value={employee?.status?.residentialStatus || ""}
                   onChange={handleChange}
                 >
                   <MenuItem value="Day">Day</MenuItem>
                   <MenuItem value="Boarding">Boarding</MenuItem>
                   <MenuItem value="Hostel">Hostel</MenuItem>
                   <MenuItem value="Private">Private</MenuItem>
-                  <MenuItem value="Lecturers Bangalow">
-                    Lecturers Bangalow
+                  <MenuItem value="Lecturers Bungalow">
+                    Lecturers Bungalow
                   </MenuItem>
                 </CustomTextField>
               </Grid>
@@ -815,7 +782,7 @@ export function EmployeeDataUpdateForm() {
                         src={
                           imagePreview
                             ? imagePreview
-                            : newEmployment?.profilePicture
+                            : employee?.personalInfo?.profilePicture?.url
                         }
                         alt="Profile Preview"
                         sx={{
@@ -864,6 +831,6 @@ export function EmployeeDataUpdateForm() {
           </form>
         </Box>
       </ContainerBox>
-    </>
+    </LocalizationProvider>
   );
 }
