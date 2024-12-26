@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { CircularProgress } from "@mui/material";
 import LoadingProgress from "../pageLoading/LoadingProgress";
+import { useDispatch } from "react-redux";
+import { deleteBlog } from "../../features/blogs/blogSlice";
 
 export default function DeleteBlogModal({
   open,
@@ -11,7 +13,9 @@ export default function DeleteBlogModal({
   deleting,
   deleteMessage,
   question,
+  blogId,
 }) {
+  const dispatch = useDispatch();
   //   const [deleting, setDeleting] = useState(false);
   useEffect(() => {
     if (deleting) {
@@ -44,8 +48,7 @@ export default function DeleteBlogModal({
                 <button
                   className="employLectBtn"
                   onClick={() => {
-                    handleNewEmployment();
-                    // setDeleting(true);
+                    dispatch(deleteBlog(blogId));
                   }}
                 >
                   Yes

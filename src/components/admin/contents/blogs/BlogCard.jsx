@@ -17,8 +17,11 @@ import {
 import { Link, useOutletContext } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import BlogOptions from "./options/BlogOptions";
+import ProTypes from "prop-types";
+import Parser from "html-react-parser";
+import { dateFormatter } from "../../../../dateFormatter/DateFormatter";
 
-export default function BlogCard({ title, content, image }) {
+export default function BlogCard({ blogId, title, content, image, postedBy }) {
   // const { postOptions, setPostOptions } = useOutletContext();
 
   const [postOptions, setPostOptions] = useState(false);
@@ -45,21 +48,28 @@ export default function BlogCard({ title, content, image }) {
         <Box className="blogTopLeft">
           <p>Posted by:</p>
           <Link to="#" className="blogBy">
-            <span className="blogUsername">Patrick Kenneford Annan</span>
+            <span className="blogUsername">
+              {postedBy?.personalInfo?.gender === "Male" ? "Mr. " : "Mrs. "}
+              {postedBy?.personalInfo?.lastName}
+            </span>
             <Avatar
               className="userProfileImg"
-              src="https://plus.unsplash.com/premium_photo-1689977968861-9c91dbb16049?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              src={postedBy?.personalInfo?.profilePicture?.url}
               alt=""
             />
           </Link>
-          <span className="blogDate">May 20, 2024 .</span>
+          <span className="blogDate">
+            {postedBy?.createdAt
+              ? dateFormatter.format(new Date(postedBy?.createdAt))
+              : "Unknown"}
+            .
+          </span>
         </Box>
         <Box>
           <button
             className="blogOptionsBtn"
             onClick={() => {
               setPostOptions(!postOptions);
-              //   setCurrentBlog(blog?._id);
             }}
           >
             <MoreVert className="moreVert" />
@@ -68,7 +78,7 @@ export default function BlogCard({ title, content, image }) {
             {postOptions && (
               <BlogOptions
                 postOptions={postOptions}
-                // blog={currentBlog}
+                blogId={blogId}
                 // userId={userInfo?.uniqueId}
                 // setOpenModal={setOpenModal}
                 // adminCurrentAction={adminCurrentAction}
@@ -119,18 +129,24 @@ export default function BlogCard({ title, content, image }) {
             alt={title}
             sx={{
               height: {
-                xs: "15em",
+                // xs: "15em",
                 sm: "17em",
                 md: "20em",
                 lg: "23em",
                 xl: "23em",
+                borderRadius: ".4rem",
               },
             }}
           />
         )}
-        <CardContent>
-          <Typography variant="body2" color="text.secondary">
-            {content}
+        <CardContent
+          // sx={{
+          //   padding: "unset",
+          // }}
+          className="textContent"
+        >
+          <Typography variant="body" color="text.secondary">
+            {Parser(`${content}`)}
           </Typography>
         </CardContent>
       </Box>
@@ -199,3 +215,11 @@ export default function BlogCard({ title, content, image }) {
     </Card>
   );
 }
+
+BlogCard.propTypes = {
+  blogId: ProTypes.string,
+  title: ProTypes.string,
+  content: ProTypes.string,
+  image: ProTypes.string,
+  postedBy: ProTypes.object,
+};

@@ -78,6 +78,15 @@
       }
     }
   }
+  .textContent {
+    padding: unset;
+    margin-top: 1rem;
+    p {
+      line-height: 1.5rem;
+      margin: 0.5rem 0;
+      font-size: 0.9em;
+    }
+  }
   .blogBottom {
     display: flex;
     align-items: center;
