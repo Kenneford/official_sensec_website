@@ -20,6 +20,8 @@ import { FetchAllBlogs } from "../../../../data/blogs/FetchBlogs";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { resetDeleteBlogState } from "../../../../features/blogs/blogSlice";
+import Footer from "../../../footer/Footer";
+import SmallFooter from "../../../footer/SmallFooter";
 
 export function Blogs() {
   const {
@@ -282,6 +284,8 @@ export function Blogs() {
           </Box>
         </Box>
       </Box>
+      {/* <Footer /> */}
+      <SmallFooter />
     </>
   );
 }
