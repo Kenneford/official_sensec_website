@@ -3,13 +3,13 @@
 
 .adminOverviewWrap {
   font-size: calc(0.7rem + 1vmin);
-  margin-bottom: 2rem;
+  // margin-bottom: 2rem;
   .content {
     background-color: #fff;
     .dashBoardContent {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.5rem;
+      // display: grid;
+      // grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      // gap: 1rem;
       padding: 1rem 0;
       margin-bottom: 1rem;
       .card {
@@ -21,49 +21,48 @@
         a {
           color: #fff;
         }
-        &:nth-child(1) {
-          background-color: #292929;
-        }
-        cursor: pointer;
-        &:nth-child(2) {
-          background-color: green;
-        }
-        &:nth-child(3) {
-          background-color: #414141;
-        }
-        &:nth-child(4) {
-          background-color: #7a0080;
-        }
-        &:nth-child(5) {
-          background-color: #005780;
-          .titleFlex {
-            h3 {
-              padding-bottom: unset;
-            }
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 2rem;
-          }
-          .pending {
-            padding: 0.5rem;
-            border-radius: 0.3rem;
-            transition: 0.4s ease;
-            &:hover {
-              background-color: #fff;
-              color: #292929;
-            }
-          }
-        }
-        &:nth-child(6) {
-          background-color: #4f088d;
-        }
-        &:nth-child(7) {
-          background-color: #8d0818;
-        }
-        &:nth-child(8) {
-          background-color: #4e6802;
-        }
+        // &:nth-child(1) {
+        //   background-color: #292929;
+        // }
+        // &:nth-child(2) {
+        //   background-color: green;
+        // }
+        // &:nth-child(3) {
+        //   background-color: #414141;
+        // }
+        // &:nth-child(4) {
+        //   background-color: #7a0080;
+        // }
+        // &:nth-child(5) {
+        //   background-color: #005780;
+        //   .titleFlex {
+        //     h3 {
+        //       padding-bottom: unset;
+        //     }
+        //     display: flex;
+        //     justify-content: space-between;
+        //     align-items: center;
+        //     padding-bottom: 2rem;
+        //   }
+        //   .pending {
+        //     padding: 0.5rem;
+        //     border-radius: 0.3rem;
+        //     transition: 0.4s ease;
+        //     &:hover {
+        //       background-color: #fff;
+        //       color: #292929;
+        //     }
+        //   }
+        // }
+        // &:nth-child(6) {
+        //   background-color: #4f088d;
+        // }
+        // &:nth-child(7) {
+        //   background-color: #8d0818;
+        // }
+        // &:nth-child(8) {
+        //   background-color: #4e6802;
+        // }
         h3 {
           padding-bottom: 2rem;
           font-size: 0.8em;

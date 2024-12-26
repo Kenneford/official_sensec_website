@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import "./placementCheck.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
-import { Box, Button, Grid } from "@mui/material";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
+import { Avatar, Box, Button, Grid, Stack, Typography } from "@mui/material";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import {
@@ -26,11 +26,30 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { parseISO } from "date-fns";
 import dayjs from "dayjs";
+import { NavigationBar } from "../../../components/navbar/NavigationBar";
 
 export function PlacementCheckOverview() {
+  const {
+    currentAction,
+    setCurrentAction,
+    currentLink,
+    setCurrentLink,
+    setOpenSubNavLinks,
+    openSubNavLinks,
+    setOpenUserActions,
+    openUserActions,
+    setOpenSignUpActions,
+    openSignUpActions,
+    setOpenMenuLinks,
+    openMenuLinks,
+    isSidebarOpen,
+    openSearchModal,
+    setOpenSearchModal,
+  } = useOutletContext();
   const studentUniqueId = localStorage.getItem("studentUniqueId");
   const allPlacementStudents = useSelector(getAllPlacementStudents);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { studentIndexNo } = useParams();
   const allUsers = useSelector(getAllUsers);
   console.log(studentIndexNo);
@@ -134,6 +153,26 @@ export function PlacementCheckOverview() {
     }
   };
 
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY >= 140) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    console.log(window.scrollY > 10);
+
+    // Cleanup the event listener
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   // Reinitialize state when foundStudent changes
   useEffect(() => {
     if (foundStudent) {
@@ -209,238 +248,303 @@ export function PlacementCheckOverview() {
   }
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Box className="checkWrap" id="check">
-        <Box
-          className="checkContWrap"
-          maxWidth={900}
-          mx={{ xs: "0 .5rem", sm: "auto" }}
+    <>
+      <Box
+        sx={{
+          position: isScrolled ? "none" : "block",
+        }}
+      >
+        <Stack
+          direction="column"
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#fff",
+            padding: ".3rem 0",
+            height: "4.5rem",
+          }}
         >
-          <Box className="checkCont" py={"1rem"}>
-            <h1
-              style={{
-                textAlign: "center",
-                color: "#696969",
-                fontSize: "1.5rem",
-              }}
-            >
-              Student Placement Overview
-            </h1>
-            <Box className="studentDataCont" mx={{ xs: ".5rem", sm: "2rem" }}>
-              <Box className="studentData">
-                <Box className="studentDataWrap">
-                  <Box className="student">
-                    <p className="studentName">{foundStudent?.fullName}</p>
-                    <p className="studentId">[ Student ]</p>
-                    <Box className="studentImg">
-                      <img
-                        src={
-                          student?.personalInfo?.profilePicture
-                            ? student?.personalInfo?.profilePicture?.url
-                            : "/assets/noAvatar.png"
-                        }
-                        alt=""
-                      />
-                    </Box>
-                  </Box>
-                </Box>
-                {!updateData ? (
-                  <Box className="enrollmentInfoWrap">
-                    <Box
-                      className="updateBtnWrap"
-                      p={{ xs: "1rem 1rem 0", sm: "2rem 2rem 0" }}
-                    >
-                      <Box className="enrolledDate">
-                        <h3>
-                          Enrolled:{" "}
-                          <span>{foundStudent?.enrolled ? "Yes" : "No"}</span>
-                        </h3>
-                      </Box>
-                      <Button
-                        variant="contained"
-                        style={{
-                          backgroundColor: "green",
-                          borderRadius: ".4rem",
-                          fontSize: ".9rem",
-                          textTransform: "capitalize",
-                        }}
-                        className="updateBtn"
-                        onClick={handleDataUpdate}
-                      >
-                        {!updateData && "Update Data"}
-                      </Button>
-                    </Box>
-                    <Box p={{ xs: "1rem", sm: "2rem" }}>
-                      <Grid container>
-                        <Grid item xs={12} sm={6} md={4} lg={4}>
-                          <Box className="placementInfoBox">
-                            <h3>
-                              {foundStudent?.firstName
-                                ? foundStudent?.firstName
-                                : "---"}
-                            </h3>
-                            <span>[ First Name ]</span>
-                          </Box>
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={4} lg={4}>
-                          <Box className="placementInfoBox">
-                            <h3>
-                              {foundStudent?.lastName
-                                ? foundStudent?.lastName
-                                : "---"}
-                            </h3>
-                            <span>[ Last Name ]</span>
-                          </Box>
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={4} lg={4}>
-                          <Box className="placementInfoBox">
-                            <h3>
-                              {foundStudent?.otherName
-                                ? foundStudent?.otherName
-                                : "---"}
-                            </h3>
-                            <span>[ Other Name ]</span>
-                          </Box>
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={4} lg={4}>
-                          <Box className="placementInfoBox">
-                            <h3>
-                              {foundStudent?.gender
-                                ? foundStudent?.gender
-                                : "---"}
-                            </h3>
-                            <span>[ Gender ]</span>
-                          </Box>
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={4} lg={4}>
-                          <Box className="placementInfoBox">
-                            <h3>
-                              {foundStudent?.jhsAttended
-                                ? foundStudent?.jhsAttended
-                                : "---"}
-                            </h3>
-                            <span>[ JHS Completed ]</span>
-                          </Box>
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={4} lg={4}>
-                          <Box className="placementInfoBox">
-                            <h3>
-                              {foundStudent?.yearGraduated
-                                ? foundStudent?.yearGraduated
-                                : "---"}
-                            </h3>
-                            <span>[ Year Graduated ]</span>
-                          </Box>
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={4} lg={4}>
-                          <Box className="placementInfoBox">
-                            <h3>
-                              {foundStudent?.jhsIndexNo
-                                ? foundStudent?.jhsIndexNo
-                                : "---"}
-                            </h3>
-                            <span>[ JHS Index-Number ]</span>
-                          </Box>
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={4} lg={4}>
-                          <Box className="placementInfoBox">
-                            <h3>
-                              {foundStudent?.placementVerified
-                                ? "Yes"
-                                : "Not Yet"}
-                            </h3>
-                            <span>[ Placement Verified ]</span>
-                          </Box>
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={4} lg={4}>
-                          <Box className="placementInfoBox">
-                            <h3>
-                              {foundStudent?.smsContact
-                                ? foundStudent?.smsContact
-                                : "---"}
-                            </h3>
-                            <span>[ Contact Number ]</span>
-                          </Box>
-                        </Grid>
-                      </Grid>
-                    </Box>
-                  </Box>
-                ) : (
-                  <Box className="updatePlacementData">
-                    {/* <h1>Update Data</h1> */}
-                    <Box className="formInputWrap">
-                      <button
-                        onClick={() => {
-                          if (changeDOB) {
-                            setChangeDOB(false);
+          <Box
+            onClick={() => {
+              // Click handler
+              localStorage.removeItem("currentNavLink");
+              navigate("/sensec/homepage");
+            }}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              cursor: "pointer",
+            }}
+          >
+            <Avatar
+              src="/assets/sensec-logo1.png"
+              sx={{ alignItems: "center" }}
+            />
+            <Box sx={{ display: "flex", height: "1.5rem" }}>
+              <Typography variant="h6" color="green">
+                Sen
+              </Typography>
+              <Typography variant="h6" color="#aeae0d">
+                sec
+              </Typography>
+            </Box>
+          </Box>
+        </Stack>
+        <Box>
+          <NavigationBar
+            setOpenSubNavLinks={setOpenSubNavLinks}
+            openSubNavLinks={openSubNavLinks}
+            setOpenUserActions={setOpenUserActions}
+            openUserActions={openUserActions}
+            setOpenSignUpActions={setOpenSignUpActions}
+            openSignUpActions={openSignUpActions}
+            setOpenMenuLinks={setOpenMenuLinks}
+            openMenuLinks={openMenuLinks}
+            currentAction={currentAction}
+            setCurrentAction={setCurrentAction}
+            currentLink={currentLink}
+            setCurrentLink={setCurrentLink}
+            isSidebarOpen={isSidebarOpen}
+            openSearchModal={openSearchModal}
+            setOpenSearchModal={setOpenSearchModal}
+          />
+        </Box>
+      </Box>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <Box className="checkWrap" id="check">
+          <Box
+            className="checkContWrap"
+            maxWidth={900}
+            mx={{ xs: "0 .5rem", sm: "auto" }}
+          >
+            <Box className="checkCont" py={"1rem"}>
+              <h1
+                style={{
+                  textAlign: "center",
+                  color: "#696969",
+                  fontSize: "1.5rem",
+                }}
+              >
+                Student Placement Overview
+              </h1>
+              <Box className="studentDataCont" mx={{ xs: ".5rem", sm: "2rem" }}>
+                <Box className="studentData">
+                  <Box className="studentDataWrap">
+                    <Box className="student">
+                      <p className="studentName">{foundStudent?.fullName}</p>
+                      <p className="studentId">[ Student ]</p>
+                      <Box className="studentImg">
+                        <img
+                          src={
+                            student?.personalInfo?.profilePicture
+                              ? student?.personalInfo?.profilePicture?.url
+                              : "/assets/noAvatar.png"
                           }
-                          setUpdateData(false);
-                        }}
-                        className="placementUpdateBackBtn"
+                          alt=""
+                        />
+                      </Box>
+                    </Box>
+                  </Box>
+                  {!updateData ? (
+                    <Box className="enrollmentInfoWrap">
+                      <Box
+                        className="updateBtnWrap"
+                        p={{ xs: "1rem 1rem 0", sm: "2rem 2rem 0" }}
                       >
-                        <ArrowBack className="placementPrev" />{" "}
-                        <span>Go Back</span>
-                      </button>
-                      <Grid container spacing={2}>
-                        <Grid item xs={12} sm={6} md={4} lg={4}>
-                          <CustomTextField
-                            fullWidth
-                            label="First Name"
-                            name="firstName"
-                            value={placementStudent?.firstName || ""}
-                            onChange={handleInputValues}
-                            autoComplete="off"
-                            required
-                            className="textField"
-                            sx={{
-                              "& .MuiInputLabel-asterisk": {
-                                color: placementStudent?.firstName
-                                  ? "green"
-                                  : "red", // Change the asterisk color to red
-                              },
-                            }}
-                          />
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={4} lg={4}>
-                          <CustomTextField
-                            fullWidth
-                            label="Last Name"
-                            name="lastName"
-                            value={placementStudent?.lastName || ""}
-                            onChange={handleInputValues}
-                            autoComplete="off"
-                            required
-                            className="textField"
-                            sx={{
-                              "& .MuiInputLabel-asterisk": {
-                                color: placementStudent?.lastName
-                                  ? "green"
-                                  : "red", // Change the asterisk color to red
-                              },
-                            }}
-                          />
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={4} lg={4}>
-                          <CustomTextField
-                            fullWidth
-                            label="Other Name"
-                            name="otherName"
-                            value={placementStudent?.otherName || ""}
-                            onChange={handleInputValues}
-                            autoComplete="off"
-                            // required
-                            className="textField"
-                          />
-                        </Grid>
-                        <Grid
-                          item
-                          xs={12}
-                          sm={6}
-                          md={4}
-                          lg={4}
-                          className="changeDOBWrap"
+                        <Box className="enrolledDate">
+                          <h3>
+                            Enrolled:{" "}
+                            <span>{foundStudent?.enrolled ? "Yes" : "No"}</span>
+                          </h3>
+                        </Box>
+                        <Button
+                          variant="contained"
+                          style={{
+                            backgroundColor: "green",
+                            borderRadius: ".4rem",
+                            fontSize: ".9rem",
+                            textTransform: "capitalize",
+                          }}
+                          className="updateBtn"
+                          onClick={handleDataUpdate}
                         >
-                          {/* {!changeDOB && (
+                          {!updateData && "Update Data"}
+                        </Button>
+                      </Box>
+                      <Box p={{ xs: "1rem", sm: "2rem" }}>
+                        <Grid container>
+                          <Grid item xs={12} sm={6} md={4} lg={4}>
+                            <Box className="placementInfoBox">
+                              <h3>
+                                {foundStudent?.firstName
+                                  ? foundStudent?.firstName
+                                  : "---"}
+                              </h3>
+                              <span>[ First Name ]</span>
+                            </Box>
+                          </Grid>
+                          <Grid item xs={12} sm={6} md={4} lg={4}>
+                            <Box className="placementInfoBox">
+                              <h3>
+                                {foundStudent?.lastName
+                                  ? foundStudent?.lastName
+                                  : "---"}
+                              </h3>
+                              <span>[ Last Name ]</span>
+                            </Box>
+                          </Grid>
+                          <Grid item xs={12} sm={6} md={4} lg={4}>
+                            <Box className="placementInfoBox">
+                              <h3>
+                                {foundStudent?.otherName
+                                  ? foundStudent?.otherName
+                                  : "---"}
+                              </h3>
+                              <span>[ Other Name ]</span>
+                            </Box>
+                          </Grid>
+                          <Grid item xs={12} sm={6} md={4} lg={4}>
+                            <Box className="placementInfoBox">
+                              <h3>
+                                {foundStudent?.gender
+                                  ? foundStudent?.gender
+                                  : "---"}
+                              </h3>
+                              <span>[ Gender ]</span>
+                            </Box>
+                          </Grid>
+                          <Grid item xs={12} sm={6} md={4} lg={4}>
+                            <Box className="placementInfoBox">
+                              <h3>
+                                {foundStudent?.jhsAttended
+                                  ? foundStudent?.jhsAttended
+                                  : "---"}
+                              </h3>
+                              <span>[ JHS Completed ]</span>
+                            </Box>
+                          </Grid>
+                          <Grid item xs={12} sm={6} md={4} lg={4}>
+                            <Box className="placementInfoBox">
+                              <h3>
+                                {foundStudent?.yearGraduated
+                                  ? foundStudent?.yearGraduated
+                                  : "---"}
+                              </h3>
+                              <span>[ Year Graduated ]</span>
+                            </Box>
+                          </Grid>
+                          <Grid item xs={12} sm={6} md={4} lg={4}>
+                            <Box className="placementInfoBox">
+                              <h3>
+                                {foundStudent?.jhsIndexNo
+                                  ? foundStudent?.jhsIndexNo
+                                  : "---"}
+                              </h3>
+                              <span>[ JHS Index-Number ]</span>
+                            </Box>
+                          </Grid>
+                          <Grid item xs={12} sm={6} md={4} lg={4}>
+                            <Box className="placementInfoBox">
+                              <h3>
+                                {foundStudent?.placementVerified
+                                  ? "Yes"
+                                  : "Not Yet"}
+                              </h3>
+                              <span>[ Placement Verified ]</span>
+                            </Box>
+                          </Grid>
+                          <Grid item xs={12} sm={6} md={4} lg={4}>
+                            <Box className="placementInfoBox">
+                              <h3>
+                                {foundStudent?.smsContact
+                                  ? foundStudent?.smsContact
+                                  : "---"}
+                              </h3>
+                              <span>[ Contact Number ]</span>
+                            </Box>
+                          </Grid>
+                        </Grid>
+                      </Box>
+                    </Box>
+                  ) : (
+                    <Box className="updatePlacementData">
+                      {/* <h1>Update Data</h1> */}
+                      <Box className="formInputWrap">
+                        <button
+                          onClick={() => {
+                            if (changeDOB) {
+                              setChangeDOB(false);
+                            }
+                            setUpdateData(false);
+                          }}
+                          className="placementUpdateBackBtn"
+                        >
+                          <ArrowBack className="placementPrev" />{" "}
+                          <span>Go Back</span>
+                        </button>
+                        <Grid container spacing={2}>
+                          <Grid item xs={12} sm={6} md={4} lg={4}>
+                            <CustomTextField
+                              fullWidth
+                              label="First Name"
+                              name="firstName"
+                              value={placementStudent?.firstName || ""}
+                              onChange={handleInputValues}
+                              autoComplete="off"
+                              required
+                              className="textField"
+                              sx={{
+                                "& .MuiInputLabel-asterisk": {
+                                  color: placementStudent?.firstName
+                                    ? "green"
+                                    : "red", // Change the asterisk color to red
+                                },
+                              }}
+                            />
+                          </Grid>
+                          <Grid item xs={12} sm={6} md={4} lg={4}>
+                            <CustomTextField
+                              fullWidth
+                              label="Last Name"
+                              name="lastName"
+                              value={placementStudent?.lastName || ""}
+                              onChange={handleInputValues}
+                              autoComplete="off"
+                              required
+                              className="textField"
+                              sx={{
+                                "& .MuiInputLabel-asterisk": {
+                                  color: placementStudent?.lastName
+                                    ? "green"
+                                    : "red", // Change the asterisk color to red
+                                },
+                              }}
+                            />
+                          </Grid>
+                          <Grid item xs={12} sm={6} md={4} lg={4}>
+                            <CustomTextField
+                              fullWidth
+                              label="Other Name"
+                              name="otherName"
+                              value={placementStudent?.otherName || ""}
+                              onChange={handleInputValues}
+                              autoComplete="off"
+                              // required
+                              className="textField"
+                            />
+                          </Grid>
+                          <Grid
+                            item
+                            xs={12}
+                            sm={6}
+                            md={4}
+                            lg={4}
+                            className="changeDOBWrap"
+                          >
+                            {/* {!changeDOB && (
                             <CustomTextField
                               fullWidth
                               label="Date Of Birth"
@@ -474,46 +578,46 @@ export function PlacementCheckOverview() {
                               className="dOBBtn"
                             />
                           )} */}
-                          {/* {changeDOB && ( */}
-                          <CustomMobileDatePicker
-                            label={
-                              <span>
-                                Date of Birth{" "}
-                                <span
-                                  style={{
-                                    color: !foundStudent?.dateOfBirth
-                                      ? "red"
-                                      : "green", // Dynamically set the asterisk color
-                                    marginRight: "8px",
-                                  }}
-                                >
-                                  *
+                            {/* {changeDOB && ( */}
+                            <CustomMobileDatePicker
+                              label={
+                                <span>
+                                  Date of Birth{" "}
+                                  <span
+                                    style={{
+                                      color: !foundStudent?.dateOfBirth
+                                        ? "red"
+                                        : "green", // Dynamically set the asterisk color
+                                      marginRight: "8px",
+                                    }}
+                                  >
+                                    *
+                                  </span>
                                 </span>
-                              </span>
-                            }
-                            name="dateOfBirth"
-                            // inputFormat="MM/dd/yyyy"
-                            value={placementStudent?.dateOfBirth}
-                            onChange={handleDateChange}
-                            maxDate={dayjs()}
-                            renderInput={(params) => (
-                              <CustomTextField {...params} />
-                            )}
-                            required
-                            error={false} // Make sure this is false
-                            helperText="" // Optionally clear helper text
-                            sx={{
-                              width: "100%",
-                              cursor: "pointer",
-                              "& .MuiInputLabel-asterisk": {
-                                color: foundStudent?.dateOfBirth
-                                  ? "green"
-                                  : "red", // Change the asterisk color to red
-                              },
-                            }}
-                          />
-                          {/* )} */}
-                          {/* {changeDOB && !foundStudent && (
+                              }
+                              name="dateOfBirth"
+                              // inputFormat="MM/dd/yyyy"
+                              value={placementStudent?.dateOfBirth}
+                              onChange={handleDateChange}
+                              maxDate={dayjs()}
+                              renderInput={(params) => (
+                                <CustomTextField {...params} />
+                              )}
+                              required
+                              error={false} // Make sure this is false
+                              helperText="" // Optionally clear helper text
+                              sx={{
+                                width: "100%",
+                                cursor: "pointer",
+                                "& .MuiInputLabel-asterisk": {
+                                  color: foundStudent?.dateOfBirth
+                                    ? "green"
+                                    : "red", // Change the asterisk color to red
+                                },
+                              }}
+                            />
+                            {/* )} */}
+                            {/* {changeDOB && !foundStudent && (
                             <CustomMobileDatePicker
                               // label="Date Of Birth"
                               name="dateOfBirth"
@@ -533,18 +637,18 @@ export function PlacementCheckOverview() {
                               }}
                             />
                           )} */}
-                          {changeDOB && (
-                            <Close
-                              onClick={() => setChangeDOB(false)}
-                              className="closeDOBBtn"
-                              // sx={{
-                              //   bgcolor: "transparent",
-                              //   border: "none",
-                              //   outline: "none",
-                              // }}
-                            />
-                          )}
-                          {/* {changeDOB && (
+                            {changeDOB && (
+                              <Close
+                                onClick={() => setChangeDOB(false)}
+                                className="closeDOBBtn"
+                                // sx={{
+                                //   bgcolor: "transparent",
+                                //   border: "none",
+                                //   outline: "none",
+                                // }}
+                              />
+                            )}
+                            {/* {changeDOB && (
                           <CustomTextField
                             fullWidth
                             label="Date Of Birth"
@@ -557,217 +661,220 @@ export function PlacementCheckOverview() {
                             className="textField"
                           />
                         )} */}
+                          </Grid>
+                          <Grid item xs={12} sm={6} md={4} lg={4}>
+                            <CustomTextField
+                              fullWidth
+                              label="JHS Attended"
+                              name="jhsAttended"
+                              value={placementStudent?.jhsAttended || ""}
+                              onChange={handleInputValues}
+                              autoComplete="off"
+                              required
+                              className="textField"
+                              sx={{
+                                "& .MuiInputLabel-asterisk": {
+                                  color: placementStudent?.jhsAttended
+                                    ? "green"
+                                    : "red", // Change the asterisk color to red
+                                },
+                              }}
+                            />
+                          </Grid>
+                          <Grid item xs={12} sm={6} md={4} lg={4}>
+                            <CustomTextField
+                              fullWidth
+                              label="Year Graduated"
+                              name="yearGraduated"
+                              value={placementStudent?.yearGraduated || ""}
+                              onChange={handleInputValues}
+                              autoComplete="off"
+                              required
+                              className="textField"
+                              sx={{
+                                "& .MuiInputLabel-asterisk": {
+                                  color: placementStudent?.yearGraduated
+                                    ? "green"
+                                    : "red", // Change the asterisk color to red
+                                },
+                              }}
+                            />
+                          </Grid>
+                          <Grid item xs={12} sm={6} md={4} lg={4}>
+                            <CustomTextField
+                              fullWidth
+                              label="Mobile"
+                              name="smsContact"
+                              value={placementStudent?.smsContact || ""}
+                              onChange={handleInputValues}
+                              autoComplete="off"
+                              required
+                              className="textField"
+                              sx={{
+                                "& .MuiInputLabel-asterisk": {
+                                  color: placementStudent?.smsContact
+                                    ? "green"
+                                    : "red", // Change the asterisk color to red
+                                },
+                              }}
+                            />
+                          </Grid>
+                          <Grid item xs={12} sm={6} md={4} lg={4}>
+                            <CustomTextField
+                              fullWidth
+                              label="JHS Index No."
+                              name="jhsIndexNo"
+                              value={placementStudent?.jhsIndexNo || ""}
+                              onChange={handleInputValues}
+                              autoComplete="off"
+                              slotProps={{
+                                input: { readOnly: true },
+                              }}
+                              className="textField"
+                            />
+                          </Grid>
+                          <Grid item xs={12} sm={6} md={4} lg={4}>
+                            <CustomTextField
+                              fullWidth
+                              label="Programme"
+                              name="programme"
+                              value={placementStudent?.programme || ""}
+                              onChange={handleInputValues}
+                              autoComplete="off"
+                              slotProps={{
+                                input: { readOnly: true },
+                              }}
+                              className="textField"
+                            />
+                          </Grid>
+                          <Grid item xs={12} sm={6} md={4} lg={4}>
+                            <CustomTextField
+                              fullWidth
+                              label="Boarding Status"
+                              name="boardingStatus"
+                              value={placementStudent?.boardingStatus || ""}
+                              onChange={handleInputValues}
+                              autoComplete="off"
+                              // required
+                              className="textField"
+                              slotProps={{
+                                input: { readOnly: true },
+                              }}
+                            />
+                          </Grid>
+                          <Grid item xs={12} sm={6} md={4} lg={4}>
+                            <CustomTextField
+                              fullWidth
+                              label="Gender"
+                              name="gender"
+                              value={placementStudent?.gender || ""}
+                              onChange={handleInputValues}
+                              autoComplete="off"
+                              slotProps={{
+                                input: { readOnly: true },
+                              }}
+                              className="textField"
+                            />
+                          </Grid>
+                          <Grid item xs={12} sm={6} md={4} lg={4}>
+                            <CustomTextField
+                              fullWidth
+                              label="Full Name"
+                              name="fullName"
+                              value={placementStudent?.fullName || ""}
+                              onChange={handleInputValues}
+                              autoComplete="off"
+                              slotProps={{
+                                input: { readOnly: true },
+                              }}
+                              className="textField"
+                            />
+                          </Grid>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={4} lg={4}>
-                          <CustomTextField
-                            fullWidth
-                            label="JHS Attended"
-                            name="jhsAttended"
-                            value={placementStudent?.jhsAttended || ""}
-                            onChange={handleInputValues}
-                            autoComplete="off"
-                            required
-                            className="textField"
-                            sx={{
-                              "& .MuiInputLabel-asterisk": {
-                                color: placementStudent?.jhsAttended
-                                  ? "green"
-                                  : "red", // Change the asterisk color to red
-                              },
-                            }}
-                          />
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={4} lg={4}>
-                          <CustomTextField
-                            fullWidth
-                            label="Year Graduated"
-                            name="yearGraduated"
-                            value={placementStudent?.yearGraduated || ""}
-                            onChange={handleInputValues}
-                            autoComplete="off"
-                            required
-                            className="textField"
-                            sx={{
-                              "& .MuiInputLabel-asterisk": {
-                                color: placementStudent?.yearGraduated
-                                  ? "green"
-                                  : "red", // Change the asterisk color to red
-                              },
-                            }}
-                          />
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={4} lg={4}>
-                          <CustomTextField
-                            fullWidth
-                            label="Mobile"
-                            name="smsContact"
-                            value={placementStudent?.smsContact || ""}
-                            onChange={handleInputValues}
-                            autoComplete="off"
-                            required
-                            className="textField"
-                            sx={{
-                              "& .MuiInputLabel-asterisk": {
-                                color: placementStudent?.smsContact
-                                  ? "green"
-                                  : "red", // Change the asterisk color to red
-                              },
-                            }}
-                          />
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={4} lg={4}>
-                          <CustomTextField
-                            fullWidth
-                            label="JHS Index No."
-                            name="jhsIndexNo"
-                            value={placementStudent?.jhsIndexNo || ""}
-                            onChange={handleInputValues}
-                            autoComplete="off"
-                            slotProps={{
-                              input: { readOnly: true },
-                            }}
-                            className="textField"
-                          />
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={4} lg={4}>
-                          <CustomTextField
-                            fullWidth
-                            label="Programme"
-                            name="programme"
-                            value={placementStudent?.programme || ""}
-                            onChange={handleInputValues}
-                            autoComplete="off"
-                            slotProps={{
-                              input: { readOnly: true },
-                            }}
-                            className="textField"
-                          />
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={4} lg={4}>
-                          <CustomTextField
-                            fullWidth
-                            label="Boarding Status"
-                            name="boardingStatus"
-                            value={placementStudent?.boardingStatus || ""}
-                            onChange={handleInputValues}
-                            autoComplete="off"
-                            // required
-                            className="textField"
-                            slotProps={{
-                              input: { readOnly: true },
-                            }}
-                          />
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={4} lg={4}>
-                          <CustomTextField
-                            fullWidth
-                            label="Gender"
-                            name="gender"
-                            value={placementStudent?.gender || ""}
-                            onChange={handleInputValues}
-                            autoComplete="off"
-                            slotProps={{
-                              input: { readOnly: true },
-                            }}
-                            className="textField"
-                          />
-                        </Grid>
-                        <Grid item xs={12} sm={6} md={4} lg={4}>
-                          <CustomTextField
-                            fullWidth
-                            label="Full Name"
-                            name="fullName"
-                            value={placementStudent?.fullName || ""}
-                            onChange={handleInputValues}
-                            autoComplete="off"
-                            slotProps={{
-                              input: { readOnly: true },
-                            }}
-                            className="textField"
-                          />
-                        </Grid>
-                      </Grid>
+                      </Box>
                     </Box>
-                  </Box>
-                )}
-                {updateData && (
-                  <Box className="saveUpdateBtnWrap">
-                    <Button
-                      variant="contained"
-                      style={{
-                        backgroundColor: "green",
-                        borderRadius: ".4rem",
-                      }}
-                      className="saveUpdateBtn"
-                      onClick={handleDataUpdate}
-                    >
-                      {updateData && loadingComplete === false && (
-                        <LoadingProgress color={"#fff"} size={"1.5rem"} />
-                      )}
-                      {updateData &&
-                        loadingComplete === true &&
-                        updateStatus === "success" && (
-                          <>
-                            <span>Successful</span> <TaskAlt />
-                          </>
+                  )}
+                  {updateData && (
+                    <Box className="saveUpdateBtnWrap">
+                      <Button
+                        variant="contained"
+                        style={{
+                          backgroundColor: "green",
+                          borderRadius: ".4rem",
+                        }}
+                        className="saveUpdateBtn"
+                        onClick={handleDataUpdate}
+                      >
+                        {updateData && loadingComplete === false && (
+                          <LoadingProgress color={"#fff"} size={"1.5rem"} />
                         )}
-                      {updateData && loadingComplete === null && "Save Changes"}
-                    </Button>
-                  </Box>
-                )}
+                        {updateData &&
+                          loadingComplete === true &&
+                          updateStatus === "success" && (
+                            <>
+                              <span>Successful</span> <TaskAlt />
+                            </>
+                          )}
+                        {updateData &&
+                          loadingComplete === null &&
+                          "Save Changes"}
+                      </Button>
+                    </Box>
+                  )}
+                </Box>
+              </Box>
+              <Box
+                className="note"
+                mx={{ xs: ".5rem", sm: "2rem" }}
+                p={{ xs: " 1rem .5rem", sm: "2rem 1rem" }}
+              >
+                <h4>Note:</h4>
+                <p>
+                  The above data is just to let you know that you&apos;ve been
+                  placed into our school. You are therefore expected to follow
+                  the following steps:
+                  {/* officially and also follow our enrolment process to finally
+                enrol into our school. */}
+                </p>
+                <ul>
+                  <li>
+                    <p>
+                      After a successful placement check, kindly update your
+                      placement data with the required data before proceeding to
+                      enroll.
+                    </p>
+                  </li>
+                  <li>
+                    <p>
+                      Verify your placement [{" "}
+                      <span className="firstStepInfo">
+                        First step during enrollment process
+                      </span>{" "}
+                      ].
+                    </p>
+                  </li>
+                  <li>
+                    <p>Start your enrollment process.</p>
+                  </li>
+                </ul>
+                <p>
+                  If you&apos;re ready to enroll, kindly click on the others
+                  link with dropdown arrow on the navbar ( if on mobile, click
+                  on the menu icon ) and select the enrollment option to begin
+                  the enrollment process.
+                </p>
+                <span>
+                  Please don&apos;t forget to come along with all downloaded
+                  documents on the reporting date.
+                </span>
               </Box>
             </Box>
-            <Box
-              className="note"
-              mx={{ xs: ".5rem", sm: "2rem" }}
-              p={{ xs: " 1rem .5rem", sm: "2rem 1rem" }}
-            >
-              <h4>Note:</h4>
-              <p>
-                The above data is just to let you know that you&apos;ve been
-                placed into our school. You are therefore expected to follow the
-                following steps:
-                {/* officially and also follow our enrolment process to finally
-                enrol into our school. */}
-              </p>
-              <ul>
-                <li>
-                  <p>
-                    After a successful placement check, kindly update your
-                    placement data with the required data before proceeding to
-                    enroll.
-                  </p>
-                </li>
-                <li>
-                  <p>
-                    Verify your placement [{" "}
-                    <span className="firstStepInfo">
-                      First step during enrollment process
-                    </span>{" "}
-                    ].
-                  </p>
-                </li>
-                <li>
-                  <p>Start your enrollment process.</p>
-                </li>
-              </ul>
-              <p>
-                If you&apos;re ready to enroll, kindly click on the others link
-                with dropdown arrow on the navbar ( if on mobile, click on the
-                menu icon ) and select the enrollment option to begin the
-                enrollment process.
-              </p>
-              <span>
-                Please don&apos;t forget to come along with all downloaded
-                documents on the reporting date.
-              </span>
-            </Box>
+          </Box>
+          <Box>
+            <SmallFooter />
           </Box>
         </Box>
-        <Box>
-          <SmallFooter />
-        </Box>
-      </Box>
-    </LocalizationProvider>
+      </LocalizationProvider>
+    </>
   );
 }

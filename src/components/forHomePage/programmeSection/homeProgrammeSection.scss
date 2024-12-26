@@ -63,11 +63,11 @@
     }
   }
   .programmeCardWrap {
-    width: 100%;
-    display: grid;
+    // width: 100%;
+    // display: grid;
     gap: 1.2rem;
     padding: 2rem 0 3rem;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    // grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     .programmeCard {
       background-color: #292929;
       padding: 1rem;
@@ -81,8 +81,13 @@
           margin-bottom: 1rem;
         }
       }
-      h5 {
-        font-size: 1.2em;
+      h4 {
+        font-size: 1em;
+      }
+      p {
+        // padding: 0.5rem;
+        font-size: 0.9em;
+        line-height: sizes.$line_height;
       }
     }
     .programmeCard:hover {

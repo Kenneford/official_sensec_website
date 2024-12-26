@@ -28,7 +28,7 @@ import AssignClassLecturerModal from "../components/modals/AssignClassLecturerMo
 import RemoveClassLecturerModal from "../components/modals/RemoveClassLecturerModal";
 
 const adminsColumn = (authAdmin) => {
-  const hangingAdminsColumn = [
+  const adminsColumn = [
     {
       name: "Image",
       selector: (row) =>
@@ -141,7 +141,7 @@ const adminsColumn = (authAdmin) => {
       ),
     },
   ];
-  return hangingAdminsColumn;
+  return adminsColumn;
 };
 const pendingAdminsColumn = (columnObjData) => {
   const pendingAdminsColumn = [

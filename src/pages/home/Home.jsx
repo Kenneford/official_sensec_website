@@ -8,11 +8,14 @@ import { HomeProgrammeSection } from "../../components/forHomePage/programmeSect
 import { PopularCoursesSection } from "../../components/forHomePage/coursesSection/PopularCoursesSection";
 import { ImageSlider } from "../../components/forHomePage/imageSlider/ImageSlider";
 import { QuestionsSection } from "../../components/forHomePage/questionsSection/QuestionsSection";
+import { Box } from "@mui/material";
 
 export function Home() {
   return (
     <>
-      <ImageSlider />
+      <Box sx={{ overflow: "hidden" }}>
+        <ImageSlider />
+      </Box>
       <SensecInfoSection />
       <HomeProgrammeSection />
       <PopularCoursesSection />

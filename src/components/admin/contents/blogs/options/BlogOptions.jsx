@@ -3,9 +3,10 @@ import "./blogOptions.scss";
 // import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
+import DeleteBlogModal from "../../../../modals/DeleteBlogModal";
 
 export default function BlogOptions({
-  openSidebar,
+  blogId,
   blog,
   userId,
   setOpenModal,
@@ -58,16 +59,16 @@ export default function BlogOptions({
           Edit
         </HashLink>
         {/* <hr /> */}
-        <p onClick={handleOpen}>Delete</p>
-        {/* <DeleteBlogModal
+        <p onClick={() => setOpenDeleteBlogModal(true)}>Delete</p>
+        <DeleteBlogModal
           open={openDeleteBlogModal}
           onClose={() => setOpenDeleteBlogModal(false)}
-          deleteBlogFunction={handlePostDelete}
+          // deleteBlogFunction={handlePostDelete}
           setLoadingComplete={setLoadingComplete}
-          dispatch={dispatch}
-          setCurrentBlog={setCurrentBlog}
+          // dispatch={dispatch}
+          blogId={blogId}
           currentBlog={currentBlog}
-        /> */}
+        />
         {/* <Modal
           open={open}
           onClose={handleClose}

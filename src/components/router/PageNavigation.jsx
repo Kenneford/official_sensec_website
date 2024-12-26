@@ -98,10 +98,10 @@ export default function PageNavigation() {
             // { path: "*", element: <PageNotFound /> },
           ],
         },
-        // {
-        //   path: "/sensec/blog",
-        //   element: <Blogs />,
-        // },
+        {
+          path: "/sensec/blogs",
+          element: <Blogs />,
+        },
         {
           path: "/sensec/sign_up/:signUpAction/:uniqueId/successful",
           element: <SignUpSuccessPage />,
@@ -260,6 +260,7 @@ export default function PageNavigation() {
                   element: authUser?.roles?.includes("lecturer") && (
                     <LecturerDashboard />
                   ),
+                  children: [],
                 },
                 // Student Dashboard
                 {

@@ -80,6 +80,7 @@ export function SideBar({
             setCurrentLink={setCurrentLink}
             currentTerm={currentTerm}
             currentAcademicYear={currentAcademicYear}
+            hovered={hovered}
           />
         )}
         {authUser?.roles?.includes("student") && (
@@ -89,6 +90,7 @@ export function SideBar({
             setCurrentLink={setCurrentLink}
             currentTerm={currentTerm}
             currentAcademicYear={currentAcademicYear}
+            hovered={hovered}
           />
         )}
         <Box

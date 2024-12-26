@@ -58,7 +58,7 @@ export function GuestPageLayout() {
           alignItems: "center",
           backgroundColor: "#fff",
           padding: ".3rem 0",
-          height: "4.5rem",
+          // height: "4.5rem",
         }}
       >
         <Box
@@ -92,9 +92,10 @@ export function GuestPageLayout() {
       {/* Main navbar links */}
       <Box
         sx={{
+          // height: "1rem",
           position: "sticky",
           top: 0,
-          backgroundColor: "#fff",
+          // backgroundColor: "#fff",
           padding: 0,
           zIndex: 3,
         }}

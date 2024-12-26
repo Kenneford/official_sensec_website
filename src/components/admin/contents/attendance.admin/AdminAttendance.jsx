@@ -121,7 +121,6 @@ export function AdminAttendance() {
           padding: 0,
           // zIndex: 1,
         }}
-        minHeight={"4rem"}
       >
         <h1 className="dashAction">
           {adminCurrentAction?.replace(/_/g, "-")} /{" "}

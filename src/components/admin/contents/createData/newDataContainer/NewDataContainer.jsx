@@ -56,7 +56,6 @@ export function NewDataContainer({
           padding: 0,
           // zIndex: 1,
         }}
-        minHeight={"4rem"}
       >
         <h1 className="dashAction">
           {adminCurrentAction?.replace(/_/g, "-")} /{" "}
@@ -153,7 +152,9 @@ export function NewDataContainer({
             Program
           </button>
           <button
-            className={data === "program" ? "activeCreateBtn" : "createBtn"}
+            className={
+              data === "division_program" ? "activeCreateBtn" : "createBtn"
+            }
             onClick={() =>
               navigate(
                 `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/division_program/new`

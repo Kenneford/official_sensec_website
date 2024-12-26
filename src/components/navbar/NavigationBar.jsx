@@ -86,7 +86,7 @@ const navbarLinks = [
   },
   {
     name: "blog",
-    path: "/sensec/blog",
+    path: "/sensec/blogs",
   },
   {
     name: "others",

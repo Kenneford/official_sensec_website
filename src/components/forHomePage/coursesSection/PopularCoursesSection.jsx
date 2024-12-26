@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import "./popularCoursesSection.scss";
 import { motion } from "framer-motion";
 import { HashLink } from "react-router-hash-link";
@@ -7,6 +7,14 @@ import { FetchAllProgrammes } from "../../../data/programme/FetchProgrammeData";
 
 export function PopularCoursesSection() {
   const allProgrammes = FetchAllProgrammes();
+  const popularPrograms = allProgrammes?.filter(
+    (program) =>
+      program?.name === "Business" ||
+      program?.name === "Agric Science" ||
+      (program?.name === "General Arts" && program)
+  );
+  console.log(popularPrograms);
+
   const scrollWithOffset = (el) => {
     const yCoordinate = el.getBoundingClientRect().top + window.scrollY;
     const yOffset = -80;
@@ -53,7 +61,66 @@ export function PopularCoursesSection() {
         <Box className="courseContainer">
           <h1>Our Popular Courses</h1>
           <Box className="courseContent">
-            <Box className="courseCard">
+            <Grid container spacing={2}>
+              {popularPrograms?.map((program) => (
+                <Grid key={program?._id} item xs={12} sm={6} md={4} lg={4}>
+                  <Box className="courseCard">
+                    <Box className="courseImgWrap">
+                      {program?.name === "Agric Science" && (
+                        <Box
+                          component="img"
+                          src="https://images.unsplash.com/photo-1557234195-bd9f290f0e4d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
+                          className="courseImg"
+                          alt={`${program?.name} Image`}
+                          sx={{
+                            marginBottom: 1,
+                          }}
+                        />
+                      )}
+                      {program?.name === "Business" && (
+                        <Box
+                          component="img"
+                          src="https://images.unsplash.com/photo-1611095790444-1dfa35e37b52?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1171&q=80"
+                          className="courseImg"
+                          alt={`${program?.name} Image`}
+                          sx={{
+                            marginBottom: 1,
+                          }}
+                        />
+                      )}
+                      {program?.name === "General Arts" && (
+                        <Box
+                          component="img"
+                          src="https://plus.unsplash.com/premium_photo-1661781303670-5fe01555296e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
+                          className="courseImg"
+                          alt={`${program?.name} Image`}
+                          sx={{
+                            marginBottom: 1,
+                          }}
+                        />
+                      )}
+                    </Box>
+                    <Box className="courseInfo">
+                      <h4>Business Management</h4>
+                      <p>
+                        Lorem Ipsum is simply dummy text of the printing and
+                        typesetting industry. Lorem Ipsum has been the
+                        industry&apos;s standard dummy text ever since the
+                        1500s,
+                      </p>
+                    </Box>
+                    <HashLink
+                      to={"/sensec/courses#business"}
+                      smooth
+                      scroll={scrollWithOffset}
+                    >
+                      <button className="courseBtn">Learn More</button>
+                    </HashLink>
+                  </Box>
+                </Grid>
+              ))}
+            </Grid>
+            {/* <Box className="courseCard">
               <Box className="courseImgWrap">
                 <img
                   src="/assets/images/home-img/business.jpg"
@@ -148,7 +215,7 @@ export function PopularCoursesSection() {
               >
                 <button className="courseBtn">Learn More</button>
               </HashLink>
-            </Box>
+            </Box> */}
           </Box>
         </Box>
       </Box>
