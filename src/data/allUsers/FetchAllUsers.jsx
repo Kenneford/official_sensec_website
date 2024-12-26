@@ -3,15 +3,24 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchAllUsers, getAllUsers } from "../../features/auth/authSlice";
 
 const FetchAllUsers = () => {
+  const { updateStatus } = useSelector((state) => state.employment);
   const dispatch = useDispatch();
   const allUsers = useSelector(getAllUsers);
 
   useEffect(() => {
-    if (!allUsers || allUsers?.length === 0) {
+    // if (!allUsers || allUsers?.length === 0) {
+    //   dispatch(fetchAllUsers());
+    // }
+    // dispatch(fetchAllUsers());
+
+    if (updateStatus === "success") {
+      setTimeout(() => {
+        dispatch(fetchAllUsers());
+      }, 7000);
+    } else {
       dispatch(fetchAllUsers());
     }
-    // dispatch(fetchAllUsers());
-  }, [dispatch, allUsers]);
+  }, [dispatch, updateStatus]);
 
   return allUsers;
 };

@@ -69,7 +69,7 @@ export function ClassSectionsData() {
       style: {
         display: "flex",
         justifyContent: "center",
-        fontSize: "1.2rem",
+        fontSize: "1.2em",
         // borderLeft: ".2rem solid red",
         // backgroundColor: "blue",
         // color: "#fff",
@@ -83,7 +83,7 @@ export function ClassSectionsData() {
         // color: "#fff",
         paddingTop: ".5rem",
         paddingBottom: ".5rem",
-        fontSize: "1rem",
+        fontSize: "1em",
         // marginTop: ".5rem",
         // marginBottom: ".5rem",
       },
@@ -205,7 +205,11 @@ export function ClassSectionsData() {
   const allCLevel300Sections = `Class Level 300 Sections / Total = ${level300Section?.length}`;
 
   return (
-    <>
+    <Box
+      sx={{
+        fontSize: "calc(0.7rem + 1vmin)",
+      }}
+    >
       {/* Current dashboard title */}
       <Box
         component={"div"}
@@ -217,7 +221,6 @@ export function ClassSectionsData() {
           padding: 0,
           // zIndex: 1,
         }}
-        minHeight={"4rem"}
       >
         <h1 className="dashAction">
           {adminCurrentAction?.replace(/_/g, "-")} /{" "}
@@ -275,6 +278,6 @@ export function ClassSectionsData() {
           responsive
         />
       </Box>
-    </>
+    </Box>
   );
 }

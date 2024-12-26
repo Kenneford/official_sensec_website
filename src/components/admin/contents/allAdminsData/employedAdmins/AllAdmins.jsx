@@ -20,6 +20,7 @@ export function AllAdmins() {
   const { adminCurrentAction, adminCurrentLink, employees_link } = useParams();
   // Fetch All Employed Admins
   const allEmployedAdmins = FetchAllEmployedAdmins();
+  console.log(allEmployedAdmins);
 
   const actionBtns = AllEmployedAdminsPageQuickLinks();
 
@@ -69,7 +70,6 @@ export function AllAdmins() {
           padding: 0,
           // zIndex: 1,
         }}
-        minHeight={"4rem"}
       >
         <h1 className="dashAction">
           {adminCurrentAction?.replace(/_/g, "-")} /{" "}

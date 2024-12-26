@@ -38,6 +38,44 @@ export const newEmployee = createAsyncThunk(
     }
   }
 );
+export const updateEmployeeData = createAsyncThunk(
+  "Employment/updateEmployeeData",
+  async (updateData, { rejectWithValue }) => {
+    console.log(updateData?.uniqueId);
+
+    try {
+      const res = await tokenInterceptor.put(
+        `${SENSEC_API_ENDPOINT}/employment/${updateData?.uniqueId}/personal_data/update`,
+        {
+          updateData,
+        }
+      );
+      return res.data;
+    } catch (error) {
+      console.log(error.response.data);
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const updateEmployeeSchoolData = createAsyncThunk(
+  "Employment/updateEmployeeSchoolData",
+  async (updateData, { rejectWithValue }) => {
+    console.log(updateData?.uniqueId);
+
+    try {
+      const res = await tokenInterceptor.put(
+        `${SENSEC_API_ENDPOINT}/employment/${updateData?.uniqueId}/school_data/update`,
+        {
+          updateData,
+        }
+      );
+      return res.data;
+    } catch (error) {
+      console.log(error.response.data);
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 export const approveEmployee = createAsyncThunk(
   "Employment/approveEmployee",
   async ({ employeeId, employmentApprovedBy }, { rejectWithValue }) => {
@@ -109,6 +147,14 @@ const employmentSlice = createSlice({
         error: "",
       };
     },
+    resetEmploymentUpdateState(state) {
+      return {
+        ...state,
+        updateStatus: "",
+        successMessage: "",
+        error: "",
+      };
+    },
     resetEmploymentApprovalState(state) {
       return {
         ...state,
@@ -161,6 +207,48 @@ const employmentSlice = createSlice({
       return {
         ...state,
         employmentStatus: "rejected",
+        error: action.payload,
+      };
+    });
+    // Update Employment Data
+    builder.addCase(updateEmployeeData.pending, (state) => {
+      return { ...state, updateStatus: "pending" };
+    });
+    builder.addCase(updateEmployeeData.fulfilled, (state, action) => {
+      if (action.payload) {
+        return {
+          ...state,
+          updatedEmployee: action.payload.updatedUser,
+          successMessage: action.payload.successMessage,
+          updateStatus: "success",
+        };
+      } else return state;
+    });
+    builder.addCase(updateEmployeeData.rejected, (state, action) => {
+      return {
+        ...state,
+        updateStatus: "rejected",
+        error: action.payload,
+      };
+    });
+    // Update Employment School Data
+    builder.addCase(updateEmployeeSchoolData.pending, (state) => {
+      return { ...state, updateStatus: "pending" };
+    });
+    builder.addCase(updateEmployeeSchoolData.fulfilled, (state, action) => {
+      if (action.payload) {
+        return {
+          ...state,
+          updatedEmployee: action.payload.updatedUser,
+          successMessage: action.payload.successMessage,
+          updateStatus: "success",
+        };
+      } else return state;
+    });
+    builder.addCase(updateEmployeeSchoolData.rejected, (state, action) => {
+      return {
+        ...state,
+        updateStatus: "rejected",
         error: action.payload,
       };
     });
@@ -257,5 +345,6 @@ export const {
   resetEmploymentRejectionState,
   resetMultiApprovalState,
   resetMultiRejectionState,
+  resetEmploymentUpdateState,
 } = employmentSlice.actions;
 export default employmentSlice.reducer;

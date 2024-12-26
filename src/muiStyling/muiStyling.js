@@ -4,12 +4,12 @@ import { MobileDatePicker } from "@mui/x-date-pickers";
 // Navbar Styling
 export const StyledNavbar = {
   Navbar: styled(Box)({
-    minHeight: "3.5rem",
+    height: "3.2rem",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "green",
-    padding: "0 .5rem",
+    padding: ".5rem",
   }),
   CurrentUser: styled(Toolbar)({
     position: "relative",
@@ -76,6 +76,8 @@ export const CustomTextField = styled(TextField)({
   "& .MuiInputLabel-root": {
     fontSize: ".9em", // Default label size
     transition: "font-size 0.2s, color 0.2s",
+    backgroundColor: "#fff",
+    paddingRight: ".5rem",
   },
   // Border styles for focused state
   "& .MuiOutlinedInput-root": {

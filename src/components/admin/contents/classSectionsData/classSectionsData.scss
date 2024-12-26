@@ -13,43 +13,49 @@ h2 {
   margin-bottom: 1rem;
   padding: 0;
   border: 2px solid #ccc;
-}
-.editLink {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-decoration: none;
-  color: grey;
-  font-size: 0.9rem;
-  font-weight: 600;
-}
-div#cell-1-undefined {
-  background-color: #ececec;
-}
-div#cell-2-undefined {
-  background-color: #f3f3f3;
-}
-div#cell-3-undefined {
-  background-color: #ececec;
-}
-div#cell-4-undefined {
-  background-color: #f3f3f3;
-}
-div#cell-5-undefined {
-  background-color: #ececec;
-}
-div#cell-6-undefined {
-  background-color: #f3f3f3;
-}
-div#cell-7-undefined {
-  background-color: #ececec;
-}
-div#cell-8-undefined {
-  background-color: #f3f3f3;
-}
-div#cell-9-undefined {
-  background-color: #ececec;
-}
-div#cell-10-undefined {
-  background-color: #f3f3f3;
+  // font-size: 0.8em;
+  font-size: calc(0.7rem + 1vmin);
+  .editLink {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    color: grey;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  // Table Title Font
+  .egfKAx {
+    font-size: 0.8rem;
+  }
+  div#cell-1-undefined {
+    background-color: #ececec;
+  }
+  div#cell-2-undefined {
+    background-color: #f3f3f3;
+  }
+  div#cell-3-undefined {
+    background-color: #ececec;
+  }
+  div#cell-4-undefined {
+    background-color: #f3f3f3;
+  }
+  div#cell-5-undefined {
+    background-color: #ececec;
+  }
+  div#cell-6-undefined {
+    background-color: #f3f3f3;
+  }
+  div#cell-7-undefined {
+    background-color: #ececec;
+  }
+  div#cell-8-undefined {
+    background-color: #f3f3f3;
+  }
+  div#cell-9-undefined {
+    background-color: #ececec;
+  }
+  div#cell-10-undefined {
+    background-color: #f3f3f3;
+  }
 }

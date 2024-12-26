@@ -31,6 +31,7 @@ const quickLinks = [
 export function LecturerDashboardLinks({ hovered }) {
   const authLecturer = useSelector(getAuthUser);
   const { lecturerCurrentLink } = useParams();
+  console.log(hovered);
 
   // Set sub-link to expand on page render
   const [openDashBoardLinks, setOpenDashBoardLinks] = useState(true);

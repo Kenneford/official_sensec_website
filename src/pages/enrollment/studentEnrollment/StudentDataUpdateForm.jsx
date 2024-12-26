@@ -278,7 +278,6 @@ export function StudentDataUpdateForm() {
           zIndex: 5,
           mb: "3.5rem",
         }}
-        minHeight={"3.5rem"}
       >
         <h1 className="dashAction">
           Enrollment / <span>Update</span>

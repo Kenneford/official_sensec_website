@@ -81,8 +81,7 @@ export function LecturerSidebar({ hovered, currentTerm, currentAcademicYear }) {
         <Box className="userInfo">
           <img src={authUser?.personalInfo?.profilePicture?.url} alt="" />
           {hovered && (
-            <Collapse
-              in={hovered}
+            <Box
               className="infoText"
               //   sx={{
               //     transition: "0.5s ease", // Smooth transition when toggling
@@ -95,7 +94,7 @@ export function LecturerSidebar({ hovered, currentTerm, currentAcademicYear }) {
               {authUser?.status?.positionHolding && (
                 <Typography>({authUser?.status?.positionHolding})</Typography>
               )}
-            </Collapse>
+            </Box>
           )}
         </Box>
       </Box>

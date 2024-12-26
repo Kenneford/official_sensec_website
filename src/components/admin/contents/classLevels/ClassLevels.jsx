@@ -33,7 +33,7 @@ export function ClassLevels() {
       style: {
         display: "flex",
         justifyContent: "center",
-        fontSize: "1.2rem",
+        fontSize: "1.2em",
         // borderLeft: ".2rem solid red",
         // backgroundColor: "blue",
         // color: "#fff",
@@ -47,7 +47,7 @@ export function ClassLevels() {
         // color: "#fff",
         paddingTop: ".5rem",
         paddingBottom: ".5rem",
-        fontSize: "1rem",
+        fontSize: "1em",
         // marginTop: ".5rem",
         // marginBottom: ".5rem",
       },
@@ -163,7 +163,6 @@ export function ClassLevels() {
           padding: 0,
           // zIndex: 1,
         }}
-        minHeight={"4rem"}
       >
         <h1 className="dashAction">
           {adminCurrentAction?.replace(/_/g, "-")} /{" "}

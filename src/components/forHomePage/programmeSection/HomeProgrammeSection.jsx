@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import "./homeProgrammeSection.scss";
 import { motion } from "framer-motion";
 import { HashLink } from "react-router-hash-link";
@@ -29,18 +29,26 @@ export function HomeProgrammeSection() {
       >
         <h1>Featured Programmes</h1>
         <Box component="div" className="programmeCardWrap">
-          {allProgrammes?.map((program) => (
-            <Box key={program?._id} component="div" className="programmeCard">
-              <span className="catIcon">
-                <img src="/assets/sensec-logo1.png" alt="" className="catImg" />
-              </span>
-              <h5>{program?.name}</h5>
-              <p>
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Quis
-                quidem
-              </p>
-            </Box>
-          ))}
+          <Grid container spacing={1}>
+            {allProgrammes?.map((program) => (
+              <Grid key={program?._id} item xs={12} sm={6} md={4} lg={4}>
+                <Box component="div" className="programmeCard">
+                  <span className="catIcon">
+                    <img
+                      src="/assets/sensec-logo1.png"
+                      alt=""
+                      className="catImg"
+                    />
+                  </span>
+                  <h4>{program?.name}</h4>
+                  <p>
+                    Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                    Quis quidem
+                  </p>
+                </Box>
+              </Grid>
+            ))}
+          </Grid>
         </Box>
       </ContainerBox>
     </Box>
