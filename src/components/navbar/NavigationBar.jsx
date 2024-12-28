@@ -207,6 +207,13 @@ export function NavigationBar({
       path: "/sensec/sensosa/application_process",
     },
   ];
+  const isDashboard =
+    location.pathname?.includes("Dashboard") ||
+    location.pathname?.includes("Actions") ||
+    location.pathname?.includes("User_Types") ||
+    location.pathname?.includes("Attendance") ||
+    location.pathname?.includes("Assessment") ||
+    location.pathname?.includes("Account");
   // Find logged in user
   const userInfo = allUsers?.find(
     (user) => user?.uniqueId === authUser?.uniqueId
@@ -419,7 +426,7 @@ export function NavigationBar({
               )}
             </Box>
           )}
-          <Box display={isScrolled ? "none" : "block"}>
+          <Box display={isScrolled && isDashboard ? "none" : "block"}>
             {openMenuLinks && (
               <Box id="smallScreenMenu">
                 <li>
@@ -589,7 +596,9 @@ export function NavigationBar({
                           )} */}
                       </button>
                       <Box className="subNav" style={{ zIndex: 3 }}>
-                        <Box display={isScrolled ? "none" : "block"}>
+                        <Box
+                          display={isScrolled && isDashboard ? "none" : "block"}
+                        >
                           {openSubNavLinks && (
                             <Box
                               className={
