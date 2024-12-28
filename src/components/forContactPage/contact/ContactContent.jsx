@@ -111,7 +111,15 @@ export default function ContactContent() {
                 <h3>Email</h3>
                 <div>
                   <EmailIcon />
-                  <span>senyashs@ges.gov.gh</span>
+                  <span
+                    style={{
+                      flexWrap: "wrap",
+                      wordBreak: "break-word", // Allows breaking words to wrap text
+                      overflowWrap: "break-word", // Ensures long words like email addresses wrap
+                    }}
+                  >
+                    senyashs@ges.gov.gh
+                  </span>
                 </div>
               </div>
               <div className="phone">
@@ -129,7 +137,15 @@ export default function ContactContent() {
                 <h3>Support</h3>
                 <div>
                   <DraftsIcon />
-                  <span>senya.shs.1991@gmail.com</span>
+                  <span
+                    style={{
+                      flexWrap: "wrap",
+                      wordBreak: "break-word", // Allows breaking words to wrap text
+                      overflowWrap: "break-word", // Ensures long words like email addresses wrap
+                    }}
+                  >
+                    senya.shs.1991@gmail.com
+                  </span>
                 </div>
               </div>
             </div>

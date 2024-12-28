@@ -16,7 +16,7 @@ export function AboutBanner() {
           <span>( Senya Senior High School )</span>
         </Box>
       </Box>
-      <Box className="links">
+      <Box className="aboutLinks">
         <HashLink to={"#"}>Vision</HashLink>
         <HashLink to={"#"}>History</HashLink>
         <HashLink to={"#"}>Achievements</HashLink>

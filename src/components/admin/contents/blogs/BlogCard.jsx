@@ -20,9 +20,12 @@ import BlogOptions from "./options/BlogOptions";
 import ProTypes from "prop-types";
 import Parser from "html-react-parser";
 import { dateFormatter } from "../../../../dateFormatter/DateFormatter";
+import { useSelector } from "react-redux";
+import { getAuthUser } from "../../../../features/auth/authSlice";
 
 export default function BlogCard({ blogId, title, content, image, postedBy }) {
   // const { postOptions, setPostOptions } = useOutletContext();
+  const authUser = useSelector(getAuthUser);
 
   const [postOptions, setPostOptions] = useState(false);
 
@@ -65,28 +68,29 @@ export default function BlogCard({ blogId, title, content, image, postedBy }) {
             .
           </span>
         </Box>
-        <Box>
-          <button
-            className="blogOptionsBtn"
-            onClick={() => {
-              setPostOptions(!postOptions);
-            }}
-          >
-            <MoreVert className="moreVert" />
-          </button>
-          <div ref={outSideClickRef}>
-            {postOptions && (
-              <BlogOptions
-                postOptions={postOptions}
-                blogId={blogId}
-                // userId={userInfo?.uniqueId}
-                // setOpenModal={setOpenModal}
-                // adminCurrentAction={adminCurrentAction}
-                // adminCurrentLink={adminCurrentLink}
-              />
-            )}
-          </div>
-          {/* <DeleteBlogModal
+        {authUser?.roles?.includes("admin") && (
+          <Box>
+            <button
+              className="blogOptionsBtn"
+              onClick={() => {
+                setPostOptions(!postOptions);
+              }}
+            >
+              <MoreVert className="moreVert" />
+            </button>
+            <div ref={outSideClickRef}>
+              {postOptions && (
+                <BlogOptions
+                  postOptions={postOptions}
+                  blogId={blogId}
+                  // userId={userInfo?.uniqueId}
+                  // setOpenModal={setOpenModal}
+                  // adminCurrentAction={adminCurrentAction}
+                  // adminCurrentLink={adminCurrentLink}
+                />
+              )}
+            </div>
+            {/* <DeleteBlogModal
             open={openModal}
             onClose={() => setOpenModal(false)}
             handleNewEmployment={handleBlogDelete}
@@ -94,7 +98,8 @@ export default function BlogCard({ blogId, title, content, image, postedBy }) {
             deleteMessage={"Blog deletion in progress..."}
             question={"Are you sure you would like to delete selected blog?"}
           /> */}
-        </Box>
+          </Box>
+        )}
       </Box>
       <Box
         // disableRipple

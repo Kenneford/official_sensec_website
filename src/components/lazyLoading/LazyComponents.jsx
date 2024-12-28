@@ -209,6 +209,16 @@ export const PlacementCheckOverview = lazyWithSuspense(
   <PageLoading />,
   "PlacementCheckOverviewPage"
 );
+export const EnrollmentDocumentation = lazyWithSuspense(
+  () =>
+    import(
+      "../../pages/enrollment/studentEnrollment/documentation/EnrollmentDocumentation"
+    ).then((module) => {
+      return { default: module.EnrollmentDocumentation };
+    }),
+  <PageLoading />,
+  "EnrollmentDocumentation"
+);
 export const StudentEnrollment = lazyWithSuspense(
   () =>
     import("../../pages/enrollment/studentEnrollment/StudentEnrollment").then(

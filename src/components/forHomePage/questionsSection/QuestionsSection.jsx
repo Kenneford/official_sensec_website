@@ -5,27 +5,30 @@ import RemoveIcon from "@mui/icons-material/Remove";
 import { Link } from "react-router-dom";
 import { Box, Button, Grid } from "@mui/material";
 import { ContainerBox, CustomizedButton } from "../../../muiStyling/muiStyling";
+import { HashLink } from "react-router-hash-link";
 
 const faqs = [
   {
     question: "Which courses does the school offer?",
     answer:
-      "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
+      "Our school offers six programmes. These are, Business, General Arts, Home Economics, General Science, Agricultural Science and Visual Arts.",
+    link: "/sensec/courses#allProgrammes",
   },
   {
     question: "Where can I get the school form to buy?",
-    answer:
-      "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
+    answer: `Forms are not for sale! After GES placement scheme, students can visit our website at <a href="https://official-sensec-website.onrender.com/sensec/students/enrollment/placement_check" target="blank" style="color: #0794bf; text-decoration: underline;">official-sensec-website.onrender.com</a> to check their placement and begin our online enrollment process.`,
   },
   {
     question: "Does the school have a laboratory?",
     answer:
-      "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
+      "Sure, our school has a standard science laboratory which helps promotes scientific literacy among students by helping them develop among other competencies, problem solving skills, critical thinking, and appreciation of the importance of technology.",
+    link: "/sensec/science_laboratory#science_laboratory",
   },
   {
     question: "How much is the boarding fees per semester?",
     answer:
-      "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English.",
+      "Since the arrival of the free SHS system, student enrolled in our school do not pay any fees. Nevertheless, student are required to pay for basic stuffs the will need in the school for academics.",
+    link: "/sensec/book_shop#book_shop",
   },
 ];
 
@@ -37,6 +40,11 @@ export function QuestionsSection() {
   const [openQ2, setOpenQ2] = useState(false);
 
   console.log(openFAQ);
+  const scrollWithOffset = (el) => {
+    const yCoordinate = el.getBoundingClientRect().top + window.scrollY;
+    const yOffset = -150;
+    window.scrollTo({ top: yCoordinate + yOffset, behavior: "smooth" });
+  };
 
   const handleQuestion = useCallback((faq) => {
     setFaqClicked(faq);
@@ -62,6 +70,7 @@ export function QuestionsSection() {
           justifyContent: "center",
           alignItems: "center",
           margin: "auto",
+          padding: { xs: "1rem .5rem", sm: "2rem 1rem" },
         }}
       >
         <Box>
@@ -73,6 +82,7 @@ export function QuestionsSection() {
               <Box
                 sx={{
                   backgroundColor: "#fff",
+                  minHeight: "3rem",
                   // borderRadius: ".4rem",
                   // position: "relative",
                   // margin: ".5rem 0",
@@ -81,7 +91,11 @@ export function QuestionsSection() {
                   // alignItems: "center",
                 }}
               >
-                <Box>
+                <Box
+                  sx={{
+                    minHeight: "3rem",
+                  }}
+                >
                   <Button
                     className={
                       openFAQ && faqClicked === faq?.question
@@ -98,8 +112,9 @@ export function QuestionsSection() {
                     }}
                     sx={{
                       color: "#696969",
-                      minHeight: "5rem",
+                      minHeight: "3rem",
                       lineHeight: "1.3rem",
+                      justifyContent: "unset",
                     }}
                   >
                     {!openFAQ && !faqClicked && <AddIcon className="faqIcon" />}
@@ -113,24 +128,36 @@ export function QuestionsSection() {
                     <h4
                       style={{
                         textTransform: "capitalize",
-                        fontSize: "1.3em",
+                        fontSize: "1.2em",
                         textAlign: "left",
+                        fontWeight:
+                          openFAQ && faqClicked === faq?.question
+                            ? "bold"
+                            : 300,
                       }}
                     >
                       {faq?.question}
                     </h4>
                   </Button>
                   {openFAQ && faqClicked === faq?.question && (
-                    <Box className="questionsAnswer">
-                      <p>{faq?.answer}</p>
+                    <Box
+                      className="questionsAnswer"
+                      sx={{
+                        padding: { xs: "0 .5rem 1rem", sm: " 0 1rem 1rem" },
+                      }}
+                    >
+                      <p dangerouslySetInnerHTML={{ __html: faq?.answer }}>
+                        {/* {faq?.answer} */}
+                      </p>
                       {/* <Link to={"#"}> */}
-                      <CustomizedButton
-                        contained
-                        sx={{ backgroundColor: "green", color: "#fff" }}
+                      <HashLink
+                        to={faq?.link}
+                        smooth
+                        scroll={scrollWithOffset}
                         className="faqBtn"
                       >
                         Read More
-                      </CustomizedButton>
+                      </HashLink>
                       {/* </Link> */}
                     </Box>
                   )}
@@ -141,117 +168,5 @@ export function QuestionsSection() {
         </Grid>
       </ContainerBox>
     </Box>
-    // <Box
-    //   component="div"
-    //   className="programmeSectionWrap"
-    //   sx={{ width: "100%", backgroundColor: "#3e3e3e", color: "#cccc" }}
-    // >
-    //   <Box
-    //     sx={{
-    //       // width: { xs: "100%", sm: "95%", md: "90%", lg: "90%", xl: "75%" },
-    //       display: "flex",
-    //       flexDirection: "column",
-    //       justifyContent: "center",
-    //       alignItems: "center",
-    //       // margin: "auto",
-    //     }}
-    //   >
-    //     <Box
-    //       sx={{
-    //         width: { xs: "100%", sm: "95%", md: "90%", lg: "90%", xl: "75%" },
-    //         // margin: "auto",
-    //       }}
-    //       className="questionsWrap"
-    //     >
-    //       <h2>Frequently Asked Questions</h2>
-    //       <Box className="questionsCont">
-    //         <Box className={!openFAQ ? "questions" : "questions open"}>
-    //           <Button
-    //             className={!openFAQ ? "questionsIcon" : "questionsIcon active"}
-    //             onClick={handleQuestion}
-    //           >
-    //             {!openFAQ ? <AddIcon /> : <RemoveIcon />}
-    //             <h4>Which courses does the school offer?</h4>
-    //           </Button>
-    //           <Box className="questionsAnswer">
-    //             <p>
-    //               It is a long established fact that a reader will be distracted
-    //               by the readable content of a page when looking at its layout.
-    //               The point of using Lorem Ipsum is that it has a more-or-less
-    //               normal distribution of letters, as opposed to using 'Content
-    //               here, content here', making it look like readable English.
-    //             </p>
-    //             <Link to={"#"}>
-    //               <button className="faqBtn">Read More</button>
-    //             </Link>
-    //           </Box>
-    //         </Box>
-    //         <Box className={!openQ ? "questions" : "questions open"}>
-    //           <Button
-    //             className={!openQ ? "questionsIcon" : "questionsIcon active"}
-    //             onClick={handleQ}
-    //           >
-    //             {!openQ ? <AddIcon /> : <RemoveIcon />}
-    //             <h4>Where can I get the school form to buy?</h4>
-    //           </Button>
-    //           <Box className="questionsAnswer">
-    //             <p>
-    //               It is a long established fact that a reader will be distracted
-    //               by the readable content of a page when looking at its layout.
-    //               The point of using Lorem Ipsum is that it has a more-or-less
-    //               normal distribution of letters, as opposed to using 'Content
-    //               here, content here', making it look like readable English.
-    //             </p>
-    //             <Link to={"#"}>
-    //               <button className="faqBtn">Read More</button>
-    //             </Link>
-    //           </Box>
-    //         </Box>
-    //         <Box className={!openQ1 ? "questions" : "questions open"}>
-    //           <Button
-    //             className={!openQ1 ? "questionsIcon" : "questionsIcon active"}
-    //             onClick={handleQ1}
-    //           >
-    //             {!openQ1 ? <AddIcon /> : <RemoveIcon />}
-    //             <h4>Does the school have a laboratory?</h4>
-    //           </Button>
-    //           <Box className="questionsAnswer">
-    //             <p>
-    //               It is a long established fact that a reader will be distracted
-    //               by the readable content of a page when looking at its layout.
-    //               The point of using Lorem Ipsum is that it has a more-or-less
-    //               normal distribution of letters, as opposed to using 'Content
-    //               here, content here', making it look like readable English.
-    //             </p>
-    //             <Link to={"#"}>
-    //               <button className="faqBtn">Read More</button>
-    //             </Link>
-    //           </Box>
-    //         </Box>
-    //         <Box className={!openQ2 ? "questions" : "questions open"}>
-    //           <Button
-    //             className={!openQ2 ? "questionsIcon" : "questionsIcon active"}
-    //             onClick={handleQ2}
-    //           >
-    //             {!openQ2 ? <AddIcon /> : <RemoveIcon />}
-    //             <h4>How much is the boarding fees per semester?</h4>
-    //           </Button>
-    //           <Box className="questionsAnswer">
-    //             <p>
-    //               It is a long established fact that a reader will be distracted
-    //               by the readable content of a page when looking at its layout.
-    //               The point of using Lorem Ipsum is that it has a more-or-less
-    //               normal distribution of letters, as opposed to using 'Content
-    //               here, content here', making it look like readable English.
-    //             </p>
-    //             <Link to={"#"}>
-    //               <button className="faqBtn">Read More</button>
-    //             </Link>
-    //           </Box>
-    //         </Box>
-    //       </Box>
-    //     </Box>
-    //   </Box>
-    // </Box>
   );
 }

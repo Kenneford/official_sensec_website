@@ -198,6 +198,19 @@ export function PlacementCheckOverview() {
     if (updateStatus === "pending") {
       setLoadingComplete(false);
     }
+    if (updateStatus === "rejected") {
+      return setTimeout(() => {
+        setLoadingComplete(null);
+        error?.errorMessage?.message?.map((err) =>
+          toast.error(err, {
+            position: "top-right",
+            theme: "light",
+            toastId: "placementDataUpdateError",
+          })
+        );
+        dispatch(resetUpdateState());
+      }, 3000);
+    }
     if (updateStatus === "success") {
       setTimeout(() => {
         toast.success(successMessage, {
@@ -216,19 +229,6 @@ export function PlacementCheckOverview() {
         dispatch(resetUpdateState());
         setLoadingComplete(null);
       }, 6000);
-    }
-    if (updateStatus === "rejected") {
-      return setTimeout(() => {
-        setLoadingComplete(null);
-        error?.errorMessage?.message?.map((err) =>
-          toast.error(err, {
-            position: "top-right",
-            theme: "light",
-            toastId: "placementDataUpdateError",
-          })
-        );
-        dispatch(resetUpdateState());
-      }, 3000);
     }
   }, [
     updateStatus,

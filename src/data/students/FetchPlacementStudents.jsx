@@ -20,7 +20,6 @@ const FetchAllPlacementStudents = () => {
 };
 const FetchPlacementStudentsByYear = (year) => {
   const allPlacementStudents = FetchAllPlacementStudents();
-  console.log(allPlacementStudents);
 
   const allStudents = allPlacementStudents?.filter(
     (std) =>
@@ -42,7 +41,6 @@ const FetchAllPlacementSBatches = () => {
 };
 const FetchPlacementBatchByYear = (year) => {
   const allPlacementBatches = FetchAllPlacementSBatches();
-  console.log(allPlacementBatches);
 
   const allBatches = allPlacementBatches?.find(
     (batch) => batch && batch?.year === year

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./achievements.scss";
 import SchoolIcon from "@mui/icons-material/School";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
@@ -16,13 +16,34 @@ export function Achievements() {
   const allPrograms = FetchAllProgrammes();
   const allApprovedStudents = FetchAllApprovedStudents();
   const alumni = FetchAllGraduatedStudents();
+
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+  console.log(screenWidth);
+
+  const xScreen = screenWidth < 300;
+  console.log(xScreen);
+
+  useEffect(() => {
+    // Function to update the screen width
+    const handleResize = () => {
+      setScreenWidth(window.innerWidth);
+    };
+
+    // Add event listener for window resize
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
   return (
     <Box borderTop={"1px solid #ccc"}>
       <ContainerBox
         sx={{
           width: { xs: "100%", sm: "95%", md: "90%", lg: "90%", xl: "75%" },
           margin: "auto",
-          paddingTop: "2rem",
+          padding: { xs: "1rem .5rem", sm: "2rem 1rem" },
         }}
       >
         <Box className="achieveWrap" id="achievements">
@@ -192,11 +213,12 @@ export function Achievements() {
             <Box>
               <Grid container spacing={1} className="achieveCards">
                 <Grid item xs={6} sm={4} md={3} lg={3}>
-                  <Box className="card cardCourse">
+                  <Box
+                    className="card cardCourse"
+                    sx={{ flexDirection: xScreen ? "column" : "row" }}
+                  >
                     <span className="cardIcon ">
-                      <SchoolIcon
-                        style={{ fontSize: "2rem", color: "#89870f" }}
-                      />
+                      <SchoolIcon style={{ color: "#89870f" }} />
                     </span>
                     <Box>
                       <h3>{allPrograms?.length}</h3>
@@ -205,11 +227,12 @@ export function Achievements() {
                   </Box>
                 </Grid>
                 <Grid item xs={6} sm={4} md={3} lg={3}>
-                  <Box className="card cardStudents">
+                  <Box
+                    className="card cardStudents"
+                    sx={{ flexDirection: xScreen ? "column" : "row" }}
+                  >
                     <span className="cardIcon">
-                      <PeopleAltIcon
-                        style={{ fontSize: "2rem", color: "#12519f" }}
-                      />
+                      <PeopleAltIcon style={{ color: "#12519f" }} />
                     </span>
                     <Box>
                       <h3>{allApprovedStudents?.length}+</h3>
@@ -218,11 +241,12 @@ export function Achievements() {
                   </Box>
                 </Grid>
                 <Grid item xs={6} sm={4} md={3} lg={3}>
-                  <Box className="card cardAlumni">
+                  <Box
+                    className="card cardAlumni"
+                    sx={{ flexDirection: xScreen ? "column" : "row" }}
+                  >
                     <span className="cardIcon">
-                      <Diversity3Icon
-                        style={{ fontSize: "2rem", color: "#108e2d" }}
-                      />
+                      <Diversity3Icon style={{ color: "#108e2d" }} />
                     </span>
                     <Box>
                       <h3>{alumni?.length}+</h3>
@@ -231,11 +255,12 @@ export function Achievements() {
                   </Box>
                 </Grid>
                 <Grid item xs={6} sm={4} md={3} lg={3}>
-                  <Box className="card cardAwards">
+                  <Box
+                    className="card cardAwards"
+                    sx={{ flexDirection: xScreen ? "column" : "row" }}
+                  >
                     <span className="cardIcon">
-                      <EmojiEventsIcon
-                        style={{ fontSize: "2rem", color: "#8e1410" }}
-                      />
+                      <EmojiEventsIcon style={{ color: "#8e1410" }} />
                     </span>
                     <Box>
                       <h3>17</h3>

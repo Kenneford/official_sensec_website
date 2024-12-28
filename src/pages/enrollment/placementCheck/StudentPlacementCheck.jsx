@@ -8,12 +8,17 @@ import {
   checkPlacement,
   fetchAllPlacementStudents,
   getAllPlacementStudents,
+  resetPlacementCheckState,
 } from "../../../features/academics/placementSlice";
 import LoadingProgress from "../../../components/pageLoading/LoadingProgress";
 import Redirection from "../../../components/pageLoading/Redirection";
 import { TaskAlt } from "@mui/icons-material";
 import { toast } from "react-toastify";
 import { NavigationBar } from "../../../components/navbar/NavigationBar";
+import {
+  FetchAllPlacementSBatches,
+  FetchPlacementBatchByYear,
+} from "../../../data/students/FetchPlacementStudents";
 
 export function StudentPlacementCheck() {
   const {
@@ -39,12 +44,20 @@ export function StudentPlacementCheck() {
   );
   // Input values error state handling
   const [jhsIndexNoError, setJhsIndexNoError] = useState(false);
+  const [yearGraduatedError, setYearGraduatedError] = useState(false);
   const [loadingComplete, setLoadingComplete] = useState(null);
   const [redirecting, setRedirecting] = useState(false);
 
   const [formData, setFormData] = useState({
     jhsIndexNo: "",
+    yearGraduated: "",
   });
+
+  const allPlacementSBatches = FetchAllPlacementSBatches();
+  const placementBatchFound = FetchPlacementBatchByYear(
+    formData?.yearGraduated
+  );
+  console.log(allPlacementSBatches);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -54,6 +67,7 @@ export function StudentPlacementCheck() {
     });
   };
 
+  // Find student by index number
   const memoizedPlacementStudentData = useMemo(() => {
     const placementStudentFound = allPlacementStudents?.find(
       (std) => std?.jhsIndexNo === formData?.jhsIndexNo
@@ -61,9 +75,23 @@ export function StudentPlacementCheck() {
     return placementStudentFound;
   }, [allPlacementStudents, formData]);
 
+  // Filter student from his/her placement batch
+  const placementBatchStudentFound = useMemo(() => {
+    const placementStudentFound = placementBatchFound?.students?.find(
+      (std) => std?._id === memoizedPlacementStudentData?._id
+    );
+    return placementStudentFound;
+  }, [memoizedPlacementStudentData, placementBatchFound]);
+  console.log(placementBatchStudentFound);
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    dispatch(checkPlacement({ studentIndexNo: formData?.jhsIndexNo }));
+    dispatch(
+      checkPlacement({
+        studentIndexNo: formData?.jhsIndexNo,
+        yearGraduated: formData?.yearGraduated,
+      })
+    );
   };
 
   // Validate input data
@@ -75,7 +103,14 @@ export function StudentPlacementCheck() {
     } else {
       setJhsIndexNoError(false);
     }
-  }, [formData, memoizedPlacementStudentData]);
+    // Year Graduated
+    if (formData?.yearGraduated && !placementBatchStudentFound) {
+      setYearGraduatedError(true);
+      return;
+    } else {
+      setYearGraduatedError(false);
+    }
+  }, [formData, memoizedPlacementStudentData, placementBatchStudentFound]);
 
   // Fetch data
   useEffect(() => {
@@ -97,6 +132,7 @@ export function StudentPlacementCheck() {
       });
       setTimeout(() => {
         setLoadingComplete(null);
+        dispatch(resetPlacementCheckState());
       }, 3000);
       return;
     }
@@ -119,6 +155,7 @@ export function StudentPlacementCheck() {
           "studentIndexNo",
           memoizedPlacementStudentData?.jhsIndexNo
         );
+        dispatch(resetPlacementCheckState());
         navigate(
           `/sensec/students/enrollment/placement_check/${memoizedPlacementStudentData?.fullName?.replace(
             / /g,
@@ -134,6 +171,7 @@ export function StudentPlacementCheck() {
     error,
     loadingComplete,
     memoizedPlacementStudentData,
+    dispatch,
   ]);
 
   return (
@@ -268,6 +306,28 @@ export function StudentPlacementCheck() {
                     "& .MuiInputLabel-asterisk": {
                       color:
                         formData?.jhsIndexNo && !jhsIndexNoError
+                          ? "green"
+                          : "red", // Change the asterisk color to red
+                    },
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <CustomTextField
+                  fullWidth
+                  label="Year Graduated"
+                  name="yearGraduated"
+                  value={formData?.yearGraduated}
+                  onChange={handleChange}
+                  required
+                  error={yearGraduatedError}
+                  helperText={
+                    yearGraduatedError ? "Graduation year not correct!" : ""
+                  }
+                  sx={{
+                    "& .MuiInputLabel-asterisk": {
+                      color:
+                        formData?.yearGraduated && !yearGraduatedError
                           ? "green"
                           : "red", // Change the asterisk color to red
                     },
