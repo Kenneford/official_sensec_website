@@ -1,0 +1,81 @@
+#enrollmentDocumentation {
+  //   background-color: #ccc;
+  color: #696969;
+  .welcomeMsg {
+    font-size: 0.9em;
+    line-height: 1.3rem;
+  }
+  .container {
+    -webkit-box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+    box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+  }
+  h3 {
+    font-size: 1em;
+    font-style: italic;
+    margin-bottom: 1rem;
+    span {
+      font-style: normal;
+      color: #8e8e8e;
+    }
+  }
+  .stepInfo {
+    font-size: 0.9em;
+    line-height: 1.3rem;
+  }
+  .note {
+    font-size: 0.9em;
+    line-height: 1.3rem;
+    span {
+      color: #555;
+      font-weight: 500;
+    }
+    p {
+      margin-top: 1rem;
+    }
+  }
+  h5 {
+    font-size: 0.9em;
+    // font-style: italic;
+    margin: 1rem 0 0.5rem;
+    span {
+      font-style: normal;
+      color: #8e8e8e;
+    }
+  }
+  .stepPartsInfo {
+    margin-top: 1rem;
+    font-size: 0.9em;
+  }
+  .downloadDocs {
+    span {
+      color: #555;
+      font-weight: 500;
+    }
+  }
+  .docLastWord {
+    font-size: 0.9em;
+  }
+  .docEnrollmentLink {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+    a {
+      color: green;
+      font-weight: 500;
+      border: 1px solid green;
+      padding: 0.5rem;
+      border-radius: 0.4rem;
+      transition: 0.5s ease;
+      &:hover {
+        background-color: green;
+        color: #fff;
+      }
+    }
+  }
+  .headTitle,
+  .headName,
+  .schoolName {
+    font-size: 0.9em;
+    font-weight: 500;
+  }
+}
