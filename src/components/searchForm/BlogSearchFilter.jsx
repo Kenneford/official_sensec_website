@@ -39,6 +39,8 @@ export default function BlogSearchFilter({ value, onChange, placeholder }) {
             "& .MuiInputBase-root": {
               height: "100%",
               boxSizing: "border-box", // Ensures padding is accounted for
+              backgroundColor: "#fff",
+              paddingRight: ".5rem",
             },
             "& .MuiInputBase-input": {
               padding: "0 14px", // Adjust vertical and horizontal padding

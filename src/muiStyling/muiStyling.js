@@ -76,8 +76,6 @@ export const CustomTextField = styled(TextField)({
   "& .MuiInputLabel-root": {
     fontSize: ".9em", // Default label size
     transition: "font-size 0.2s, color 0.2s",
-    backgroundColor: "#fff",
-    paddingRight: ".5rem",
   },
   // Border styles for focused state
   "& .MuiOutlinedInput-root": {
