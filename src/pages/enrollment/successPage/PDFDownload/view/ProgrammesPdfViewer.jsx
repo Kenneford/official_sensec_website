@@ -99,7 +99,7 @@ export default function ProgrammesPdfViewer({
           justifyContent: "center",
           alignItems: "center",
           width: "100%",
-          height: "72.9vh",
+          height: "87vh",
         }}
       >
         <MemoizedPDFViewer

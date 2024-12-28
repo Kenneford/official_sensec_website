@@ -99,6 +99,58 @@ export function StudentPlacementVerification() {
         setLoadingComplete(null);
       }, 3000);
     }
+    //If placement verified and enrolled, navigate student to enrolment success page
+    else if (foundPlacementStudent?.placementVerified && enrolledStudent) {
+      // localStorage.setItem("indexNumber", formData?.jhsIndexNo);
+      setTimeout(() => {
+        setLoadingComplete(true);
+        setIsVerified(true);
+        setHasEnrolled(true);
+      }, 3000);
+      setTimeout(() => {
+        setRedirecting(true);
+        setIsVerified(false);
+        setHasEnrolled(false);
+      }, 5000);
+      setTimeout(() => {
+        if (adminCurrentAction) {
+          navigate(
+            `/sensec/users/${authUser?.uniqueId}/admin/User-Types/Students/${enrolledStudent?.uniqueId}/enrollment/online/success/Overview`
+          );
+        } else {
+          navigate(
+            `/sensec/students/enrollment/online/${enrolledStudent?.uniqueId}/success/Overview`
+          );
+        }
+      }, 7000);
+    }
+    //If placement verified and enrolled, navigate student to enrolment success page
+    else if (
+      foundPlacementStudent?.placementVerified &&
+      foundPlacementStudent?.enrolled
+    ) {
+      setTimeout(() => {
+        setLoadingComplete(true);
+        setIsVerified(true);
+        setHasEnrolled(true);
+      }, 3000);
+      setTimeout(() => {
+        setRedirecting(true);
+        setIsVerified(false);
+        setHasEnrolled(false);
+      }, 5000);
+      setTimeout(() => {
+        if (adminCurrentAction) {
+          navigate(
+            `/sensec/users/${authUser?.uniqueId}/admin/User-Types/Students/${foundPlacementStudent?.enrollmentId}/enrollment/online/success/Overview`
+          );
+        } else {
+          navigate(
+            `/sensec/students/enrollment/online/${foundPlacementStudent?.enrollmentId}/success/Overview`
+          );
+        }
+      }, 7000);
+    }
     //If placement verified but enrollment is in progress, navigate to add parent page
     else if (
       foundPlacementStudent?.placementVerified &&
@@ -147,33 +199,6 @@ export function StudentPlacementVerification() {
         }
       }, 7000);
     }
-    //If placement verified and enrolled, navigate student to enrolment success page
-    else if (
-      foundPlacementStudent?.placementVerified &&
-      foundPlacementStudent?.enrolled
-    ) {
-      setTimeout(() => {
-        setLoadingComplete(true);
-        setIsVerified(true);
-        setHasEnrolled(true);
-      }, 3000);
-      setTimeout(() => {
-        setRedirecting(true);
-        setIsVerified(false);
-        setHasEnrolled(false);
-      }, 5000);
-      setTimeout(() => {
-        if (adminCurrentAction) {
-          navigate(
-            `/sensec/users/${authUser?.uniqueId}/admin/User-Types/Students/${foundPlacementStudent?.enrollmentId}/enrollment/online/success/Overview`
-          );
-        } else {
-          navigate(
-            `/sensec/students/enrollment/online/${foundPlacementStudent?.enrollmentId}/success/Overview`
-          );
-        }
-      }, 7000);
-    }
     //If placement verified but enrollment not yet started, navigate to enrollment page
     else if (
       foundPlacementStudent?.placementVerified &&
@@ -198,31 +223,6 @@ export function StudentPlacementVerification() {
         } else {
           navigate(
             `/sensec/students/enrollment/online/${foundPlacementStudent?.jhsIndexNo}`
-          );
-        }
-      }, 7000);
-    }
-    //If placement verified and enrolled, navigate student to enrolment success page
-    else if (foundPlacementStudent?.placementVerified && enrolledStudent) {
-      // localStorage.setItem("indexNumber", formData?.jhsIndexNo);
-      setTimeout(() => {
-        setLoadingComplete(true);
-        setIsVerified(true);
-        setHasEnrolled(true);
-      }, 3000);
-      setTimeout(() => {
-        setRedirecting(true);
-        setIsVerified(false);
-        setHasEnrolled(false);
-      }, 5000);
-      setTimeout(() => {
-        if (adminCurrentAction) {
-          navigate(
-            `/sensec/users/${authUser?.uniqueId}/admin/User-Types/Students/${enrolledStudent?.uniqueId}/enrollment/online/success/Overview`
-          );
-        } else {
-          navigate(
-            `/sensec/students/enrollment/online/${enrolledStudent?.uniqueId}/success/Overview`
           );
         }
       }, 7000);

@@ -158,10 +158,9 @@ export function AdminDashboardOverview() {
   }, [error, successMessage, createStatus, authAdmin, dispatch]);
 
   return (
-    <Box>
+    <>
       {/* Current dashboard title */}
       <Box
-        component={"Box"}
         id="adminDashboardHeaderWrap"
         sx={{
           position: "sticky",
@@ -185,7 +184,6 @@ export function AdminDashboardOverview() {
         </Box>
       </Box>
       <Box
-        component={"Box"}
         id="adminOverview"
         className={"adminOverviewWrap"}
         // minHeight={"106vh"}
@@ -487,6 +485,6 @@ export function AdminDashboardOverview() {
         </Box>
       </Box>
       <SmallFooter />
-    </Box>
+    </>
   );
 }

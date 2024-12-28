@@ -4,6 +4,7 @@ import ScrollToTop from "./functions/scrollToTop/ScrollToTop";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import TokenExpiry from "./pages/auth/token/TokenExpiry";
+import ScrollToTopButton from "./functions/scrollToTop/ScrollToTopButton";
 
 function App() {
   if (import.meta.env.MODE === "production") {
@@ -17,6 +18,7 @@ function App() {
       <TokenExpiry />
       <PageNavigation />
       <ToastContainer />
+      <ScrollToTopButton />
     </>
   );
 }

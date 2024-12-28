@@ -11,7 +11,6 @@ import {
   Courses,
   EmploymentForm,
   Home,
-  NavigationBar,
   PageNotFound,
 } from "../../../components/lazyLoading/LazyComponents";
 import {
@@ -21,6 +20,7 @@ import {
   SignUpSuccessPage,
 } from "../../../components/lazyLoading/auth/AuthLazyComponents";
 import SearchForm from "../../../components/searchForm/SearchForm";
+import { NavigationBar } from "../../../components/navbar/NavigationBar";
 
 export function GuestPageLayout() {
   const { currentGuestPage, uniqueId } = useParams();

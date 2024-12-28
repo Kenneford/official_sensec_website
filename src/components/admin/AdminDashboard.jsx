@@ -46,10 +46,6 @@ export function AdminDashboard() {
     isSidebarOpen,
     openSearchModal,
     setOpenSearchModal,
-    hovered,
-    setHovered,
-    drawerWidthCollapsed,
-    drawerWidthExpanded,
   } = useOutletContext();
   const { adminCurrentLink, adminCurrentAction, studentId } = useParams();
   const navigate = useNavigate();
@@ -79,9 +75,11 @@ export function AdminDashboard() {
   return (
     <Box bgcolor={"#fff"}>
       <Box
-        sx={{
-          position: isScrolled ? "none" : "block",
-        }}
+        sx={
+          {
+            // position: isScrolled ? "none" : "block",
+          }
+        }
       >
         <Stack
           direction="column"
