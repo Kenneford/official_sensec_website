@@ -86,7 +86,7 @@ export default function UndertakingPdfViewer({ enrolledStudent }) {
           justifyContent: "center",
           alignItems: "center",
           width: "100%",
-          height: "72.9vh",
+          height: "87vh",
         }}
       >
         <MemoizedPDFViewer enrolledStudent={enrolledStudent} />
