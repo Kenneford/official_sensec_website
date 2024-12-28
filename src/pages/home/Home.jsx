@@ -12,7 +12,7 @@ import { Box } from "@mui/material";
 
 export function Home() {
   return (
-    <>
+    <Box id="homePage">
       <Box sx={{ overflow: "hidden" }}>
         <ImageSlider />
       </Box>
@@ -24,7 +24,7 @@ export function Home() {
       <QuestionsSection />
       <AlumniTestimonialSection />
       <Footer />
-    </>
+    </Box>
   );
 }
 

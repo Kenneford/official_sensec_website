@@ -52,7 +52,7 @@ export function PopularCoursesSection() {
       sx={{
         width: { xs: "100%", sm: "95%", md: "90%", lg: "90%", xl: "75%" },
         margin: "auto",
-        paddingTop: "2rem",
+        padding: { xs: "1rem .5rem", sm: "2rem 1rem" },
         display: "flex",
         flexDirection: "column",
       }}
@@ -60,11 +60,19 @@ export function PopularCoursesSection() {
       <Box className="courseWrap">
         <Box className="courseContainer">
           <h1>Our Popular Courses</h1>
-          <Box className="courseContent">
+          <Box className="courseContent" sx={{ flexGrow: 1 }}>
             <Grid container spacing={2}>
               {popularPrograms?.map((program) => (
                 <Grid key={program?._id} item xs={12} sm={6} md={4} lg={4}>
-                  <Box className="courseCard">
+                  <Box
+                    className="courseCard"
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      // justifyContent: "space-between",
+                      height: "100%", // Let it fill the grid item's height
+                    }}
+                  >
                     <Box className="courseImgWrap">
                       {program?.name === "Agric Science" && (
                         <Box
@@ -101,18 +109,87 @@ export function PopularCoursesSection() {
                       )}
                     </Box>
                     <Box className="courseInfo">
-                      <h4>Business Management</h4>
-                      <p>
-                        Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry. Lorem Ipsum has been the
-                        industry&apos;s standard dummy text ever since the
-                        1500s,
-                      </p>
+                      <h4>{program?.name}</h4>
+                      {program?.name === "Agric Science" && (
+                        <p
+                          style={{
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            display: "-webkit-box",
+                            WebkitLineClamp: 3, // Limit to 2 lines
+                            WebkitBoxOrient: "vertical",
+                          }}
+                        >
+                          The Agric Science Department is one of the first
+                          department in SENSEC since the school was started as
+                          an agriculture-oriented school. The subject
+                          combination for students in the department is: Animal
+                          Husbandry, General Agriculture, Chemistry and Physics
+                          in addition to the core subjects. The department has
+                          been planting different types of crops each planting
+                          season and has recently started a palm plantation in
+                          the school. Plans are advance to start an animal farm.
+                          Subjects taught in the Agricultural Science programme
+                          include Animal Husbandry, Chemistry, Physics, General
+                          Agriculture and Elective Mathematics.
+                        </p>
+                      )}
+                      {program?.name === "Business" && (
+                        <p
+                          style={{
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            display: "-webkit-box",
+                            WebkitLineClamp: 3, // Limit to 2 lines
+                            WebkitBoxOrient: "vertical",
+                          }}
+                        >
+                          Business, is one of the many programmes studied at
+                          SENSEC. The programme is practical in nature and a
+                          fast-changing field of discipline. The purpose of the
+                          Business programme is to provide students with
+                          knowledge, skills and attitudes to achieve success in
+                          business education, workplace, post-secondary
+                          education or training and daily life. Elective
+                          subjects taught here include Business Management,
+                          Principles of Cost Accounting, Financial Accounting,
+                          Elective Mathematics and Economics.
+                        </p>
+                      )}
+                      {program?.name === "General Arts" && (
+                        <p
+                          style={{
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            display: "-webkit-box",
+                            WebkitLineClamp: 3, // Limit to 2 lines
+                            WebkitBoxOrient: "vertical",
+                          }}
+                        >
+                          The General Arts department is the largest department
+                          at SENSEC in terms of students’ population and faculty
+                          members. It offers students a broad-based foundation
+                          in various disciplines within the Arts and Humanities.
+                          The programme of study is designed to foster
+                          intellectual curiosity, critical thinking, and
+                          effective communication skills. The programme overall
+                          aim is to prepare students for a wide range of career
+                          opportunities and personal development. Subjects
+                          taught include Economics, Geography, History,
+                          Christian Religious Studies, Government, Music, and
+                          Elective Mathematics.
+                        </p>
+                      )}
                     </Box>
                     <HashLink
-                      to={"/sensec/courses#business"}
+                      to={`/sensec/courses#${program?.name}`}
                       smooth
                       scroll={scrollWithOffset}
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        marginTop: "1rem",
+                      }}
                     >
                       <button className="courseBtn">Learn More</button>
                     </HashLink>

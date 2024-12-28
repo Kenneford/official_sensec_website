@@ -30,7 +30,7 @@ export function AllCourses() {
     );
   }
   return (
-    <>
+    <Box>
       {allProgrammes ? (
         <Box
           display={{ xs: "block", md: "flex" }}
@@ -53,7 +53,11 @@ export function AllCourses() {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 {leftProgrammes?.map((program) => (
-                  <Box className="courseWrap" id="course" key={program?._id}>
+                  <Box
+                    className="courseWrap"
+                    id={program?.name}
+                    key={program?._id}
+                  >
                     <Box className="courseCont">
                       <h1 className="title">{program?.name}</h1>
                       <Box className="courseItem">
@@ -177,7 +181,11 @@ export function AllCourses() {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 {rightProgrammes?.map((program) => (
-                  <Box className="courseWrap" id="course" key={program?._id}>
+                  <Box
+                    className="courseWrap"
+                    id={program?.name}
+                    key={program?._id}
+                  >
                     <Box className="courseCont" mt={{ xs: "2rem" }}>
                       <h1 className="title">{program?.name}</h1>
                       <Box className="rightCourseItem">
@@ -296,6 +304,6 @@ export function AllCourses() {
       ) : (
         ""
       )}
-    </>
+    </Box>
   );
 }

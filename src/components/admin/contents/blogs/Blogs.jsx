@@ -138,7 +138,7 @@ export function Blogs() {
   }, [error, successMessage, deleteStatus, dispatch]);
 
   return (
-    <>
+    <Box id="blogsPage">
       {/* Navbar */}
       {!adminCurrentAction && (
         <Stack
@@ -286,6 +286,6 @@ export function Blogs() {
       </Box>
       {/* <Footer /> */}
       <SmallFooter />
-    </>
+    </Box>
   );
 }

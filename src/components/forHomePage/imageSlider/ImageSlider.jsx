@@ -12,14 +12,14 @@ const sliderImages = [
     title: "Senya Senior High School",
     description: "We are the best among equals!",
     actionButtonText: "Enroll Now",
-    actionLink: "/sensec/students/enrollment/online",
+    actionLink: "/sensec/students/enrollment/placement_verification",
     alt: "Sensec Classroom Image",
   },
   {
     url: "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1472&q=80",
     title: "How To Log Into Your Portal",
     description:
-      "Kindly watch this short video on how to log into ITS support system.",
+      "Kindly watch this short video on how to log into your portal.",
     actionButtonText: "Click Here",
     actionLink: "/sensec/students",
     alt: "Student Portal Image",

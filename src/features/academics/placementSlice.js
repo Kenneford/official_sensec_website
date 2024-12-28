@@ -63,10 +63,10 @@ export const uploadPlacementFile = createAsyncThunk(
 // Works ✅
 export const checkPlacement = createAsyncThunk(
   "Placement/checkPlacement",
-  async ({ studentIndexNo }, { rejectWithValue }) => {
+  async ({ studentIndexNo, yearGraduated }, { rejectWithValue }) => {
     try {
       const res = await axios.get(
-        `${SENSEC_API_ENDPOINT}/students/placement/${studentIndexNo}/check`
+        `${SENSEC_API_ENDPOINT}/students/${studentIndexNo}/placement/${yearGraduated}/check`
       );
 
       return res.data;
@@ -163,6 +163,14 @@ const placementSlice = createSlice({
       return {
         ...state,
         createStatus: "",
+        successMessage: "",
+        error: "",
+      };
+    },
+    resetPlacementCheckState(state) {
+      return {
+        ...state,
+        checkStatus: "",
         successMessage: "",
         error: "",
       };
@@ -353,6 +361,7 @@ export const {
   resetUpdateState,
   resetPlacementUploadState,
   resetPlacementUploadErrorState,
+  resetPlacementCheckState,
 } = placementSlice.actions;
 export const getAllPlacementStudents = (state) =>
   state.placement.allPlacementStudents;

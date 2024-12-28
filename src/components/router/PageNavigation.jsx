@@ -8,6 +8,7 @@ import {
   Contact,
   Courses,
   EmploymentForm,
+  EnrollmentDocumentation,
   EnrollmentPage,
   EnrollmentSuccessLinksContainer,
   EnrollmentSuccessOverview,
@@ -121,8 +122,12 @@ export default function PageNavigation() {
           element: <EnrollmentPage />,
           children: [
             {
-              element: <Navigate to={"placement_verification"} />,
+              element: <Navigate to={"documentation"} />,
               index: true,
+            },
+            {
+              path: "documentation",
+              element: <EnrollmentDocumentation />,
             },
             {
               path: "placement_verification",

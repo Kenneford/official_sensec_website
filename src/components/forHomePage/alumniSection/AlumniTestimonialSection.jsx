@@ -83,10 +83,15 @@ export default function AlumniTestimonialSection() {
     return () => clearInterval(interval); // Cleanup interval on component unmount
   }, []);
   return (
-    <div className="testimonialWrap">
-      <div className="testimonialHeader">
+    <Box
+      className="testimonialWrap"
+      sx={{
+        padding: { xs: "1rem .5rem", sm: "2rem 1rem" },
+      }}
+    >
+      <Box className="testimonialHeader">
         <h1>What Our Alumni Says</h1>
-      </div>
+      </Box>
       <Swiper
         className="testimonialCont mySwiper"
         effect={"coverflow"}
@@ -146,7 +151,7 @@ export default function AlumniTestimonialSection() {
       >
         {testimonials?.map((test) => (
           <SwiperSlide key={test?.name} className="testimonial">
-            <div className="alumniImg">
+            <Box className="alumniImg">
               <Avatar
                 src={test?.image}
                 alt="Alumni Image"
@@ -156,30 +161,30 @@ export default function AlumniTestimonialSection() {
                 }}
               />
               {/* <img src={test?.image} alt="" /> */}
-            </div>
-            <div className="alumniInfo">
+            </Box>
+            <Box className="alumniInfo">
               <h5>{test?.name}</h5>
               <span>
                 {test?.programme} [ {test?.yearGraduated} ]
               </span>
-            </div>
-            <div className="testimonialText">
+            </Box>
+            <Box className="testimonialText">
               <p>{test?.text}</p>
-            </div>
+            </Box>
           </SwiperSlide>
         ))}
         {/* <SwiperSlide className="testimonial">
-          <div className="alumniImg">
+          <Box className="alumniImg">
             <img
               src="https://images.unsplash.com/photo-1542596768-5d1d21f1cf98?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"
               alt=""
             />
-          </div>
-          <div className="alumniInfo">
+          </Box>
+          <Box className="alumniInfo">
             <h5>Jennifer Aboagye</h5>
             <span>Web Developer (2009)</span>
-          </div>
-          <div className="testimonialText">
+          </Box>
+          <Box className="testimonialText">
             <p>
               There are many variations of passages of Lorem Ipsum available,
               but the majority have suffered alteration in some form, by
@@ -187,20 +192,20 @@ export default function AlumniTestimonialSection() {
               slightly believable. If you are going to use a passage of Lorem
               Ipsum .
             </p>
-          </div>
+          </Box>
         </SwiperSlide>
         <SwiperSlide className="testimonial">
-          <div className="alumniImg">
+          <Box className="alumniImg">
             <img
               src="https://images.unsplash.com/photo-1592275772614-ec71b19e326f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"
               alt=""
             />
-          </div>
-          <div className="alumniInfo">
+          </Box>
+          <Box className="alumniInfo">
             <h5>Millicent Ama Gyamfoah</h5>
             <span>Caterer (2003)</span>
-          </div>
-          <div className="testimonialText">
+          </Box>
+          <Box className="testimonialText">
             <p>
               There are many variations of passages of Lorem Ipsum available,
               but the majority have suffered alteration in some form, by
@@ -208,20 +213,20 @@ export default function AlumniTestimonialSection() {
               slightly believable. If you are going to use a passage of Lorem
               Ipsum .
             </p>
-          </div>
+          </Box>
         </SwiperSlide>
         <SwiperSlide className="testimonial">
-          <div className="alumniImg">
+          <Box className="alumniImg">
             <img
               src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"
               alt=""
             />
-          </div>
-          <div className="alumniInfo">
+          </Box>
+          <Box className="alumniInfo">
             <h5>Benjamin Acquah</h5>
             <span>Lecturer (2009)</span>
-          </div>
-          <div className="testimonialText">
+          </Box>
+          <Box className="testimonialText">
             <p>
               There are many variations of passages of Lorem Ipsum available,
               but the majority have suffered alteration in some form, by
@@ -229,20 +234,20 @@ export default function AlumniTestimonialSection() {
               slightly believable. If you are going to use a passage of Lorem
               Ipsum .
             </p>
-          </div>
+          </Box>
         </SwiperSlide>
         <SwiperSlide className="testimonial">
-          <div className="alumniImg">
+          <Box className="alumniImg">
             <img
               src="https://images.unsplash.com/photo-1520341280432-4749d4d7bcf9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"
               alt=""
             />
-          </div>
-          <div className="alumniInfo">
+          </Box>
+          <Box className="alumniInfo">
             <h5>Stephen Ansah</h5>
             <span>Bank Manager (2017)</span>
-          </div>
-          <div className="testimonialText">
+          </Box>
+          <Box className="testimonialText">
             <p>
               There are many variations of passages of Lorem Ipsum available,
               but the majority have suffered alteration in some form, by
@@ -250,16 +255,16 @@ export default function AlumniTestimonialSection() {
               slightly believable. If you are going to use a passage of Lorem
               Ipsum .
             </p>
-          </div>
+          </Box>
         </SwiperSlide> */}
-        <div className="slider-controler">
-          <div className="swiper-button-prev slider-arrow"></div>
-          <div className="swiper-button-next slider-arrow"></div>
-          <div className="swiper-pagination"></div>
-        </div>
+        <Box className="slider-controler">
+          <Box className="swiper-button-prev slider-arrow"></Box>
+          <Box className="swiper-button-next slider-arrow"></Box>
+          <Box className="swiper-pagination"></Box>
+        </Box>
       </Swiper>
       {/* <Footer /> */}
-    </div>
+    </Box>
     // <Swiper
     //   slidesPerView={2}
     //   spaceBetween={30}
@@ -286,7 +291,7 @@ export default function AlumniTestimonialSection() {
     //               />
     //             </Grid>
     //             <Grid item xs>
-    //               <Typography variant="h6" component="div">
+    //               <Typography variant="h6" component="Box">
     //                 {testimonial.name}
     //               </Typography>
     //               <Typography variant="body2" color="text.secondary">

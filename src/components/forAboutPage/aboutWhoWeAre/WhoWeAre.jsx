@@ -9,7 +9,7 @@ export function WhoWeAre() {
       sx={{
         width: { xs: "100%", sm: "95%", md: "90%", lg: "90%", xl: "75%" },
         margin: "auto",
-        paddingTop: "2rem",
+        padding: { xs: "1rem .5rem", sm: "2rem 1rem" },
       }}
     >
       <Box component="div" className="weWrap">

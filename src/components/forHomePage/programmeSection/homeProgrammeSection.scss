@@ -83,16 +83,33 @@
       }
       h4 {
         font-size: 1em;
+        margin-bottom: 1rem;
       }
       p {
         // padding: 0.5rem;
         font-size: 0.9em;
         line-height: sizes.$line_height;
+        // margin-bottom: 1rem;
+        // height: 2rem;
       }
     }
     .programmeCard:hover {
       // box-shadow: 0 2rem 2rem #6c6b6bcc;
       filter: drop-shadow(0 1em 0.5em #6c6b6bcc);
+    }
+    .courseBtn {
+      background-color: #0fc80f;
+      padding: 0.5rem;
+      // margin-left: 0.5rem;
+      font-weight: 500;
+      transition: 0.4s ease;
+      color: #fff;
+      font-size: 0.9em;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .courseBtn:hover {
+      background-color: colors.$primaryColor;
     }
   }
 }

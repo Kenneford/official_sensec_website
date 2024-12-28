@@ -70,23 +70,23 @@ const userActions = [
 const navbarLinks = [
   {
     name: "homepage",
-    path: "/sensec/homepage",
+    path: "/sensec/homepage#homePage",
   },
   {
     name: "about",
-    path: "/sensec/about",
+    path: "/sensec/about#aboutPage",
   },
   {
     name: "courses",
-    path: "/sensec/courses",
+    path: "/sensec/courses#allProgrammes",
   },
   {
     name: "contact",
-    path: "/sensec/contact",
+    path: "/sensec/contact#contactPage",
   },
   {
     name: "blog",
-    path: "/sensec/blogs",
+    path: "/sensec/blogs#blogsPage",
   },
   {
     name: "others",
@@ -156,23 +156,23 @@ export function NavigationBar({
   const menuLinks = [
     {
       name: "Home",
-      path: "/sensec/homepage",
+      path: "/sensec/homepage#homePage",
     },
     {
       name: "About",
-      path: "/sensec/about",
+      path: "/sensec/about#aboutPage",
     },
     {
       name: "Courses",
-      path: "/sensec/courses",
+      path: "/sensec/courses#allProgrammes",
     },
     {
       name: "Contact",
-      path: "/sensec/contact",
+      path: "/sensec/contact#contactPage",
     },
     {
       name: "Blog",
-      path: "/sensec/blogs",
+      path: "/sensec/blogs#blogsPage",
     },
     {
       name: "Check Placement",
@@ -222,6 +222,11 @@ export function NavigationBar({
     (links) => links && !userInfo && links?.name !== "Dashboard"
   );
 
+  const scrollWithOffset = (el) => {
+    const yCoordinate = el.getBoundingClientRect().top + window.scrollY;
+    const yOffset = -150;
+    window.scrollTo({ top: yCoordinate + yOffset, behavior: "smooth" });
+  };
   //THIS REMOVES THE NavLINK TAG FROM THE URL
   if (window.location.hash) {
     window.history.replaceState("", document.title, window.location.pathname);
@@ -525,10 +530,13 @@ export function NavigationBar({
                   //   alignItems: "center",
                   // }}
                 >
-                  <Button
+                  <HashLink
                     id="navLinks"
                     key={link?.name}
                     // onClick={handleCloseNavMenu}
+                    to={link?.path}
+                    smooth
+                    scroll={scrollWithOffset}
                     sx={{
                       // my: 2,
                       color: `${
@@ -546,7 +554,7 @@ export function NavigationBar({
                           setOpenSubNavLinks(!openSubNavLinks)
                         );
                       } else {
-                        localStorage.removeItem("currentOtherNavLink");
+                        // localStorage.removeItem("currentOtherNavLink");
                       }
                       navigate(link?.path);
                     }}
@@ -561,7 +569,7 @@ export function NavigationBar({
                         )}
                       </>
                     )}
-                  </Button>
+                  </HashLink>
                   {link?.name === "others" && (
                     <Box id="otherLinks">
                       <button
@@ -600,6 +608,8 @@ export function NavigationBar({
                                         ? "otherLinkSelected selected"
                                         : "otherLinkSelected"
                                     }
+                                    smooth
+                                    scroll={scrollWithOffset}
                                     to={
                                       link?.name === "Dashboard" &&
                                       userInfo?.adminStatusExtend?.isAdmin
@@ -651,6 +661,8 @@ export function NavigationBar({
                                         ? "otherLinkSelected selected"
                                         : "otherLinkSelected"
                                     }
+                                    smooth
+                                    scroll={scrollWithOffset}
                                     to={
                                       link?.name === "Dashboard" &&
                                       userInfo?.adminStatusExtend?.isAdmin
@@ -704,6 +716,7 @@ export function NavigationBar({
                     color: "#fff",
                     fontSize: "1.6rem",
                     marginLeft: "1rem",
+                    mt: ".5rem",
                   }}
                 />
               </Box>

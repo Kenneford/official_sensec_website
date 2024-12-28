@@ -8,12 +8,16 @@
   }
   #navLinksWrap {
     #navLinks {
+      display: flex;
+      align-items: center;
+      margin: 0.5rem;
       cursor: pointer;
+      color: #fff;
       &:hover {
         color: yellow;
       }
       text-transform: capitalize;
-      margin: 0;
+      // margin: 0;
       font-size: 0.9em;
     }
     #otherLinks {

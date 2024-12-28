@@ -1,8 +1,27 @@
 import { Box } from "@mui/material";
 import "./coursesBanner.scss";
 import { HashLink } from "react-router-hash-link";
+import { FetchAllProgrammes } from "../../../data/programme/FetchProgrammeData";
 
 export default function CoursesBanner() {
+  const allProgrammes = FetchAllProgrammes();
+
+  const scrollWithOffset = (el) => {
+    const yCoordinate = el.getBoundingClientRect().top + window.scrollY;
+    const yOffset = -80;
+    window.scrollTo({ top: yCoordinate + yOffset, behavior: "smooth" });
+  };
+  const scrollWithOffset1 = (el) => {
+    const yCoordinate = el.getBoundingClientRect().top + window.scrollY;
+    const yOffset = -160;
+    window.scrollTo({ top: yCoordinate + yOffset, behavior: "smooth" });
+  };
+
+  //THIS REMOVES THE HASHLINK TAG FROM THE URL
+  if (window.location.hash) {
+    window.history.replaceState("", document.title, window.location.pathname);
+  }
+
   return (
     <Box className="bannerWrap">
       <Box
@@ -18,12 +37,23 @@ export default function CoursesBanner() {
       </Box>
       <Box bgcolor={"#292929"} width={"100%"} padding={"0 0.5rem"}>
         <Box className="links" width={"100%"} sx={{ padding: "0 .5rem" }}>
-          <HashLink to={"#"}>Agriculture</HashLink>
+          {/* <HashLink to={"#"}>Agriculture</HashLink>
           <HashLink to={"#"}>Visual Art</HashLink>
           <HashLink to={"#"}>Science</HashLink>
           <HashLink to={"#"}>Business</HashLink>
           <HashLink to={"#"}>General Art</HashLink>
-          <HashLink to={"#"}>Home Economics</HashLink>
+          <HashLink to={"#"}>Home Economics</HashLink> */}
+
+          {allProgrammes?.map((program) => (
+            <HashLink
+              key={program?._id}
+              to={`/sensec/courses#${program?.name}`}
+              smooth
+              scroll={scrollWithOffset}
+            >
+              {program?.name}
+            </HashLink>
+          ))}
         </Box>
       </Box>
     </Box>
