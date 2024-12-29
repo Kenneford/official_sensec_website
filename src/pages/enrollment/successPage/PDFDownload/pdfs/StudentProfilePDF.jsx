@@ -127,238 +127,242 @@ export default function StudentProfilePDF({ enrolledStudent }) {
   return (
     <Document title={"Student_Profile.pdf"}>
       <Page size="A4" style={styles.body}>
-        <Image style={styles.logo} src={"/assets/sensec-logo1.png"} />
-        <View style={styles.headerTitleWrap}>
-          <Text style={styles.headerTitle}>SENYA SENIOR HIGH SCHOOL</Text>
-          <Text style={styles.headerTitle}>STUDENT PROFILE</Text>
-        </View>
-        <View style={styles.imageWrap}>
-          <Image
-            style={styles.image}
-            src={enrolledStudent?.personalInfo?.profilePicture.url}
-          />
-        </View>
-
-        <Text style={styles.h3}>Personal Details</Text>
-        <View style={styles.table}>
-          <View style={styles.header1}>
-            <Text style={[styles.header, styles.rowBg]}>ID</Text>
-            <Text style={styles.header}>Full Name</Text>
-            <Text style={[styles.header, styles.rowBg]}>Date of Birth</Text>
-            <Text style={styles.header}>Place of Birth</Text>
-            <Text style={[styles.header, styles.rowBg]}>Gender</Text>
-            <Text style={styles.header}>Nationality</Text>
+        <View>
+          <Image style={styles.logo} src={"/assets/sensec-logo1.png"} />
+          <View style={styles.headerTitleWrap}>
+            <Text style={styles.headerTitle}>SENYA SENIOR HIGH SCHOOL</Text>
+            <Text style={styles.headerTitle}>STUDENT PROFILE</Text>
           </View>
-          <View style={styles.header2}>
-            <Text style={[styles.tableCell]}>{enrolledStudent?.uniqueId}</Text>
-            <Text style={[styles.tableCell, styles.rowBg]}>
-              {enrolledStudent?.personalInfo?.fullName}
-            </Text>
-            <Text style={[styles.tableCell]}>
-              {enrolledStudent?.personalInfo?.dateOfBirth
-                ? dateFormatter.format(
-                    new Date(enrolledStudent?.personalInfo?.dateOfBirth)
-                  )
-                : "---"}
-            </Text>
-            <Text style={[styles.tableCell, styles.rowBg]}>
-              {enrolledStudent?.personalInfo?.placeOfBirth}
-            </Text>
-            <Text style={[styles.tableCell]}>
-              {enrolledStudent?.personalInfo?.gender}
-            </Text>
-            <Text style={[styles.tableCell, styles.rowBg]}>
-              {enrolledStudent?.personalInfo?.nationality}
-            </Text>
+          <View style={styles.imageWrap}>
+            <Image
+              style={styles.image}
+              src={enrolledStudent?.personalInfo?.profilePicture.url}
+            />
           </View>
-        </View>
-        <Text style={styles.h3}>School Data</Text>
-        <View style={styles.table}>
-          <View style={styles.header1}>
-            <Text style={[styles.header, styles.rowBg]}>JHS Attended</Text>
-            <Text style={styles.header}>JHS Index-No.</Text>
-            <Text style={[styles.header, styles.rowBg]}>Student ID</Text>
-            <Text style={styles.header}>Class Level</Text>
-            <Text style={[styles.header, styles.rowBg]}>Program</Text>
-            <Text style={styles.header}>Batch</Text>
-            <Text style={[styles.header, styles.rowBg]}>Class</Text>
-          </View>
-          <View style={styles.header2}>
-            {/* {users.map((user) => ( */}
-            <View key={enrolledStudent?.uniqueId}>
-              <Text style={[styles.tableCell]}>
-                {enrolledStudent?.studentSchoolData?.jhsAttended}
-              </Text>
-              <Text style={[styles.tableCell, styles.rowBg]}>
-                {enrolledStudent?.studentSchoolData?.jhsIndexNo}
-              </Text>
+          <Text style={styles.h3}>Personal Details</Text>
+          <View style={styles.table}>
+            <View style={styles.header1}>
+              <Text style={[styles.header, styles.rowBg]}>ID</Text>
+              <Text style={styles.header}>Full Name</Text>
+              <Text style={[styles.header, styles.rowBg]}>Date of Birth</Text>
+              <Text style={styles.header}>Place of Birth</Text>
+              <Text style={[styles.header, styles.rowBg]}>Gender</Text>
+              <Text style={styles.header}>Nationality</Text>
+            </View>
+            <View style={styles.header2}>
               <Text style={[styles.tableCell]}>
                 {enrolledStudent?.uniqueId}
               </Text>
               <Text style={[styles.tableCell, styles.rowBg]}>
-                {enrolledStudent?.studentSchoolData?.currentClassLevel?.name}
+                {enrolledStudent?.personalInfo?.fullName}
               </Text>
               <Text style={[styles.tableCell]}>
-                {enrolledStudent?.studentSchoolData?.program?.name}
-              </Text>
-              <Text style={[styles.tableCell, styles.rowBg]}>
-                {enrolledStudent?.studentSchoolData?.batch?.yearRange}
-              </Text>
-              <Text style={[styles.tableCell]}>
-                {enrolledStudent?.studentSchoolData?.currentClassLevelSection
-                  ? enrolledStudent?.studentSchoolData?.currentClassLevelSection
-                      ?.label
+                {enrolledStudent?.personalInfo?.dateOfBirth
+                  ? dateFormatter.format(
+                      new Date(enrolledStudent?.personalInfo?.dateOfBirth)
+                    )
                   : "---"}
               </Text>
+              <Text style={[styles.tableCell, styles.rowBg]}>
+                {enrolledStudent?.personalInfo?.placeOfBirth}
+              </Text>
+              <Text style={[styles.tableCell]}>
+                {enrolledStudent?.personalInfo?.gender}
+              </Text>
+              <Text style={[styles.tableCell, styles.rowBg]}>
+                {enrolledStudent?.personalInfo?.nationality}
+              </Text>
             </View>
-            {/* ))} */}
           </View>
-        </View>
-        <Text style={styles.h3}>Status</Text>
-        <View style={styles.table}>
-          <View style={styles.header1}>
-            <Text style={[styles.header, styles.rowBg]}>
-              Residential Status
-            </Text>
-            <Text style={[styles.header]}>Height</Text>
-            <Text style={[styles.header, styles.rowBg]}>Weight</Text>
-            <Text style={[styles.header]}>Complexion</Text>
-            <Text style={[styles.header, styles.rowBg]}>Mother Tongue</Text>
-            <Text style={[styles.header]}>Other Tongue</Text>
-          </View>
-          <View style={styles.header2}>
-            <Text style={[styles.tableCell]}>
-              {enrolledStudent?.status?.residentialStatus}
-            </Text>
-            <Text style={[styles.tableCell, styles.rowBg]}>
-              {enrolledStudent?.status?.height}
-            </Text>
-            <Text style={[styles.tableCell]}>
-              {enrolledStudent?.status?.weight}
-            </Text>
-            <Text style={[styles.tableCell, styles.rowBg]}>
-              {enrolledStudent?.status?.complexion}
-            </Text>
-            <Text style={[styles.tableCell]}>
-              {enrolledStudent?.status?.motherTongue}
-            </Text>
-            <Text style={[styles.tableCell, styles.rowBg]}>
-              {enrolledStudent?.status?.otherTongue}
-            </Text>
-          </View>
-        </View>
-        <Text style={styles.h3}>Location Address/Contacts</Text>
-        <View style={styles.table}>
-          <View style={styles.header1}>
-            <Text style={[styles.header, styles.rowBg]}>Home Town</Text>
-            <Text style={[styles.header]}>Region</Text>
-            <Text style={[styles.header, styles.rowBg]}>District</Text>
-            <Text style={[styles.header]}>Current City</Text>
-            <Text style={[styles.header, styles.rowBg]}>House Address</Text>
-            <Text style={[styles.header]}>GPS Address</Text>
-            <Text style={[styles.header, styles.rowBg]}>Email</Text>
-            <Text style={[styles.header]}>Mobile Phone</Text>
-          </View>
-          <View style={styles.header2}>
-            <Text style={[styles.tableCell]}>
-              {enrolledStudent?.contactAddress?.homeTown}
-            </Text>
-            <Text style={[styles.tableCell, styles.rowBg]}>
-              {enrolledStudent?.contactAddress?.region}
-            </Text>
-            <Text style={[styles.tableCell]}>
-              {enrolledStudent?.contactAddress?.district}
-            </Text>
-            <Text style={[styles.tableCell, styles.rowBg]}>
-              {enrolledStudent?.contactAddress?.currentCity}
-            </Text>
-            <Text style={[styles.tableCell]}>
-              {enrolledStudent?.contactAddress?.residentialAddress}
-            </Text>
-            <Text style={[styles.tableCell, styles.rowBg]}>
-              {enrolledStudent?.contactAddress?.gpsAddress}
-            </Text>
-            <Text style={[styles.tableCell]}>
-              {enrolledStudent?.contactAddress?.email}
-            </Text>
-            <Text style={[styles.tableCell, styles.rowBg]}>
-              {enrolledStudent?.contactAddress?.mobile}
-            </Text>
-          </View>
-        </View>
-        {enrolledStudent?.parent && (
-          <>
-            <Text style={styles.h3}>Parent</Text>
-            <View style={styles.table}>
-              <View style={styles.header1}>
-                <Text style={[styles.header, styles.rowBg]}>
-                  Father&apos;s Name
-                </Text>
-                <Text style={[styles.header]}>Father&apos;s Occupation</Text>
-                <Text style={[styles.header, styles.rowBg]}>
-                  Mother&apos;s Name
-                </Text>
-                <Text style={[styles.header]}>Mother&apos;s Occupation</Text>
-                <Text style={[styles.header, styles.rowBg]}>House Address</Text>
-                <Text style={[styles.header]}>Mobile Phone</Text>
-                <Text style={[styles.header, styles.rowBg]}>Email</Text>
-              </View>
-              <View style={styles.header2}>
+          <Text style={styles.h3}>School Data</Text>
+          <View style={styles.table}>
+            <View style={styles.header1}>
+              <Text style={[styles.header, styles.rowBg]}>JHS Attended</Text>
+              <Text style={styles.header}>JHS Index-No.</Text>
+              <Text style={[styles.header, styles.rowBg]}>Student ID</Text>
+              <Text style={styles.header}>Class Level</Text>
+              <Text style={[styles.header, styles.rowBg]}>Program</Text>
+              <Text style={styles.header}>Batch</Text>
+              <Text style={[styles.header, styles.rowBg]}>Class</Text>
+            </View>
+            <View style={styles.header2}>
+              <View key={enrolledStudent?.uniqueId}>
                 <Text style={[styles.tableCell]}>
-                  {enrolledStudent?.parent?.fatherName}
+                  {enrolledStudent?.studentSchoolData?.jhsAttended}
                 </Text>
                 <Text style={[styles.tableCell, styles.rowBg]}>
-                  {enrolledStudent?.parent?.fathersOccupation}
+                  {enrolledStudent?.studentSchoolData?.jhsIndexNo}
                 </Text>
                 <Text style={[styles.tableCell]}>
-                  {enrolledStudent?.parent?.motherName}
+                  {enrolledStudent?.uniqueId}
                 </Text>
                 <Text style={[styles.tableCell, styles.rowBg]}>
-                  {enrolledStudent?.parent?.mothersOccupation}
+                  {enrolledStudent?.studentSchoolData?.currentClassLevel?.name}
                 </Text>
                 <Text style={[styles.tableCell]}>
-                  {enrolledStudent?.parent?.address}
+                  {enrolledStudent?.studentSchoolData?.program?.name}
                 </Text>
                 <Text style={[styles.tableCell, styles.rowBg]}>
-                  {enrolledStudent?.parent?.mobile}
+                  {enrolledStudent?.studentSchoolData?.batch?.yearRange}
                 </Text>
                 <Text style={[styles.tableCell]}>
-                  {enrolledStudent?.parent?.email
-                    ? enrolledStudent?.parent?.email
+                  {enrolledStudent?.studentSchoolData?.currentClassLevelSection
+                    ? enrolledStudent?.studentSchoolData
+                        ?.currentClassLevelSection?.label
                     : "---"}
                 </Text>
               </View>
             </View>
-          </>
-        )}
-        {enrolledStudent?.guardian && (
-          <>
-            <Text style={styles.h3}>Guardian</Text>
-            <View style={styles.table}>
-              <View style={styles.header1}>
-                <Text style={[styles.header, styles.rowBg]}>Guardian Name</Text>
-                <Text style={[styles.header]}>House Address</Text>
-                <Text style={[styles.header, styles.rowBg]}>Email</Text>
-                <Text style={[styles.header]}>Mobile Phone</Text>
-              </View>
-              <View style={styles.header2}>
-                <Text style={[styles.tableCell]}>
-                  {enrolledStudent?.guardian?.guardianName}
-                </Text>
-                <Text style={[styles.tableCell, styles.rowBg]}>
-                  {enrolledStudent?.guardian?.address}
-                </Text>
-                <Text style={[styles.tableCell]}>
-                  {enrolledStudent?.guardian?.email}
-                </Text>
-                <Text style={[styles.tableCell, styles.rowBg]}>
-                  {enrolledStudent?.guardian?.mobile}
-                </Text>
-              </View>
+          </View>
+          <Text style={styles.h3}>Status</Text>
+          <View style={styles.table}>
+            <View style={styles.header1}>
+              <Text style={[styles.header, styles.rowBg]}>
+                Residential Status
+              </Text>
+              <Text style={[styles.header]}>Height</Text>
+              <Text style={[styles.header, styles.rowBg]}>Weight</Text>
+              <Text style={[styles.header]}>Complexion</Text>
+              <Text style={[styles.header, styles.rowBg]}>Mother Tongue</Text>
+              <Text style={[styles.header]}>Other Tongue</Text>
             </View>
-          </>
-        )}
-
+            <View style={styles.header2}>
+              <Text style={[styles.tableCell]}>
+                {enrolledStudent?.status?.residentialStatus}
+              </Text>
+              <Text style={[styles.tableCell, styles.rowBg]}>
+                {enrolledStudent?.status?.height}
+              </Text>
+              <Text style={[styles.tableCell]}>
+                {enrolledStudent?.status?.weight}
+              </Text>
+              <Text style={[styles.tableCell, styles.rowBg]}>
+                {enrolledStudent?.status?.complexion}
+              </Text>
+              <Text style={[styles.tableCell]}>
+                {enrolledStudent?.status?.motherTongue}
+              </Text>
+              <Text style={[styles.tableCell, styles.rowBg]}>
+                {enrolledStudent?.status?.otherTongue}
+              </Text>
+            </View>
+          </View>
+          <Text style={styles.h3}>Location Address/Contacts</Text>
+          <View style={styles.table}>
+            <View style={styles.header1}>
+              <Text style={[styles.header, styles.rowBg]}>Home Town</Text>
+              <Text style={[styles.header]}>Region</Text>
+              <Text style={[styles.header, styles.rowBg]}>District</Text>
+              <Text style={[styles.header]}>Current City</Text>
+              <Text style={[styles.header, styles.rowBg]}>House Address</Text>
+              <Text style={[styles.header]}>GPS Address</Text>
+              <Text style={[styles.header, styles.rowBg]}>Email</Text>
+              <Text style={[styles.header]}>Mobile Phone</Text>
+            </View>
+            <View style={styles.header2}>
+              <Text style={[styles.tableCell]}>
+                {enrolledStudent?.contactAddress?.homeTown}
+              </Text>
+              <Text style={[styles.tableCell, styles.rowBg]}>
+                {enrolledStudent?.contactAddress?.region}
+              </Text>
+              <Text style={[styles.tableCell]}>
+                {enrolledStudent?.contactAddress?.district}
+              </Text>
+              <Text style={[styles.tableCell, styles.rowBg]}>
+                {enrolledStudent?.contactAddress?.currentCity}
+              </Text>
+              <Text style={[styles.tableCell]}>
+                {enrolledStudent?.contactAddress?.residentialAddress}
+              </Text>
+              <Text style={[styles.tableCell, styles.rowBg]}>
+                {enrolledStudent?.contactAddress?.gpsAddress}
+              </Text>
+              <Text style={[styles.tableCell]}>
+                {enrolledStudent?.contactAddress?.email}
+              </Text>
+              <Text style={[styles.tableCell, styles.rowBg]}>
+                {enrolledStudent?.contactAddress?.mobile}
+              </Text>
+            </View>
+          </View>
+          {enrolledStudent?.parent && (
+            <>
+              <Text style={styles.h3}>Parent</Text>
+              <View style={styles.table}>
+                <View style={styles.header1}>
+                  <Text style={[styles.header, styles.rowBg]}>
+                    Father&apos;s Name
+                  </Text>
+                  <Text style={[styles.header]}>Father&apos;s Occupation</Text>
+                  <Text style={[styles.header, styles.rowBg]}>
+                    Mother&apos;s Name
+                  </Text>
+                  <Text style={[styles.header]}>Mother&apos;s Occupation</Text>
+                  <Text style={[styles.header, styles.rowBg]}>
+                    House Address
+                  </Text>
+                  <Text style={[styles.header]}>Mobile Phone</Text>
+                  <Text style={[styles.header, styles.rowBg]}>Email</Text>
+                </View>
+                <View style={styles.header2}>
+                  <Text style={[styles.tableCell]}>
+                    {enrolledStudent?.parent?.fatherName}
+                  </Text>
+                  <Text style={[styles.tableCell, styles.rowBg]}>
+                    {enrolledStudent?.parent?.fathersOccupation}
+                  </Text>
+                  <Text style={[styles.tableCell]}>
+                    {enrolledStudent?.parent?.motherName}
+                  </Text>
+                  <Text style={[styles.tableCell, styles.rowBg]}>
+                    {enrolledStudent?.parent?.mothersOccupation}
+                  </Text>
+                  <Text style={[styles.tableCell]}>
+                    {enrolledStudent?.parent?.address}
+                  </Text>
+                  <Text style={[styles.tableCell, styles.rowBg]}>
+                    {enrolledStudent?.parent?.mobile}
+                  </Text>
+                  <Text style={[styles.tableCell]}>
+                    {enrolledStudent?.parent?.email
+                      ? enrolledStudent?.parent?.email
+                      : "---"}
+                  </Text>
+                </View>
+              </View>
+            </>
+          )}
+          {enrolledStudent?.guardian && (
+            <>
+              <Text style={styles.h3}>Guardian</Text>
+              <View style={styles.table}>
+                <View style={styles.header1}>
+                  <Text style={[styles.header, styles.rowBg]}>
+                    Guardian Name
+                  </Text>
+                  <Text style={[styles.header]}>House Address</Text>
+                  <Text style={[styles.header, styles.rowBg]}>Email</Text>
+                  <Text style={[styles.header]}>Mobile Phone</Text>
+                </View>
+                <View style={styles.header2}>
+                  <Text style={[styles.tableCell]}>
+                    {enrolledStudent?.guardian?.guardianName}
+                  </Text>
+                  <Text style={[styles.tableCell, styles.rowBg]}>
+                    {enrolledStudent?.guardian?.address}
+                  </Text>
+                  <Text style={[styles.tableCell]}>
+                    {enrolledStudent?.guardian?.email}
+                  </Text>
+                  <Text style={[styles.tableCell, styles.rowBg]}>
+                    {enrolledStudent?.guardian?.mobile}
+                  </Text>
+                </View>
+              </View>
+            </>
+          )}
+        </View>
         <Text
           style={styles.pageNumber}
           render={({ pageNumber, totalPages }) =>
