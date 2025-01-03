@@ -42,10 +42,13 @@ export function ParentForm() {
   // Find student
   const foundStudent = allStudents?.find((std) => std?.uniqueId === studentId);
 
+  console.log(foundStudent);
+
   // Find placement student
   const foundPlacementStudent = allPlacementStudents?.find(
     (std) => std.jhsIndexNo === foundStudent?.studentSchoolData?.jhsIndexNo
   );
+  console.log(foundPlacementStudent);
 
   const { createStatus, error, successMessage } = useSelector(
     (state) => state.parent

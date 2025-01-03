@@ -100,22 +100,50 @@ export default function EnrollmentSuccessSidebar({
             </Box>
           </Box>
           <Box className="links">
-            {links?.map((link) => (
-              <HashLink
-                to={link?.ulr}
-                smooth
-                // scroll={scrollWithOffset}
-                key={link?.name}
-                className={
-                  current_link &&
-                  current_link?.replace(/_/g, " ") !== link?.name
-                    ? "link"
-                    : "link active"
-                }
-              >
-                {link?.name}
-              </HashLink>
-            ))}
+            {!enrolledStudent?.studentStatusExtend?.isGraduated &&
+              enrolledStudent?.studentStatusExtend?.enrollmentStatus !==
+                "approved" && (
+                <>
+                  {links?.map((link) => (
+                    <HashLink
+                      to={link?.ulr}
+                      smooth
+                      // scroll={scrollWithOffset}
+                      key={link?.name}
+                      className={
+                        current_link &&
+                        current_link?.replace(/_/g, " ") !== link?.name
+                          ? "link"
+                          : "link active"
+                      }
+                    >
+                      {link?.name}
+                    </HashLink>
+                  ))}
+                </>
+              )}
+            {enrolledStudent?.studentStatusExtend?.enrollmentStatus ===
+              "approved" ||
+              (enrolledStudent?.studentStatusExtend?.isGraduated && (
+                <>
+                  {links?.map((link) => (
+                    <HashLink
+                      to={link?.ulr}
+                      smooth
+                      // scroll={scrollWithOffset}
+                      key={link?.name}
+                      className={
+                        current_link &&
+                        current_link?.replace(/_/g, " ") !== link?.name
+                          ? "link"
+                          : "link active"
+                      }
+                    >
+                      {link?.name}
+                    </HashLink>
+                  ))}
+                </>
+              ))}
           </Box>
         </Drawer>
       )}

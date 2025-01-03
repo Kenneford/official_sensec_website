@@ -54,6 +54,8 @@ export function StudentEnrollmentUpdateForm() {
 
   // Student Update state
   const [student, setStudent] = useState(null);
+  console.log(student);
+
   const [imagePreview, setImagePreview] = useState(null);
   const [updateSchoolData, setUpdateSchoolData] = useState(false);
   const [newProgrammeSelected, setNewProgrammeSelected] = useState({});
@@ -150,16 +152,14 @@ export function StudentEnrollmentUpdateForm() {
     event.preventDefault();
     const updateData = {
       studentId: student?.uniqueId,
-      firstName: student?.personalInfo?.firstName,
-      lastName: student?.personalInfo?.lastName,
-      otherName: student?.personalInfo?.otherName,
+      fullName: student?.personalInfo?.fullName,
       dateOfBirth: student?.dateOfBirth.toISOString(),
       placeOfBirth: student?.personalInfo?.placeOfBirth,
       nationality: student?.personalInfo?.nationality,
       gender: student?.personalInfo?.gender,
       profilePicture: imagePreview
         ? imagePreview
-        : student?.personalInfo?.profilePicture?.url,
+        : student?.personalInfo?.profilePicture,
       // Status
       height: student?.status?.height,
       weight: student?.status?.weight,
@@ -360,34 +360,14 @@ export function StudentEnrollmentUpdateForm() {
                 <Grid item xs={12} sm={6} md={4} lg={4}>
                   <CustomTextField
                     fullWidth
-                    label="First Name"
-                    name="personalInfo.firstName"
-                    value={student?.personalInfo?.firstName || ""}
+                    label="Full Name"
+                    name="personalInfo.fullName"
+                    value={student?.personalInfo?.fullName || ""}
                     onChange={handleChange}
                     className="textField"
                     // InputProps={{
                     //   readOnly: !authUser?.roles?.includes("admin"),
                     // }}
-                  />
-                </Grid>
-                {/* Student Surname */}
-                <Grid item xs={12} sm={6} md={4} lg={4}>
-                  <CustomTextField
-                    fullWidth
-                    label="Surname"
-                    name="personalInfo.lastName"
-                    value={student?.personalInfo?.lastName || ""}
-                    onChange={handleChange}
-                  />
-                </Grid>
-                {/* Student Other Name */}
-                <Grid item xs={12} sm={6} md={4} lg={4}>
-                  <CustomTextField
-                    fullWidth
-                    label="Other Name"
-                    name="personalInfo.otherName"
-                    value={student?.personalInfo?.otherName || ""}
-                    onChange={handleChange}
                   />
                 </Grid>
                 {/* Place Of Birth */}
@@ -869,7 +849,7 @@ export function StudentEnrollmentUpdateForm() {
                       //   required
                     >
                       {allDivisionProgrammes?.map((programme) => (
-                        <>
+                        <Box key={programme?._id}>
                           {programme?.programId ===
                             newProgrammeSelected?._id && (
                             <MenuItem
@@ -879,7 +859,7 @@ export function StudentEnrollmentUpdateForm() {
                               {programme?.divisionName}
                             </MenuItem>
                           )}
-                        </>
+                        </Box>
                       ))}
                     </CustomTextField>
                   </Grid>

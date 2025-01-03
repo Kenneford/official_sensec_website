@@ -47,6 +47,9 @@ import { FetchAllCoreSubjects } from "../../../data/subjects/FetchSubjects";
 import EnrollmentSuccessSidebar from "./sidebar/EnrollmentSuccessSidebar";
 import PDFButtons from "./PDFDownload/pdfButtons/PDFButtons";
 import { NavigationBar } from "../../../components/navbar/NavigationBar";
+import Cookies from "js-cookie";
+import PageLoading from "../../../components/pageLoading/PageLoading";
+import DataNotFound from "../../../components/pageNotFound/DataNotFound";
 
 export function EnrollmentSuccessOverview({
   setEnroledStudent,
@@ -66,15 +69,8 @@ export function EnrollmentSuccessOverview({
     openSignUpActions,
     setOpenMenuLinks,
     openMenuLinks,
-    // isSidebarOpen,
-    // openSearchModal,
-    // setOpenSearchModal,
-    // hovered,
-    // setHovered,
-    // drawerWidthCollapsed,
-    // drawerWidthExpanded,
   } = useOutletContext();
-  const studentUniqueId = localStorage.getItem("studentUniqueId");
+  const maskedStudentId = Cookies.get("masked_student_id");
   const { studentId, adminCurrentAction, current_link } = useParams();
   console.log(current_link);
 
@@ -91,7 +87,7 @@ export function EnrollmentSuccessOverview({
   console.log(nonDivisionPrograms);
 
   const enrolledStudent = allStudents?.find(
-    (std) => std?.uniqueId === studentId
+    (std) => std?.uniqueId === maskedStudentId
   );
   console.log(enrolledStudent?.studentSchoolData?.program?._id);
   const stdProgram = allProgrammes?.find(
@@ -125,6 +121,8 @@ export function EnrollmentSuccessOverview({
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("1024")); // 'md' is typically 900px
   const currentTerm = FetchCurrentAcademicTerms();
+  console.log(currentTerm);
+
   const currentAcademicYear = FetchCurrentAcademicYear();
 
   const [disappear, setDisappear] = useState(false);
@@ -154,7 +152,10 @@ export function EnrollmentSuccessOverview({
 
   useEffect(() => {
     setDisappear(false);
-  }, [dispatch, enrolledStudent]);
+    if (!maskedStudentId) {
+      navigate("/");
+    }
+  }, [dispatch, enrolledStudent, maskedStudentId, navigate]);
 
   useEffect(() => {
     if (
@@ -164,6 +165,10 @@ export function EnrollmentSuccessOverview({
       setCurrentEnrolmentSuccessLink("DASHBOARD");
     }
   }, [currentEnrolmentSuccessLink, setCurrentEnrolmentSuccessLink]);
+
+  if (!enrolledStudent) {
+    return <DataNotFound message={"Student data not found!"} />;
+  }
 
   return (
     <Box display={"flex"}>
@@ -228,6 +233,7 @@ export function EnrollmentSuccessOverview({
             backgroundColor: "#fff",
             padding: 0,
             zIndex: 5,
+            fontSize: "1em",
           }}
         >
           <NavigationBar
@@ -258,319 +264,381 @@ export function EnrollmentSuccessOverview({
             </span>
           </Box>
         )}
-        <Box className="applicationInfoTitle" textAlign={"center"}>
-          {/* <h2>Senya Senior High School</h2> {"===>>>"} */}
-          <span>
-            Admission Year: {currentYear}/{currentYear + 1}
-          </span>
-        </Box>
-        <Box p={{ xs: "1rem" }}>
-          <Box className="applicationContent">
-            <Box className="wellDone">
-              <p>
-                CONGRATULATIONS,{" "}
-                {/* {enrolledStudent?.personalInfo?.firstName}{" "}
-                {enrolledStudent?.personalInfo?.otherName !== "" &&
-                  enrolledStudent?.personalInfo?.otherName}{" "}
-                {enrolledStudent?.personalInfo?.lastName} , */}
-                YOU HAVE COMPLETED YOUR ENROLLMENT SUCCESSFULLY. KINDLY DOWNLOAD
-                ALL THE NECESSARY DOCUMENTS. THANK YOU!
-              </p>
-            </Box>
-            <Box
-              className="studentDataCont"
-              display={{ xs: "block", sm: "block", md: "flex" }}
-              p={{ xs: "1rem" }}
-              gap={"1rem"}
-            >
-              <Box className="studentData">
-                <Box className="studentDataWrap">
-                  <Box className="student">
-                    <p className="studentName">
-                      {enrolledStudent?.personalInfo?.firstName}{" "}
-                      {enrolledStudent?.personalInfo?.otherName !== "" &&
-                        enrolledStudent?.personalInfo?.otherName}{" "}
-                      {enrolledStudent?.personalInfo?.lastName}
-                    </p>
-                    <p className="studentId">( {enrolledStudent?.uniqueId} )</p>
-                    <Box className="studentImg">
-                      <img
-                        src={
-                          enrolledStudent?.personalInfo?.profilePicture
-                            ? enrolledStudent?.personalInfo?.profilePicture?.url
-                            : enrolledStudent?.personalInfo?.profilePicture
-                        }
-                        alt=""
-                      />
+        <Box className="rightCont">
+          <Box className="applicationInfoTitle" textAlign={"center"}>
+            {/* <h2>Senya Senior High School</h2> {"===>>>"} */}
+            <span style={{ fontSize: "1em" }}>
+              Admission Year: {currentYear}/{currentYear + 1}
+            </span>
+          </Box>
+          <Box p={{ xs: "1rem" }}>
+            <Box className="applicationContent">
+              <Box className="wellDone">
+                {enrolledStudent?.studentStatusExtend?.isGraduated ? (
+                  <p>
+                    YOU ARE NOW SHS GRADUATE. THANK YOU FOR PASSING THROUGH
+                    SENYA SENIOR HIGH SCHOOL.
+                  </p>
+                ) : (
+                  <p>
+                    CONGRATULATIONS,{" "}
+                    {/* {enrolledStudent?.personalInfo?.firstName}{" "}
+                  {enrolledStudent?.personalInfo?.otherName !== "" &&
+                    enrolledStudent?.personalInfo?.otherName}{" "}
+                  {enrolledStudent?.personalInfo?.lastName} , */}
+                    {/* YOU HAVE COMPLETED YOUR ENROLLMENT */}
+                    SUCCESSFULLY ENROLLED. KINDLY DOWNLOAD ALL THE NECESSARY
+                    DOCUMENTS. THANK YOU!
+                  </p>
+                )}
+              </Box>
+              <Box
+                className="studentDataCont"
+                display={{ xs: "block", sm: "block", md: "flex" }}
+                p={{ xs: "1rem" }}
+                gap={"1rem"}
+              >
+                <Box className="studentData">
+                  <Box className="studentDataWrap">
+                    <Box className="student">
+                      <p className="studentName">
+                        {enrolledStudent?.personalInfo?.fullName}
+                      </p>
+                      <p className="studentId">
+                        [{" "}
+                        {enrolledStudent?.studentStatusExtend?.isGraduated
+                          ? "Graduated Student"
+                          : "Enrolled Student"}{" "}
+                        ]
+                      </p>
+                      {/* {studentId !== "undefined" && (
+                        <p className="studentId">( {studentId} )</p>
+                      )} */}
+                      <Box className="studentImg">
+                        <img
+                          src={
+                            enrolledStudent?.personalInfo?.profilePicture
+                              ? enrolledStudent?.personalInfo?.profilePicture
+                                  ?.url
+                              : enrolledStudent?.personalInfo?.profilePicture
+                          }
+                          alt=""
+                        />
+                      </Box>
                     </Box>
                   </Box>
-                </Box>
-                <Box className="enrollmentInfoWrap" p={"1rem"}>
-                  <Box
-                    className="enrolledDate"
-                    m={{ xs: "1rem 0 .5rem", sm: ".5rem 0 .5rem" }}
-                  >
-                    <h3>
-                      Enrolled On:{" "}
-                      <span>
-                        {enrolledStudent?.studentStatusExtend?.dateEnrolled
-                          ? dateFormatter.format(
-                              new Date(
-                                enrolledStudent?.studentStatusExtend?.dateEnrolled
-                              )
-                            )
-                          : "Unknown"}
-                        .
-                      </span>
-                    </h3>
-                  </Box>
-                  {/* <Box className="studentEnrolmentInfo"> */}
-                  <Box>
-                    <Grid container>
-                      <Grid item xs={12} sm={6} md={4} lg={4}>
-                        <Box className="infoCard">
-                          <h3>
-                            {enrolledStudent?.studentSchoolData?.program?.name}
-                          </h3>
-                          <span>(Programme)</span>
-                        </Box>
-                      </Grid>
-                      <Grid item xs={12} sm={6} md={4} lg={4}>
-                        <Box className="infoCard">
-                          <h3
-                            title={
-                              enrolledStudent?.studentSchoolData
-                                ?.currentClassLevelSection?.sectionName || ""
-                            }
-                          >
-                            {enrolledStudent?.studentSchoolData
-                              ?.currentClassLevelSection
-                              ? enrolledStudent?.studentSchoolData
-                                  ?.currentClassLevelSection?.label
-                              : "Not Yet"}
-                          </h3>
-                          <span>(Class Assigned)</span>
-                        </Box>
-                      </Grid>
-                      <Grid item xs={12} sm={6} md={4} lg={4}>
-                        <Box className="infoCard">
-                          <h3>
-                            {
-                              enrolledStudent?.studentSchoolData
+                  <Box className="enrollmentInfoWrap" p={"1rem"}>
+                    <Box
+                      className="enrolledDate"
+                      m={{ xs: "1rem 0 .5rem", sm: ".5rem 0 .5rem" }}
+                    >
+                      <h3>
+                        {enrolledStudent?.studentStatusExtend?.isGraduated
+                          ? "Graduated On:"
+                          : "Enrolled On:"}{" "}
+                        {enrolledStudent?.studentStatusExtend?.isGraduated ? (
+                          <span>
+                            {enrolledStudent?.studentStatusExtend?.dateGraduated
+                              ? dateFormatter.format(
+                                  new Date(
+                                    enrolledStudent?.studentStatusExtend?.dateGraduated
+                                  )
+                                )
+                              : "Unknown"}
+                            .
+                          </span>
+                        ) : (
+                          <span>
+                            {enrolledStudent?.studentStatusExtend?.dateEnrolled
+                              ? dateFormatter.format(
+                                  new Date(
+                                    enrolledStudent?.studentStatusExtend?.dateEnrolled
+                                  )
+                                )
+                              : "Unknown"}
+                            .
+                          </span>
+                        )}
+                      </h3>
+                    </Box>
+                    {/* <Box className="studentEnrolmentInfo"> */}
+                    <Box>
+                      <Grid container>
+                        <Grid item xs={12} sm={6} md={4} lg={4}>
+                          <Box className="infoCard">
+                            <h3>
+                              {enrolledStudent?.studentSchoolData?.program?.name
+                                ? enrolledStudent?.studentSchoolData?.program
+                                    ?.name
+                                : "Unknown"}
+                            </h3>
+                            <span>(Programme)</span>
+                          </Box>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={4} lg={4}>
+                          <Box className="infoCard">
+                            <h3
+                              title={
+                                enrolledStudent?.studentSchoolData
+                                  ?.currentClassLevelSection?.sectionName || ""
+                              }
+                            >
+                              {enrolledStudent?.studentSchoolData
+                                ?.currentClassLevelSection
+                                ? enrolledStudent?.studentSchoolData
+                                    ?.currentClassLevelSection?.label
+                                : "---"}
+                            </h3>
+                            <span>(Class Assigned)</span>
+                          </Box>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={4} lg={4}>
+                          <Box className="infoCard">
+                            <h3>
+                              {enrolledStudent?.studentSchoolData
                                 ?.currentClassLevel?.name
-                            }
-                          </h3>
-                          <span>(Class Level)</span>
-                        </Box>
+                                ? enrolledStudent?.studentSchoolData
+                                    ?.currentClassLevel?.name
+                                : "---"}
+                            </h3>
+                            <span>(Class Level)</span>
+                          </Box>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={4} lg={4}>
+                          <Box className="infoCard">
+                            <h3>
+                              {enrolledStudent?.status?.residentialStatus
+                                ? enrolledStudent?.status?.residentialStatus
+                                : "---"}
+                            </h3>
+                            <span>(Residential Status)</span>
+                          </Box>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={4} lg={4}>
+                          <Box className="infoCard">
+                            <h3>
+                              {enrolledStudent?.personalInfo?.gender
+                                ? enrolledStudent?.personalInfo?.gender
+                                : "Unknown"}
+                            </h3>
+                            <span>(Gender)</span>
+                          </Box>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={4} lg={4}>
+                          <Box className="infoCard">
+                            <h3>
+                              {enrolledStudent?.studentSchoolData?.house
+                                ? `${enrolledStudent?.studentSchoolData?.house?.name}`
+                                : "---"}
+                            </h3>
+                            <span>(House Assigned)</span>
+                          </Box>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={4} lg={4}>
+                          <Box className="infoCard">
+                            <h3>
+                              {enrolledStudent?.studentSchoolData?.jhsAttended
+                                ? enrolledStudent?.studentSchoolData
+                                    ?.jhsAttended
+                                : "---"}
+                            </h3>
+                            <span>(JHS Completed)</span>
+                          </Box>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={4} lg={4}>
+                          <Box className="infoCard">
+                            <h3>
+                              {enrolledStudent?.studentSchoolData?.jhsIndexNo
+                                ? `${enrolledStudent?.studentSchoolData?.jhsIndexNo?.slice(
+                                    0,
+                                    3
+                                  )}****${enrolledStudent?.studentSchoolData?.jhsIndexNo?.slice(
+                                    -2
+                                  )}`
+                                : "---"}
+                            </h3>
+                            <span>(JHS Index No.)</span>
+                          </Box>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={4} lg={4}>
+                          <Box className="infoCard">
+                            <h3>
+                              {enrolledStudent?.contactAddress?.mobile
+                                ? enrolledStudent?.contactAddress?.mobile
+                                : "---"}
+                            </h3>
+                            <span>(Contact Number)</span>
+                          </Box>
+                        </Grid>
                       </Grid>
-                      <Grid item xs={12} sm={6} md={4} lg={4}>
-                        <Box className="infoCard">
-                          <h3>{enrolledStudent?.status?.residentialStatus}</h3>
-                          <span>(Residential Status)</span>
-                        </Box>
-                      </Grid>
-                      <Grid item xs={12} sm={6} md={4} lg={4}>
-                        <Box className="infoCard">
-                          <h3>{enrolledStudent?.personalInfo?.gender}</h3>
-                          <span>(Gender)</span>
-                        </Box>
-                      </Grid>
-                      <Grid item xs={12} sm={6} md={4} lg={4}>
-                        <Box className="infoCard">
-                          <h3>
-                            {enrolledStudent?.studentSchoolData?.house
-                              ? `${enrolledStudent?.studentSchoolData?.house?.name}`
-                              : "Not Yet"}
-                          </h3>
-                          <span>(House Assigned)</span>
-                        </Box>
-                      </Grid>
-                      <Grid item xs={12} sm={6} md={4} lg={4}>
-                        <Box className="infoCard">
-                          <h3>
-                            {enrolledStudent?.studentSchoolData?.jhsAttended}
-                          </h3>
-                          <span>(JHS Completed)</span>
-                        </Box>
-                      </Grid>
-                      <Grid item xs={12} sm={6} md={4} lg={4}>
-                        <Box className="infoCard">
-                          <h3>
-                            {enrolledStudent?.studentSchoolData?.jhsIndexNo}
-                          </h3>
-                          <span>(JHS Index No.)</span>
-                        </Box>
-                      </Grid>
-                      <Grid item xs={12} sm={6} md={4} lg={4}>
-                        <Box className="infoCard">
-                          <h3>{enrolledStudent?.contactAddress?.mobile}</h3>
-                          <span>(Contact Number)</span>
-                        </Box>
-                      </Grid>
-                    </Grid>
-                  </Box>
-                  {/* </Box> */}
-                  <Box className="classTeacherWrap">
-                    <h4>Your Lecturer:</h4>
-                    <Box className="studentLecturerImgWrap">
-                      <img
-                        className="studentLecturerImg"
-                        src={
-                          enrolledStudent?.studentSchoolData
+                    </Box>
+                    {/* </Box> */}
+                    <Box className="classTeacherWrap">
+                      <h4>Your Lecturer:</h4>
+                      <Box className="studentLecturerImgWrap">
+                        <img
+                          className="studentLecturerImg"
+                          src={
+                            enrolledStudent?.studentSchoolData
+                              ?.currentClassTeacher
+                              ? enrolledStudent?.studentSchoolData
+                                  ?.currentClassTeacher?.personalInfo
+                                  ?.profilePicture?.url
+                              : "/assets/noAvatar.png"
+                          }
+                          alt=""
+                        />
+                        <p>
+                          {enrolledStudent?.studentSchoolData
+                            ?.currentClassTeacher?.personalInfo?.gender ===
+                            "Male" && "Mr."}
+                          {enrolledStudent?.studentSchoolData
+                            ?.currentClassTeacher?.personalInfo?.gender ===
+                            "Female" && "Mrs."}{" "}
+                          {enrolledStudent?.studentSchoolData
                             ?.currentClassTeacher
                             ? enrolledStudent?.studentSchoolData
-                                ?.currentClassTeacher?.personalInfo
-                                ?.profilePicture?.url
-                            : "/assets/noAvatar.png"
-                        }
-                        alt=""
-                      />
-                      <p>
-                        {enrolledStudent?.studentSchoolData?.currentClassTeacher
-                          ?.personalInfo?.gender === "Male" && "Mr."}
-                        {enrolledStudent?.studentSchoolData?.currentClassTeacher
-                          ?.personalInfo?.gender === "Female" && "Mrs."}{" "}
-                        {enrolledStudent?.studentSchoolData?.currentClassTeacher
-                          ? enrolledStudent?.studentSchoolData
-                              ?.currentClassTeacher?.personalInfo?.fullName
-                          : ""}
-                      </p>
+                                ?.currentClassTeacher?.personalInfo?.fullName
+                            : ""}
+                        </p>
+                      </Box>
                     </Box>
+                  </Box>
+                </Box>
+                <Box
+                  className="studentElectiveSubjects"
+                  pt={{ xs: "1rem", sm: "1rem", md: "unset" }}
+                >
+                  <Box className="comeAlongDocsWrap" p={"1rem"}>
+                    <h2>Your Elective Subjects</h2>
+                    <Box className="eSubjects">
+                      <Box className="generalSubjects">
+                        {studentProgramme?.electiveSubjects?.length > 0 ? (
+                          <ul>
+                            {studentProgramme?.electiveSubjects?.map(
+                              (subject) => (
+                                <li key={subject._id}>
+                                  <span
+                                    className={
+                                      subject?.electiveSubInfo?.isOptional
+                                        ? "optionalSub"
+                                        : ""
+                                    }
+                                    title={
+                                      subject?.electiveSubInfo?.isOptional
+                                        ? "Optional Elective Subject"
+                                        : ""
+                                    }
+                                  >
+                                    {subject?.subjectName}
+                                  </span>
+                                </li>
+                              )
+                            )}
+                          </ul>
+                        ) : (
+                          <p
+                            style={{
+                              color: "#696969",
+                              textAlign: "center",
+                              width: "100%",
+                              paddingBottom: "unset",
+                            }}
+                          >
+                            No data to display!
+                          </p>
+                        )}
+                      </Box>
+                    </Box>
+                  </Box>
+                  <Box className="comeAlongDocsWrap" p={"1rem"}>
+                    <h2 style={{ color: "#696969", fontWeight: "500" }}>
+                      You are expected to come along with the following on the
+                      reporting date:
+                    </h2>
+                    <ul>
+                      <li>
+                        Printed copy of your admission letter and a printed copy
+                        of your personal profile form.
+                      </li>
+                      <li>Undertaking and medical status form.</li>
+                      <li>Fully filled placement form.</li>
+                      <li>A copy of your BECE result slip.</li>
+                      <li>Birth/Baptism certificate (Photo-copy)</li>
+                    </ul>
+                    <p>
+                      Your admission is NOT complete without the documents
+                      stated above.
+                    </p>
                   </Box>
                 </Box>
               </Box>
-              <Box
-                className="studentElectiveSubjects"
-                pt={{ xs: "1rem", sm: "1rem", md: "unset" }}
-              >
-                <Box className="comeAlongDocsWrap" p={"1rem"}>
-                  <h2>Your Elective Subjects</h2>
-                  <Box className="eSubjects">
-                    <Box className="generalSubjects">
-                      {studentProgramme?.electiveSubjects?.length > 0 ? (
-                        <ul>
-                          {studentProgramme?.electiveSubjects?.map(
-                            (subject) => (
-                              <li key={subject._id}>
-                                <span
-                                  className={
-                                    subject?.electiveSubInfo?.isOptional
-                                      ? "optionalSub"
-                                      : ""
-                                  }
-                                  title={
-                                    subject?.electiveSubInfo?.isOptional
-                                      ? "Optional Elective Subject"
-                                      : ""
-                                  }
-                                >
-                                  {subject?.subjectName}
-                                </span>
-                              </li>
-                            )
-                          )}
-                        </ul>
-                      ) : (
-                        <p
-                          style={{
-                            color: "#696969",
-                            textAlign: "center",
-                            width: "100%",
-                            paddingBottom: "unset",
-                          }}
-                        >
-                          No data to display!
-                        </p>
-                      )}
-                    </Box>
-                  </Box>
-                </Box>
-                <Box className="comeAlongDocsWrap" p={"1rem"}>
-                  <h2 style={{ color: "#696969", fontWeight: "500" }}>
-                    You are expected to come along with the following on the
-                    reporting date:
-                  </h2>
-                  <ul>
-                    <li>
-                      Printed copy of your admission letter and a printed copy
-                      of your personal profile form.
-                    </li>
-                    <li>Undertaking and medical status form.</li>
-                    <li>Fully filled placement form.</li>
-                    <li>A copy of your BECE result slip.</li>
-                    <li>Birth/Baptism certificate (Photo-copy)</li>
-                  </ul>
-                  <p>
-                    Your admission is NOT complete without the documents stated
-                    above.
+              <PDFButtons
+                enrolledStudent={enrolledStudent}
+                currentTerm={currentTerm}
+                currentAcademicYear={currentAcademicYear}
+                studentProgramme={studentProgramme}
+                isMobile={isMobile}
+                allCoreSubjects={memoizedCoreSubjects}
+                allProgrammes={allProgrammes}
+                allDivisionProgrammes={allDivisionProgrammes}
+              />
+              {isMobile && (
+                <Box
+                  display={"flex"}
+                  flexDirection={"column"}
+                  alignItems={"center"}
+                  textAlign={"center"}
+                >
+                  <p
+                    style={{
+                      color: "#696969",
+                      padding: ".5rem 0",
+                    }}
+                  >
+                    Click{" "}
+                    <HashLink
+                      to={`/sensec/students/enrollment/online/${enrolledStudent?.uniqueId}/success/View_Profile#enrollmentProfile`}
+                      style={{
+                        maxWidth: "15rem",
+                        "&:hover": { backgroundColor: "transparent" },
+                        color: "#088dc2",
+                        marginBottom: ".5rem",
+                      }}
+                    >
+                      here
+                    </HashLink>{" "}
+                    to view your enrollment profile.
+                  </p>
+                  <p
+                    style={{
+                      color: "#696969",
+                      padding: ".5rem 0",
+                    }}
+                  >
+                    Click{" "}
+                    <HashLink
+                      to={`/sensec/students/enrollment/online/${enrolledStudent?.uniqueId}/success/Update#enrollmentDataUpdate`}
+                      style={{
+                        maxWidth: "15rem",
+                        "&:hover": { backgroundColor: "transparent" },
+                        color: "#088dc2",
+                      }}
+                      // onClick={() =>
+                      //   navigate(
+                      //   )
+                      // }
+                    >
+                      here
+                    </HashLink>{" "}
+                    to update your enrollment data
                   </p>
                 </Box>
-              </Box>
+              )}
             </Box>
-            <PDFButtons
-              enrolledStudent={enrolledStudent}
-              currentTerm={currentTerm}
-              currentAcademicYear={currentAcademicYear}
-              studentProgramme={studentProgramme}
-              isMobile={isMobile}
-              allCoreSubjects={memoizedCoreSubjects}
-              allProgrammes={allProgrammes}
-              allDivisionProgrammes={allDivisionProgrammes}
-            />
-            {isMobile && (
-              <Box
-                display={"flex"}
-                flexDirection={"column"}
-                alignItems={"center"}
-              >
-                <p
-                  style={{
-                    color: "#696969",
-                    padding: ".5rem 0",
-                  }}
-                >
-                  Click{" "}
-                  <HashLink
-                    to={`/sensec/students/enrollment/online/${enrolledStudent?.uniqueId}/success/View_Profile#enrollmentProfile`}
-                    style={{
-                      maxWidth: "15rem",
-                      "&:hover": { backgroundColor: "transparent" },
-                      color: "#088dc2",
-                      marginBottom: ".5rem",
-                    }}
-                  >
-                    here
-                  </HashLink>{" "}
-                  to view your enrollment profile.
-                </p>
-                <p
-                  style={{
-                    color: "#696969",
-                    padding: ".5rem 0",
-                  }}
-                >
-                  Click{" "}
-                  <HashLink
-                    to={`/sensec/students/enrollment/online/${enrolledStudent?.uniqueId}/success/Update#enrollmentDataUpdate`}
-                    style={{
-                      maxWidth: "15rem",
-                      "&:hover": { backgroundColor: "transparent" },
-                      color: "#088dc2",
-                    }}
-                    // onClick={() =>
-                    //   navigate(
-                    //   )
-                    // }
-                  >
-                    here
-                  </HashLink>{" "}
-                  to update your enrollment data
-                </p>
-              </Box>
-            )}
           </Box>
+          <SmallFooter />
         </Box>
-        <SmallFooter />
       </Box>
       {/* </ContainerBox> */}
     </Box>

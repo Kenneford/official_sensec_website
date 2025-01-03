@@ -1,61 +1,51 @@
-export const clothingItems = [
+export const generalItems = [
   {
-    name: "3 sets of school uniforms",
+    name: "1 pair of White Canvas or Sneakers",
   },
   {
-    name: "2 sets of house attire",
+    name: "School Bag (Black or Brown)",
   },
   {
-    name: "2 sets of sportswear",
+    name: "A 555 silver plate and a 555 silver cup",
   },
   {
-    name: "1 pair of black shoes",
+    name: "Flat File",
   },
   {
-    name: "1 pair of white canvas shoes",
-  },
-  {
-    name: "Black and white socks",
+    name: "Cutlass (type Mob cutlass)",
   },
 ];
-export const beddingItems = [
+export const girlsItems = [
   {
-    name: "2 bedsheets",
+    name: "1 pair of Brown Sandals (Play Deck)",
   },
   {
-    name: "1 pillow with pillowcases",
-  },
-];
-export const stationery = [
-  {
-    name: "Notebooks (12 pieces)",
+    name: "1 pair of Low Heels Black Shoe",
   },
   {
-    name: "Mathematical set",
+    name: "2 Green Check Dress (below knee) ",
   },
   {
-    name: "Pens and pencils",
+    name: "1 white flock/dress (below knee) for Church Service",
   },
 ];
-export const personalHygieneItems = [
+export const boysItems = [
   {
-    name: "Soap (6 bars)",
+    name: "1 pair of Brown Sandals (Berk)",
   },
   {
-    name: "Toothpaste and toothbrush",
+    name: "1 pair of Black Shoe for church service",
   },
   {
-    name: "2 towels",
-  },
-];
-export const miscellaneous = [
-  {
-    name: "Chop box",
+    name: "2 pairs of Khaki Shorts (Boys) knee level",
   },
   {
-    name: "Trunk",
+    name: "2 Green Check Shirt",
   },
   {
-    name: "Cutlery set",
+    name: "White Jumper and white shorts",
+  },
+  {
+    name: "Black and Brown Belt (No Design)",
   },
 ];

@@ -175,6 +175,14 @@ const placementSlice = createSlice({
         error: "",
       };
     },
+    resetPlacementVerificationState(state) {
+      return {
+        ...state,
+        verifyStatus: "",
+        successMessage: "",
+        error: "",
+      };
+    },
     resetUpdateState(state) {
       return {
         ...state,
@@ -362,6 +370,7 @@ export const {
   resetPlacementUploadState,
   resetPlacementUploadErrorState,
   resetPlacementCheckState,
+  resetPlacementVerificationState,
 } = placementSlice.actions;
 export const getAllPlacementStudents = (state) =>
   state.placement.allPlacementStudents;

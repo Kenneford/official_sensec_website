@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import {
   fetchAllPlacementStudents,
   getAllPlacementStudents,
-  resetPlacementState,
+  resetPlacementVerificationState,
   verifyPlacementStudent,
 } from "../../../features/academics/placementSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,6 +17,7 @@ import Redirection from "../../../components/pageLoading/Redirection";
 import LoadingProgress from "../../../components/pageLoading/LoadingProgress";
 import { getAuthUser } from "../../../features/auth/authSlice";
 import { NavigationBar } from "../../../components/navbar/NavigationBar";
+import Cookies from "js-cookie";
 
 export function StudentPlacementVerification() {
   const {
@@ -47,6 +48,8 @@ export function StudentPlacementVerification() {
   // Input values error state handling
   const [jhsIndexNoError, setJhsIndexNoError] = useState(false);
   const [yearGraduatedError, setYearGraduatedError] = useState(false);
+  const [maskedStudentId, setMaskedStudentId] = useState("");
+  const [maskedStudentIndex, setMaskedStudentIndex] = useState("");
 
   const [loadingComplete, setLoadingComplete] = useState(null);
   const [redirecting, setRedirecting] = useState(false);
@@ -71,11 +74,24 @@ export function StudentPlacementVerification() {
   // Check if student has enrolled already
   const enrolledStudent = allStudents?.find(
     (std) =>
-      std?.uniqueId === foundPlacementStudent?.enrollmentId &&
-      std?.studentStatusExtend?.enrollmentStatus === "approved"
+      std?.studentSchoolData?.jhsIndexNo === formData?.jhsIndexNo &&
+      std?.studentStatusExtend?.isStudent
+  );
+  const unApprovedStudent = allStudents?.find(
+    (std) =>
+      std?.studentSchoolData?.jhsIndexNo === formData?.jhsIndexNo &&
+      std?.studentStatusExtend?.enrollmentStatus === "pending"
+  );
+  console.log(unApprovedStudent);
+
+  const graduatedStudent = allStudents?.find(
+    (std) =>
+      std?.studentSchoolData?.jhsIndexNo === formData?.jhsIndexNo &&
+      std?.studentStatusExtend?.isGraduated
   );
   console.log(foundPlacementStudent);
   console.log(enrolledStudent);
+  console.log(graduatedStudent);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -99,6 +115,16 @@ export function StudentPlacementVerification() {
         setLoadingComplete(null);
       }, 3000);
     }
+    // if (graduatedStudent) {
+    //   return setTimeout(() => {
+    //     toast.error("Student is now a graduate!", {
+    //       position: "top-right",
+    //       theme: "light",
+    //       toastId: "placementDataError",
+    //     });
+    //     setLoadingComplete(null);
+    //   }, 3000);
+    // }
     //If placement verified and enrolled, navigate student to enrolment success page
     else if (foundPlacementStudent?.placementVerified && enrolledStudent) {
       // localStorage.setItem("indexNumber", formData?.jhsIndexNo);
@@ -115,11 +141,11 @@ export function StudentPlacementVerification() {
       setTimeout(() => {
         if (adminCurrentAction) {
           navigate(
-            `/sensec/users/${authUser?.uniqueId}/admin/User-Types/Students/${enrolledStudent?.uniqueId}/enrollment/online/success/Overview`
+            `/sensec/users/${authUser?.uniqueId}/admin/User-Types/Students/${maskedStudentId}/enrollment/online/success/Overview`
           );
         } else {
           navigate(
-            `/sensec/students/enrollment/online/${enrolledStudent?.uniqueId}/success/Overview`
+            `/sensec/students/enrollment/online/${maskedStudentId}/success/Overview`
           );
         }
       }, 7000);
@@ -142,11 +168,11 @@ export function StudentPlacementVerification() {
       setTimeout(() => {
         if (adminCurrentAction) {
           navigate(
-            `/sensec/users/${authUser?.uniqueId}/admin/User-Types/Students/${foundPlacementStudent?.enrollmentId}/enrollment/online/success/Overview`
+            `/sensec/users/${authUser?.uniqueId}/admin/User-Types/Students/${maskedStudentId}/enrollment/online/success/Overview`
           );
         } else {
           navigate(
-            `/sensec/students/enrollment/online/${foundPlacementStudent?.enrollmentId}/success/Overview`
+            `/sensec/students/enrollment/online/${maskedStudentId}/success/Overview`
           );
         }
       }, 7000);
@@ -190,12 +216,10 @@ export function StudentPlacementVerification() {
       setTimeout(() => {
         if (adminCurrentAction) {
           navigate(
-            `/sensec/users/${authUser?.uniqueId}/admin/User-Types/Students/${foundPlacementStudent?.jhsIndexNo}/new_enrollment`
+            `/sensec/users/${authUser?.uniqueId}/admin/User-Types/Students/${maskedStudentIndex}/new_enrollment`
           );
         } else {
-          navigate(
-            `/sensec/students/enrollment/online/${foundPlacementStudent?.jhsIndexNo}`
-          );
+          navigate(`/sensec/students/enrollment/online/${maskedStudentIndex}`);
         }
       }, 7000);
     }
@@ -218,12 +242,10 @@ export function StudentPlacementVerification() {
       setTimeout(() => {
         if (adminCurrentAction) {
           navigate(
-            `/sensec/users/${authUser?.uniqueId}/admin/User-Types/Students/${foundPlacementStudent?.jhsIndexNo}/new_enrollment`
+            `/sensec/users/${authUser?.uniqueId}/admin/User-Types/Students/${maskedStudentIndex}/new_enrollment`
           );
         } else {
-          navigate(
-            `/sensec/students/enrollment/online/${foundPlacementStudent?.jhsIndexNo}`
-          );
+          navigate(`/sensec/students/enrollment/online/${maskedStudentIndex}`);
         }
       }, 7000);
     }
@@ -258,7 +280,58 @@ export function StudentPlacementVerification() {
       setYearGraduatedError(false);
     }
   }, [formData, foundPlacementStudent]);
-
+  // Mask unique-ID
+  useEffect(() => {
+    if (foundPlacementStudent) {
+      const studentID = foundPlacementStudent?.jhsIndexNo;
+      // Mask the ID: keep first 6 characters, add "****", and keep the last 6 characters
+      const masked = `${studentID.slice(0, 3)}***${studentID.slice(-2)}`;
+      setMaskedStudentIndex(masked);
+      Cookies?.set("masked_student_index", foundPlacementStudent?.jhsIndexNo, {
+        expires: 1, // 1 day
+        secure: false, // Set to true in production if using HTTPS
+        sameSite: "Strict",
+      });
+    }
+    if (unApprovedStudent) {
+      const studentID = unApprovedStudent?.uniqueId;
+      // Mask the ID: keep first 6 characters, add "****", and keep the last 6 characters
+      const masked = `${studentID.slice(0, 6)}***${studentID.slice(-4)}`;
+      setMaskedStudentId(masked);
+      Cookies?.set("masked_student_id", unApprovedStudent?.uniqueId, {
+        expires: 1, // 1 day
+        secure: false, // Set to true in production if using HTTPS
+        sameSite: "Strict",
+      });
+    }
+    if (enrolledStudent) {
+      const studentID = enrolledStudent?.uniqueId;
+      // Mask the ID: keep first 6 characters, add "****", and keep the last 6 characters
+      const masked = `${studentID.slice(0, 6)}***${studentID.slice(-4)}`;
+      setMaskedStudentId(masked);
+      Cookies?.set("masked_student_id", enrolledStudent?.uniqueId, {
+        expires: 1, // 1 day
+        secure: false, // Set to true in production if using HTTPS
+        sameSite: "Strict",
+      });
+    }
+    if (graduatedStudent) {
+      const studentID = graduatedStudent?.uniqueId;
+      // Mask the ID: keep first 6 characters, add "****", and keep the last 6 characters
+      const masked = `${studentID.slice(0, 6)}***${studentID.slice(-4)}`;
+      setMaskedStudentId(masked);
+      Cookies?.set("masked_student_id", graduatedStudent?.uniqueId, {
+        expires: 1, // 1 day
+        secure: false, // Set to true in production if using HTTPS
+        sameSite: "Strict",
+      });
+    }
+  }, [
+    unApprovedStudent,
+    enrolledStudent,
+    graduatedStudent,
+    foundPlacementStudent,
+  ]);
   //Verification status check
   useEffect(() => {
     if (verifyStatus === "pending") {
@@ -267,7 +340,7 @@ export function StudentPlacementVerification() {
     if (verifyStatus === "rejected") {
       setTimeout(() => {
         setLoadingComplete(null);
-        dispatch(resetPlacementState()); // Reset Verification State
+        dispatch(resetPlacementVerificationState()); // Reset Verification State
       }, 3000);
       setTimeout(() => {
         error?.errorMessage?.message?.map((err) =>
@@ -288,15 +361,13 @@ export function StudentPlacementVerification() {
         setRedirecting(true);
       }, 6000);
       setTimeout(() => {
-        dispatch(resetPlacementState()); // Reset Verification State
+        dispatch(resetPlacementVerificationState()); // Reset Verification State
         if (adminCurrentAction) {
           navigate(
-            `/sensec/users/${authUser?.uniqueId}/admin/User-Types/Students/${foundPlacementStudent?.jhsIndexNo}/new_enrollment`
+            `/sensec/users/${authUser?.uniqueId}/admin/User-Types/Students/${maskedStudentIndex}/new_enrollment`
           );
         } else {
-          navigate(
-            `/sensec/students/enrollment/online/${foundPlacementStudent?.jhsIndexNo}`
-          );
+          navigate(`/sensec/students/enrollment/online/${maskedStudentIndex}`);
         }
       }, 9000);
     }
@@ -312,6 +383,7 @@ export function StudentPlacementVerification() {
     adminCurrentAction,
     adminCurrentLink,
     authUser,
+    maskedStudentIndex,
   ]);
 
   // Fetch data

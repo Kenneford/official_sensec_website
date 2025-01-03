@@ -7,7 +7,7 @@ const FetchAllStudents = () => {
   const dispatch = useDispatch();
   const allUsers = useSelector(getAllUsers);
   const allStudents = allUsers?.filter(
-    (user) => user?.roles?.includes("student") && user
+    (user) => user?.roles?.includes("Student") && user
   );
 
   useEffect(() => {

@@ -115,7 +115,6 @@ export function NavigationBar({
   const authUser = useSelector(getAuthUser);
   const allUsers = useSelector(getAllUsers);
   const { currentGuestPage, enrollment } = useParams();
-  console.log(enrollment);
 
   const otherLinks = [
     {
@@ -251,7 +250,6 @@ export function NavigationBar({
     };
 
     window.addEventListener("scroll", handleScroll);
-    console.log(window.scrollY > 10);
 
     // Cleanup the event listener
     return () => {
