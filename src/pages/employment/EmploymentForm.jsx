@@ -45,6 +45,15 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
 import dayjs from "dayjs";
+import {
+  complexionOptions,
+  genderOptions,
+  motherTongueOptions,
+  otherTongueOptions,
+  regionOptions,
+  residentialStatusOptions,
+  userRoleOptions,
+} from "../../options/options";
 
 export function EmploymentForm() {
   const dispatch = useDispatch();
@@ -57,6 +66,10 @@ export function EmploymentForm() {
   const allPlacementStudents = useSelector(getAllPlacementStudents);
   const { employmentStatus, error, successMessage } = useSelector(
     (state) => state.employment
+  );
+
+  const filteredRoles = userRoleOptions?.filter(
+    (role) => role?.value !== "Student" && role
   );
 
   //Get current year and random number for student's unique-Id
@@ -510,8 +523,11 @@ export function EmploymentForm() {
                   onChange={handleChange}
                   required
                 >
-                  <MenuItem value="Male">Male</MenuItem>
-                  <MenuItem value="Female">Female</MenuItem>
+                  {genderOptions?.map((gender) => (
+                    <MenuItem key={gender?.label} value={gender?.value}>
+                      {gender?.value}
+                    </MenuItem>
+                  ))}
                 </CustomTextField>
               </Grid>
               {/* Mother Tongue */}
@@ -525,21 +541,11 @@ export function EmploymentForm() {
                   onChange={handleChange}
                   required
                 >
-                  <MenuItem value="Twi">Twi</MenuItem>
-                  <MenuItem value="Fante">Fante</MenuItem>
-                  <MenuItem value="Ga">Ga</MenuItem>
-                  <MenuItem value="Ewe">Ewe</MenuItem>
-                  <MenuItem value="Nzema">Nzema</MenuItem>
-                  <MenuItem value="Hausa">Hausa</MenuItem>
-                  <MenuItem value="Gonja">Gonja</MenuItem>
-                  <MenuItem value="Kwa">Kwa</MenuItem>
-                  <MenuItem value="Dagbani">Dagbani</MenuItem>
-                  <MenuItem value="Dagaare">Dagaare</MenuItem>
-                  <MenuItem value="Kulango">Kulango</MenuItem>
-                  <MenuItem value="Senufo">Senufo</MenuItem>
-                  <MenuItem value="Mande">Mande</MenuItem>
-                  <MenuItem value="Dangme">Dangme</MenuItem>
-                  <MenuItem value="other">Other</MenuItem>
+                  {motherTongueOptions?.map((tongue) => (
+                    <MenuItem key={tongue?.label} value={tongue?.value}>
+                      {tongue?.value}
+                    </MenuItem>
+                  ))}
                 </CustomTextField>
               </Grid>
               {/* Other Tongue */}
@@ -552,13 +558,11 @@ export function EmploymentForm() {
                   value={newEmployment?.otherTongue}
                   onChange={handleChange}
                 >
-                  <MenuItem value="English">English</MenuItem>
-                  <MenuItem value="French">French</MenuItem>
-                  <MenuItem value="Spanish">Spanish</MenuItem>
-                  <MenuItem value="Deutsch">Deutsch</MenuItem>
-                  <MenuItem value="Italian">Italian</MenuItem>
-                  <MenuItem value="Arabic">Arabic</MenuItem>
-                  <MenuItem value="other">Other</MenuItem>
+                  {otherTongueOptions?.map((tongue) => (
+                    <MenuItem key={tongue?.label} value={tongue?.value}>
+                      {tongue?.value}
+                    </MenuItem>
+                  ))}
                 </CustomTextField>
               </Grid>
               {/* Complexion */}
@@ -572,12 +576,11 @@ export function EmploymentForm() {
                   onChange={handleChange}
                   required
                 >
-                  <MenuItem value="Very Fair">Very Fair</MenuItem>
-                  <MenuItem value="Fair">Fair</MenuItem>
-                  <MenuItem value="Medium">Medium</MenuItem>
-                  <MenuItem value="Olive">Olive</MenuItem>
-                  <MenuItem value="Brown">Brown</MenuItem>
-                  <MenuItem value="Black">Black</MenuItem>
+                  {complexionOptions?.map((complexion) => (
+                    <MenuItem key={complexion?.label} value={complexion?.value}>
+                      {complexion?.value}
+                    </MenuItem>
+                  ))}
                 </CustomTextField>
               </Grid>
               {/* Height */}
@@ -627,22 +630,11 @@ export function EmploymentForm() {
                   onChange={handleChange}
                   required
                 >
-                  <MenuItem value="Greater Accra">Greater Accra</MenuItem>
-                  <MenuItem value="Ashanti">Ashanti</MenuItem>
-                  <MenuItem value="Volta">Volta</MenuItem>
-                  <MenuItem value="Central">Central</MenuItem>
-                  <MenuItem value="Eastern">Eastern</MenuItem>
-                  <MenuItem value="Western">Western</MenuItem>
-                  <MenuItem value="Oti">Oti</MenuItem>
-                  <MenuItem value="Bono">Bono</MenuItem>
-                  <MenuItem value="Bono East">Bono East</MenuItem>
-                  <MenuItem value="Ahafo">Ahafo</MenuItem>
-                  <MenuItem value="Brong Ahafo">Brong Ahafo</MenuItem>
-                  <MenuItem value="Northern">Northern</MenuItem>
-                  <MenuItem value="Western North">Western North</MenuItem>
-                  <MenuItem value="Upper West">Upper West</MenuItem>
-                  <MenuItem value="Upper East">Upper East</MenuItem>
-                  <MenuItem value="North East">North East</MenuItem>
+                  {regionOptions?.map((region) => (
+                    <MenuItem key={region?.label} value={region?.value}>
+                      {region?.value}
+                    </MenuItem>
+                  ))}
                 </CustomTextField>
               </Grid>
               {/* HomeTown */}
@@ -733,11 +725,11 @@ export function EmploymentForm() {
                   onChange={handleChange}
                   required
                 >
-                  <MenuItem value="Administration">Administration</MenuItem>
-                  <MenuItem value="Teaching Staff">Teaching Staff</MenuItem>
-                  <MenuItem value="Non-Teaching Staff">
-                    Non-Teaching Staff
-                  </MenuItem>
+                  {filteredRoles?.map((role) => (
+                    <MenuItem key={role?.label} value={role?.value}>
+                      {role?.value === "Student" ? "" : role?.value}
+                    </MenuItem>
+                  ))}
                 </CustomTextField>
               </Grid>
               {/* Programme Selection */}
@@ -771,13 +763,11 @@ export function EmploymentForm() {
                   onChange={handleChange}
                   required
                 >
-                  <MenuItem value="Day">Day</MenuItem>
-                  <MenuItem value="Boarding">Boarding</MenuItem>
-                  <MenuItem value="Hostel">Hostel</MenuItem>
-                  <MenuItem value="Private">Private</MenuItem>
-                  <MenuItem value="Lecturers Bungalow">
-                    Lecturers Bungalow
-                  </MenuItem>
+                  {residentialStatusOptions?.map((status) => (
+                    <MenuItem key={status?.label} value={status?.value}>
+                      {status?.value}
+                    </MenuItem>
+                  ))}
                 </CustomTextField>
               </Grid>
 

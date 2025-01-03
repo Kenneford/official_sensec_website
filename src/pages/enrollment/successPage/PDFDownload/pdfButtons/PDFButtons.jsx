@@ -23,7 +23,7 @@ export default function PDFButtons({
   const { studentId } = useParams();
   const navigate = useNavigate();
 
-  const downloadProspectusPDF = () => {
+  const downloadProspectusPDF = async () => {
     pdf(<ProspectusPDF enrolledStudent={enrolledStudent} />)
       .toBlob()
       .then((blob) => {
@@ -42,7 +42,7 @@ export default function PDFButtons({
         }
       });
   };
-  const downloadAdmissionPDF = () => {
+  const downloadAdmissionPDF = async () => {
     pdf(
       <AdmissionPDF
         enrolledStudent={enrolledStudent}
@@ -68,7 +68,7 @@ export default function PDFButtons({
         }
       });
   };
-  const downloadStudentProfilePDF = () => {
+  const downloadStudentProfilePDF = async () => {
     pdf(<StudentProfilePDF enrolledStudent={enrolledStudent} />)
       .toBlob()
       .then((blob) => {
@@ -90,7 +90,7 @@ export default function PDFButtons({
         }
       });
   };
-  const downloadProgrammesPDF = () => {
+  const downloadProgrammesPDF = async () => {
     pdf(
       <ProgrammesPDF
         enrolledStudent={enrolledStudent}
@@ -117,7 +117,7 @@ export default function PDFButtons({
         }
       });
   };
-  const downloadUndertakingPDF = () => {
+  const downloadUndertakingPDF = async () => {
     pdf(<UndertakingPDF enrolledStudent={enrolledStudent} />)
       .toBlob()
       .then((blob) => {

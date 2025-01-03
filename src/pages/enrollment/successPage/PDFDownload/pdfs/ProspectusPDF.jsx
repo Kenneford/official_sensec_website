@@ -6,21 +6,31 @@ import {
   Image,
   StyleSheet,
   View,
+  Font,
 } from "@react-pdf/renderer";
 import PropTypes from "prop-types";
-import {
-  beddingItems,
-  clothingItems,
-  miscellaneous,
-  personalHygieneItems,
-  stationery,
-} from "../options/pdfArrayData";
+import { generalItems, girlsItems, boysItems } from "../options/pdfArrayData";
+
+// Register fonts
+Font.register({
+  family: "Roboto",
+  fonts: [
+    {
+      src: "/fonts/Roboto-Regular.ttf", // Regular font
+    },
+    {
+      src: "/fonts/Roboto-Bold.ttf", // Bold font
+      fontWeight: "bold",
+    },
+  ],
+});
 
 const styles = StyleSheet.create({
   body: {
     paddingTop: 35,
     paddingBottom: 65,
     paddingHorizontal: 35,
+    fontFamily: "Roboto",
   },
   letterBody: {
     marginTop: 35,
@@ -33,9 +43,19 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     textAlign: "center",
-    textDecoration: "underline",
+    fontWeight: "bold",
+    fontSize: 18,
+    // textDecoration: "underline",
     color: "#555",
     marginTop: 5,
+    letterSpacing: 1,
+  },
+  miniTitle: {
+    // marginTop: 6,
+    fontSize: 12,
+    textAlign: "center",
+    fontWeight: "bold",
+    color: "#696969",
   },
   textBox: {
     marginTop: 24,
@@ -45,31 +65,39 @@ const styles = StyleSheet.create({
   },
   text: {
     marginVertical: 2,
-    fontSize: 14,
+    fontSize: 12,
     textAlign: "justify",
     color: "#696969",
     lineHeight: 1.5,
+  },
+  centeredText: {
+    marginVertical: 5,
+    fontSize: 12,
+    textAlign: "center",
+    color: "#696969",
+    // lineHeight: 1.5,
+    fontWeight: "medium",
   },
   textSpan: {
     color: "#555",
   },
   textSpan1: {
     fontWeight: "extrabold",
-    color: "#292929",
+    color: "#696969",
   },
   textSpan2: {
     fontWeight: "extrabold",
     color: "#292929",
   },
   letterTitleWrap: {
-    paddingTop: 7,
+    marginTop: 20,
   },
   letterTitle: {
-    marginVertical: 2,
-    paddingTop: 7,
-    fontSize: 20,
+    // marginVertical: 2,
+    paddingTop: 3,
+    fontSize: 12,
     fontWeight: "extrabold",
-    textAlign: "center",
+    // textAlign: "center",
     color: "#555",
     textDecoration: "underline",
   },
@@ -108,6 +136,7 @@ const styles = StyleSheet.create({
   itemsWrap: {
     flexDirection: "row", // Horizontal layout for text and image
     justifyContent: "space-between", // Push content to edges
+    gap: 3,
     // backgroundColor: "red",
   },
   itemsFlex: {
@@ -120,9 +149,11 @@ const styles = StyleSheet.create({
   },
   listItemName: {
     fontWeight: "bold",
-    color: "#292929",
+    color: "#696969",
     marginVertical: 10,
     letterSpacing: 1,
+    fontSize: 14,
+    textDecoration: "underline",
   },
   bullet: {
     position: "absolute",
@@ -143,7 +174,6 @@ const styles = StyleSheet.create({
     //   fontFamily: "AntonFamily",
   },
 });
-
 export default function ProspectusPDF({ enrolledStudent }) {
   return (
     <Document title={"Prospectus.pdf"}>
@@ -151,80 +181,72 @@ export default function ProspectusPDF({ enrolledStudent }) {
         <Image style={styles.image} src={"/assets/sensec-logo1.png"} />
         <View style={styles.headerTitleWrap}>
           <Text style={styles.headerTitle}>SENYA SENIOR HIGH SCHOOL</Text>
-          <Text style={styles.headerTitle}>STUDENT PROSPECTUS</Text>
+          <Text style={styles.centeredText}>
+            P.O. Box 23, Senya-Beraku / GPS: CG-2308-4841
+          </Text>
+          <Text style={styles.miniTitle}>STUDENT PROSPECTUS</Text>
         </View>
         {/* <Image
           style={styles.image}
           src={enrolledStudent?.personalInfo?.profilePicture?.url}
         /> */}
         <View style={styles.letterTitleWrap}>
-          <Text style={styles.letterTitle}>Items Required Upon Admission</Text>
+          <Text style={styles.letterTitle}>Items Required Upon Admission:</Text>
         </View>
-        <View style={styles.letterViews}>
+        <View style={{ marginTop: 5 }}>
           <Text style={styles.text}>
-            Your required prospectus items are as follows:
+            Please take note of the specific items as{" "}
+            <Text style={styles.textSpan1}>
+              required by the school (all items are in relation to the
+              Government provided list)
+            </Text>
+            .
           </Text>
         </View>
-        <View style={styles.itemsWrap}>
-          <View>
-            <Text style={styles.listItemName}>Clothing:</Text>
-            <View style={styles.list}>
-              {clothingItems?.map((item) => (
-                <View key={item?.name} style={styles.listItem}>
-                  <Text style={styles.bullet}>•</Text>
-                  <Text style={[styles.text, styles.listItem]}>
-                    {item?.name}
-                  </Text>
-                </View>
-              ))}
+        <View>
+          <Text style={styles.listItemName}>General Items</Text>
+          <View style={styles.list}>
+            {generalItems?.map((item) => (
+              <View key={item?.name} style={styles.listItem}>
+                <Text style={styles.bullet}>•</Text>
+                <Text style={[styles.text, styles.listItem]}>{item?.name}</Text>
+              </View>
+            ))}
+          </View>
+          <View style={styles.itemsWrap}>
+            <View style={{ width: "50%" }}>
+              <Text style={styles.listItemName}>Extra For Girls</Text>
+              <View style={styles.list}>
+                {girlsItems?.map((item) => (
+                  <View key={item?.name} style={styles.listItem}>
+                    <Text style={styles.bullet}>•</Text>
+                    <Text style={[styles.text, styles.listItem]}>
+                      {item?.name}
+                    </Text>
+                  </View>
+                ))}
+              </View>
             </View>
-            <Text style={styles.listItemName}>Bedding:</Text>
-            <View style={styles.list}>
-              {beddingItems?.map((item) => (
-                <View key={item?.name} style={styles.listItem}>
-                  <Text style={styles.bullet}>•</Text>
-                  <Text style={[styles.text, styles.listItem]}>
-                    {item?.name}
-                  </Text>
-                </View>
-              ))}
-            </View>
-            <Text style={styles.listItemName}>Stationery:</Text>
-            <View style={styles.list}>
-              {stationery?.map((item) => (
-                <View key={item?.name} style={styles.listItem}>
-                  <Text style={styles.bullet}>•</Text>
-                  <Text style={[styles.text, styles.listItem]}>
-                    {item?.name}
-                  </Text>
-                </View>
-              ))}
+            <View style={{ width: "50%" }}>
+              <Text style={styles.listItemName}>Extra For Boys</Text>
+              <View style={styles.list}>
+                {boysItems?.map((item) => (
+                  <View key={item?.name} style={styles.listItem}>
+                    <Text style={styles.bullet}>•</Text>
+                    <Text style={[styles.text, styles.listItem]}>
+                      {item?.name}
+                    </Text>
+                  </View>
+                ))}
+              </View>
             </View>
           </View>
-          <View>
-            <Text style={styles.listItemName}>Personal Hygiene Items:</Text>
-            <View style={styles.list}>
-              {personalHygieneItems?.map((item) => (
-                <View key={item?.name} style={styles.listItem}>
-                  <Text style={styles.bullet}>•</Text>
-                  <Text style={[styles.text, styles.listItem]}>
-                    {item?.name}
-                  </Text>
-                </View>
-              ))}
-            </View>
-            <Text style={styles.listItemName}>Miscellaneous:</Text>
-            <View style={styles.list}>
-              {miscellaneous?.map((item) => (
-                <View key={item?.name} style={styles.listItem}>
-                  <Text style={styles.bullet}>•</Text>
-                  <Text style={[styles.text, styles.listItem]}>
-                    {item?.name}
-                  </Text>
-                </View>
-              ))}
-            </View>
-          </View>
+        </View>
+        <View style={styles.letterViews}>
+          <Text style={[styles?.text, styles.textSpan1]}>
+            All items should be embossed with students’ names. (Embroidery for
+            Dresses and for other items use Permanent marker)
+          </Text>
         </View>
         <Text
           style={styles.pageNumber}

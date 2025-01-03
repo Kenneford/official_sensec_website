@@ -19,6 +19,7 @@ import {
   FetchAllPlacementSBatches,
   FetchPlacementBatchByYear,
 } from "../../../data/students/FetchPlacementStudents";
+import Cookies from "js-cookie";
 
 export function StudentPlacementCheck() {
   const {
@@ -42,6 +43,7 @@ export function StudentPlacementCheck() {
   const { checkStatus, successMessage, error } = useSelector(
     (state) => state.placement
   );
+  const [maskedStudentIndex, setMaskedStudentIndex] = useState("");
   // Input values error state handling
   const [jhsIndexNoError, setJhsIndexNoError] = useState(false);
   const [yearGraduatedError, setYearGraduatedError] = useState(false);
@@ -115,7 +117,22 @@ export function StudentPlacementCheck() {
   // Fetch data
   useEffect(() => {
     dispatch(fetchAllPlacementStudents());
-  }, [formData, dispatch]);
+    if (memoizedPlacementStudentData) {
+      const studentID = memoizedPlacementStudentData?.jhsIndexNo;
+      // Mask the ID: keep first 6 characters, add "****", and keep the last 6 characters
+      const masked = `${studentID.slice(0, 3)}***${studentID.slice(-2)}`;
+      setMaskedStudentIndex(masked);
+      Cookies?.set(
+        "masked_student_index",
+        memoizedPlacementStudentData?.jhsIndexNo,
+        {
+          expires: 1, // 1 day
+          secure: false, // Set to true in production if using HTTPS
+          sameSite: "Strict",
+        }
+      );
+    }
+  }, [formData, dispatch, memoizedPlacementStudentData]);
 
   // Placement check status
   useEffect(() => {
@@ -137,6 +154,11 @@ export function StudentPlacementCheck() {
       return;
     }
     if (checkStatus === "success") {
+      Cookies?.set("Placement_Year", formData?.yearGraduated, {
+        expires: 1, // 1 day
+        secure: false, // Set to true in production if using HTTPS
+        sameSite: "Strict",
+      });
       // setTimeout(() => {
       //   toast.success(successMessage, {
       //     position: "top-right",
@@ -160,7 +182,7 @@ export function StudentPlacementCheck() {
           `/sensec/students/enrollment/placement_check/${memoizedPlacementStudentData?.fullName?.replace(
             / /g,
             "_"
-          )}/${memoizedPlacementStudentData?.jhsIndexNo}`
+          )}/${maskedStudentIndex}`
         );
       }, 9000);
     }
@@ -172,6 +194,8 @@ export function StudentPlacementCheck() {
     loadingComplete,
     memoizedPlacementStudentData,
     dispatch,
+    formData,
+    maskedStudentIndex,
   ]);
 
   return (

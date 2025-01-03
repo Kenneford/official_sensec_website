@@ -316,7 +316,7 @@ export function EnrollmentDocumentation() {
                 <Typography sx={{ fontSize: ".9em" }}>
                   Visit the Senya SHS Enrollment Portal via{" "}
                   <a
-                    href="https://official-sensec-website.onrender.com/sensec/students/enrollment/placement_check"
+                    href="https://official-sensec-website.onrender.com/sensec/students/enrollment/placement_verification"
                     target="blank"
                     style={{ color: "#0794bf", textDecoration: "underline" }}
                   >

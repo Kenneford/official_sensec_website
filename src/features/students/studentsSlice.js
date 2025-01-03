@@ -22,11 +22,11 @@ const initialState = {
 
 export const studentEnrollment = createAsyncThunk(
   "Student/studentEnrollment",
-  async (data, { rejectWithValue }) => {
+  async (newStudentData, { rejectWithValue }) => {
     try {
       const res = await axios.post(
         `${SENSEC_API_ENDPOINT}/students/enrolment/online`,
-        { data }
+        { newStudentData }
       );
       return res.data;
     } catch (error) {

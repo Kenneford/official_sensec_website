@@ -407,16 +407,16 @@ export function StudentDataUpdateForm() {
                     slots={{
                       input: (params) => <CustomTextField {...params} />,
                     }}
-                    required
-                    error={false} // Make sure this is false
-                    helperText="" // Optionally clear helper text
-                    sx={{
-                      width: "100%",
-                      cursor: "pointer",
-                      "& .MuiInputLabel-asterisk": {
-                        color: foundStudent?.dateOfBirth ? "green" : "red", // Change the asterisk color to red
-                      },
-                    }}
+                    // required
+                    // error={false} // Make sure this is false
+                    // helperText="" // Optionally clear helper text
+                    // sx={{
+                    //   width: "100%",
+                    //   cursor: "pointer",
+                    //   "& .MuiInputLabel-asterisk": {
+                    //     color: foundStudent?.dateOfBirth ? "green" : "red", // Change the asterisk color to red
+                    //   },
+                    // }}
                   />
                 </Grid>
                 {/* Nationality */}
@@ -962,7 +962,15 @@ export function StudentDataUpdateForm() {
                       letterSpacing: "1px",
                       textTransform: "capitalize",
                       fontSize: "1.2rem",
+                      // "&.Mui-disabled": {
+                      //   cursor: "not-allowed", // Show not-allowed cursor
+                      //   pointerEvents: "auto",
+                      // },
                     }}
+                    // disabled={
+                    //   authUser?.studentStatusExtend?.enrollmentStatus ===
+                    //   "approved"
+                    // }
                   >
                     {loadingComplete === false && (
                       <LoadingProgress color={"#fff"} size={"1.5rem"} />

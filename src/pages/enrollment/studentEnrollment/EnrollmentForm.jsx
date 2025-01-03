@@ -38,24 +38,47 @@ import { toast } from "react-toastify";
 import LoadingProgress from "../../../components/pageLoading/LoadingProgress";
 import { TaskAlt } from "@mui/icons-material";
 import Redirection from "../../../components/pageLoading/Redirection";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { getAuthUser } from "../../../features/auth/authSlice";
 import { FetchAllStudents } from "../../../data/students/FetchAllStudents";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { NavigationBar } from "../../../components/navbar/NavigationBar";
+import dayjs from "dayjs";
+import {
+  fetchAllAcademicYears,
+  getAllAcademicYears,
+} from "../../../features/academics/academicYearSlice";
+import Cookies from "js-cookie";
 
 export function EnrollmentForm() {
+  const {
+    currentAction,
+    setCurrentAction,
+    currentLink,
+    setCurrentLink,
+    setOpenSubNavLinks,
+    openSubNavLinks,
+    setOpenUserActions,
+    openUserActions,
+    setOpenSignUpActions,
+    openSignUpActions,
+    setOpenMenuLinks,
+    openMenuLinks,
+  } = useOutletContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const authUser = useSelector(getAuthUser);
   const { studentIndexNo, adminCurrentAction, adminCurrentLink } = useParams();
-  const indexNumber = localStorage.getItem("indexNumber");
+
+  const studentIndex = Cookies.get("masked_student_index");
   const allProgrammes = FetchAllProgrammes();
   const allStudents = FetchAllStudents();
   const allClassLevels = FetchAllClassLevels();
   const allBatches = FetchAllBatches();
   const allDivisionProgrammes = useSelector(getAllDivisionProgrammes);
   const allPlacementStudents = useSelector(getAllPlacementStudents);
+  const allCreatedAcademicYears = useSelector(getAllAcademicYears);
   const { enrollmentStatus, error, successMessage } = useSelector(
     (state) => state.student
   );
@@ -113,7 +136,7 @@ export function EnrollmentForm() {
     // School Data
     jhsAttended: "",
     completedJhs: "",
-    jhsIndexNo: studentIndexNo,
+    jhsIndexNo: studentIndex,
     program: "",
     divisionProgram: "",
     optionalElectiveSubject: "",
@@ -137,35 +160,13 @@ export function EnrollmentForm() {
     mobile: "",
     email: "",
   });
-  console.log(newStudent);
-
-  // Helper function to generate new unique-Id for new student
-  const generateUniqueId = (fName, lName) => {
-    // Get current year
-    const currentYear = new Date().getFullYear();
-    // Get initials from the first and last names
-    const firstNameInitial = fName ? fName?.charAt(0)?.toUpperCase() : "";
-    const lastNameInitial = lName ? lName?.charAt(0)?.toUpperCase() : "";
-    // Generate a unique suffix using current timestamp or random number
-    const uniqueSuffix = Date.now().toString().slice(-5); // Take last 5 digits for brevity
-    return `STD-${uniqueSuffix}${firstNameInitial}${lastNameInitial}-${currentYear}`;
-  };
-  // Use useEffect to automatically update the userID when any of the dependencies change
-  useEffect(() => {
-    const newId = generateUniqueId(newStudent?.firstName, newStudent?.lastName);
-    setStudentId(newId);
-  }, [newStudent]);
 
   // Find student's programme
   const studentFound = allStudents?.find(
-    (student) => student?.studentSchoolData?.jhsIndexNo === studentIndexNo
+    (student) => student?.studentSchoolData?.jhsIndexNo === studentIndex
   );
   console.log(studentFound);
 
-  // Find student's programme
-  const studentProgramme = allProgrammes?.find(
-    (programme) => programme?._id === newStudent?.program
-  );
   // Find student's division programme
   const selectedDivisionProgramme = allDivisionProgrammes?.find(
     (programme) => programme?._id === newStudent?.divisionProgram
@@ -252,23 +253,101 @@ export function EnrollmentForm() {
     ? new Date(newStudent?.dateOfBirth).toISOString()
     : "";
 
-  // Handle enrollment
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = {
-      studentId,
-      newStudent,
-      dateOfBirth: psDOB,
-    };
-    dispatch(studentEnrollment(data));
-  };
   // Find placement student
   const memoizedPlacementStudentData = useMemo(() => {
     const placementStudentFound = allPlacementStudents?.find(
-      (std) => std?.jhsIndexNo === newStudent?.jhsIndexNo
+      (std) => std?.jhsIndexNo === studentIndex
     );
     return placementStudentFound;
-  }, [allPlacementStudents, newStudent]);
+  }, [allPlacementStudents, studentIndex]);
+
+  // Get Student Batch
+  const placementYear = memoizedPlacementStudentData?.yearGraduated;
+  const graduationYear =
+    Number(memoizedPlacementStudentData?.yearGraduated) + 3;
+  const getNextYear = Number(memoizedPlacementStudentData?.yearGraduated) + 1;
+  const studentBatch = allBatches?.find(
+    (batch) => batch?.yearRange === `${placementYear}-${graduationYear}`
+  );
+  const studentFirstAcademicYear = allCreatedAcademicYears?.find(
+    (year) => year?.yearRange === `${placementYear}/${getNextYear}`
+  );
+  console.log(studentFirstAcademicYear);
+
+  // Find student's programme
+  const studentProgramme = allProgrammes?.find(
+    (programme) => programme?.name === memoizedPlacementStudentData?.programme
+  );
+  // Handle enrollment
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const newStudentData = {
+      studentId,
+      enrollmentCode: memoizedPlacementStudentData?.enrollmentCode,
+      fullName: memoizedPlacementStudentData?.fullName,
+      dateOfBirth: memoizedPlacementStudentData?.dateOfBirth,
+      placeOfBirth: newStudent?.placeOfBirth,
+      nationality: newStudent?.nationality,
+      gender: memoizedPlacementStudentData?.gender,
+      profilePicture: newStudent?.profilePicture,
+      // School Data
+      jhsAttended: memoizedPlacementStudentData?.jhsAttended,
+      completedJhs: memoizedPlacementStudentData?.yearGraduated,
+      jhsIndexNo: studentIndex,
+      program: studentProgramme?._id,
+      divisionProgram: newStudent?.divisionProgram,
+      optionalElectiveSubject: newStudent?.optionalElectiveSubject,
+      currentClassLevel: newStudent?.currentClassLevel,
+      currentAcademicYear: studentFirstAcademicYear?._id,
+      batch: studentBatch?._id,
+      // Status
+      height: newStudent?.height,
+      weight: newStudent?.weight,
+      complexion: newStudent?.complexion,
+      motherTongue: newStudent?.motherTongue,
+      otherTongue: newStudent?.otherTongue,
+      residentialStatus: memoizedPlacementStudentData?.boardingStatus,
+      // Contact Address
+      homeTown: newStudent?.homeTown,
+      district: newStudent?.district,
+      region: newStudent?.region,
+      currentCity: newStudent?.currentCity,
+      residentialAddress: newStudent?.residentialAddress,
+      gpsAddress: newStudent?.gpsAddress,
+      mobile: newStudent?.mobile,
+      email: newStudent?.email,
+    };
+    console.log(newStudentData);
+
+    dispatch(studentEnrollment(newStudentData));
+  };
+  console.log(studentProgramme);
+  // Helper function to generate new unique-Id for new student
+  const generateUniqueId = (fName) => {
+    // Get current year
+    const currentYear = new Date().getFullYear();
+    // Get initials from the first and last names
+    const firstNameInitial = fName
+      ? fName
+          ?.split(" ")
+          .map((word) => word[0].toUpperCase())
+          .join("")
+      : "";
+    // Generate a unique suffix using current timestamp or random number
+    const uniqueSuffix = Date.now().toString().slice(-5); // Take last 5 digits for brevity
+    return `STD-${uniqueSuffix}${firstNameInitial}-${currentYear}`;
+  };
+  // Use useEffect to automatically update the userID when any of the dependencies change
+  useEffect(() => {
+    const newId = generateUniqueId(memoizedPlacementStudentData?.fullName);
+    const maskedID = `${newId?.slice(0, 3)}***${newId?.slice(-2)}`;
+    setStudentId(maskedID);
+    Cookies?.set("masked_student_id", newId, {
+      expires: 1, // 1 day
+      secure: false, // Set to true in production if using HTTPS
+      sameSite: "Strict",
+    });
+  }, [memoizedPlacementStudentData]);
 
   // Fetch needed data
   useEffect(() => {
@@ -276,6 +355,7 @@ export function EnrollmentForm() {
       dispatch(fetchAllDivisionProgrammes({ programId: newStudent?.program }));
     }
     dispatch(fetchAllPlacementStudents());
+    dispatch(fetchAllAcademicYears());
   }, [dispatch, newStudent]);
 
   // Validate input data
@@ -344,6 +424,20 @@ export function EnrollmentForm() {
     }
   }, [newStudent, memoizedPlacementStudentData]);
 
+  console.log(
+    memoizedPlacementStudentData?.dateOfBirth
+      ? dateFormatter.format(
+          new Date(memoizedPlacementStudentData?.dateOfBirth)
+        )
+      : "---"
+  );
+
+  useEffect(() => {
+    if (!studentIndex) {
+      navigate("/");
+    }
+  }, [navigate, studentIndex]);
+
   // Handle enrollment status check
   useEffect(() => {
     if (enrollmentStatus === "pending") {
@@ -401,6 +495,71 @@ export function EnrollmentForm() {
 
   return (
     <>
+      {/* School Logo */}
+      <Box
+        direction="column"
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff",
+          padding: ".3rem 0",
+          height: "4.5rem",
+        }}
+      >
+        <Box
+          onClick={() => {
+            // Click handler
+            localStorage.removeItem("currentNavLink");
+            navigate("/sensec/homepage");
+          }}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            cursor: "pointer",
+          }}
+        >
+          <Avatar
+            src="/assets/sensec-logo1.png"
+            sx={{ alignItems: "center" }}
+          />
+          <Box sx={{ display: "flex", height: "1.5rem" }}>
+            <Typography variant="h6" color="green">
+              Sen
+            </Typography>
+            <Typography variant="h6" color="#aeae0d">
+              sec
+            </Typography>
+          </Box>
+        </Box>
+      </Box>
+      {/* Main navbar links */}
+      <Box
+        sx={{
+          position: "sticky",
+          top: 0,
+          backgroundColor: "#fff",
+          padding: 0,
+          zIndex: 5,
+        }}
+      >
+        <NavigationBar
+          setOpenSubNavLinks={setOpenSubNavLinks}
+          openSubNavLinks={openSubNavLinks}
+          setOpenUserActions={setOpenUserActions}
+          openUserActions={openUserActions}
+          setOpenSignUpActions={setOpenSignUpActions}
+          openSignUpActions={openSignUpActions}
+          setOpenMenuLinks={setOpenMenuLinks}
+          openMenuLinks={openMenuLinks}
+          currentAction={currentAction}
+          setCurrentAction={setCurrentAction}
+          currentLink={currentLink}
+          setCurrentLink={setCurrentLink}
+        />
+      </Box>
       {/* Current dashboard title */}
       {adminCurrentAction && adminCurrentLink && (
         <Box
@@ -513,55 +672,14 @@ export function EnrollmentForm() {
               <Grid item xs={12} sm={6} md={4} lg={4}>
                 <CustomTextField
                   fullWidth
-                  label="First Name"
-                  name="firstName"
-                  value={newStudent?.firstName}
+                  label="Full Name"
+                  name="fullName"
+                  value={memoizedPlacementStudentData?.fullName || ""}
                   onChange={handleChange}
-                  required
+                  slotProps={{
+                    input: { readOnly: true },
+                  }}
                   className="textField"
-                  error={firstNameError}
-                  helperText={
-                    firstNameError ? "First name is not correct!" : ""
-                  }
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color:
-                        newStudent?.firstName && !firstNameError
-                          ? "green"
-                          : "red", // Change the asterisk color to red
-                    },
-                  }}
-                />
-              </Grid>
-              {/* Student Surname */}
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <CustomTextField
-                  fullWidth
-                  label="Surname"
-                  name="lastName"
-                  value={newStudent?.lastName}
-                  onChange={handleChange}
-                  required
-                  error={lastNameError}
-                  helperText={lastNameError ? "Surname is not correct!" : ""}
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color:
-                        newStudent?.lastName && !lastNameError
-                          ? "green"
-                          : "red", // Change the asterisk color to red
-                    },
-                  }}
-                />
-              </Grid>
-              {/* Student Other Name */}
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <CustomTextField
-                  fullWidth
-                  label="Other Name"
-                  name="otherName"
-                  value={newStudent?.otherName}
-                  onChange={handleChange}
                 />
               </Grid>
               {/* Place Of Birth */}
@@ -570,7 +688,7 @@ export function EnrollmentForm() {
                   fullWidth
                   label="Place Of Birth"
                   name="placeOfBirth"
-                  value={newStudent?.placeOfBirth}
+                  value={newStudent?.placeOfBirth || ""}
                   onChange={handleChange}
                   required
                   sx={{
@@ -582,43 +700,22 @@ export function EnrollmentForm() {
               </Grid>
               {/* Date Of Birth */}
               <Grid item xs={12} sm={6} md={4} lg={4}>
-                {/* <CustomTextField
+                <CustomTextField
                   fullWidth
-                  // label="DD/MM/YYYY"
+                  label="Date Of Birth"
                   name="dateOfBirth"
-                  type="date"
-                  value={newStudent?.dateOfBirth || ""}
+                  value={
+                    memoizedPlacementStudentData?.dateOfBirth
+                      ? dateFormatter.format(
+                          new Date(memoizedPlacementStudentData?.dateOfBirth)
+                        )
+                      : ""
+                  }
                   onChange={handleChange}
-                  required
-                /> */}
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  <CustomMobileDatePicker
-                    // label="From"
-                    label={
-                      <span>
-                        Date of Birth{" "}
-                        <span
-                          style={{
-                            color: !newStudent?.dateOfBirth ? "red" : "green", // Dynamically set the asterisk color
-                            marginRight: "8px",
-                          }}
-                        >
-                          *
-                        </span>
-                      </span>
-                    }
-                    name="dateOfBirth"
-                    // inputFormat="MM/dd/yyyy"
-                    value={newStudent?.dateOfBirth || {}}
-                    onChange={(date) => handleDateChange("dateOfBirth", date)}
-                    renderInput={(params) => <CustomTextField {...params} />}
-                    error={false} // Make sure this is false
-                    helperText="" // Optionally clear helper text
-                    sx={{
-                      width: "100%",
-                    }}
-                  />
-                </LocalizationProvider>
+                  slotProps={{
+                    input: { readOnly: true },
+                  }}
+                />
               </Grid>
               {/* Nationality */}
               <Grid item xs={12} sm={6} md={4} lg={4}>
@@ -626,7 +723,7 @@ export function EnrollmentForm() {
                   fullWidth
                   label="Nationality"
                   name="nationality"
-                  value={newStudent?.nationality}
+                  value={newStudent?.nationality || ""}
                   onChange={handleChange}
                   required
                   sx={{
@@ -643,13 +740,10 @@ export function EnrollmentForm() {
                   fullWidth
                   label="Gender"
                   name="gender"
-                  value={newStudent?.gender}
+                  value={memoizedPlacementStudentData?.gender || ""}
                   onChange={handleChange}
-                  required
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color: newStudent?.gender ? "green" : "red", // Change the asterisk color to red
-                    },
+                  slotProps={{
+                    input: { readOnly: true },
                   }}
                 >
                   <MenuItem value="Male">Male</MenuItem>
@@ -663,7 +757,7 @@ export function EnrollmentForm() {
                   fullWidth
                   label="Mother Tongue"
                   name="motherTongue"
-                  value={newStudent?.motherTongue}
+                  value={newStudent?.motherTongue || ""}
                   onChange={handleChange}
                   required
                   sx={{
@@ -696,7 +790,7 @@ export function EnrollmentForm() {
                   fullWidth
                   label="Other Tongue"
                   name="otherTongue"
-                  value={newStudent?.otherTongue}
+                  value={newStudent?.otherTongue || ""}
                   onChange={handleChange}
                   sx={{
                     "& .MuiInputLabel-asterisk": {
@@ -720,7 +814,7 @@ export function EnrollmentForm() {
                   fullWidth
                   label="Complexion"
                   name="complexion"
-                  value={newStudent?.complexion}
+                  value={newStudent?.complexion || ""}
                   onChange={handleChange}
                   required
                   sx={{
@@ -743,7 +837,7 @@ export function EnrollmentForm() {
                   fullWidth
                   label="Height"
                   name="height"
-                  value={newStudent?.height}
+                  value={newStudent?.height || ""}
                   onChange={handleChange}
                   required
                   slotProps={{
@@ -766,7 +860,7 @@ export function EnrollmentForm() {
                   fullWidth
                   label="Weight"
                   name="weight"
-                  value={newStudent?.weight}
+                  value={newStudent?.weight || ""}
                   onChange={handleChange}
                   required
                   slotProps={{
@@ -790,7 +884,7 @@ export function EnrollmentForm() {
                   select
                   label="Region"
                   name="region"
-                  value={newStudent?.region}
+                  value={newStudent?.region || ""}
                   onChange={handleChange}
                   required
                   sx={{
@@ -823,7 +917,7 @@ export function EnrollmentForm() {
                   fullWidth
                   label="HomeTown"
                   name="homeTown"
-                  value={newStudent?.homeTown}
+                  value={newStudent?.homeTown || ""}
                   onChange={handleChange}
                   required
                   sx={{
@@ -839,7 +933,7 @@ export function EnrollmentForm() {
                   fullWidth
                   label="House Address"
                   name="residentialAddress"
-                  value={newStudent?.residentialAddress}
+                  value={newStudent?.residentialAddress || ""}
                   onChange={handleChange}
                   required
                   sx={{
@@ -855,7 +949,7 @@ export function EnrollmentForm() {
                   fullWidth
                   label="District"
                   name="district"
-                  value={newStudent?.district}
+                  value={newStudent?.district || ""}
                   onChange={handleChange}
                   required
                   sx={{
@@ -871,7 +965,7 @@ export function EnrollmentForm() {
                   fullWidth
                   label="Current City"
                   name="currentCity"
-                  value={newStudent?.currentCity}
+                  value={newStudent?.currentCity || ""}
                   onChange={handleChange}
                   required
                   sx={{
@@ -887,7 +981,7 @@ export function EnrollmentForm() {
                   fullWidth
                   label="GPS Address"
                   name="gpsAddress"
-                  value={newStudent?.gpsAddress}
+                  value={newStudent?.gpsAddress || ""}
                   onChange={handleChange}
                   required
                   sx={{
@@ -903,7 +997,7 @@ export function EnrollmentForm() {
                   fullWidth
                   label="Email"
                   name="email"
-                  value={newStudent?.email}
+                  value={newStudent?.email || ""}
                   onChange={handleChange}
                   required
                   sx={{
@@ -919,7 +1013,7 @@ export function EnrollmentForm() {
                   fullWidth
                   label="Mobile"
                   name="mobile"
-                  value={newStudent?.mobile}
+                  value={newStudent?.mobile || ""}
                   onChange={handleChange}
                   required
                   sx={{
@@ -935,20 +1029,10 @@ export function EnrollmentForm() {
                   fullWidth
                   label="JHS Attended"
                   name="jhsAttended"
-                  value={newStudent?.jhsAttended}
+                  value={memoizedPlacementStudentData?.jhsAttended || ""}
                   onChange={handleChange}
-                  required
-                  error={jhsAttendedError}
-                  helperText={
-                    jhsAttendedError ? "JHS attended is not correct!" : ""
-                  }
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color:
-                        newStudent?.jhsAttended && !jhsAttendedError
-                          ? "green"
-                          : "red", // Change the asterisk color to red
-                    },
+                  slotProps={{
+                    input: { readOnly: true },
                   }}
                 />
               </Grid>
@@ -958,20 +1042,10 @@ export function EnrollmentForm() {
                   fullWidth
                   label="Year Graduated [ JHS ]"
                   name="completedJhs"
-                  value={newStudent?.completedJhs}
+                  value={memoizedPlacementStudentData?.yearGraduated || ""}
                   onChange={handleChange}
-                  required
-                  error={graduatedJhsError}
-                  helperText={
-                    graduatedJhsError ? "Graduated year is not correct!" : ""
-                  }
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color:
-                        newStudent?.completedJhs && !graduatedJhsError
-                          ? "green"
-                          : "red", // Change the asterisk color to red
-                    },
+                  slotProps={{
+                    input: { readOnly: true },
                   }}
                 />
               </Grid>
@@ -981,12 +1055,8 @@ export function EnrollmentForm() {
                   fullWidth
                   label="JHS Index No."
                   name="jhsIndexNo"
-                  value={newStudent?.jhsIndexNo}
+                  value={studentIndexNo || ""}
                   onChange={handleChange}
-                  // disabled={
-                  //   !authUser ||
-                  //   (authUser && authUser?.roles?.includes("admin"))
-                  // }
                   slotProps={{ input: { readOnly: true } }}
                 />
               </Grid>
@@ -997,13 +1067,10 @@ export function EnrollmentForm() {
                   fullWidth
                   label="Select Programme"
                   name="program"
-                  value={newStudent?.program}
+                  value={studentProgramme?._id || ""}
                   onChange={handleChange}
-                  required
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color: newStudent?.program ? "green" : "red", // Change the asterisk color to red
-                    },
+                  slotProps={{
+                    input: { readOnly: true },
                   }}
                 >
                   {allProgrammes?.map((programme) => (
@@ -1021,7 +1088,7 @@ export function EnrollmentForm() {
                     fullWidth
                     label="Division Program"
                     name="divisionProgram"
-                    value={newStudent?.divisionProgram}
+                    value={newStudent?.divisionProgram || ""}
                     onChange={handleChange}
                     required={
                       allDivisionProgrammes && allDivisionProgrammes?.length > 0
@@ -1050,7 +1117,7 @@ export function EnrollmentForm() {
                       fullWidth
                       label="Optional Elective Subject"
                       name="optionalElectiveSubject"
-                      value={newStudent?.optionalElectiveSubject}
+                      value={newStudent?.optionalElectiveSubject || ""}
                       onChange={handleChange}
                       required
                       sx={{
@@ -1080,7 +1147,7 @@ export function EnrollmentForm() {
                       fullWidth
                       label="Optional Elective Subject"
                       name="optionalElectiveSubject"
-                      value={newStudent?.optionalElectiveSubject}
+                      value={newStudent?.optionalElectiveSubject || ""}
                       onChange={handleChange}
                       required
                       sx={{
@@ -1108,7 +1175,7 @@ export function EnrollmentForm() {
                   fullWidth
                   label="Class Level"
                   name="currentClassLevel"
-                  value={newStudent?.currentClassLevel}
+                  value={newStudent?.currentClassLevel || ""}
                   onChange={handleChange}
                   required
                   sx={{
@@ -1131,13 +1198,10 @@ export function EnrollmentForm() {
                   fullWidth
                   label="Batch"
                   name="batch"
-                  value={newStudent?.batch}
+                  value={studentBatch?._id || ""}
                   onChange={handleChange}
-                  required
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color: newStudent?.batch ? "green" : "red", // Change the asterisk color to red
-                    },
+                  slotProps={{
+                    input: { readOnly: true },
                   }}
                 >
                   {allBatches?.map((batch) => (
@@ -1154,7 +1218,7 @@ export function EnrollmentForm() {
                   fullWidth
                   label="Academic Year"
                   name="currentAcademicYear"
-                  value={newStudent?.currentAcademicYear}
+                  value={studentFirstAcademicYear?._id || ""}
                   onChange={handleChange}
                   required
                   sx={{
@@ -1164,9 +1228,9 @@ export function EnrollmentForm() {
                   }}
                   // disabled
                 >
-                  {academicYears.map((year) => (
-                    <MenuItem key={year} value={year}>
-                      {year}
+                  {allCreatedAcademicYears?.map((year) => (
+                    <MenuItem key={year?._id} value={year?._id}>
+                      {year?.yearRange}
                     </MenuItem>
                   ))}
                 </CustomTextField>
@@ -1178,13 +1242,10 @@ export function EnrollmentForm() {
                   fullWidth
                   label="Residential Status"
                   name="residentialStatus"
-                  value={newStudent?.residentialStatus}
+                  value={memoizedPlacementStudentData?.boardingStatus || ""}
                   onChange={handleChange}
-                  required
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color: newStudent?.residentialStatus ? "green" : "red", // Change the asterisk color to red
-                    },
+                  slotProps={{
+                    input: { readOnly: true },
                   }}
                 >
                   <MenuItem value="Day">Day</MenuItem>

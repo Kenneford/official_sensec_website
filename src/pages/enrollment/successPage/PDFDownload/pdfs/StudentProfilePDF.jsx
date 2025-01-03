@@ -131,6 +131,13 @@ export default function StudentProfilePDF({ enrolledStudent }) {
           <Image style={styles.logo} src={"/assets/sensec-logo1.png"} />
           <View style={styles.headerTitleWrap}>
             <Text style={styles.headerTitle}>SENYA SENIOR HIGH SCHOOL</Text>
+            <Text style={styles.centeredText}>
+              P.O. Box 23, Senya-Beraku / GPS: CG-2308-4841
+            </Text>
+            <Text style={styles.miniTitle}>STUDENT PROSPECTUS</Text>
+          </View>
+          <View style={styles.headerTitleWrap}>
+            <Text style={styles.headerTitle}>SENYA SENIOR HIGH SCHOOL</Text>
             <Text style={styles.headerTitle}>STUDENT PROFILE</Text>
           </View>
           <View style={styles.imageWrap}>

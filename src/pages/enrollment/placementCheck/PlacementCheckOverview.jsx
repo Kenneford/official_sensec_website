@@ -27,6 +27,10 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { parseISO } from "date-fns";
 import dayjs from "dayjs";
 import { NavigationBar } from "../../../components/navbar/NavigationBar";
+import Cookies from "js-cookie";
+import { color } from "framer-motion";
+import PageLoading from "../../../components/pageLoading/PageLoading";
+import DataNotFound from "../../../components/pageNotFound/DataNotFound";
 
 export function PlacementCheckOverview() {
   const {
@@ -46,13 +50,13 @@ export function PlacementCheckOverview() {
     openSearchModal,
     setOpenSearchModal,
   } = useOutletContext();
-  const studentUniqueId = localStorage.getItem("studentUniqueId");
+  const placementYear = Cookies.get("Placement_Year");
+  const studentIndex = Cookies.get("masked_student_index");
   const allPlacementStudents = useSelector(getAllPlacementStudents);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { studentIndexNo } = useParams();
   const allUsers = useSelector(getAllUsers);
-  console.log(studentIndexNo);
 
   const { updateStatus, error, successMessage } = useSelector(
     (state) => state.placement
@@ -63,7 +67,7 @@ export function PlacementCheckOverview() {
 
   // Find placement student
   const foundStudent = allPlacementStudents?.find(
-    (std) => std.jhsIndexNo === studentIndexNo
+    (std) => std.jhsIndexNo === studentIndex
   );
   // Find student's user data to display image if available
   const student = allUsers?.find(
@@ -75,33 +79,10 @@ export function PlacementCheckOverview() {
 
   // Placement Student Update state
   const [placementStudent, setPlacementStudent] = useState(null);
-  // const [placementStudent, setPlacementStudent] = useState({
-  //   // Personal Details
-  //   firstName: foundStudent?.firstName,
-  //   lastName: foundStudent?.lastName,
-  //   otherName: foundStudent?.otherName,
-  //   dateOfBirth: foundStudent?.dateOfBirth,
-  //   gender: foundStudent?.gender,
-  //   fullName: foundStudent?.fullName,
-  //   // School Data
-  //   jhsAttended: foundStudent?.jhsAttended,
-  //   jhsIndexNo: foundStudent?.jhsIndexNo,
-  //   programme: foundStudent?.programme,
-  //   yearGraduated: foundStudent?.yearGraduated,
-  //   boardingStatus: foundStudent?.boardingStatus,
-  //   // Contact Number
-  //   smsContact: foundStudent?.smsContact,
-  // });
-  console.log(placementStudent);
 
   const canSave =
-    Boolean(placementStudent?.firstName) &&
-    Boolean(placementStudent?.lastName) &&
-    // Boolean(placementStudent?.otherName) &&
-    // Boolean(placementStudent?.gender) &&
     Boolean(placementStudent?.dateOfBirth) &&
     Boolean(placementStudent?.jhsAttended) &&
-    Boolean(placementStudent?.yearGraduated) &&
     Boolean(placementStudent?.smsContact);
 
   // Handle Input Values
@@ -142,7 +123,7 @@ export function PlacementCheckOverview() {
         jhsAttended: placementStudent?.jhsAttended,
         jhsIndexNo: placementStudent?.jhsIndexNo,
         programme: placementStudent?.programme,
-        yearGraduated: placementStudent?.yearGraduated,
+        yearGraduated: placementYear,
         boardingStatus: placementStudent?.boardingStatus,
         // Contact Number
         smsContact: placementStudent?.smsContact,
@@ -165,7 +146,6 @@ export function PlacementCheckOverview() {
     };
 
     window.addEventListener("scroll", handleScroll);
-    console.log(window.scrollY > 10);
 
     // Cleanup the event listener
     return () => {
@@ -178,13 +158,13 @@ export function PlacementCheckOverview() {
     if (foundStudent) {
       const formattedStudent = {
         ...foundStudent,
-        dateOfBirth: dayjs(foundStudent.dateOfBirth).isValid()
-          ? dayjs(foundStudent?.dateOfBirth)
-          : dayjs("MM/DD/YYYY"),
+        dateOfBirth: foundStudent?.dateOfBirth
+          ? dayjs(foundStudent.dateOfBirth)
+          : null,
       };
       setPlacementStudent(formattedStudent);
     } else {
-      setPlacementStudent(null); // No student found
+      setPlacementStudent(null);
     }
   }, [foundStudent]);
 
@@ -239,12 +219,17 @@ export function PlacementCheckOverview() {
     foundStudent,
   ]);
 
+  useEffect(() => {
+    if (!placementYear) {
+      navigate(-1);
+    }
+    if (!studentIndex) {
+      navigate("/");
+    }
+  }, [placementYear, navigate, studentIndex]);
+
   if (!foundStudent) {
-    return (
-      <div className="checkPageLoading">
-        <LoadingProgress color={"#696969"} size={"1.7rem"} />
-      </div>
-    );
+    return <DataNotFound message={"Student data not found!"} />;
   }
 
   return (
@@ -335,7 +320,7 @@ export function PlacementCheckOverview() {
                   <Box className="studentDataWrap">
                     <Box className="student">
                       <p className="studentName">{foundStudent?.fullName}</p>
-                      <p className="studentId">[ Student ]</p>
+                      <p className="studentId">[ Placement Student ]</p>
                       <Box className="studentImg">
                         <img
                           src={
@@ -379,24 +364,26 @@ export function PlacementCheckOverview() {
                           <Grid item xs={12} sm={6} md={4} lg={4}>
                             <Box className="placementInfoBox">
                               <h3>
-                                {foundStudent?.firstName
-                                  ? foundStudent?.firstName
+                                {foundStudent?.fullName
+                                  ? foundStudent?.fullName
                                   : "---"}
                               </h3>
-                              <span>[ First Name ]</span>
+                              <span>[ Full Name ]</span>
                             </Box>
                           </Grid>
                           <Grid item xs={12} sm={6} md={4} lg={4}>
                             <Box className="placementInfoBox">
                               <h3>
-                                {foundStudent?.lastName
-                                  ? foundStudent?.lastName
+                                {foundStudent?.dateOfBirth
+                                  ? dateFormatter.format(
+                                      new Date(foundStudent?.dateOfBirth)
+                                    )
                                   : "---"}
                               </h3>
-                              <span>[ Last Name ]</span>
+                              <span>[ Date Of Birth]</span>
                             </Box>
                           </Grid>
-                          <Grid item xs={12} sm={6} md={4} lg={4}>
+                          {/* <Grid item xs={12} sm={6} md={4} lg={4}>
                             <Box className="placementInfoBox">
                               <h3>
                                 {foundStudent?.otherName
@@ -405,7 +392,7 @@ export function PlacementCheckOverview() {
                               </h3>
                               <span>[ Other Name ]</span>
                             </Box>
-                          </Grid>
+                          </Grid> */}
                           <Grid item xs={12} sm={6} md={4} lg={4}>
                             <Box className="placementInfoBox">
                               <h3>
@@ -428,22 +415,24 @@ export function PlacementCheckOverview() {
                           </Grid>
                           <Grid item xs={12} sm={6} md={4} lg={4}>
                             <Box className="placementInfoBox">
-                              <h3>
-                                {foundStudent?.yearGraduated
-                                  ? foundStudent?.yearGraduated
-                                  : "---"}
-                              </h3>
+                              <h3>{placementYear ? placementYear : "---"}</h3>
                               <span>[ Year Graduated ]</span>
                             </Box>
                           </Grid>
                           <Grid item xs={12} sm={6} md={4} lg={4}>
                             <Box className="placementInfoBox">
+                              <h3>{studentIndexNo ? studentIndexNo : "---"}</h3>
+                              <span>[ JHS Index-Number ]</span>
+                            </Box>
+                          </Grid>
+                          <Grid item xs={12} sm={6} md={4} lg={4}>
+                            <Box className="placementInfoBox">
                               <h3>
-                                {foundStudent?.jhsIndexNo
-                                  ? foundStudent?.jhsIndexNo
+                                {foundStudent?.programme
+                                  ? foundStudent?.programme
                                   : "---"}
                               </h3>
-                              <span>[ JHS Index-Number ]</span>
+                              <span>[ Placement Verified ]</span>
                             </Box>
                           </Grid>
                           <Grid item xs={12} sm={6} md={4} lg={4}>
@@ -489,50 +478,14 @@ export function PlacementCheckOverview() {
                           <Grid item xs={12} sm={6} md={4} lg={4}>
                             <CustomTextField
                               fullWidth
-                              label="First Name"
-                              name="firstName"
-                              value={placementStudent?.firstName || ""}
+                              label="Full Name"
+                              name="fullName"
+                              value={placementStudent?.fullName || ""}
                               onChange={handleInputValues}
                               autoComplete="off"
-                              required
-                              className="textField"
-                              sx={{
-                                "& .MuiInputLabel-asterisk": {
-                                  color: placementStudent?.firstName
-                                    ? "green"
-                                    : "red", // Change the asterisk color to red
-                                },
+                              slotProps={{
+                                input: { readOnly: true },
                               }}
-                            />
-                          </Grid>
-                          <Grid item xs={12} sm={6} md={4} lg={4}>
-                            <CustomTextField
-                              fullWidth
-                              label="Last Name"
-                              name="lastName"
-                              value={placementStudent?.lastName || ""}
-                              onChange={handleInputValues}
-                              autoComplete="off"
-                              required
-                              className="textField"
-                              sx={{
-                                "& .MuiInputLabel-asterisk": {
-                                  color: placementStudent?.lastName
-                                    ? "green"
-                                    : "red", // Change the asterisk color to red
-                                },
-                              }}
-                            />
-                          </Grid>
-                          <Grid item xs={12} sm={6} md={4} lg={4}>
-                            <CustomTextField
-                              fullWidth
-                              label="Other Name"
-                              name="otherName"
-                              value={placementStudent?.otherName || ""}
-                              onChange={handleInputValues}
-                              autoComplete="off"
-                              // required
                               className="textField"
                             />
                           </Grid>
@@ -544,40 +497,6 @@ export function PlacementCheckOverview() {
                             lg={4}
                             className="changeDOBWrap"
                           >
-                            {/* {!changeDOB && (
-                            <CustomTextField
-                              fullWidth
-                              label="Date Of Birth"
-                              name="dateOfBirth"
-                              value={
-                                foundStudent?.dateOfBirth
-                                  ? dateFormatter.format(
-                                      new Date(foundStudent?.dateOfBirth)
-                                    )
-                                  : "Select"
-                              }
-                              required
-                              onChange={handleInputValues}
-                              autoComplete="off"
-                              slotProps={{
-                                input: { readOnly: true },
-                              }}
-                              className="textField"
-                              sx={{
-                                "& .MuiInputLabel-asterisk": {
-                                  color: foundStudent?.dateOfBirth
-                                    ? "green"
-                                    : "red", // Change the asterisk color to red
-                                },
-                              }}
-                            />
-                          )}
-                          {!changeDOB && (
-                            <CalendarMonth
-                              onClick={() => setChangeDOB(true)}
-                              className="dOBBtn"
-                            />
-                          )} */}
                             {/* {changeDOB && ( */}
                             <CustomMobileDatePicker
                               label={
@@ -585,9 +504,9 @@ export function PlacementCheckOverview() {
                                   Date of Birth{" "}
                                   <span
                                     style={{
-                                      color: !foundStudent?.dateOfBirth
-                                        ? "red"
-                                        : "green", // Dynamically set the asterisk color
+                                      color: placementStudent?.dateOfBirth
+                                        ? "green"
+                                        : "red",
                                       marginRight: "8px",
                                     }}
                                   >
@@ -597,7 +516,10 @@ export function PlacementCheckOverview() {
                               }
                               name="dateOfBirth"
                               // inputFormat="MM/dd/yyyy"
-                              value={placementStudent?.dateOfBirth}
+                              value={
+                                placementStudent?.dateOfBirth ||
+                                dayjs("MM/DD/YYYY")
+                              }
                               onChange={handleDateChange}
                               maxDate={dayjs()}
                               renderInput={(params) => (
@@ -616,27 +538,6 @@ export function PlacementCheckOverview() {
                                 },
                               }}
                             />
-                            {/* )} */}
-                            {/* {changeDOB && !foundStudent && (
-                            <CustomMobileDatePicker
-                              // label="Date Of Birth"
-                              name="dateOfBirth"
-                              // inputFormat="MM/dd/yyyy"
-                              value={placementStudent?.dateOfBirth || {}}
-                              onChange={(date) =>
-                                handleDateChange("dateOfBirth", date)
-                              }
-                              maxDate={dayjs()}
-                              renderInput={(params) => (
-                                <CustomTextField {...params} />
-                              )}
-                              error={false} // Make sure this is false
-                              helperText="" // Optionally clear helper text
-                              sx={{
-                                width: "100%",
-                              }}
-                            />
-                          )} */}
                             {changeDOB && (
                               <Close
                                 onClick={() => setChangeDOB(false)}
@@ -648,19 +549,20 @@ export function PlacementCheckOverview() {
                                 // }}
                               />
                             )}
-                            {/* {changeDOB && (
-                          <CustomTextField
-                            fullWidth
-                            label="Date Of Birth"
-                            type="date"
-                            name="dateOfBirth"
-                            value={placementStudent?.dateOfBirth}
-                            onChange={handleInputValues}
-                            autoComplete="off"
-                            required
-                            className="textField"
-                          />
-                        )} */}
+                          </Grid>
+                          <Grid item xs={12} sm={6} md={4} lg={4}>
+                            <CustomTextField
+                              fullWidth
+                              label="Gender"
+                              name="gender"
+                              value={placementStudent?.gender || ""}
+                              onChange={handleInputValues}
+                              autoComplete="off"
+                              slotProps={{
+                                input: { readOnly: true },
+                              }}
+                              className="textField"
+                            />
                           </Grid>
                           <Grid item xs={12} sm={6} md={4} lg={4}>
                             <CustomTextField
@@ -686,36 +588,12 @@ export function PlacementCheckOverview() {
                               fullWidth
                               label="Year Graduated"
                               name="yearGraduated"
-                              value={placementStudent?.yearGraduated || ""}
+                              value={placementYear || ""}
                               onChange={handleInputValues}
                               autoComplete="off"
-                              required
                               className="textField"
-                              sx={{
-                                "& .MuiInputLabel-asterisk": {
-                                  color: placementStudent?.yearGraduated
-                                    ? "green"
-                                    : "red", // Change the asterisk color to red
-                                },
-                              }}
-                            />
-                          </Grid>
-                          <Grid item xs={12} sm={6} md={4} lg={4}>
-                            <CustomTextField
-                              fullWidth
-                              label="Mobile"
-                              name="smsContact"
-                              value={placementStudent?.smsContact || ""}
-                              onChange={handleInputValues}
-                              autoComplete="off"
-                              required
-                              className="textField"
-                              sx={{
-                                "& .MuiInputLabel-asterisk": {
-                                  color: placementStudent?.smsContact
-                                    ? "green"
-                                    : "red", // Change the asterisk color to red
-                                },
+                              slotProps={{
+                                input: { readOnly: true },
                               }}
                             />
                           </Grid>
@@ -724,7 +602,7 @@ export function PlacementCheckOverview() {
                               fullWidth
                               label="JHS Index No."
                               name="jhsIndexNo"
-                              value={placementStudent?.jhsIndexNo || ""}
+                              value={studentIndexNo || ""}
                               onChange={handleInputValues}
                               autoComplete="off"
                               slotProps={{
@@ -765,29 +643,20 @@ export function PlacementCheckOverview() {
                           <Grid item xs={12} sm={6} md={4} lg={4}>
                             <CustomTextField
                               fullWidth
-                              label="Gender"
-                              name="gender"
-                              value={placementStudent?.gender || ""}
+                              label="Contact Number"
+                              name="smsContact"
+                              value={placementStudent?.smsContact || ""}
                               onChange={handleInputValues}
                               autoComplete="off"
-                              slotProps={{
-                                input: { readOnly: true },
-                              }}
+                              required
                               className="textField"
-                            />
-                          </Grid>
-                          <Grid item xs={12} sm={6} md={4} lg={4}>
-                            <CustomTextField
-                              fullWidth
-                              label="Full Name"
-                              name="fullName"
-                              value={placementStudent?.fullName || ""}
-                              onChange={handleInputValues}
-                              autoComplete="off"
-                              slotProps={{
-                                input: { readOnly: true },
+                              sx={{
+                                "& .MuiInputLabel-asterisk": {
+                                  color: placementStudent?.smsContact
+                                    ? "green"
+                                    : "red", // Change the asterisk color to red
+                                },
                               }}
-                              className="textField"
                             />
                           </Grid>
                         </Grid>
@@ -798,12 +667,20 @@ export function PlacementCheckOverview() {
                     <Box className="saveUpdateBtnWrap">
                       <Button
                         variant="contained"
-                        style={{
-                          backgroundColor: "green",
+                        sx={{
+                          backgroundColor: !foundStudent?.enrolled
+                            ? "green"
+                            : "#adacaccc !important",
                           borderRadius: ".4rem",
+                          color: "#fff !important",
+                          "&.Mui-disabled": {
+                            cursor: "not-allowed", // Show not-allowed cursor
+                            pointerEvents: "auto",
+                          },
                         }}
                         className="saveUpdateBtn"
                         onClick={handleDataUpdate}
+                        disabled={foundStudent?.enrolled}
                       >
                         {updateData && loadingComplete === false && (
                           <LoadingProgress color={"#fff"} size={"1.5rem"} />

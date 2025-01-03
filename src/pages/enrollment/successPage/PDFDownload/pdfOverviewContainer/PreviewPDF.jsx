@@ -16,13 +16,15 @@ import {
   FetchAllCreatedDivisionProgrammes,
   FetchAllProgrammes,
 } from "../../../../../data/programme/FetchProgrammeData";
+import Cookies from "js-cookie";
 
 export function PreviewPDF() {
+  const maskedStudentId = Cookies.get("masked_student_id");
   const { studentId, adminCurrentAction, current_link, pdf } = useParams();
   const allStudents = FetchAllStudents();
   const allCoreSubjects = FetchAllCoreSubjects();
   const enrolledStudent = allStudents?.find(
-    (std) => std?.uniqueId === studentId
+    (std) => std?.uniqueId === maskedStudentId
   );
   const allProgrammes = FetchAllProgrammes();
   const allDivisionProgrammes = FetchAllCreatedDivisionProgrammes();
