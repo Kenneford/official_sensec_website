@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import "./login.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { toast } from "react-toastify";
 import {
   Lock,
@@ -118,28 +118,29 @@ export function LoginOptions() {
     dispatch(fetchAllUsers());
   }, [dispatch]);
 
-  // Find signed up user
-  // useEffect(() => {
-  //   if (newUser?.uniqueId) {
-  //     const userFound = allUsersData?.find(
-  //       (std) => std?.uniqueId === newUser?.uniqueId
-  //     );
-  //     setUserFound(userFound);
-  //   }
-  // }, [allUsersData, newUser?.uniqueId]);
-
-  // Generate new sensosa ID for new member
-  // useEffect(() => {
-  //   if (newUser?.sensosaUserName) {
-  //     const newSensosaId = `OSA-${num}${newUser?.sensosaUserName.charAt(
-  //       0
-  //     )}${newUser?.sensosaUserName
-  //       .charAt(newUser?.sensosaUserName?.length - 1)
-  //       .toUpperCase()}-${currentYear}`;
-
-  //     setNewSensosaId(newSensosaId);
-  //   }
-  // }, [dispatch, newUser?.sensosaUserName, num, currentYear, userFound]);
+  // Function to redirect users to their dashboard
+  useLayoutEffect(() => {
+    if (authUser?.roles?.includes("Admin")) {
+      return navigate(
+        `/sensec/users/${authUser?.uniqueId}/admin/Dashboard/Overview`
+      );
+    }
+    if (authUser?.roles?.includes("Lecturer")) {
+      return navigate(
+        `/sensec/users/${authUser?.uniqueId}/lecturer/Dashboard/Overview`
+      );
+    }
+    if (authUser?.roles?.includes("Student")) {
+      return navigate(
+        `/sensec/users/${authUser?.uniqueId}/student/Dashboard/Overview`
+      );
+    }
+    if (authUser?.roles?.includes("NT-Staff")) {
+      return navigate(
+        `/sensec/users/${authUser?.uniqueId}/nt_Staff/Dashboard/Overview`
+      );
+    }
+  }, [authUser, navigate]);
 
   // Function to redirect users to their dashboard
   const getUserRolePath = () => {

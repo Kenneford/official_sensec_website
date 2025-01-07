@@ -53,6 +53,7 @@ import {
 import { useSelector } from "react-redux";
 import { getAuthUser } from "../../features/auth/authSlice";
 import { LecturerDashboard } from "../lazyLoading/lecturer/LecturerLazyComponents";
+import Reports from "../lecturer/components/reports/Reports";
 
 export default function PageNavigation() {
   const authUser = useSelector(getAuthUser);
@@ -192,7 +193,7 @@ export default function PageNavigation() {
                 // Admin Dashboard
                 {
                   path: "admin/:adminCurrentAction/:adminCurrentLink",
-                  element: authUser?.roles?.includes("admin") && (
+                  element: authUser?.roles?.includes("Admin") && (
                     <AdminDashboard />
                   ),
                   children: [
@@ -262,10 +263,15 @@ export default function PageNavigation() {
                 // Lecturer Dashboard
                 {
                   path: "lecturer/:lecturerCurrentAction/:lecturerCurrentLink",
-                  element: authUser?.roles?.includes("lecturer") && (
+                  element: authUser?.roles?.includes("Lecturer") && (
                     <LecturerDashboard />
                   ),
-                  children: [],
+                  children: [
+                    {
+                      path: "",
+                      element: <Reports />,
+                    },
+                  ],
                 },
                 // Student Dashboard
                 {

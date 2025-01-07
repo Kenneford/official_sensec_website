@@ -12,6 +12,7 @@ import { FetchAllUsers } from "../../../data/allUsers/FetchAllUsers";
 import { LecturerDashboardLinks } from "./lecturer.sidebar.links/LecturerDashboardLinks";
 import { LecturerAttendanceLinks } from "./lecturer.sidebar.links/LecturerAttendanceLinks";
 import { AccountLinks } from "./lecturer.sidebar.links/AccountLinks";
+import { LecturerReportLinks } from "./lecturer.sidebar.links/LecturerReportLinks";
 
 export function LecturerSidebar({ hovered, currentTerm, currentAcademicYear }) {
   const dispatch = useDispatch();
@@ -116,6 +117,7 @@ export function LecturerSidebar({ hovered, currentTerm, currentAcademicYear }) {
           <Box className="sidebarContentLinksWrap">
             <LecturerDashboardLinks hovered={hovered} />
             <LecturerAttendanceLinks hovered={hovered} />
+            <LecturerReportLinks hovered={hovered} />
             <AccountLinks hovered={hovered} />
           </Box>
         </Box>

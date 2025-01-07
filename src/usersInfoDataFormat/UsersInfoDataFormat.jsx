@@ -20,12 +20,15 @@ import {
   Edit,
   HowToReg,
   PersonRemove,
+  Save,
   SchoolOutlined,
   TaskAlt,
 } from "@mui/icons-material";
 import { removeClassSectionLecturer } from "../features/academics/classSectionSlice";
 import AssignClassLecturerModal from "../components/modals/AssignClassLecturerModal";
 import RemoveClassLecturerModal from "../components/modals/RemoveClassLecturerModal";
+import { CustomTextField } from "../muiStyling/muiStyling";
+import { createStudentReport } from "../features/reports/reportSlice";
 
 const adminsColumn = (authAdmin) => {
   const adminsColumn = [
@@ -978,6 +981,169 @@ const studentsColumn = (columnData) => {
           to={`/sensec/users/${columnData?.authAdmin?.uniqueId}/admin/Students/${row.uniqueId}/student_update`}
         >
           <Edit />
+        </Link>
+      ),
+    },
+  ];
+  return studentColumn;
+};
+const studentsReportColumn = ({
+  authUser,
+  calculateGrade,
+  gradeBgColor,
+  handleScoreChange,
+  dispatch,
+  selectedSubject,
+  classLevel,
+  currentAcademicTerm,
+}) => {
+  // console.log(columnData);
+
+  const studentColumn = [
+    {
+      name: "Image",
+      selector: (row) =>
+        row?.personalInfo?.profilePicture ? (
+          <HashLink
+            // to={`/sensec/admin/${columnData?.adminCurrentAction}/${
+            //   columnData?.adminCurrentLink
+            // }/${row?.personalInfo?.firstName?.replace(/ /g, "_")}_${
+            //   row?.personalInfo?.lastName
+            // }/${row?.uniqueId}/student_info#studentInfo`}
+            title="View Student Info"
+          >
+            <img
+              className="studentImg"
+              src={
+                row?.personalInfo?.profilePicture?.url
+                  ? row?.personalInfo?.profilePicture?.url
+                  : row?.personalInfo?.profilePicture
+              }
+              alt=""
+            />
+          </HashLink>
+        ) : (
+          <HashLink
+            className="noImgLink"
+            // to={`/sensec/admin/${columnData?.adminCurrentAction}/${
+            //   columnData?.adminCurrentLink
+            // }/${row?.personalInfo?.firstName?.replace(/ /g, "_")}_${
+            //   row?.personalInfo?.lastName
+            // }/${row?.personalInfo?.uniqueId}/student_info#studentInfo`}
+            title="View Student Info"
+          >
+            {row?.personalInfo?.gender === "Male" && (
+              <img
+                className="studentImg"
+                src={"/assets/maleAvatar.png"}
+                alt=""
+              />
+            )}
+            {row?.personalInfo?.gender === "Female" && (
+              <img
+                className="studentImg"
+                src={"/assets/femaleAvatar.png"}
+                alt=""
+              />
+            )}
+            {row?.personalInfo?.gender === "" && (
+              <div className="noImg">
+                <p>No</p>
+                <p>Image</p>
+              </div>
+            )}
+          </HashLink>
+        ),
+    },
+    {
+      name: "Full Name",
+      selector: (row) => row?.personalInfo?.fullName,
+      sortable: true,
+    },
+    {
+      name: "Class Score",
+      selector: (row) => (
+        <CustomTextField
+          type="number"
+          name="classScore"
+          value={row.classScore || ""}
+          size="small"
+          onChange={(e) =>
+            handleScoreChange(row.uniqueId, "classScore", e.target.value)
+          }
+          sx={{
+            width: "4rem",
+            textAlign: "center",
+          }}
+        />
+      ),
+    },
+    {
+      name: "Exam Score",
+      selector: (row) => (
+        <CustomTextField
+          type="number"
+          name="examScore"
+          value={row.examScore || ""}
+          size="small"
+          onChange={(e) =>
+            handleScoreChange(row.uniqueId, "examScore", e.target.value)
+          }
+          sx={{
+            width: "4rem",
+            textAlign: "center",
+          }}
+        />
+      ),
+    },
+    {
+      name: "Total Score",
+      selector: (row) => row.totalScore || 0,
+      // sortable: true,
+    },
+    {
+      name: "Grade",
+      selector: (row) => {
+        const getGrade = calculateGrade(row?.totalScore || 0);
+        return (
+          <Box
+            bgcolor={gradeBgColor(getGrade)}
+            sx={{
+              padding: ".3rem",
+              borderRadius: ".4rem",
+              color: "#fff",
+            }}
+          >
+            {calculateGrade(row.totalScore || 0)}
+          </Box>
+        );
+      },
+    },
+    {
+      name: "Save",
+      selector: (row) => (
+        <Link
+          className="editLink"
+          // to={`/sensec/users/${columnData?.authAdmin?.uniqueId}/admin/Students/${row.uniqueId}/student_update`}
+        >
+          <Save
+            titleAccess="Save"
+            onClick={() => {
+              const data = {
+                studentId: row?.uniqueId,
+                classScore: row?.classScore,
+                examScore: row?.examScore,
+                totalScore: row?.totalScore,
+                semester: currentAcademicTerm?.name,
+                classLevel: classLevel,
+                subject: selectedSubject,
+                createdBy: authUser?.id,
+                year: new Date().getFullYear(),
+              };
+
+              dispatch(createStudentReport(data));
+            }}
+          />
         </Link>
       ),
     },
@@ -2524,4 +2690,5 @@ export {
   nTStaffsColumn,
   pendingNTStaffsColumn,
   //   hangingNTStaffsColumn,
+  studentsReportColumn,
 };

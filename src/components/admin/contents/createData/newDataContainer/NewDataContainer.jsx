@@ -20,6 +20,7 @@ import {
 } from "../../../../lazyLoading/admin/AdminLazyLoadingComponents";
 import { useSelector } from "react-redux";
 import { getAuthUser } from "../../../../../features/auth/authSlice";
+import { AcademicGrade } from "../create/academicGrade/AcademicGrade";
 // import CreateAcademicYear from "../create/academicYear/CreateAcademicYear";
 // import CreateClassLevel from "../create/classLevel/CreateClassLevel";
 // import CreateClassSection from "../create/classLevelSection/CreateClassLevelSection";
@@ -227,6 +228,18 @@ export function NewDataContainer({
           >
             Time Table
           </button>
+          <button
+            className={
+              data === "academic_grade" ? "activeCreateBtn" : "createBtn"
+            }
+            onClick={() => {
+              navigate(
+                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/academic_grade/new`
+              );
+            }}
+          >
+            Academic Grade
+          </button>
         </Box>
       </Box>
       {/* Show form based on button selection */}
@@ -243,6 +256,7 @@ export function NewDataContainer({
       {data === "old_students_group" && <CreateOldStudentsGroup />}
       {data === "school_data" && <CreateSchoolInfoData />}
       {data === "time_table" && <CreateTimeTable />}
+      {data === "academic_grade" && <AcademicGrade />}
     </>
   );
 }

@@ -77,17 +77,14 @@ export function PendingStudents() {
   const [uncompletedEmploymentTask, setUncompletedEmploymentTask] =
     useState("");
   const dispatch = useDispatch();
-  const userInfo = {};
 
   const allClassLevels = FetchAllClassLevels();
 
   //Filter Students During Search
   const pendingStudents = allPendingStudents?.filter(
     (std) =>
-      std?.personalInfo?.firstName?.toLowerCase()?.includes(searchStudent) ||
-      std?.personalInfo?.firstName?.includes(searchStudent) ||
-      std?.personalInfo?.lastName?.toLowerCase()?.includes(searchStudent) ||
-      (std?.personalInfo?.lastName?.includes(searchStudent) && std)
+      std?.personalInfo?.fullName?.toLowerCase()?.includes(searchStudent) ||
+      (std?.personalInfo?.fullName?.includes(searchStudent) && std)
   );
 
   const foundStudent = allPendingStudents?.find(

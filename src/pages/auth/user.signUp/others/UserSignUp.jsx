@@ -98,9 +98,9 @@ export function UserSignUp() {
   console.log(userFound);
 
   // Check for existing username
-  // const existingUserName = allUsers?.find(
-  //   (user) => user?.userSignUpDetails?.userName === newUser?.userName
-  // );
+  const existingUserName = allUsers?.find(
+    (user) => user?.userSignUpDetails?.userName === newUser?.userName
+  );
 
   // Handle input value
   const handleInputValue = (e) => {
@@ -162,7 +162,7 @@ export function UserSignUp() {
     newUser,
     userFound,
     userNameInputError,
-    // existingUserName,
+    existingUserName,
     passwordInputError,
     confirmPasswordInputError,
   ]);
@@ -449,7 +449,11 @@ export function UserSignUp() {
                 Already have an account?{" "}
                 <Typography
                   component={"span"}
-                  onClick={() => navigate("/sensec/login")}
+                  onClick={() =>
+                    signUpAction
+                      ? navigate("/sensec/login_options")
+                      : navigate("/")
+                  }
                   sx={{ cursor: "pointer", color: "green" }}
                 >
                   Login

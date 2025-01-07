@@ -113,18 +113,18 @@ export function PlacementCheckOverview() {
       }
       const data = {
         // Personal Details
-        firstName: placementStudent?.firstName,
-        lastName: placementStudent?.lastName,
-        otherName: placementStudent?.otherName,
+        // firstName: placementStudent?.firstName,
+        // lastName: placementStudent?.lastName,
+        // otherName: placementStudent?.otherName,
         dateOfBirth: placementStudent?.dateOfBirth.toISOString(),
-        gender: placementStudent?.gender,
+        // gender: placementStudent?.gender,
         fullName: placementStudent?.fullName,
         // School Data
         jhsAttended: placementStudent?.jhsAttended,
         jhsIndexNo: placementStudent?.jhsIndexNo,
-        programme: placementStudent?.programme,
+        // programme: placementStudent?.programme,
         yearGraduated: placementYear,
-        boardingStatus: placementStudent?.boardingStatus,
+        // boardingStatus: placementStudent?.boardingStatus,
         // Contact Number
         smsContact: placementStudent?.smsContact,
       };

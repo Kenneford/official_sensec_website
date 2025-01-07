@@ -63,7 +63,7 @@ export function SideBar({
           },
         }}
       >
-        {authUser?.roles?.includes("admin") && (
+        {authUser?.roles?.includes("Admin") && (
           <AdminSidebar
             toggleSidebar={toggleSidebar}
             setCurrentAction={setCurrentAction}
@@ -73,7 +73,7 @@ export function SideBar({
             hovered={hovered}
           />
         )}
-        {authUser?.roles?.includes("lecturer") && (
+        {authUser?.roles?.includes("Lecturer") && (
           <LecturerSidebar
             toggleSidebar={toggleSidebar}
             setCurrentAction={setCurrentAction}

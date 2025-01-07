@@ -34,6 +34,7 @@ import {
   updateEmployeeData,
   updateEmployeeSchoolData,
 } from "../../features/employments/employmentSlice";
+import { userRoleOptions } from "../../options/options";
 
 export function EmployeeDataUpdateForm() {
   const dispatch = useDispatch();
@@ -58,6 +59,9 @@ export function EmployeeDataUpdateForm() {
   const [redirecting, setRedirecting] = useState("");
   const [updateSchoolData, setUpdateSchoolData] = useState(false);
 
+  const filteredRoles = userRoleOptions?.filter(
+    (role) => role?.value !== "Student" && role
+  );
   // Get selected admin ID
   const employeeId = adminCurrentLink;
   const foundEmployee = allEmployees?.find(
@@ -626,11 +630,11 @@ export function EmployeeDataUpdateForm() {
                     value={employee?.employment?.employmentType || ""}
                     onChange={handleChange}
                   >
-                    <MenuItem value="Administration">Administration</MenuItem>
-                    <MenuItem value="Teaching Staff">Teaching Staff</MenuItem>
-                    <MenuItem value="Non-Teaching Staff">
-                      Non-Teaching Staff
-                    </MenuItem>
+                    {filteredRoles?.map((role) => (
+                      <MenuItem key={role?.label} value={role?.value}>
+                        {role?.value === "Student" ? "" : role?.value}
+                      </MenuItem>
+                    ))}
                   </CustomTextField>
                 </Grid>
                 {/* Programme Selection */}

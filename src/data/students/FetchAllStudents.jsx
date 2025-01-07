@@ -27,7 +27,7 @@ const FetchAllApprovedStudents = () => {
   const allUsers = useSelector(getAllUsers);
   const allApprovedStudents = allUsers?.filter(
     (user) =>
-      user?.roles?.includes("student") &&
+      user?.roles?.includes("Student") &&
       user?.studentStatusExtend?.enrollmentStatus === "approved" &&
       user?.studentStatusExtend?.isStudent &&
       user
@@ -55,7 +55,7 @@ const FetchAllPendingStudents = () => {
   const allUsers = useSelector(getAllUsers);
   const allPendingStudents = allUsers?.filter(
     (user) =>
-      user?.roles?.includes("student") &&
+      user?.roles?.includes("Student") &&
       user?.studentStatusExtend?.enrollmentStatus === "pending" &&
       !user?.studentStatusExtend?.isStudent &&
       user

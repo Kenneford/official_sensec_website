@@ -214,6 +214,16 @@ export function CreateNewData({ setCurrentAction, setCurrentLink }) {
           >
             Time Table
           </button>
+          <button
+            className="createBtn"
+            onClick={() => {
+              navigate(
+                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/academic_grade/new`
+              );
+            }}
+          >
+            Academic Grade
+          </button>
         </Box>
       </Box>
     </>

@@ -78,10 +78,8 @@ export function PendingClassLevelStudents() {
 
   const filteredStudents = pendingClassLevelStudents?.filter(
     (std) =>
-      std?.personalInfo?.firstName?.toLowerCase()?.includes(searchStudent) ||
-      std?.personalInfo?.firstName?.includes(searchStudent) ||
-      std?.personalInfo?.lastName?.toLowerCase()?.includes(searchStudent) ||
-      std?.personalInfo?.lastName?.includes(searchStudent)
+      std?.personalInfo?.fullName?.toLowerCase()?.includes(searchStudent) ||
+      (std?.personalInfo?.fullName?.includes(searchStudent) && std)
   );
   const foundStudent = pendingClassLevelStudents?.find(
     (std) => std._id === currentStudent
