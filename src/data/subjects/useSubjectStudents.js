@@ -65,10 +65,6 @@ const useSubjectStudents = ({ classLevel, subject }) => {
   // Filter students based on the selected subject
   useEffect(() => {
     if (electiveSudjFound) {
-      //   let filteredStudents;
-      //   if (draftReportInfo?.students) {
-      //     filteredStudents = draftReportInfo?.students;
-      //   } else {
       const filteredStudents =
         lecturerFound?.lecturerSchoolData?.students?.filter(
           (std) =>
@@ -76,36 +72,16 @@ const useSubjectStudents = ({ classLevel, subject }) => {
             std?.studentSchoolData?.electiveSubjects?.includes(subject) &&
             std
         );
-      //   }
-      // lecturerFound?.lecturerSchoolData?.students?.filter((student) => {
-      //   const matchingReport = allReports.find(
-      //     (report) =>
-      //       report.studentId === student.uniqueId &&
-      //       report?.classLevel === classLevel &&
-      //       report?.subject === subject &&
-      //       report?.semester === currentAcademicTerms?.name &&
-      //       report?.year === currentYear?.toString()
-      //   );
-      //   const rawStudents =
-      //     student?.studentSchoolData?.currentClassLevel === classLevel &&
-      //     student?.studentSchoolData?.electiveSubjects?.includes(subject) &&
-      //     student;
-      //   // Exclude the student if a matching report is found
-      //   return matchingReport ? !matchingReport : rawStudents;
-      // });
       // Add default fields for editing scores
       const formattedStudents = filteredStudents?.map((std) => ({
         ...std,
         classScore: std?.classScore || "",
         examScore: std?.examScore || "",
         totalScore: std?.totalScore || "",
+        grade: std?.grade || "",
       }));
       setStudentsList(formattedStudents);
     } else if (coreSudjFound) {
-      //   let filteredStudents;
-      //   if (draftReportInfo?.students) {
-      //     filteredStudents = draftReportInfo?.students;
-      //   } else {
       const filteredStudents =
         lecturerFound?.lecturerSchoolData?.students?.filter(
           (std) =>
@@ -113,38 +89,13 @@ const useSubjectStudents = ({ classLevel, subject }) => {
             std?.studentSchoolData?.coreSubjects?.includes(subject) &&
             std
         );
-      //   }
-      //   const filteredStudents =
-      //     lecturerFound?.lecturerSchoolData?.students?.filter(
-      //       (std) =>
-      //         std?.studentSchoolData?.currentClassLevel === classLevel &&
-      //         std?.studentSchoolData?.coreSubjects?.includes(subject) &&
-      //         std
-      //       //   {
-      //       //     const matchingReport = allReports.find(
-      //       //       (report) =>
-      //       //         report.studentId === std.uniqueId &&
-      //       //         report?.classLevel === classLevel &&
-      //       //         report?.subject === subject &&
-      //       //         report?.semester === currentAcademicTerms?.name &&
-      //       //         report?.year === currentYear?.toString()
-      //       //     );
-
-      //       //     const rawStudents =
-      //       //       std?.studentSchoolData?.currentClassLevel === classLevel &&
-      //       //       std?.studentSchoolData?.coreSubjects?.includes(subject) &&
-      //       //       std;
-      //       //     // Exclude the student if a matching report is found
-      //       //     return matchingReport ? !matchingReport : rawStudents;
-      //       //   }
-      //     );
-
       // Add default fields for editing scores
       const formattedStudents = filteredStudents?.map((std) => ({
         ...std,
         classScore: std?.classScore || "",
         examScore: std?.examScore || "",
         totalScore: std?.totalScore || "",
+        grade: std?.grade || "",
       }));
       setStudentsList(formattedStudents);
     } else {

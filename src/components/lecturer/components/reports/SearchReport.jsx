@@ -13,7 +13,10 @@ import { getAuthUser } from "../../../../features/auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import DataTable from "react-data-table-component";
 import { customUserTableStyle } from "../../../../usersInfoDataFormat/usersInfoTableStyle";
-import { studentsReportColumn } from "../../../../usersInfoDataFormat/UsersInfoDataFormat";
+import {
+  studentsReportColumn,
+  studentsReportOverviewColumn,
+} from "../../../../usersInfoDataFormat/UsersInfoDataFormat";
 import useSubjectStudents from "../../../../data/subjects/useSubjectStudents";
 import { FetchCurrentAcademicTerms } from "../../../../data/term.year/FetchAcademicTerms";
 import { CustomTextField } from "../../../../muiStyling/muiStyling";
@@ -28,8 +31,10 @@ import {
 } from "../../../../features/reports/reportSlice";
 import { toast } from "react-toastify";
 import { TaskAlt } from "@mui/icons-material";
+import { FetchAllReports } from "../../../../data/academicsReports/FetchAcademicsReports";
+import { FetchAllStudents } from "../../../../data/students/FetchAllStudents";
 
-export function Reports() {
+export function SearchReport() {
   const { createStatus, createMultiStatus, error, successMessage } =
     useSelector((state) => state.report);
   const reportClassLevel = localStorage.getItem("reportClassLevel");
@@ -44,6 +49,10 @@ export function Reports() {
   const lecturerSubjects = FetchAllLecturerSubjects(authUser?.id);
   const allClassLevels = FetchAllClassLevels();
   const currentAcademicTerm = FetchCurrentAcademicTerms();
+  const allStudents = FetchAllStudents();
+  const allAcademicsReports = FetchAllReports();
+  console.log(allAcademicsReports);
+
   // Report saving state
   const [multiLoadingComplete, setMultiLoadingComplete] = useState(null);
   const [loadingComplete, setLoadingComplete] = useState(null);
@@ -145,7 +154,7 @@ export function Reports() {
     saveDataInProgress,
     createStatus,
   };
-  const studentDataFormat = studentsReportColumn(columnData);
+  const studentDataFormat = studentsReportOverviewColumn(columnData);
 
   // Fetch Draft Data
   useLayoutEffect(() => {
@@ -325,13 +334,6 @@ export function Reports() {
                   setClassLevel(e.target.value);
                   localStorage.setItem("reportClassLevel", e.target.value);
                 }}
-                //   onChange={(e) => {
-                //     setReportData({
-                //       ...reportData,
-                //       classLevel: e.target.value,
-                //     });
-                //     localStorage.setItem("reportClassLevel", e.target.value);
-                //   }}
                 sx={{
                   "& .MuiInputBase-input": {
                     height: "1rem",
@@ -364,13 +366,6 @@ export function Reports() {
                   setSubject(e.target.value);
                   localStorage.setItem("reportSubject", e.target.value);
                 }}
-                //   onChange={(e) => {
-                //     setReportData({
-                //       ...reportData,
-                //       subject: e.target.value,
-                //     });
-                //     localStorage.setItem("reportSubject", e.target.value);
-                //   }}
                 sx={{
                   "& .MuiInputBase-input": {
                     height: "1rem",
@@ -391,9 +386,7 @@ export function Reports() {
             </Grid>
           </Grid>
         </Box>
-        {classLevel !== "" &&
-        subject !== "" &&
-        allSubjectStudents?.length > 0 ? (
+        {allAcademicsReports?.length > 0 ? (
           <Box fontSize={"calc(0.7rem + 1vmin)"} position={"relative"}>
             <Box className="studentDataTable">
               <Box mt={3} mb={1.5}>
@@ -450,7 +443,7 @@ export function Reports() {
               <DataTable
                 title={allStd}
                 columns={studentDataFormat}
-                data={allSubjectStudents}
+                data={allAcademicsReports}
                 customStyles={customUserTableStyle}
                 pagination
                 selectableRows

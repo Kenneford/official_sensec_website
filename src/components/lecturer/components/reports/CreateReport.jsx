@@ -29,7 +29,7 @@ import {
 import { toast } from "react-toastify";
 import { TaskAlt } from "@mui/icons-material";
 
-export function Reports() {
+export function CreateReport() {
   const { createStatus, createMultiStatus, error, successMessage } =
     useSelector((state) => state.report);
   const reportClassLevel = localStorage.getItem("reportClassLevel");
@@ -391,9 +391,7 @@ export function Reports() {
             </Grid>
           </Grid>
         </Box>
-        {classLevel !== "" &&
-        subject !== "" &&
-        allSubjectStudents?.length > 0 ? (
+        {allSubjectStudents?.length > 0 ? (
           <Box fontSize={"calc(0.7rem + 1vmin)"} position={"relative"}>
             <Box className="studentDataTable">
               <Box mt={3} mb={1.5}>
@@ -472,7 +470,9 @@ export function Reports() {
               mt={5}
               fontSize={".9em"}
             >
-              No data found!
+              {!classLevel && !subject
+                ? "Select Form and Subject to begin..."
+                : "No data found!"}
             </Typography>
           </Box>
         )}

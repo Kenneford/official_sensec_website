@@ -1,10 +1,11 @@
 import { Avatar, Box, Stack, Typography } from "@mui/material";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { NavigationBar } from "../navbar/NavigationBar";
-import Reports from "./components/reports/Reports";
 import "./lecturerDashboard.scss";
 import { useSelector } from "react-redux";
 import { getAuthUser } from "../../features/auth/authSlice";
+import { CreateReport } from "./components/reports/CreateReport";
+import { SearchReport } from "../lazyLoading/lecturer/LecturerLazyComponents";
 
 export function LecturerDashboard() {
   const authUser = useSelector(getAuthUser);
@@ -101,7 +102,8 @@ export function LecturerDashboard() {
           // marginTop: fixedNavbar ? "20rem" : "",
         }}
       >
-        {lecturerCurrentLink === "create_report" && <Reports />}
+        {lecturerCurrentLink === "create_report" && <CreateReport />}
+        {lecturerCurrentLink === "search" && <SearchReport />}
       </Box>
     </Box>
   );

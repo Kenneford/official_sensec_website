@@ -14,6 +14,7 @@ const initialState = {
   successMessage: "",
   error: "",
   createStatus: "",
+  createMultiStatus: "",
   fetchStatus: "",
 };
 
@@ -151,6 +152,14 @@ const reportSlice = createSlice({
         successMessage: "",
       };
     },
+    resetCreateMultiReportState(state) {
+      return {
+        ...state,
+        createStatus: "",
+        error: "",
+        successMessage: "",
+      };
+    },
     resetFetchReportState(state) {
       return {
         ...state,
@@ -204,7 +213,7 @@ const reportSlice = createSlice({
     });
     //   Create Multi Students Report
     builder.addCase(createMultiStudentsReport.pending, (state) => {
-      return { ...state, createStatus: "pending" };
+      return { ...state, createMultiStatus: "pending" };
     });
     builder.addCase(createMultiStudentsReport.fulfilled, (state, action) => {
       if (action.payload) {
@@ -212,14 +221,14 @@ const reportSlice = createSlice({
           ...state,
           multiStudentsReportInfo: action.payload.multiStudentsReport,
           successMessage: action.payload.successMessage,
-          createStatus: "success",
+          createMultiStatus: "success",
         };
       } else return state;
     });
     builder.addCase(createMultiStudentsReport.rejected, (state, action) => {
       return {
         ...state,
-        createStatus: "rejected",
+        createMultiStatus: "rejected",
         error: action.payload,
       };
     });
@@ -289,7 +298,11 @@ const reportSlice = createSlice({
   },
 });
 
-export const { resetCreateBlogState } = reportSlice.actions;
+export const {
+  resetCreateReportState,
+  resetCreateMultiReportState,
+  resetFetchReportState,
+} = reportSlice.actions;
 export const getAllReports = (state) => state.report.allReports;
 export const getAllStudentReports = (state) => state.report.allStudentReports;
 export const getDraftReportInfo = (state) => state.report.draftReportInfo;

@@ -32,7 +32,7 @@ export function AcademicGrade() {
   const allProgrammes = FetchAllProgrammes();
   const allDivisionProgrammes = useSelector(getAllDivisionProgrammes);
   const { error, successMessage, createStatus } = useSelector(
-    (state) => state.reports
+    (state) => state.report
   );
   const allTeachers = [];
   console.log(allTeachers);

@@ -4,7 +4,6 @@ import {
   fetchAllSubjects,
   getAllSubjects,
 } from "../../features/academics/subjectsSlice";
-import { FetchAllApprovedStudents } from "../students/FetchAllStudents";
 import { fetchAllUsers, getAllUsers } from "../../features/auth/authSlice";
 
 const FetchAllSubjects = () => {

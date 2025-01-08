@@ -53,7 +53,6 @@ import {
 import { useSelector } from "react-redux";
 import { getAuthUser } from "../../features/auth/authSlice";
 import { LecturerDashboard } from "../lazyLoading/lecturer/LecturerLazyComponents";
-import Reports from "../lecturer/components/reports/Reports";
 
 export default function PageNavigation() {
   const authUser = useSelector(getAuthUser);
@@ -267,10 +266,10 @@ export default function PageNavigation() {
                     <LecturerDashboard />
                   ),
                   children: [
-                    {
-                      path: "",
-                      element: <Reports />,
-                    },
+                    // {
+                    //   path: "",
+                    //   element: <Reports />,
+                    // },
                   ],
                 },
                 // Student Dashboard

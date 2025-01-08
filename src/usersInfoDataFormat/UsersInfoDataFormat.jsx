@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
 import { dateFormatter } from "../dateFormatter/DateFormatter";
-import { Box, Button } from "@mui/material";
+import { Box, Button, InputAdornment, Typography } from "@mui/material";
 import {
   approveStudentEnrollment,
   rejectStudentEnrollment,
@@ -29,6 +29,8 @@ import AssignClassLecturerModal from "../components/modals/AssignClassLecturerMo
 import RemoveClassLecturerModal from "../components/modals/RemoveClassLecturerModal";
 import { CustomTextField } from "../muiStyling/muiStyling";
 import { createStudentReport } from "../features/reports/reportSlice";
+import { toast } from "react-toastify";
+import { color } from "framer-motion";
 
 const adminsColumn = (authAdmin) => {
   const adminsColumn = [
@@ -987,16 +989,7 @@ const studentsColumn = (columnData) => {
   ];
   return studentColumn;
 };
-const studentsReportColumn = ({
-  authUser,
-  calculateGrade,
-  gradeBgColor,
-  handleScoreChange,
-  dispatch,
-  selectedSubject,
-  classLevel,
-  currentAcademicTerm,
-}) => {
+const studentsReportColumn = (columnData) => {
   // console.log(columnData);
 
   const studentColumn = [
@@ -1057,7 +1050,11 @@ const studentsReportColumn = ({
     },
     {
       name: "Full Name",
-      selector: (row) => row?.personalInfo?.fullName,
+      selector: (row) => (
+        <Box fontSize={".9em"} color={"#696969"}>
+          {row?.personalInfo?.fullName}
+        </Box>
+      ),
       sortable: true,
     },
     {
@@ -1068,12 +1065,45 @@ const studentsReportColumn = ({
           name="classScore"
           value={row.classScore || ""}
           size="small"
+          slotProps={{
+            input: {
+              endAdornment: (
+                <InputAdornment
+                  position="start"
+                  sx={{
+                    width: ".5rem",
+                    // fontSize: ".7em", // Adjust font size of the adornment
+                    marginLeft: "0.2rem", // Prevent overlap with input
+                    color: "#555",
+                  }}
+                >
+                  <Typography sx={{ fontSize: "0.75rem", color: "#af0bd8" }}>
+                    /30
+                  </Typography>
+                </InputAdornment>
+              ),
+              sx: {
+                color: "#555",
+                // paddingRight: "1rem", // Add padding for increment icons
+                // textAlign: "center", // Center the input text
+              },
+            },
+          }}
           onChange={(e) =>
-            handleScoreChange(row.uniqueId, "classScore", e.target.value)
+            columnData?.handleScoreChange(
+              row.uniqueId,
+              "classScore",
+              e.target.value
+            )
           }
           sx={{
-            width: "4rem",
-            textAlign: "center",
+            width: "5rem",
+            // textAlign: "center",
+            ".MuiInputBase-root": {
+              display: "flex",
+              alignItems: "center",
+            },
+            fontSize: ".9em",
           }}
         />
       ),
@@ -1086,35 +1116,69 @@ const studentsReportColumn = ({
           name="examScore"
           value={row.examScore || ""}
           size="small"
+          slotProps={{
+            input: {
+              endAdornment: (
+                <InputAdornment
+                  position="start"
+                  sx={{
+                    width: ".5rem",
+                    // fontSize: ".7em", // Adjust font size of the adornment
+                    marginLeft: "0.2rem", // Prevent overlap with input
+                    color: "#555",
+                  }}
+                >
+                  <Typography sx={{ fontSize: "0.75rem", color: "#0b94d8" }}>
+                    /70
+                  </Typography>
+                </InputAdornment>
+              ),
+              sx: {
+                color: "#555",
+                // paddingRight: "1rem", // Add padding for increment icons
+                // textAlign: "center", // Center the input text
+              },
+            },
+          }}
           onChange={(e) =>
-            handleScoreChange(row.uniqueId, "examScore", e.target.value)
+            columnData?.handleScoreChange(
+              row.uniqueId,
+              "examScore",
+              e.target.value
+            )
           }
           sx={{
-            width: "4rem",
-            textAlign: "center",
+            width: "5rem",
+            // textAlign: "center",
+            ".MuiInputBase-root": {
+              display: "flex",
+              alignItems: "center",
+            },
+            fontSize: ".9em",
           }}
         />
       ),
     },
     {
       name: "Total Score",
-      selector: (row) => row.totalScore || 0,
+      selector: (row) => <Box fontSize={".9em"}>{row.totalScore || 0}</Box>,
       // sortable: true,
     },
     {
       name: "Grade",
       selector: (row) => {
-        const getGrade = calculateGrade(row?.totalScore || 0);
+        const getGrade = columnData?.calculateGrade(row?.totalScore || 0);
         return (
           <Box
-            bgcolor={gradeBgColor(getGrade)}
+            bgcolor={columnData?.gradeBgColor(getGrade)}
             sx={{
-              padding: ".3rem",
+              padding: ".2rem",
               borderRadius: ".4rem",
               color: "#fff",
+              fontSize: ".9em",
             }}
           >
-            {calculateGrade(row.totalScore || 0)}
+            {columnData?.calculateGrade(row.totalScore || 0)}
           </Box>
         );
       },
@@ -1122,30 +1186,306 @@ const studentsReportColumn = ({
     {
       name: "Save",
       selector: (row) => (
-        <Link
+        <HashLink
+          to={"#"}
           className="editLink"
-          // to={`/sensec/users/${columnData?.authAdmin?.uniqueId}/admin/Students/${row.uniqueId}/student_update`}
+          onClick={async () => {
+            // Only set current student if data saving is not in progress
+            if (!columnData?.saveDataInProgress) {
+              columnData?.setCurrentStudent(row._id);
+            }
+          }}
         >
-          <Save
-            titleAccess="Save"
-            onClick={() => {
-              const data = {
-                studentId: row?.uniqueId,
-                classScore: row?.classScore,
-                examScore: row?.examScore,
-                totalScore: row?.totalScore,
-                semester: currentAcademicTerm?.name,
-                classLevel: classLevel,
-                subject: selectedSubject,
-                createdBy: authUser?.id,
-                year: new Date().getFullYear(),
-              };
-
-              dispatch(createStudentReport(data));
-            }}
-          />
-        </Link>
+          {columnData?.foundStudent &&
+            columnData?.foundStudent._id === row._id && (
+              <>
+                {columnData?.loadingComplete === false && (
+                  <Box
+                    className="promotionSpinner"
+                    sx={
+                      {
+                        // marginTop: ".8rem",
+                      }
+                    }
+                  >
+                    <span>Saving</span>
+                    <span className="dot-ellipsis">
+                      <span className="dot">.</span>
+                      <span className="dot">.</span>
+                      <span className="dot">.</span>
+                    </span>
+                  </Box>
+                )}
+                {columnData?.loadingComplete &&
+                  columnData?.createStatus === "success" && (
+                    <Box
+                      sx={{ display: "flex", alignItems: "center" }}
+                      fontSize={".8em"}
+                    >
+                      <span>Saved</span> <TaskAlt />
+                    </Box>
+                  )}
+              </>
+            )}
+          <>
+            {columnData?.loadingComplete === null && (
+              <Save
+                titleAccess="Save"
+                onClick={() => {
+                  const data = {
+                    studentId: row?.uniqueId,
+                    classScore: row?.classScore,
+                    examScore: row?.examScore,
+                    totalScore: row?.totalScore,
+                    semester: columnData?.currentAcademicTerm?.name,
+                    classLevel: columnData?.classLevel,
+                    subject: columnData?.selectedSubject,
+                    lecturer: columnData?.authUser?.id,
+                    year: new Date().getFullYear(),
+                    isDraftSave: true,
+                  };
+                  if (row?.classScore || row?.examScore) {
+                    columnData?.dispatch(createStudentReport(data));
+                  } else {
+                    toast.error("Both class and exam scores cannot be empty!", {
+                      position: "top-right",
+                      theme: "dark",
+                      toastId: "emptyReportDataError",
+                    });
+                  }
+                }}
+              />
+            )}
+            {row?._id !== columnData?.foundStudent?._id &&
+              columnData?.loadingComplete !== null && (
+                <Save
+                  titleAccess="Save"
+                  onClick={() => {
+                    const data = {
+                      studentId: row?.uniqueId,
+                      classScore: row?.classScore,
+                      examScore: row?.examScore,
+                      totalScore: row?.totalScore,
+                      semester: columnData?.currentAcademicTerm?.name,
+                      classLevel: columnData?.classLevel,
+                      subject: columnData?.selectedSubject,
+                      lecturer: columnData?.authUser?.id,
+                      year: new Date().getFullYear(),
+                      isDraftSave: true,
+                    };
+                    if (row?.classScore || row?.examScore) {
+                      columnData?.dispatch(createStudentReport(data));
+                    } else {
+                      toast.error(
+                        "Both class and exam scores cannot be empty!",
+                        {
+                          position: "top-right",
+                          theme: "dark",
+                          // toastId: successId,
+                        }
+                      );
+                    }
+                  }}
+                />
+              )}
+          </>
+        </HashLink>
       ),
+    },
+  ];
+  return studentColumn;
+};
+const studentsReportOverviewColumn = (columnData) => {
+  // console.log(columnData);
+
+  const studentColumn = [
+    {
+      name: "Image",
+      selector: (row) =>
+        row?.profilePicture ? (
+          <HashLink
+            // to={`/sensec/admin/${columnData?.adminCurrentAction}/${
+            //   columnData?.adminCurrentLink
+            // }/${row?.firstName?.replace(/ /g, "_")}_${
+            //   row?.lastName
+            // }/${row?.uniqueId}/student_info#studentInfo`}
+            title="View Student Info"
+          >
+            <img
+              className="studentImg"
+              src={
+                row?.profilePicture ? row?.profilePicture : row?.profilePicture
+              }
+              alt=""
+            />
+          </HashLink>
+        ) : (
+          <HashLink
+            className="noImgLink"
+            // to={`/sensec/admin/${columnData?.adminCurrentAction}/${
+            //   columnData?.adminCurrentLink
+            // }/${row?.personalInfo?.firstName?.replace(/ /g, "_")}_${
+            //   row?.personalInfo?.lastName
+            // }/${row?.personalInfo?.uniqueId}/student_info#studentInfo`}
+            title="View Student Info"
+          >
+            {row?.personalInfo?.gender === "Male" && (
+              <img
+                className="studentImg"
+                src={"/assets/maleAvatar.png"}
+                alt=""
+              />
+            )}
+            {row?.personalInfo?.gender === "Female" && (
+              <img
+                className="studentImg"
+                src={"/assets/femaleAvatar.png"}
+                alt=""
+              />
+            )}
+            {row?.personalInfo?.gender === "" && (
+              <div className="noImg">
+                <p>No</p>
+                <p>Image</p>
+              </div>
+            )}
+          </HashLink>
+        ),
+    },
+    {
+      name: "Full Name",
+      selector: (row) => (
+        <Box fontSize={".9em"} color={"#696969"}>
+          {row?.fullName}
+        </Box>
+      ),
+      sortable: true,
+    },
+    {
+      name: "Class Score",
+      selector: (row) => (
+        <CustomTextField
+          type="number"
+          name="classScore"
+          value={row.classScore || ""}
+          size="small"
+          slotProps={{
+            input: {
+              endAdornment: (
+                <InputAdornment
+                  position="start"
+                  sx={{
+                    width: ".5rem",
+                    // fontSize: ".7em", // Adjust font size of the adornment
+                    marginLeft: "0.2rem", // Prevent overlap with input
+                    color: "#555",
+                  }}
+                >
+                  <Typography sx={{ fontSize: "0.75rem", color: "#af0bd8" }}>
+                    /30
+                  </Typography>
+                </InputAdornment>
+              ),
+              sx: {
+                color: "#555",
+                // paddingRight: "1rem", // Add padding for increment icons
+                // textAlign: "center", // Center the input text
+              },
+            },
+          }}
+          onChange={(e) =>
+            columnData?.handleScoreChange(
+              row.uniqueId,
+              "classScore",
+              e.target.value
+            )
+          }
+          sx={{
+            width: "5rem",
+            // textAlign: "center",
+            ".MuiInputBase-root": {
+              display: "flex",
+              alignItems: "center",
+            },
+            fontSize: ".9em",
+          }}
+        />
+      ),
+    },
+    {
+      name: "Exam Score",
+      selector: (row) => (
+        <CustomTextField
+          type="number"
+          name="examScore"
+          value={row.examScore || ""}
+          size="small"
+          slotProps={{
+            input: {
+              endAdornment: (
+                <InputAdornment
+                  position="start"
+                  sx={{
+                    width: ".5rem",
+                    // fontSize: ".7em", // Adjust font size of the adornment
+                    marginLeft: "0.2rem", // Prevent overlap with input
+                    color: "#555",
+                  }}
+                >
+                  <Typography sx={{ fontSize: "0.75rem", color: "#0b94d8" }}>
+                    /70
+                  </Typography>
+                </InputAdornment>
+              ),
+              sx: {
+                color: "#555",
+                // paddingRight: "1rem", // Add padding for increment icons
+                // textAlign: "center", // Center the input text
+              },
+            },
+          }}
+          onChange={(e) =>
+            columnData?.handleScoreChange(
+              row.uniqueId,
+              "examScore",
+              e.target.value
+            )
+          }
+          sx={{
+            width: "5rem",
+            // textAlign: "center",
+            ".MuiInputBase-root": {
+              display: "flex",
+              alignItems: "center",
+            },
+            fontSize: ".9em",
+          }}
+        />
+      ),
+    },
+    {
+      name: "Total Score",
+      selector: (row) => <Box fontSize={".9em"}>{row.totalScore || 0}</Box>,
+      // sortable: true,
+    },
+    {
+      name: "Grade",
+      selector: (row) => {
+        const getGrade = columnData?.calculateGrade(row?.totalScore || 0);
+        return (
+          <Box
+            bgcolor={columnData?.gradeBgColor(getGrade)}
+            sx={{
+              padding: ".2rem",
+              borderRadius: ".4rem",
+              color: "#fff",
+              fontSize: ".9em",
+            }}
+          >
+            {columnData?.calculateGrade(row.totalScore || 0)}
+          </Box>
+        );
+      },
     },
   ];
   return studentColumn;
@@ -2691,4 +3031,5 @@ export {
   pendingNTStaffsColumn,
   //   hangingNTStaffsColumn,
   studentsReportColumn,
+  studentsReportOverviewColumn,
 };

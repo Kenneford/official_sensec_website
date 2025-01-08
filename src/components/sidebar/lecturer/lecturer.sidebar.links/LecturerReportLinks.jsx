@@ -16,7 +16,7 @@ import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
 import { getAuthUser } from "../../../../features/auth/authSlice";
 
-const quickLinks = [{ name: "Create Report" }, { name: "Search Report" }];
+const quickLinks = [{ name: "Create Report" }, { name: "Search" }];
 
 export function LecturerReportLinks({ hovered }) {
   const authAdmin = useSelector(getAuthUser);
@@ -95,7 +95,7 @@ export function LecturerReportLinks({ hovered }) {
               {Qlink.name === "Create Report" && (
                 <Construction className="icon" />
               )}
-              {Qlink.name === "Search Report" && <Search className="icon" />}
+              {Qlink.name === "Search" && <Search className="icon" />}
               {hovered && <h4>{Qlink.name}</h4>}
             </HashLink>
           ))}
