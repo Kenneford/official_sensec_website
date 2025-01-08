@@ -6,7 +6,7 @@ const FetchAllLecturers = () => {
   const dispatch = useDispatch();
   const allUsers = useSelector(getAllUsers);
   const allLecturers = allUsers?.filter(
-    (user) => user?.roles?.includes("lecturer") && user
+    (user) => user?.roles?.includes("Lecturer") && user
   );
 
   useEffect(() => {

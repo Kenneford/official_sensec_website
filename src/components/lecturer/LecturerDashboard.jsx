@@ -1,8 +1,16 @@
 import { Avatar, Box, Stack, Typography } from "@mui/material";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { NavigationBar } from "../navbar/NavigationBar";
+import "./lecturerDashboard.scss";
+import { useSelector } from "react-redux";
+import { getAuthUser } from "../../features/auth/authSlice";
+import { CreateReport } from "./components/reports/CreateReport";
+import { SearchReport } from "../lazyLoading/lecturer/LecturerLazyComponents";
 
 export function LecturerDashboard() {
+  const authUser = useSelector(getAuthUser);
+  console.log(authUser);
+
   const navigate = useNavigate();
   const {
     currentAction,
@@ -25,6 +33,8 @@ export function LecturerDashboard() {
     drawerWidthCollapsed,
     drawerWidthExpanded,
   } = useOutletContext();
+  const { lecturerCurrentAction, lecturerCurrentLink } = useParams();
+  console.log(lecturerCurrentAction, lecturerCurrentLink);
 
   return (
     <Box>
@@ -85,6 +95,15 @@ export function LecturerDashboard() {
           openSearchModal={openSearchModal}
           setOpenSearchModal={setOpenSearchModal}
         />
+      </Box>
+      <Box
+        sx={{
+          fontSize: "calc(0.7rem + 1vmin)",
+          // marginTop: fixedNavbar ? "20rem" : "",
+        }}
+      >
+        {lecturerCurrentLink === "create_report" && <CreateReport />}
+        {lecturerCurrentLink === "search" && <SearchReport />}
       </Box>
     </Box>
   );

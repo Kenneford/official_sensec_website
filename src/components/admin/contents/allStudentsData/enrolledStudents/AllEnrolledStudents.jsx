@@ -87,10 +87,8 @@ export function AllEnrolledStudents() {
   //Filter students during search
   const filteredStudents = approvedStudents?.filter(
     (std) =>
-      std?.personalInfo?.firstName?.toLowerCase()?.includes(searchStudent) ||
-      std?.personalInfo?.firstName?.includes(searchStudent) ||
-      std?.personalInfo?.lastName?.toLowerCase()?.includes(searchStudent) ||
-      std?.personalInfo?.lastName?.includes(searchStudent)
+      std?.personalInfo?.fullName?.toLowerCase()?.includes(searchStudent) ||
+      (std?.personalInfo?.fullName?.includes(searchStudent) && std)
   );
 
   const columnData = {

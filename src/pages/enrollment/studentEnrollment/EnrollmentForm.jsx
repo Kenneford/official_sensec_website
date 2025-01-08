@@ -452,7 +452,7 @@ export function EnrollmentForm() {
             toastId: err,
           })
         );
-      }, 2000);
+      }, 1000);
       setTimeout(() => {
         setLoadingComplete(null);
         dispatch(resetEnrolmentState());

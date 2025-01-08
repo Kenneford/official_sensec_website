@@ -103,6 +103,8 @@ export function EmploymentForm() {
 
   // New Employee state
   const [userID, setUserID] = useState("");
+  console.log(userID);
+
   const [newEmployment, setNewEmployment] = useState({
     uniqueId: userID ? userID : "",
     firstName: "",
@@ -114,15 +116,8 @@ export function EmploymentForm() {
     gender: "",
     profilePicture: "",
     // School Data
-    jhsAttended: "",
-    completedJhs: "",
-    jhsIndexNo: studentIndexNo,
     program: "",
-    divisionProgram: "",
-    optionalElectiveSubject: "",
     typeOfEmployment: "",
-    currentAcademicYear: "",
-    batch: "",
     // Status
     height: "",
     weight: "",
@@ -140,6 +135,7 @@ export function EmploymentForm() {
     mobile: "",
     email: "",
   });
+  console.log(newEmployment);
 
   const [imagePreview, setImagePreview] = useState(null);
 
@@ -171,13 +167,34 @@ export function EmploymentForm() {
   const generateUniqueId = (employmentType, fName, lName) => {
     let prefix = "";
     switch (employmentType) {
-      case "Administration":
+      case "Headmaster":
+        prefix = "HDM";
+        break;
+      case "Admin":
         prefix = "ADM";
         break;
-      case "Teaching Staff":
+      case "Academic":
+        prefix = "ACD";
+        break;
+      case "Domestic":
+        prefix = "DOM";
+        break;
+      case "Secretary":
+        prefix = "SEC";
+        break;
+      case "Housemaster":
+        prefix = "HSM";
+        break;
+      case "Housemistress":
+        prefix = "HSM";
+        break;
+      case "Lecturer":
         prefix = "LCT";
         break;
-      case "Non-Teaching Staff":
+      case "IT":
+        prefix = "ITD";
+        break;
+      case "NT-Staff":
         prefix = "NTS";
         break;
       default:
@@ -255,14 +272,14 @@ export function EmploymentForm() {
   };
 
   // Fetch needed data
-  useEffect(() => {
-    if (newEmployment?.program) {
-      dispatch(
-        fetchAllDivisionProgrammes({ programId: newEmployment?.program })
-      );
-    }
-    dispatch(fetchAllPlacementStudents());
-  }, [dispatch, newEmployment]);
+  // useEffect(() => {
+  //   if (newEmployment?.program) {
+  //     dispatch(
+  //       fetchAllDivisionProgrammes({ programId: newEmployment?.program })
+  //     );
+  //   }
+  //   dispatch(fetchAllPlacementStudents());
+  // }, [dispatch, newEmployment]);
 
   // Handle employment status check
   useEffect(() => {
@@ -292,37 +309,37 @@ export function EmploymentForm() {
       setTimeout(() => {
         setLoadingComplete(null);
         dispatch(resetEmploymentState());
-        setNewEmployment({
-          uniqueId: userID ? userID : "",
-          firstName: "",
-          lastName: "",
-          otherName: "",
-          dateOfBirth: "",
-          placeOfBirth: "",
-          nationality: "",
-          gender: "",
-          profilePicture: "",
-          // School Data
-          program: "",
-          typeOfEmployment: "",
-          // Status
-          height: "",
-          weight: "",
-          complexion: "",
-          motherTongue: "",
-          otherTongue: "",
-          residentialStatus: "",
-          // Contact Address
-          homeTown: "",
-          district: "",
-          region: "",
-          currentCity: "",
-          residentialAddress: "",
-          gpsAddress: "",
-          mobile: "",
-          email: "",
-        });
-        setImagePreview(null);
+        // setNewEmployment({
+        //   uniqueId: userID ? userID : "",
+        //   firstName: "",
+        //   lastName: "",
+        //   otherName: "",
+        //   dateOfBirth: "",
+        //   placeOfBirth: "",
+        //   nationality: "",
+        //   gender: "",
+        //   profilePicture: "",
+        //   // School Data
+        //   program: "",
+        //   typeOfEmployment: "",
+        //   // Status
+        //   height: "",
+        //   weight: "",
+        //   complexion: "",
+        //   motherTongue: "",
+        //   otherTongue: "",
+        //   residentialStatus: "",
+        //   // Contact Address
+        //   homeTown: "",
+        //   district: "",
+        //   region: "",
+        //   currentCity: "",
+        //   residentialAddress: "",
+        //   gpsAddress: "",
+        //   mobile: "",
+        //   email: "",
+        // });
+        // setImagePreview(null);
       }, 6000);
       // setTimeout(() => {
       //   dispatch(resetEmploymentState());
@@ -733,7 +750,7 @@ export function EmploymentForm() {
                 </CustomTextField>
               </Grid>
               {/* Programme Selection */}
-              {newEmployment?.typeOfEmployment === "Teaching Staff" && (
+              {newEmployment?.typeOfEmployment === "Lecturer" && (
                 <Grid item xs={12} sm={6} md={4} lg={4}>
                   <CustomTextField
                     select

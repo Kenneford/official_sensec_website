@@ -833,7 +833,7 @@ export function NavigationBar({
                       key={option?.name}
                       className="signUpWrap"
                       onClick={() => {
-                        // localStorage.setItem("signUpAction", option?.name),
+                        // localStorage.setItem("signUpAction", option?.name), Now uses url params
                         localStorage.removeItem("currentOtherNavLink"),
                           localStorage.removeItem("currentNavLink"),
                           navigate(option?.path);

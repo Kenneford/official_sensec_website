@@ -104,19 +104,19 @@ export default function TokenExpiry() {
 
   // Function to redirect users to their dashboard
   const getUserLoginPath = () => {
-    if (authUser?.roles?.includes("admin")) {
+    if (authUser?.roles?.includes("Admin")) {
       localStorage?.setItem("loginAction", "Admins Login");
       navigate("/sensec/login");
     }
-    if (authUser?.roles?.includes("lecturer")) {
+    if (authUser?.roles?.includes("Lecturer")) {
       localStorage?.setItem("loginAction", "Lecturers Login");
       navigate("/sensec/login");
     }
-    if (authUser?.roles?.includes("student")) {
+    if (authUser?.roles?.includes("Student")) {
       localStorage?.setItem("loginAction", "Students Login");
       navigate("/sensec/login");
     }
-    if (authUser?.roles?.includes("nt-Staff")) {
+    if (authUser?.roles?.includes("NT-Staff")) {
       localStorage?.setItem("loginAction", "NT-Staffs Login");
       navigate("/sensec/login");
     }

@@ -34,6 +34,7 @@ import {
 } from "../../../../features/academics/classSectionSlice";
 import { FetchAllProgrammes } from "../../../../data/programme/FetchProgrammeData";
 import { FetchAllUsers } from "../../../../data/allUsers/FetchAllUsers";
+import SmallFooter from "../../../../components/footer/SmallFooter";
 
 export function StudentsSignUp() {
   const dispatch = useDispatch();
@@ -242,352 +243,367 @@ export function StudentsSignUp() {
   ]);
 
   return (
-    <Box
-      sx={{
-        width: { xs: "95%", sm: "36rem" },
-      }}
-      margin={"auto"}
-      mt={5}
-      mb={2}
-      // height={"70vh"}
-      display={"flex"}
-      flexDirection={"column"}
-      justifyContent={"center"}
-      alignItems={"center"}
-      fontSize={"calc(.7rem + 1vmin)"}
-      // height={"100%"}
-    >
+    <>
       <Box
-        color={"#696969"}
         sx={{
-          filter: "drop-shadow(0 0 0.3em rgb(255, 255, 255, 0.68))",
-          boxShadow: "0px 1px 9px 1px #454343ad",
-          borderRadius: ".4rem",
-          display: { xs: "block", sm: "flex" },
+          width: { xs: "95%", sm: "36rem" },
         }}
-        p={1}
-        width={"100%"}
+        margin={"auto"}
+        mt={5}
+        mb={2}
+        // height={"70vh"}
+        display={"flex"}
+        flexDirection={"column"}
+        justifyContent={"center"}
+        alignItems={"center"}
+        fontSize={"calc(0.7rem + 1vmin)"}
+        // height={"100%"}
       >
-        <Box width={"15rem"} sx={{ display: { xs: "none", sm: "block" } }}>
-          <Box className="left">
-            <h1>Welcome, Cherished Student.</h1>
-            <p>
-              The Great Sensec is glad to have you here. Kindly fill all
-              required fields to create a new account.
-            </p>
-          </Box>
-        </Box>
         <Box
-          component={"form"}
-          onSubmit={handleSignUp}
-          ml={{ xs: 0, sm: 1 }}
-          width={{ xs: "100%", sm: "60%" }}
+          color={"#696969"}
+          sx={{
+            filter: "drop-shadow(0 0 0.3em rgb(255, 255, 255, 0.68))",
+            boxShadow: "0px 1px 9px 1px #454343ad",
+            borderRadius: ".4rem",
+            display: { xs: "block", sm: "flex" },
+          }}
+          p={1}
+          width={"100%"}
         >
-          <Box>
-            <Box
-              mt={1}
-              mb={2}
-              display={"flex"}
-              flexDirection={"column"}
-              justifyContent={"center"}
-              alignItems={"center"}
-            >
-              <VpnKey style={{ color: "#767474", fontSize: "2rem" }} />
-              <Typography
-                variant="h5"
-                component={"h1"}
+          <Box width={"15rem"} sx={{ display: { xs: "none", sm: "block" } }}>
+            <Box className="left">
+              <h1>Welcome, Cherished Student.</h1>
+              <p>
+                The Great Sensec is glad to have you here. Kindly fill all
+                required fields to create a new account.
+              </p>
+            </Box>
+          </Box>
+          <Box
+            component={"form"}
+            onSubmit={handleSignUp}
+            ml={{ xs: 0, sm: 1 }}
+            width={{ xs: "100%", sm: "60%" }}
+          >
+            <Box>
+              <Box
+                mt={1}
                 mb={2}
-                sx={{ fontSize: "1.7rem" }}
+                display={"flex"}
+                flexDirection={"column"}
+                justifyContent={"center"}
+                alignItems={"center"}
               >
-                Students Sign-Up
-              </Typography>
-              {/* <Avatar
+                <VpnKey style={{ color: "#767474", fontSize: "1.5em" }} />
+                <Typography
+                  variant="h5"
+                  component={"h1"}
+                  mb={2}
+                  sx={{ fontSize: "1.1em" }}
+                >
+                  Students Sign-Up
+                </Typography>
+                {/* <Avatar
               src="https://plus.unsplash.com/premium_photo-1689977927774-401b12d137d6?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
               sx={{ width: "6rem", height: "6rem" }}
             /> */}
-              <Box className="profilePictureWrap">
-                {/* {studentFound && ( */}
-                <Box className="profilePictureCont">
-                  <img
-                    className="profileImg"
-                    src={
-                      studentFound
-                        ? studentFound?.personalInfo?.profilePicture?.url
-                        : "/assets/noAvatar.png"
-                    }
-                    alt=""
-                  />
+                <Box className="profilePictureWrap">
+                  {/* {studentFound && ( */}
+                  <Box className="profilePictureCont">
+                    <img
+                      className="profileImg"
+                      src={
+                        studentFound
+                          ? studentFound?.personalInfo?.profilePicture?.url
+                          : "/assets/noAvatar.png"
+                      }
+                      alt=""
+                    />
+                  </Box>
+                  {/* )} */}
                 </Box>
-                {/* )} */}
               </Box>
-            </Box>
-            <Grid container spacing={2}>
-              {/* Unique ID */}
-              <Grid item xs={12}>
-                <CustomTextField
-                  fullWidth
-                  label={"Unique ID"}
-                  name="uniqueId"
-                  value={newUser?.uniqueId}
-                  onChange={handleInputValue}
-                  required
-                  error={uniqueIDInputError}
-                  helperText={uniqueIDInputError ? "Invalid student-ID!" : ""}
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color:
-                        newUser?.uniqueId && !uniqueIDInputError
-                          ? "green"
-                          : "red", // Change the asterisk color to red
-                    },
-                  }}
-                />
-              </Grid>
-              {/* Programme Selection */}
-              <Grid item xs={12}>
-                <CustomTextField
-                  select
-                  fullWidth
-                  label="Select Programme"
-                  name="programme"
-                  value={newUser?.programme}
-                  onChange={handleInputValue}
-                  required
-                  error={programmeInputError}
-                  helperText={
-                    programmeInputError
-                      ? "Not enrolled into selected programme!"
-                      : ""
-                  }
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color:
-                        newUser?.programme && !programmeInputError
-                          ? "green"
-                          : "red", // Change the asterisk color to red
-                    },
-                  }}
-                >
-                  {allProgrammes?.map((programme) => (
-                    <MenuItem key={programme?._id} value={programme?._id}>
-                      {programme?.name}
-                    </MenuItem>
-                  ))}
-                </CustomTextField>
-              </Grid>
-              {/* Class */}
-              <Grid item xs={12}>
-                <CustomTextField
-                  select
-                  fullWidth
-                  label={"Class"}
-                  name="class"
-                  value={newUser?.class}
-                  onChange={handleInputValue}
-                  required
-                  error={classInputError}
-                  helperText={
-                    classInputError ? "You're not in this class!" : ""
-                  }
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color:
-                        newUser?.class && !classInputError ? "green" : "red", // Change the asterisk color to red
-                    },
-                  }}
-                >
-                  {allClassSections?.map((section) => (
-                    <MenuItem key={section?._id} value={section?._id}>
-                      {section?.label}
-                    </MenuItem>
-                  ))}
-                </CustomTextField>
-              </Grid>
-              {/* Username */}
-              <Grid item xs={12}>
-                <CustomTextField
-                  fullWidth
-                  label={"Username"}
-                  name="userName"
-                  value={newUser?.userName}
-                  onChange={handleInputValue}
-                  required
-                  error={userNameInputError}
-                  helperText={
-                    userNameInputError ? "Username already in use!" : ""
-                  }
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color:
-                        newUser?.userName && !userNameInputError
-                          ? "green"
-                          : "red", // Change the asterisk color to red
-                    },
-                  }}
-                />
-              </Grid>
-              {/* Password */}
-              <Grid item xs={12}>
-                <CustomTextField
-                  fullWidth
-                  label={"Password"}
-                  name="password"
-                  value={newUser?.password}
-                  onChange={handleInputValue}
-                  required
-                  type={showPass ? "text" : "password"}
-                  slotProps={{
-                    input: {
-                      endAdornment: (
-                        <Box
-                          component={"button"}
-                          onClick={showPassword}
-                          bgcolor={"transparent"}
-                        >
-                          {showPass ? (
-                            <Visibility sx={{ color: "#696969" }} />
-                          ) : (
-                            <VisibilityOff sx={{ color: "#696969" }} />
-                          )}
-                        </Box>
-                      ),
-                    },
-                  }}
-                  error={passwordInputError}
-                  helperText={
-                    passwordInputError &&
-                    newUser?.password?.length > 0 &&
-                    newUser?.password?.length < 6
-                      ? "Password must be at least 6 characters long!"
-                      : ""
-                  }
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color:
-                        newUser?.password && !passwordInputError
-                          ? "green"
-                          : "red", // Change the asterisk color to red
-                    },
-                  }}
-                />
-              </Grid>
-              {/* Confirm Password */}
-              <Grid item xs={12}>
-                <CustomTextField
-                  fullWidth
-                  label={"Confirm Password"}
-                  name="confirmPassword"
-                  value={newUser?.confirmPassword}
-                  onChange={handleInputValue}
-                  required
-                  type={showConfirmPass ? "text" : "password"}
-                  slotProps={{
-                    input: {
-                      endAdornment: (
-                        <Box
-                          component={"button"}
-                          onClick={showConfirmPassword}
-                          bgcolor={"transparent"}
-                        >
-                          {showConfirmPass ? (
-                            <Visibility sx={{ color: "#696969" }} />
-                          ) : (
-                            <VisibilityOff sx={{ color: "#696969" }} />
-                          )}
-                        </Box>
-                      ),
-                    },
-                  }}
-                  error={confirmPasswordInputError}
-                  helperText={
-                    confirmPasswordInputError
-                      ? "Confirm password must be same as password!"
-                      : ""
-                  }
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color:
-                        newUser?.confirmPassword && !confirmPasswordInputError
-                          ? "green"
-                          : "red", // Change the asterisk color to red
-                    },
-                  }}
-                />
-              </Grid>
-            </Grid>
-            <Box>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={checked}
-                    onChange={handleTermsAcceptance}
-                    inputProps={{ "aria-label": "controlled" }}
-                    color="success"
+              <Grid container spacing={2}>
+                {/* Unique ID */}
+                <Grid item xs={12}>
+                  <CustomTextField
+                    fullWidth
+                    label={"Unique ID"}
+                    name="uniqueId"
+                    value={newUser?.uniqueId}
+                    onChange={handleInputValue}
+                    required
+                    error={uniqueIDInputError}
+                    helperText={uniqueIDInputError ? "Invalid student-ID!" : ""}
+                    sx={{
+                      "& .MuiInputLabel-asterisk": {
+                        color:
+                          newUser?.uniqueId && !uniqueIDInputError
+                            ? "green"
+                            : "red", // Change the asterisk color to red
+                      },
+                    }}
                   />
-                }
-                label="Accept terms and conditions"
-                required
-                sx={{
-                  "& .MuiFormControlLabel-asterisk": {
-                    color: `${!checked ? "red" : "green"}`, // Change the color of the asterisk to red
-                  },
-                }}
-              />
-            </Box>
-            <Box mt={1}>
-              <Typography>
-                Already have an account?{" "}
-                <Typography
-                  component={"span"}
-                  onClick={() => navigate("/sensec/login")}
-                  sx={{ cursor: "pointer", color: "green" }}
-                >
-                  Login
+                </Grid>
+                {/* Programme Selection */}
+                <Grid item xs={12}>
+                  <CustomTextField
+                    select
+                    fullWidth
+                    label="Select Programme"
+                    name="programme"
+                    value={newUser?.programme}
+                    onChange={handleInputValue}
+                    required
+                    error={programmeInputError}
+                    helperText={
+                      programmeInputError
+                        ? "Not enrolled into selected programme!"
+                        : ""
+                    }
+                    sx={{
+                      "& .MuiInputLabel-asterisk": {
+                        color:
+                          newUser?.programme && !programmeInputError
+                            ? "green"
+                            : "red", // Change the asterisk color to red
+                      },
+                    }}
+                  >
+                    {allProgrammes?.map((programme) => (
+                      <MenuItem key={programme?._id} value={programme?._id}>
+                        {programme?.name}
+                      </MenuItem>
+                    ))}
+                  </CustomTextField>
+                </Grid>
+                {/* Class */}
+                <Grid item xs={12}>
+                  <CustomTextField
+                    select
+                    fullWidth
+                    label={"Class"}
+                    name="class"
+                    value={newUser?.class}
+                    onChange={handleInputValue}
+                    required
+                    error={classInputError}
+                    helperText={
+                      classInputError ? "You're not in this class!" : ""
+                    }
+                    sx={{
+                      "& .MuiInputLabel-asterisk": {
+                        color:
+                          newUser?.class && !classInputError ? "green" : "red", // Change the asterisk color to red
+                      },
+                    }}
+                  >
+                    {allClassSections?.map((section) => (
+                      <MenuItem key={section?._id} value={section?._id}>
+                        {section?.label}
+                      </MenuItem>
+                    ))}
+                  </CustomTextField>
+                </Grid>
+                {/* Username */}
+                <Grid item xs={12}>
+                  <CustomTextField
+                    fullWidth
+                    label={"Username"}
+                    name="userName"
+                    value={newUser?.userName}
+                    onChange={handleInputValue}
+                    required
+                    error={userNameInputError}
+                    helperText={
+                      userNameInputError ? "Username already in use!" : ""
+                    }
+                    sx={{
+                      "& .MuiInputLabel-asterisk": {
+                        color:
+                          newUser?.userName && !userNameInputError
+                            ? "green"
+                            : "red", // Change the asterisk color to red
+                      },
+                    }}
+                  />
+                </Grid>
+                {/* Password */}
+                <Grid item xs={12}>
+                  <CustomTextField
+                    fullWidth
+                    label={"Password"}
+                    name="password"
+                    value={newUser?.password}
+                    onChange={handleInputValue}
+                    required
+                    type={showPass ? "text" : "password"}
+                    slotProps={{
+                      input: {
+                        endAdornment: (
+                          <Box
+                            component={"button"}
+                            onClick={showPassword}
+                            bgcolor={"transparent"}
+                          >
+                            {showPass ? (
+                              <Visibility sx={{ color: "#696969" }} />
+                            ) : (
+                              <VisibilityOff sx={{ color: "#696969" }} />
+                            )}
+                          </Box>
+                        ),
+                      },
+                    }}
+                    error={passwordInputError}
+                    helperText={
+                      passwordInputError &&
+                      newUser?.password?.length > 0 &&
+                      newUser?.password?.length < 6
+                        ? "Password must be at least 6 characters long!"
+                        : ""
+                    }
+                    sx={{
+                      "& .MuiInputLabel-asterisk": {
+                        color:
+                          newUser?.password && !passwordInputError
+                            ? "green"
+                            : "red", // Change the asterisk color to red
+                      },
+                    }}
+                  />
+                </Grid>
+                {/* Confirm Password */}
+                <Grid item xs={12}>
+                  <CustomTextField
+                    fullWidth
+                    label={"Confirm Password"}
+                    name="confirmPassword"
+                    value={newUser?.confirmPassword}
+                    onChange={handleInputValue}
+                    required
+                    type={showConfirmPass ? "text" : "password"}
+                    slotProps={{
+                      input: {
+                        endAdornment: (
+                          <Box
+                            component={"button"}
+                            onClick={showConfirmPassword}
+                            bgcolor={"transparent"}
+                          >
+                            {showConfirmPass ? (
+                              <Visibility sx={{ color: "#696969" }} />
+                            ) : (
+                              <VisibilityOff sx={{ color: "#696969" }} />
+                            )}
+                          </Box>
+                        ),
+                      },
+                    }}
+                    error={confirmPasswordInputError}
+                    helperText={
+                      confirmPasswordInputError
+                        ? "Confirm password must be same as password!"
+                        : ""
+                    }
+                    sx={{
+                      "& .MuiInputLabel-asterisk": {
+                        color:
+                          newUser?.confirmPassword && !confirmPasswordInputError
+                            ? "green"
+                            : "red", // Change the asterisk color to red
+                      },
+                    }}
+                  />
+                </Grid>
+              </Grid>
+              <Box>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={checked}
+                      onChange={handleTermsAcceptance}
+                      inputProps={{ "aria-label": "controlled" }}
+                      color="success"
+                      // focusRipple
+                    />
+                  }
+                  label="Accept terms and conditions"
+                  required
+                  sx={{
+                    transform: "scale(1)", // Scale the checkbox size
+                    "& .MuiSvgIcon-root": {
+                      fontSize: "1em", // Icon size inside the checkbox
+                    },
+                    "& .MuiFormControlLabel-asterisk": {
+                      color: `${!checked ? "red" : "green"}`, // Change the color of the asterisk to red
+                    },
+                    "& .MuiTypography-root": {
+                      fontSize: ".9em", // Apply font size to the label text
+                    },
+                  }}
+                />
+              </Box>
+              <Box mt={1}>
+                <Typography fontSize={".9em"}>
+                  Already have an account?{" "}
+                  <Typography
+                    component={"span"}
+                    onClick={() => {
+                      localStorage.setItem("loginAction", "Students Login"),
+                        navigate("/sensec/login");
+                    }}
+                    sx={{ cursor: "pointer", color: "green" }}
+                    fontSize={".9em"}
+                  >
+                    Login
+                  </Typography>
                 </Typography>
-              </Typography>
-            </Box>
-            <Button
-              type="submit"
-              variant="contained"
-              fullWidth
-              sx={{
-                backgroundColor: "green",
-                margin: "1rem 0",
-                padding: ".5rem",
-                letterSpacing: "1px",
-                textTransform: "capitalize",
-                fontSize: "1em",
-                minHeight: "3.7rem",
-              }}
-            >
-              {loadingComplete === false && (
-                <LoadingProgress color={"#fff"} size={"1.3rem"} />
-              )}
-              {loadingComplete === null && (
-                <>
-                  Sign Up{" "}
-                  <PersonAddAlt
-                    className="signupIcon"
-                    sx={{ marginLeft: ".5rem" }}
-                  />
-                </>
-              )}
-              {loadingComplete === true &&
-                signUpStatus === "success" &&
-                !redirecting && (
+              </Box>
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth
+                sx={{
+                  backgroundColor: "green",
+                  margin: "1rem 0",
+                  padding: ".5rem",
+                  letterSpacing: "1px",
+                  textTransform: "capitalize",
+                  fontSize: "1em",
+                  minHeight: "3.7rem",
+                }}
+              >
+                {loadingComplete === false && (
+                  <LoadingProgress color={"#fff"} size={"1.3rem"} />
+                )}
+                {loadingComplete === null && (
                   <>
-                    Success{" "}
-                    <TaskAlt
+                    Sign Up{" "}
+                    <PersonAddAlt
                       className="signupIcon"
                       sx={{ marginLeft: ".5rem" }}
                     />
                   </>
                 )}
-              {redirecting && <Redirection color={"#fff"} size={"1.3rem"} />}
-            </Button>
+                {loadingComplete === true &&
+                  signUpStatus === "success" &&
+                  !redirecting && (
+                    <>
+                      Success{" "}
+                      <TaskAlt
+                        className="signupIcon"
+                        sx={{ marginLeft: ".5rem" }}
+                      />
+                    </>
+                  )}
+                {redirecting && <Redirection color={"#fff"} size={"1.3rem"} />}
+              </Button>
+            </Box>
           </Box>
         </Box>
       </Box>
-    </Box>
+      <SmallFooter />
+    </>
   );
 }

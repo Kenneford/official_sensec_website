@@ -23,18 +23,18 @@ import Redirection from "../../../components/pageLoading/Redirection";
 import LoadingProgress from "../../../components/pageLoading/LoadingProgress";
 
 export function Login() {
+  // Getting data from redux state
+  const authUser = useSelector(getAuthUser);
+  const allUsers = useSelector(getAllUsers);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const location = useLocation();
   const loginAction = localStorage.getItem("loginAction");
 
   // Redux state management
   const { loginStatus, successMessage, error } = useSelector(
     (state) => state?.authUser
   );
-  // Getting data from redux state
-  const authUser = useSelector(getAuthUser);
-  const allUsers = useSelector(getAllUsers);
 
   const [loadingComplete, setLoadingComplete] = useState(null);
   const [redirecting, setRedirecting] = useState(false);
@@ -75,7 +75,7 @@ export function Login() {
       setPasswordInputError(true);
     } else if (
       loginAction?.includes("Admins") &&
-      !userFound?.roles?.includes("admin")
+      !userFound?.roles?.includes("Admin")
     ) {
       toast.error("You're not an admin", {
         position: "top-right",
@@ -84,7 +84,7 @@ export function Login() {
       });
     } else if (
       loginAction?.includes("Students") &&
-      !userFound?.roles?.includes("student")
+      !userFound?.roles?.includes("Student")
     ) {
       toast.error("You're not a student", {
         position: "top-right",
@@ -93,7 +93,7 @@ export function Login() {
       });
     } else if (
       loginAction?.includes("Lectures") &&
-      !userFound?.roles?.includes("lecturer")
+      !userFound?.roles?.includes("Lecturer")
     ) {
       toast.error("You're not a lecturer", {
         position: "top-right",
@@ -102,7 +102,7 @@ export function Login() {
       });
     } else if (
       loginAction?.includes("NT-Staff") &&
-      !userFound?.roles?.includes("nt-Staff")
+      !userFound?.roles?.includes("NT-Staff")
     ) {
       toast.error("You're not a NT-Staff", {
         position: "top-right",
@@ -151,12 +151,12 @@ export function Login() {
 
   // Function to redirect users to their dashboard
   const getUserRolePath = () => {
-    if (authUser?.roles?.includes("admin")) return "admin/Dashboard/Overview";
-    if (authUser?.roles?.includes("lecturer"))
+    if (authUser?.roles?.includes("Admin")) return "admin/Dashboard/Overview";
+    if (authUser?.roles?.includes("Lecturer"))
       return "lecturer/Dashboard/Overview";
-    if (authUser?.roles?.includes("student"))
+    if (authUser?.roles?.includes("Student"))
       return "student/Dashboard/Overview";
-    if (authUser?.roles?.includes("nt-Staff"))
+    if (authUser?.roles?.includes("NT-Staff"))
       return "nt_staff/Dashboard/Overview";
     return "*";
   };
@@ -209,38 +209,41 @@ export function Login() {
 
   // Function to redirect users to their dashboard
   useLayoutEffect(() => {
-    if (authUser?.roles?.includes("admin")) {
+    if (authUser?.roles?.includes("Admin")) {
       return navigate(
         `/sensec/users/${authUser?.uniqueId}/admin/Dashboard/Overview`
       );
     }
-    if (authUser?.roles?.includes("lecturer")) {
+    if (authUser?.roles?.includes("Lecturer")) {
       return navigate(
         `/sensec/users/${authUser?.uniqueId}/lecturer/Dashboard/Overview`
       );
     }
-    if (authUser?.roles?.includes("student")) {
+    if (authUser?.roles?.includes("Student")) {
       return navigate(
         `/sensec/users/${authUser?.uniqueId}/student/Dashboard/Overview`
       );
     }
-    if (authUser?.roles?.includes("nt_Staff")) {
+    if (authUser?.roles?.includes("NT-Staff")) {
       return navigate(
         `/sensec/users/${authUser?.uniqueId}/nt_Staff/Dashboard/Overview`
       );
     }
   }, [authUser, navigate]);
 
-  useEffect(() => {
-    // Navigation home when loginAction does not exist
-    if (!localStorage.getItem("loginAction")) {
-      navigate("/");
-    }
-    // Remove loginAction on page navigation
-    return () => {
-      localStorage.removeItem("loginAction");
-    };
-  }, [navigate, location]);
+  // useLayoutEffect(() => {
+  //   // if (authUser) {
+  //   //   navigate("/");
+  //   // }
+  //   // Navigation home when loginAction does not exist
+  //   // if (!localStorage.getItem("loginAction")) {
+  //   //   navigate("/");
+  //   // }
+  //   // // Remove loginAction on page navigation
+  //   // return () => {
+  //   //   localStorage.removeItem("loginAction");
+  //   // };
+  // }, [navigate, authUser]);
 
   return (
     <Box
@@ -398,7 +401,13 @@ export function Login() {
               Don&apos;t have an account?{" "}
               <Typography
                 component={"span"}
-                onClick={() => navigate("/sensec/sign_up")}
+                onClick={() => {
+                  if (loginAction === "Students Login") {
+                    navigate("/sensec/sign_up/students");
+                  } else {
+                    navigate("/sensec/sign_up/partners");
+                  }
+                }}
                 sx={{ cursor: "pointer", color: "green" }}
               >
                 Sign-up
