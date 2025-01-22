@@ -107,11 +107,11 @@ export const assignClassSectionLecturer = createAsyncThunk(
 );
 export const removeClassSectionLecturer = createAsyncThunk(
   "ClassLevelSection/removeClassSectionLecturer",
-  async ({ data }, { rejectWithValue }) => {
+  async (data, { rejectWithValue }) => {
     try {
       const res = await tokenInterceptor.put(
         `/academics/class_section/lecturer/remove`,
-        { data }
+        data
       );
       return res.data;
     } catch (error) {
