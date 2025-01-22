@@ -59,9 +59,7 @@ export const assignSubjectLecturer = createAsyncThunk(
     try {
       const res = await tokenInterceptor.put(
         `/academics/subjects/${data?.subjectId}/assign_lecturer`,
-        {
-          data,
-        }
+        data
       );
       console.log(res.data);
       return res.data;
