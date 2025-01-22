@@ -1,0 +1,165 @@
+.lecturerAttendanceWrap {
+  font-size: calc(0.7rem + 1vmin);
+  overflow: unset;
+  .attendanceTogglingWrap {
+    background-color: #555;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    .attendanceTogglingBtn {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #fff;
+      .attendanceTogglingText,
+      .attendanceTogglingAction {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.3rem;
+        .text,
+        .actionBtnView {
+          font-size: 0.8em;
+        }
+        .attIcons {
+          font-size: 1em;
+        }
+      }
+      .attendanceTogglingAction {
+        // min-width: 12rem;
+        border: 1px solid #fff;
+        padding: 0.2rem 0.5rem;
+        padding-right: 0.8rem;
+        border-radius: 0.4rem;
+        cursor: pointer;
+      }
+    }
+  }
+  .middleAttendance {
+    // display: flex;
+    // justify-content: center;
+    margin: 0 auto;
+    .attendanceForm {
+      width: 100%;
+      border: 1px solid #ccc;
+      margin: 2rem 0 1rem;
+      .attendanceSearch {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        // padding: 1rem 2rem 0;
+        .attTitle {
+          padding: unset;
+          font-size: 1.1em;
+          color: #555;
+        }
+        .openSearch {
+          background-color: transparent;
+          font-size: 0.8em;
+          letter-spacing: 1px;
+          font-weight: 600;
+          color: #555;
+          cursor: pointer;
+        }
+        .closeSearch {
+          background-color: transparent;
+          font-size: 0.8em;
+          letter-spacing: 1px;
+          font-weight: 600;
+          color: #da1b1b;
+          cursor: pointer;
+        }
+      }
+      .flex4 {
+        // display: flex;
+        // justify-content: space-between;
+        // padding: 2rem;
+        color: #696969;
+        .classlevelInfo,
+        .attendanceDate {
+          position: relative;
+          // display: flex;
+          // flex-direction: column;
+          // align-items: center;
+          font-size: 0.8em;
+          .attendanceDateInputBox {
+            max-width: 8rem;
+            padding: 0 0.5rem;
+            letter-spacing: 1.5px;
+            border-bottom: 1px solid #cccc;
+          }
+          .attCalendar {
+            // position: absolute;
+            // right: 0%;
+            // top: 4rem;
+            // background-color: #fff;
+            // border: 1px solid #555;
+            // border-radius: 0.4rem;
+            // z-index: 1;
+            // opacity: 0.9;
+            // .rdrMonths {
+            //   .rdrMonth {
+            //     .rdrWeekDays {
+            //       color: #1d3fe6;
+            //     }
+            //     .rdrDays {
+            //       button {
+            //         span {
+            //           // color: #ccc;
+            //           color: #06ab06;
+            //           .rdrDayNumber {
+            //             color: #06ab06;
+            //           }
+            //         }
+            //       }
+            //     }
+            //   }
+            // }
+            // span.rdrDayNumber {
+            // }
+          }
+        }
+        h4 {
+          padding-bottom: 0.5rem;
+        }
+      }
+      .searchAttBtn {
+        padding: 0.5rem;
+        background-color: #06ab06;
+        color: #fff;
+        font-size: 0.8em;
+        letter-spacing: 1px;
+        font-weight: 600;
+        cursor: pointer;
+        text-transform: capitalize;
+      }
+    }
+  }
+  .statusValueWrap {
+    // display: flex;
+  }
+  .noAttendanceRecord {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #da1b1b;
+    margin: 1rem 0;
+  }
+  .css-rizt0-MuiTypography-root {
+    font-size: 1em;
+  }
+  #cell-1-undefined {
+    // max-width: 5rem;
+  }
+  .recharts-default-legend {
+    font-size: 0.8em;
+    text-align: unset;
+    // max-width: 50%; /* Limit width */
+    white-space: normal;
+    word-wrap: break-word;
+    display: flex;
+    justify-content: center;
+  }
+}
