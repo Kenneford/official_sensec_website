@@ -377,7 +377,9 @@ export function PlacementStudents() {
 
   const [inFocus, setInFocus] = useState(false);
   const [searchStudentStatus, setSearchStudentStatus] = useState("");
-  const allStd = `All Placement Students / Total = ${placementDataToDisplay?.length}`;
+  const allStd = `All Placement Students / Total = ${
+    placementDataToDisplay?.length > 0 ? placementDataToDisplay?.length : 0
+  }`;
   return (
     <>
       {/* Current dashboard title */}

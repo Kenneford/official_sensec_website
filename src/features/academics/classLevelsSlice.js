@@ -7,11 +7,13 @@ const initialState = {
   classLevelInfo: "",
   updatedClassLevel: "",
   allClassLevels: [],
+  allLecturerClassLevels: [],
   successMessage: "",
   error: "",
   createStatus: "",
   updateStatus: "",
   fetchStatus: "",
+  fetchLectureClassLevelsStatus: "",
 };
 
 export const createClassLevel = createAsyncThunk(
@@ -39,6 +41,22 @@ export const updateClassLevel = createAsyncThunk(
         { name, lastUpdatedBy },
         { headers: { Authorization: `Bearer ${accessToken}` } }
       );
+      return res.data;
+    } catch (error) {
+      console.log(error.response.data);
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const fetchLecturerClassLevels = createAsyncThunk(
+  "ClassLevel/fetchLecturerClassLevels",
+  async ({ lecturerId }, { rejectWithValue }) => {
+    try {
+      const res = await tokenInterceptor.get(
+        `/academics/lecturer/${lecturerId}/class_levels/fetch_all`
+      );
+      console.log(res.data);
+
       return res.data;
     } catch (error) {
       console.log(error.response.data);
@@ -153,6 +171,27 @@ const classLevelsSlice = createSlice({
         error: action.payload,
       };
     });
+    // Works✅
+    builder.addCase(fetchLecturerClassLevels.pending, (state, action) => {
+      return { ...state, fetchLectureClassLevelsStatus: "pending" };
+    });
+    builder.addCase(fetchLecturerClassLevels.fulfilled, (state, action) => {
+      if (action.payload) {
+        return {
+          ...state,
+          allLecturerClassLevels: action.payload.lectureClassLevels,
+          successMessage: action.payload.successMessage,
+          fetchLectureClassLevelsStatus: "success",
+        };
+      } else return state;
+    });
+    builder.addCase(fetchLecturerClassLevels.rejected, (state, action) => {
+      return {
+        ...state,
+        fetchLectureClassLevelsStatus: "rejected",
+        error: action.payload,
+      };
+    });
 
     builder.addCase(fetchSingleClassLevel.pending, (state) => {
       return { ...state, fetchingSingleStatus: "pending" };
@@ -205,6 +244,8 @@ const classLevelsSlice = createSlice({
 });
 
 export const getAllClassLevels = (state) => state.classLevel.allClassLevels;
+export const getLecturerClassLevels = (state) =>
+  state.classLevel.allLecturerClassLevels;
 export const getSingleClassLevel = (state) => state.classLevel.classLevelInfo;
 export const getUpdatedClassLevel = (state) =>
   state.classLevel.updatedClassLevel;

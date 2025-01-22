@@ -10,10 +10,136 @@
     width: 24px; /* Adjust based on spacing */
     // vertical-align: middle; /* Aligns dots with text */
   }
-
   .dot {
     display: inline-block;
     margin-top: -0.4rem;
+    font-size: 24px;
+    animation: dot-blink 1.5s infinite;
+    vertical-align: middle; /* Aligns each dot with the text */
+  }
+  .dot:nth-of-type(1) {
+    left: 0;
+    animation-delay: 0s;
+  }
+  .dot:nth-of-type(2) {
+    left: 8px;
+    animation-delay: 0.3s;
+  }
+  .dot:nth-of-type(3) {
+    left: 16px;
+    animation-delay: 0.6s;
+  }
+  @keyframes dot-blink {
+    0% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+}
+.assignSubjectLecturerBox {
+  // position: relative;
+  background-color: #292929;
+  min-width: 2rem;
+  padding: 0.5rem 0;
+  .lecturerWrap {
+    display: flex;
+    align-items: center;
+    padding: 0.3rem;
+    &:hover {
+      background-color: #474646;
+      cursor: pointer;
+    }
+    .avatar {
+      width: 2rem;
+      height: 2rem;
+    }
+    p {
+      padding: 0.5rem;
+      color: #fff;
+      font-size: 0.8em;
+    }
+  }
+}
+.noMatches {
+  background-color: #292929;
+  padding: 0.5rem;
+  color: #fff;
+  font-size: 0.8em;
+}
+.listOfSubjectLecturers {
+  height: 30rem;
+  margin-bottom: 1rem;
+  overflow-y: auto;
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+  &::-webkit-scrollbar-track {
+    background-color: #292929;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 0.4rem;
+  }
+  &::-webkit-scrollbar-track-piece {
+    width: 5px;
+  }
+}
+.my-data-table {
+  border: 1px solid #ccc;
+}
+.attendanceOverviewWrap {
+  max-height: 45rem;
+  margin-bottom: 1rem;
+  overflow-y: auto;
+  // border-radius: 0.4rem;
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+  &::-webkit-scrollbar-track {
+    background-color: #fff;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 0.4rem;
+  }
+  &::-webkit-scrollbar-track-piece {
+    width: 5px;
+  }
+}
+.lecturerAssignedInfos {
+  .lecturerAssignedItem {
+    display: flex;
+    gap: 1rem;
+    margin: 0.5rem 0;
+    font-size: 0.8em;
+    span {
+      color: #292929;
+    }
+  }
+}
+
+.promotionSpinner {
+  display: flex;
+  align-items: center;
+  span {
+    font-size: 0.8em;
+  }
+  .dot-ellipsis {
+    // display: inline-block;
+    margin-left: 4px; /* Adds a small space between the text and dots */
+    // position: relative;
+    width: 24px; /* Adjust based on spacing */
+    // vertical-align: middle; /* Aligns dots with text */
+  }
+
+  .dot {
+    display: inline-block;
+    margin-top: -0.5rem;
     font-size: 24px;
     animation: dot-blink 1.5s infinite;
     vertical-align: middle; /* Aligns each dot with the text */

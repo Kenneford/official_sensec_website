@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./schoolProgrammesData.scss";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
@@ -8,21 +8,32 @@ import DataTable from "react-data-table-component";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { Box } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { FetchAllProgrammes } from "../../../../data/programme/FetchProgrammeData";
 import { FetchProgrammeStudents } from "../../../../data/students/FetchAllStudents";
-import { FetchProgrammeLecturers } from "../../../../data/lecturers/FetchLecturers";
+import {
+  FetchAllLecturers,
+  FetchProgrammeLecturers,
+} from "../../../../data/lecturers/FetchLecturers";
 import {
   FetchAllCoreSubjects,
   FetchAllElectiveSubjects,
   FetchAllSubjects,
 } from "../../../../data/subjects/FetchSubjects";
+import { Add, Close, Remove, TaskAlt } from "@mui/icons-material";
+import { HashLink } from "react-router-hash-link";
+import { getAuthUser } from "../../../../features/auth/authSlice";
+import RemoveSubjectLecturerModal from "../../../modals/RemoveSubjectLecturerModal";
+import AssignSubjectLecturerModal from "../../../modals/AssignSubjectLecturerModal";
+import { resetAssignSubjectLecturerState } from "../../../../features/academics/subjectsSlice";
 // import DeleteProgramDataModal from "./deleteProgramData/DeleteProgramDataModal";
 
 export function SchoolProgrammesData() {
   const { adminCurrentAction, adminCurrentLink } = useParams();
+  const authAdmin = useSelector(getAuthUser);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [openModal, setOpenModal] = useState(false);
-  const [loadingComplete, setLoadingComplete] = useState(null);
   const [program, setProgram] = useState(false);
   const [electiveSub, setElectiveSub] = useState(false);
   const [coreSub, setCoreSub] = useState(false);
@@ -34,13 +45,43 @@ export function SchoolProgrammesData() {
   const allProgrammes = FetchAllProgrammes();
   const allSubjectsData = FetchAllSubjects();
   const allElectiveSubjectsData = FetchAllElectiveSubjects();
+  console.log(allElectiveSubjectsData);
+  console.log(currentRowId);
+
   const allCoreSubjectsData = FetchAllCoreSubjects();
+  console.log(allCoreSubjectsData);
+
+  const { assignLecturerStatus, successMessage, removeLecturerStatus, error } =
+    useSelector((state) => state.subject);
+
+  const [redirect, setRedirect] = useState(false);
+  const [removingLecturer, setRemovingLecturer] = useState(null);
+  const [loadingComplete, setLoadingComplete] = useState(null);
+  const [deleteLoadingComplete, setDeleteLoadingComplete] = useState(null);
+  const [lecturerToAssign, setLecturerToAssign] = useState("");
+  const [lecturerToRemove, setLecturerToRemove] = useState("");
+  const [openAssignLecturerModal, setOpenAssignLecturerModal] = useState(false);
+  console.log(openAssignLecturerModal);
+
+  const [openRemoveLecturerModal, setOpenRemoveLecturerModal] = useState(false);
+  console.log(openRemoveLecturerModal);
+
+  const [assignLecturerInProgress, setAssignLecturerInProgress] =
+    useState(false);
+  const [removeLecturerInProgress, setRemoveLecturerInProgress] =
+    useState(false);
+  const [assignLecturerLoadingComplete, setAssignLecturerLoadingComplete] =
+    useState(null);
+  const [removeLecturerLoadingComplete, setRemoveLecturerLoadingComplete] =
+    useState(null);
+
   const foundProgram = allProgrammes.find(
     (program) => program._id === currentRowId
   );
   const foundElectiveSubject = allElectiveSubjectsData.find(
     (eSubj) => eSubj._id === currentRowId
   );
+  console.log(foundElectiveSubject);
 
   const foundCoreSubject = allCoreSubjectsData.find(
     (cSubj) => cSubj._id === currentRowId
@@ -199,8 +240,15 @@ export function SchoolProgrammesData() {
     },
     {
       name: "Programme",
-      selector: (row) =>
-        row?.electiveSubInfo ? row?.electiveSubInfo?.programId?.name : "---",
+      selector: (row) => (
+        <p>
+          {row?.electiveSubInfo?.divisionProgramId
+            ? row?.electiveSubInfo?.divisionProgramId?.divisionName
+            : row?.electiveSubInfo?.programId
+            ? row?.electiveSubInfo?.programId?.name
+            : "---"}
+        </p>
+      ),
       sortable: true,
     },
     // {
@@ -218,8 +266,92 @@ export function SchoolProgrammesData() {
     // },
     {
       name: "Teachers",
-      selector: (row) => (row?.teachers ? row?.teachers?.length : "---"),
+      selector: (row) => (
+        // <Box
+        //   sx={{
+        //     width: "100%",
+        //   }}
+        // >
+        <Button
+          fullWidth
+          title="View All Lecturer"
+          onClick={() => {
+            setCurrentRowId(row?._id);
+            setOpenRemoveLecturerModal(true);
+          }}
+          sx={{
+            bgcolor: "transparent",
+            fontSize: ".9em",
+            textTransform: "capitalize",
+            color: "green",
+          }}
+        >
+          {row?.teachers ? row?.teachers?.length : "---"}
+          {/* (row?.teachers ? row?.teachers?.length : "---") */}
+        </Button>
+        // </Box>
+      ),
       sortable: true,
+    },
+    {
+      name: "Assign Lecturers",
+      selector: (row) => {
+        const allLecturers = FetchAllLecturers();
+        const lecturerFound = allLecturers?.find(
+          (lecturer) => lecturer?._id === row?.currentTeacher
+        );
+        return (
+          <Box display={"flex"}>
+            <Button
+              title="Add New Lecturer"
+              onClick={() => {
+                setCurrentRowId(row?._id);
+                setOpenAssignLecturerModal(true);
+              }}
+              sx={{
+                bgcolor: "transparent",
+                fontSize: ".9em",
+                textTransform: "capitalize",
+                color: "green",
+              }}
+            >
+              ANL
+              <Add
+                style={{
+                  position: "absolute",
+                  top: ".5rem",
+                  right: ".7rem",
+                  fontSize: ".9em",
+                }}
+              />
+            </Button>
+            {row?.teachers?.length > 0 && (
+              <Button
+                title="Remove Existing Lecturer"
+                onClick={() => {
+                  setOpenRemoveLecturerModal(true);
+                }}
+                sx={{
+                  bgcolor: "transparent",
+                  fontSize: ".9em",
+                  textTransform: "capitalize",
+                  color: "red",
+                }}
+              >
+                REL
+                <Remove
+                  style={{
+                    position: "absolute",
+                    top: ".5rem",
+                    right: ".7rem",
+                    fontSize: ".9em",
+                  }}
+                />
+              </Button>
+            )}
+          </Box>
+        );
+      },
     },
     {
       name: "Optional",
@@ -280,22 +412,21 @@ export function SchoolProgrammesData() {
         >
           {foundElectiveSubject && foundElectiveSubject?._id === row._id && (
             <>
-              {loadingComplete === false && "Deleting..."}
-              {loadingComplete && deleteSubjectStatus === "success" && (
+              {deleteLoadingComplete === false && "Deleting..."}
+              {deleteLoadingComplete && deleteSubjectStatus === "success" && (
                 <>
                   <span>Deleted</span> <TaskAltIcon />
                 </>
               )}
             </>
           )}
-          {loadingComplete === null && <DeleteForeverIcon />}
+          {deleteLoadingComplete === null && <DeleteForeverIcon />}
           {row._id !== foundElectiveSubject?._id &&
-            loadingComplete !== null && <DeleteForeverIcon />}
+            deleteLoadingComplete !== null && <DeleteForeverIcon />}
         </button>
       ),
     },
   ];
-
   const coreSubColumn = [
     {
       name: "Subject",
@@ -305,24 +436,50 @@ export function SchoolProgrammesData() {
         ) : (
           <p>---</p>
         ),
-    },
-    // {
-    //   name: "Class Level",
-    //   selector: (row) => (row?.classLevel ? row?.classLevel?.name : "---"),
-    //   sortable: true,
-    // },
-    // {
-    //   name: "Current Teacher",
-    //   selector: (row) =>
-    //     row?.currentTeacher
-    //       ? row?.currentTeacher?.personalInfo?.fullName
-    //       : "---",
-    //   sortable: true,
-    // },
-    {
-      name: "Teachers",
-      selector: (row) => (row?.teachers ? row?.teachers?.length : "---"),
       sortable: true,
+    },
+    {
+      name: "Lecturers",
+      selector: (row) => (row?.teachers ? row?.teachers?.length : "---"),
+    },
+    {
+      name: "Current Lecturer",
+      selector: (row) => {
+        const allLecturers = FetchAllLecturers();
+        const lecturerFound = allLecturers?.find(
+          (lecturer) => lecturer?._id === row?.currentTeacher
+        );
+        console.log(lecturerFound);
+
+        return (
+          <>
+            {row?.currentTeacher && (
+              <p title={lecturerFound?.personalInfo?.fullName}>
+                {lecturerFound?.personalInfo?.gender === "Male"
+                  ? "Mr. "
+                  : "Mrs. "}
+                {lecturerFound?.personalInfo?.fullName}
+              </p>
+            )}
+            {!row?.currentTeacher && (
+              <Button
+                onClick={() => {
+                  if (!row?.currentTeacher) {
+                    setOpenModal(true);
+                  }
+                }}
+                sx={{
+                  bgcolor: "transparent",
+                  fontSize: ".9em",
+                  textTransform: "capitalize",
+                }}
+              >
+                Assign Lecturer
+              </Button>
+            )}
+          </>
+        );
+      },
     },
     // {
     //   name: "Duration",
@@ -554,6 +711,44 @@ export function SchoolProgrammesData() {
   //   loadingComplete,
   // ]);
 
+  //Delete Program Status Check
+  useEffect(() => {
+    if (assignLecturerStatus === "pending") {
+      setLoadingComplete(false);
+    }
+    if (assignLecturerStatus === "rejected") {
+      setTimeout(() => {
+        error?.errorMessage?.message?.map((err) =>
+          toast.error(err, {
+            position: "top-right",
+            theme: "light",
+            // toastId: successId,
+          })
+        );
+      }, 2000);
+      setTimeout(() => {
+        setLoadingComplete(null);
+        dispatch(resetAssignSubjectLecturerState());
+      }, 3000);
+      return;
+    }
+    if (assignLecturerStatus === "success") {
+      setTimeout(() => {
+        toast.success(successMessage, {
+          position: "top-right",
+          theme: "dark",
+          toastId: successMessage,
+        });
+      }, 1000);
+      setTimeout(() => {
+        setLoadingComplete(true);
+      }, 3000);
+      setTimeout(() => {
+        dispatch(resetAssignSubjectLecturerState());
+      }, 6000);
+    }
+  }, [assignLecturerStatus, successMessage, error, dispatch, loadingComplete]);
+
   return (
     <>
       {/* Current dashboard title */}
@@ -581,6 +776,14 @@ export function SchoolProgrammesData() {
           />
         </Box> */}
       </Box>
+      {/* <SubjectLecturerModal
+        open={openModal}
+        onClose={() => setOpenModal(false)}
+        // handleNewEmployment={handleNewEmployment}
+        redirecting={redirect}
+        // uncompletedEmploymentTask={uncompletedEmploymentTask}
+        question={"Are you sure you would like to employ a new Lecturer?"}
+      /> */}
       {/* Dashboard content */}
       <Box className="programDataWrap">
         <h2>{allPrograms}</h2>
@@ -638,6 +841,24 @@ export function SchoolProgrammesData() {
         // coreSub={coreSub}
         // itemToDelete={itemToDelete}
       /> */}
+        <AssignSubjectLecturerModal
+          open={openAssignLecturerModal}
+          onClose={() => setOpenAssignLecturerModal(false)}
+          authAdmin={authAdmin}
+          // lecturer={lecturerFound}
+          subject={currentRowId}
+          loadingComplete={loadingComplete}
+          assignLecturerStatus={assignLecturerStatus}
+        />
+        <RemoveSubjectLecturerModal
+          open={openRemoveLecturerModal}
+          onClose={() => setOpenRemoveLecturerModal(false)}
+          authAdmin={authAdmin}
+          subject={foundElectiveSubject?._id}
+          // lecturer={lecturerFound}
+          // subject={row}
+          loadingComplete={loadingComplete}
+        />
       </Box>
     </>
   );

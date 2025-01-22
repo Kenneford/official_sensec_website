@@ -16,6 +16,8 @@ const initialState = {
   createStatus: "",
   createMultiStatus: "",
   fetchStatus: "",
+  fetchElectiveStatus: "",
+  fetchCoreStatus: "",
 };
 
 export const addGrade = createAsyncThunk(
@@ -83,12 +85,33 @@ export const saveDraftReport = createAsyncThunk(
     }
   }
 );
-export const fetchDraftReport = createAsyncThunk(
-  "Report/fetchDraftReport",
+export const fetchElectiveDraftReport = createAsyncThunk(
+  "Report/fetchElectiveDraftReport",
   async (data, { rejectWithValue }) => {
+    console.log(data);
+
     try {
       const res = await tokenInterceptor.post(
-        `/academics/student_report/draft/fetch`,
+        `/academics/student_report/draft/elective/fetch`,
+        {
+          data,
+        }
+      );
+      return res.data;
+    } catch (error) {
+      console.log(error.response.data);
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const fetchCoreDraftReport = createAsyncThunk(
+  "Report/fetchCoreDraftReport",
+  async (data, { rejectWithValue }) => {
+    console.log(data);
+
+    try {
+      const res = await tokenInterceptor.post(
+        `/academics/student_report/draft/core/fetch`,
         {
           data,
         }
@@ -155,7 +178,7 @@ const reportSlice = createSlice({
     resetCreateMultiReportState(state) {
       return {
         ...state,
-        createStatus: "",
+        createMultiStatus: "",
         error: "",
         successMessage: "",
       };
@@ -164,6 +187,22 @@ const reportSlice = createSlice({
       return {
         ...state,
         fetchStatus: "",
+        error: "",
+        successMessage: "",
+      };
+    },
+    resetFetchElectiveReportState(state) {
+      return {
+        ...state,
+        fetchElectiveStatus: "",
+        error: "",
+        successMessage: "",
+      };
+    },
+    resetFetchCoreReportState(state) {
+      return {
+        ...state,
+        fetchCoreStatus: "",
         error: "",
         successMessage: "",
       };
@@ -232,24 +271,45 @@ const reportSlice = createSlice({
         error: action.payload,
       };
     });
-    // Fetch draft report
-    builder.addCase(fetchDraftReport.pending, (state) => {
-      return { ...state, fetchStatus: "pending" };
+    // Fetch elective draft report
+    builder.addCase(fetchElectiveDraftReport.pending, (state) => {
+      return { ...state, fetchElectiveStatus: "pending" };
     });
-    builder.addCase(fetchDraftReport.fulfilled, (state, action) => {
+    builder.addCase(fetchElectiveDraftReport.fulfilled, (state, action) => {
       if (action.payload) {
         return {
           ...state,
           draftReportInfo: action.payload.foundDraftReport,
           successMessage: action.payload.successMessage,
-          fetchStatus: "success",
+          fetchElectiveStatus: "success",
         };
       } else return state;
     });
-    builder.addCase(fetchDraftReport.rejected, (state, action) => {
+    builder.addCase(fetchElectiveDraftReport.rejected, (state, action) => {
       return {
         ...state,
-        fetchStatus: "rejected",
+        fetchElectiveStatus: "rejected",
+        error: action.payload,
+      };
+    });
+    // Fetch elective draft report
+    builder.addCase(fetchCoreDraftReport.pending, (state) => {
+      return { ...state, fetchCoreStatus: "pending" };
+    });
+    builder.addCase(fetchCoreDraftReport.fulfilled, (state, action) => {
+      if (action.payload) {
+        return {
+          ...state,
+          draftReportInfo: action.payload.foundDraftReport,
+          successMessage: action.payload.successMessage,
+          fetchCoreStatus: "success",
+        };
+      } else return state;
+    });
+    builder.addCase(fetchCoreDraftReport.rejected, (state, action) => {
+      return {
+        ...state,
+        fetchCoreStatus: "rejected",
         error: action.payload,
       };
     });
@@ -302,6 +362,8 @@ export const {
   resetCreateReportState,
   resetCreateMultiReportState,
   resetFetchReportState,
+  resetFetchElectiveReportState,
+  resetFetchCoreReportState,
 } = reportSlice.actions;
 export const getAllReports = (state) => state.report.allReports;
 export const getAllStudentReports = (state) => state.report.allStudentReports;

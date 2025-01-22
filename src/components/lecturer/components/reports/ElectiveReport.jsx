@@ -7,56 +7,69 @@ import {
   Typography,
 } from "@mui/material";
 import { useEffect, useLayoutEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { FetchAllLecturerSubjects } from "../../../../data/subjects/FetchSubjects";
 import { getAuthUser } from "../../../../features/auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import DataTable from "react-data-table-component";
 import { customUserTableStyle } from "../../../../usersInfoDataFormat/usersInfoTableStyle";
-import {
-  studentsReportColumn,
-  studentsReportOverviewColumn,
-} from "../../../../usersInfoDataFormat/UsersInfoDataFormat";
+import { studentsReportColumn } from "../../../../usersInfoDataFormat/UsersInfoDataFormat";
 import useSubjectStudents from "../../../../data/subjects/useSubjectStudents";
 import { FetchCurrentAcademicTerms } from "../../../../data/term.year/FetchAcademicTerms";
 import { CustomTextField } from "../../../../muiStyling/muiStyling";
-import { FetchAllClassLevels } from "../../../../data/class/FetchClassLevel";
+import {
+  FetchAllClassLevels,
+  FetchLecturerClassLevels,
+} from "../../../../data/class/FetchClassLevel";
 import {
   createMultiStudentsReport,
-  //   fetchDraftReport,
   getDraftReportInfo,
-  resetCreateMultiReportState,
   resetCreateReportState,
   saveDraftReport,
 } from "../../../../features/reports/reportSlice";
 import { toast } from "react-toastify";
 import { TaskAlt } from "@mui/icons-material";
-import { FetchAllReports } from "../../../../data/academicsReports/FetchAcademicsReports";
-import { FetchAllStudents } from "../../../../data/students/FetchAllStudents";
+import { resetCreateMultiReportState } from "../../../../features/reports/reportSlice";
+import {
+  fetchLecturerClassLevels,
+  getLecturerClassLevels,
+} from "../../../../features/academics/classLevelsSlice";
+import PropTypes from "prop-types";
+import { fetchElectiveDraftReport } from "../../../../features/reports/reportSlice";
 
-export function SearchReport() {
+export function ElectiveReport() {
   const { createStatus, createMultiStatus, error, successMessage } =
     useSelector((state) => state.report);
   const reportClassLevel = localStorage.getItem("reportClassLevel");
   const reportSubject = localStorage.getItem("reportSubject");
   const authUser = useSelector(getAuthUser);
+  console.log(authUser?.id);
   const currentYear = new Date().getFullYear();
   const draftReportInfo = useSelector(getDraftReportInfo);
   console.log(draftReportInfo);
 
   const { lecturerCurrentAction, lecturerCurrentLink } = useParams();
   const dispatch = useDispatch();
-  const lecturerSubjects = FetchAllLecturerSubjects(authUser?.id);
-  const allClassLevels = FetchAllClassLevels();
-  const currentAcademicTerm = FetchCurrentAcademicTerms();
-  const allStudents = FetchAllStudents();
-  const allAcademicsReports = FetchAllReports();
-  console.log(allAcademicsReports);
+  const navigate = useNavigate();
+  const allClassLevels = useSelector(getLecturerClassLevels);
+  // const allClassLevels = FetchAllClassLevels();
+  // console.log(lecturerSubjects);
 
+  const [takeCoreSubjectReport, setTakeCoreSubjectReport] = useState(false);
+  const [allCoreSubjectStudents, setAllCoreSubjectStudents] = useState([]);
+  const [allElectiveSubjectStudents, setAllElectiveSubjectStudents] = useState(
+    []
+  );
+  const [isElective, setIsElective] = useState(true);
+  console.log(takeCoreSubjectReport);
+
+  const lecturerSubjects = FetchAllLecturerSubjects(takeCoreSubjectReport);
+  const currentAcademicTerm = FetchCurrentAcademicTerms();
   // Report saving state
   const [multiLoadingComplete, setMultiLoadingComplete] = useState(null);
   const [loadingComplete, setLoadingComplete] = useState(null);
   const [saveDataInProgress, setSaveDataInProgress] = useState(false);
+
   // Multi select state
   const [multiStudents, setMultiStudents] = useState([]);
   const [toggleClearRows, setToggleClearRows] = useState(false);
@@ -64,24 +77,26 @@ export function SearchReport() {
 
   // Report State
   const [classLevel, setClassLevel] = useState(
-    localStorage.getItem("reportClassLevel") || ""
+    localStorage.getItem("reportClassLevel") || null
   );
   const [subject, setSubject] = useState(
-    localStorage.getItem("reportSubject") || ""
+    localStorage.getItem("reportSubject") || null
   );
   // Maintain a local state for editing scores
   const fetchedStudents = useSubjectStudents({
     classLevel: classLevel ? classLevel : reportClassLevel,
     subject: subject ? subject : reportSubject,
+    programmes: [],
     // draftReportInfo,
   });
-  const [allSubjectStudents, setAllSubjectStudents] = useState(
-    draftReportInfo?.students ? draftReportInfo?.students : fetchedStudents
-  );
+  //   const [allSubjectStudents, setAllSubjectStudents] = useState(
+  //     draftReportInfo?.students ? draftReportInfo?.students : []
+  //   );
+  //   console.log(allSubjectStudents);
 
   // Handle score values ✅
   const handleScoreChange = (id, field, value) => {
-    const updatedStudents = allSubjectStudents?.map((student) => {
+    const updatedStudents = allElectiveSubjectStudents?.map((student) => {
       if (student.uniqueId === id) {
         const updatedStudent = {
           ...student,
@@ -107,7 +122,8 @@ export function SearchReport() {
     localStorage.setItem("allSubjectStudents", JSON.stringify(reportObj));
     dispatch(saveDraftReport(reportObj));
 
-    setAllSubjectStudents(reportObj?.students); // Update the correct state
+    setAllElectiveSubjectStudents(reportObj?.students); // Update the correct state
+    setAllCoreSubjectStudents([]);
   };
   // Grade calculator
   const calculateGrade = (totalScore) => {
@@ -133,7 +149,7 @@ export function SearchReport() {
     if (userData === "E8") return "#763c3c";
     return "#c30505"; // For scores below 40
   };
-  const foundStudent = allSubjectStudents?.find(
+  const foundStudent = allElectiveSubjectStudents?.find(
     (std) => std._id === currentStudent
   );
   // Table column data
@@ -154,28 +170,52 @@ export function SearchReport() {
     saveDataInProgress,
     createStatus,
   };
-  const studentDataFormat = studentsReportOverviewColumn(columnData);
+  const studentDataFormat = studentsReportColumn(columnData);
 
   // Fetch Draft Data
-  useLayoutEffect(() => {
-    if (classLevel && subject) {
+  useEffect(() => {
+    if (!takeCoreSubjectReport) {
       const data = {
         classLevel: localStorage.getItem("reportClassLevel") || classLevel,
         semester: currentAcademicTerm?.name,
         subject: localStorage.getItem("reportSubject") || subject,
         lecturer: authUser?.id,
       };
-      //   dispatch(fetchDraftReport(data));
-    }
-  }, [classLevel, subject, currentAcademicTerm, authUser, dispatch]);
-  // Retrieve and set students on page render
-  useLayoutEffect(() => {
-    if (!draftReportInfo?.students?.length > 0) {
-      setAllSubjectStudents(fetchedStudents);
+      dispatch(fetchElectiveDraftReport(data));
+      setAllCoreSubjectStudents([]);
     } else {
-      setAllSubjectStudents(draftReportInfo?.students);
+      setAllElectiveSubjectStudents([]);
     }
-  }, [draftReportInfo, fetchedStudents]);
+  }, [
+    takeCoreSubjectReport,
+    classLevel,
+    subject,
+    currentAcademicTerm,
+    authUser,
+    dispatch,
+    setAllElectiveSubjectStudents,
+    setAllCoreSubjectStudents,
+  ]);
+  // Retrieve and set students on page render
+  useEffect(() => {
+    if (takeCoreSubjectReport) {
+      setAllElectiveSubjectStudents([]);
+    } else {
+      setAllElectiveSubjectStudents(draftReportInfo?.students);
+      setAllCoreSubjectStudents([]);
+    }
+  }, [
+    draftReportInfo,
+    takeCoreSubjectReport,
+    setAllElectiveSubjectStudents,
+    setAllCoreSubjectStudents,
+  ]);
+  useEffect(() => {
+    setIsElective(true);
+    if (authUser) {
+      dispatch(fetchLecturerClassLevels({ lecturerId: authUser?.id }));
+    }
+  }, [authUser, dispatch]);
 
   // handle multi approval or rejection
   const handleMultiSelect = (state) => {
@@ -213,6 +253,13 @@ export function SearchReport() {
         );
         setMultiLoadingComplete(null);
         dispatch(resetCreateMultiReportState());
+        const data = {
+          classLevel: localStorage.getItem("reportClassLevel") || classLevel,
+          semester: currentAcademicTerm?.name,
+          subject: localStorage.getItem("reportSubject") || subject,
+          lecturer: authUser?.id,
+        };
+        dispatch(fetchElectiveDraftReport(data));
       }, 2000);
       return;
     }
@@ -226,6 +273,7 @@ export function SearchReport() {
         localStorage.removeItem("allSubjectStudents");
         localStorage.removeItem("reportClassLevel");
         localStorage.removeItem("reportSubject");
+        setMultiStudents([]);
         dispatch(resetCreateMultiReportState());
         const data = {
           classLevel: localStorage.getItem("reportClassLevel") || classLevel,
@@ -233,7 +281,7 @@ export function SearchReport() {
           subject: localStorage.getItem("reportSubject") || subject,
           lecturer: authUser?.id,
         };
-        // dispatch(fetchDraftReport(data));
+        dispatch(fetchElectiveDraftReport(data));
       }, 6000);
     }
   }, [
@@ -246,7 +294,6 @@ export function SearchReport() {
     currentAcademicTerm,
     dispatch,
   ]);
-  console.log(createStatus);
   // Single data create status
   useEffect(() => {
     if (foundStudent) {
@@ -263,7 +310,7 @@ export function SearchReport() {
           error.errorMessage.message.map((err) =>
             toast.error(err, {
               position: "top-right",
-              theme: "dark",
+              theme: "light",
               toastId: "createStudentReportError",
             })
           );
@@ -273,7 +320,7 @@ export function SearchReport() {
             subject: localStorage.getItem("reportSubject") || subject,
             lecturer: authUser?.id,
           };
-          //   dispatch(fetchDraftReport(data));
+          dispatch(fetchElectiveDraftReport(data));
         }, 2000);
         return;
       }
@@ -299,11 +346,14 @@ export function SearchReport() {
     dispatch,
   ]);
 
-  const allStd = `Students / Total = ${allSubjectStudents?.length}`;
+  const allStd = `Students / Total = ${
+    allElectiveSubjectStudents?.length > 0
+      ? allElectiveSubjectStudents?.length
+      : 0
+  }`;
 
   return (
     <>
-      {/* Current dashboard title */}
       <Box
         id="adminDashboardHeaderWrap"
         sx={{
@@ -316,11 +366,45 @@ export function SearchReport() {
       >
         <h1 className="dashAction">
           {lecturerCurrentAction?.replace(/_/g, " ")} /{" "}
-          <span>{lecturerCurrentLink?.replace(/_/g, " ")}</span>
+          <span>
+            {lecturerCurrentLink?.replace(
+              /_/g,
+              `${takeCoreSubjectReport ? " Core " : " Elective "}`
+            )}
+          </span>
         </h1>
       </Box>
       <Box padding={{ xs: 1, sm: 2 }} bgcolor={"#383838"}>
         <Box bgcolor={"#fff"} padding={{ xs: 1, sm: 2 }} borderRadius={".4rem"}>
+          <p
+            style={{
+              fontSize: ".8em",
+              marginBottom: "2rem",
+              color: "#fff",
+              backgroundColor: "#383838",
+              padding: ".5rem",
+              borderRadius: ".4rem",
+            }}
+          >
+            Click{" "}
+            <button
+              onClick={() => {
+                // setTakeCoreSubjectReport(!takeCoreSubjectReport);
+                navigate(
+                  `/sensec/users/${authUser?.uniqueId}/lecturer/academic_report/create_report/core`
+                );
+              }}
+              style={{
+                backgroundColor: "transparent",
+                fontSize: "1em",
+                cursor: "pointer",
+                color: "#1ec8f7",
+              }}
+            >
+              here
+            </button>{" "}
+            to take report for your core subjects.
+          </p>
           <Grid container spacing={1}>
             <Grid item xs={12} sm={2}>
               <CustomTextField
@@ -328,12 +412,19 @@ export function SearchReport() {
                 fullWidth
                 name="classLevel"
                 label="Form"
-                value={classLevel}
+                value={classLevel || ""}
                 size="small"
                 onChange={(e) => {
                   setClassLevel(e.target.value);
                   localStorage.setItem("reportClassLevel", e.target.value);
                 }}
+                //   onChange={(e) => {
+                //     setReportData({
+                //       ...reportData,
+                //       classLevel: e.target.value,
+                //     });
+                //     localStorage.setItem("reportClassLevel", e.target.value);
+                //   }}
                 sx={{
                   "& .MuiInputBase-input": {
                     height: "1rem",
@@ -360,12 +451,19 @@ export function SearchReport() {
                 fullWidth
                 name="subject"
                 label="Subject"
-                value={subject}
+                value={subject || ""}
                 size="small"
                 onChange={(e) => {
                   setSubject(e.target.value);
                   localStorage.setItem("reportSubject", e.target.value);
                 }}
+                //   onChange={(e) => {
+                //     setReportData({
+                //       ...reportData,
+                //       subject: e.target.value,
+                //     });
+                //     localStorage.setItem("reportSubject", e.target.value);
+                //   }}
                 sx={{
                   "& .MuiInputBase-input": {
                     height: "1rem",
@@ -377,16 +475,17 @@ export function SearchReport() {
                   },
                 }}
               >
+                {/* <MenuItem>M</MenuItem> */}
                 {lecturerSubjects?.map((subj) => (
-                  <MenuItem key={subj?._id} value={subj?._id}>
-                    {subj?.subjectName}
+                  <MenuItem key={subj?.subject?._id} value={subj?.subject?._id}>
+                    {subj?.subject?.subjectName}
                   </MenuItem>
                 ))}
               </CustomTextField>
             </Grid>
           </Grid>
         </Box>
-        {allAcademicsReports?.length > 0 ? (
+        {!takeCoreSubjectReport && allElectiveSubjectStudents?.length > 0 ? (
           <Box fontSize={"calc(0.7rem + 1vmin)"} position={"relative"}>
             <Box className="studentDataTable">
               <Box mt={3} mb={1.5}>
@@ -404,6 +503,7 @@ export function SearchReport() {
                       cursor: "not-allowed", // Show not-allowed cursor
                       pointerEvents: "auto",
                     },
+                    alignItems: "center",
                   }}
                   onClick={() => {
                     const data = {
@@ -419,41 +519,50 @@ export function SearchReport() {
                     }
                   }}
                 >
-                  {multiStudents?.length > 0 &&
+                  {isElective &&
+                    multiStudents?.length > 0 &&
                     multiLoadingComplete === false && (
                       <Box className="promotionSpinner">
                         <p>Saving</p>
-                        <span className="dot-ellipsis">
+                        <span
+                          className="dot-ellipsis"
+                          style={{ marginTop: "-.1rem" }}
+                        >
                           <span className="dot">.</span>
                           <span className="dot">.</span>
                           <span className="dot">.</span>
                         </span>
                       </Box>
                     )}
-                  {multiStudents?.length > 0 &&
+                  {isElective &&
+                    multiStudents?.length > 0 &&
                     multiLoadingComplete &&
                     createMultiStatus === "success" && (
                       <>
                         <span>All Saved</span> <TaskAlt />
                       </>
                     )}
-                  {multiLoadingComplete === null && "Save All Reports"}
+                  {isElective &&
+                    multiLoadingComplete === null &&
+                    "Save All Reports"}
                 </Button>
               </Box>
-              <DataTable
-                title={allStd}
-                columns={studentDataFormat}
-                data={allAcademicsReports}
-                customStyles={customUserTableStyle}
-                pagination
-                selectableRows
-                fixedHeader
-                selectableRowsHighlight
-                highlightOnHover
-                responsive
-                onSelectedRowsChange={handleMultiSelect}
-                clearSelectedRows={toggleClearRows}
-              />
+              {isElective && (
+                <DataTable
+                  title={allStd}
+                  columns={studentDataFormat}
+                  data={allElectiveSubjectStudents || []}
+                  customStyles={customUserTableStyle}
+                  pagination
+                  selectableRows
+                  fixedHeader
+                  selectableRowsHighlight
+                  highlightOnHover
+                  responsive
+                  onSelectedRowsChange={handleMultiSelect}
+                  clearSelectedRows={toggleClearRows}
+                />
+              )}
             </Box>
           </Box>
         ) : (
@@ -465,7 +574,9 @@ export function SearchReport() {
               mt={5}
               fontSize={".9em"}
             >
-              No data found!
+              {!classLevel && !subject
+                ? "Select Form and Subject to begin..."
+                : "No data found!"}
             </Typography>
           </Box>
         )}
@@ -473,3 +584,12 @@ export function SearchReport() {
     </>
   );
 }
+
+ElectiveReport.propTypes = {
+  setTakeCoreSubjectReport: PropTypes.func,
+  takeCoreSubjectReport: PropTypes.bool,
+  allCoreSubjectStudents: PropTypes.array,
+  setAllCoreSubjectStudents: PropTypes.func,
+  allElectiveSubjectStudents: PropTypes.array,
+  setAllElectiveSubjectStudents: PropTypes.func,
+};

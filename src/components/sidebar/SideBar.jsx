@@ -103,6 +103,7 @@ export function SideBar({
           justifyContent={"center"}
         >
           <Button
+            fullWidth
             sx={{
               textTransform: "capitalize",
               color: "#fff",

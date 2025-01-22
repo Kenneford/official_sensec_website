@@ -13,7 +13,7 @@ import {
 import {
   fetchAllReports,
   fetchAllStudentReports,
-  fetchDraftReport,
+  fetchElectiveDraftReport,
   getAllReports,
   getAllStudentReports,
   getDraftReportInfo,
@@ -51,7 +51,7 @@ const useSubjectStudents = ({ classLevel, subject }) => {
       subject,
       lecturer: authUser?.id,
     };
-    dispatch(fetchDraftReport(data));
+    dispatch(fetchElectiveDraftReport(data));
   }, [dispatch, authUser, currentAcademicTerms, classLevel, subject]);
   //   useEffect(() => {
   //     if (createStatus === "success") {

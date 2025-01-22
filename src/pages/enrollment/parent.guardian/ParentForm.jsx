@@ -16,6 +16,7 @@ import { Avatar, Box, Button, Grid, Stack, Typography } from "@mui/material";
 import { AddStudentParent } from "../../../features/students/parentSlice";
 import { FetchAllStudents } from "../../../data/students/FetchAllStudents";
 import { NavigationBar } from "../../../components/navbar/NavigationBar";
+import Cookies from "js-cookie";
 
 export function ParentForm() {
   const {
@@ -38,11 +39,13 @@ export function ParentForm() {
   const authAdmin = useSelector(getAuthUser);
   const allStudents = FetchAllStudents();
   const allPlacementStudents = useSelector(getAllPlacementStudents);
-  const { studentId } = useParams();
-  // Find student
-  const foundStudent = allStudents?.find((std) => std?.uniqueId === studentId);
+  const [studentId, setStudentId] = useState("");
+  console.log(studentId);
 
-  console.log(foundStudent);
+  // Find student
+  const foundStudent = allStudents?.find(
+    (std) => std?.studentSchoolData?.enrollmentCode === studentId
+  );
 
   // Find placement student
   const foundPlacementStudent = allPlacementStudents?.find(
@@ -133,7 +136,13 @@ export function ParentForm() {
 
   useEffect(() => {
     dispatch(fetchAllPlacementStudents());
-  }, [dispatch]);
+    const studentId = Cookies?.get("masked_student_id");
+    if (!studentId) {
+      navigate("/sensec/students/enrollment/placement_verification");
+    } else {
+      setStudentId(studentId);
+    }
+  }, [dispatch, navigate]);
 
   useEffect(() => {
     if (createStatus === "pending") {

@@ -98,16 +98,19 @@ const FetchProgrammeStudents = (programmeFound) => {
   return classLevelStudents;
 };
 //Fetch ClassLevel Students
-const FetchClassSectionStudents = (class_section) => {
-  const allApprovedStudents = FetchAllApprovedStudents();
+const FetchClassSectionStudents = ({ class_section }) => {
+  console.log(class_section);
 
-  const classLevelStudents = allApprovedStudents?.filter(
-    (std) =>
-      std &&
-      std?.studentSchoolData?.currentClassLevelSection?._id === class_section
-  );
+  const allApprovedStudents = FetchAllStudents();
+  if (class_section) {
+    const classLevelStudents = allApprovedStudents?.filter(
+      (std) =>
+        std &&
+        std?.studentSchoolData?.currentClassLevelSection?._id === class_section
+    );
 
-  return classLevelStudents;
+    return classLevelStudents;
+  }
 };
 
 export {

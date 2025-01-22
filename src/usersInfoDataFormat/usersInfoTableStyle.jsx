@@ -7,8 +7,6 @@ const customUserTableStyle = {
   },
   headColumn: {
     style: {
-      border: "1rem solid red",
-      justifyContent: "center",
       // color: "#fff",
     },
   },
@@ -39,20 +37,24 @@ const customAttendanceTableStyle = {
     style: {
       backgroundColor: "#555",
       color: "#fff",
+      fontSize: "1rem",
+      borderRadius: "unset",
+      border: "1px solid #292929",
     },
   },
   headColumn: {
     style: {
-      border: "1rem solid red",
-      // justifyContent: "center",
+      border: "1px solid #cccc",
+      justifyContent: "center",
       // color: "#fff",
     },
   },
   headCells: {
     style: {
-      fontSize: "1.2rem",
-      // justifyContent: "center",
-      // borderLeft: ".2rem solid red",
+      border: "1px solid #cccc",
+      fontSize: "1em",
+      justifyContent: "center",
+      // border: ".2rem solid red",
       // backgroundColor: "blue",
       // color: "#fff",
     },
@@ -61,10 +63,11 @@ const customAttendanceTableStyle = {
     style: {
       // backgroundColor: "#cccc",
       // color: "#fff",
-      paddingTop: ".5rem",
-      paddingBottom: ".5rem",
-      fontSize: "1rem",
-      // justifyContent: "center",
+      // paddingTop: ".5rem",
+      // paddingBottom: ".5rem",
+      fontSize: ".9em",
+      justifyContent: "center",
+      border: "1px solid #cccc",
       // marginTop: ".5rem",
       // marginBottom: ".5rem",
     },

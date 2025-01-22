@@ -6,7 +6,7 @@ const FetchAllNTStaffs = () => {
   const dispatch = useDispatch();
   const allUsers = useSelector(getAllUsers);
   const allNT_Staffs = allUsers?.filter(
-    (user) => user?.roles?.includes("nt-staff") && user
+    (user) => user?.roles?.includes("NT-Staff") && user
   );
 
   useEffect(() => {

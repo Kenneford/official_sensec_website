@@ -33,10 +33,11 @@ h1.dashAction {
 }
 
 .promotionSpinner {
+  display: flex;
+  align-items: center;
   span {
     font-size: 0.8em;
   }
-  display: flex;
   .dot-ellipsis {
     // display: inline-block;
     margin-left: 4px; /* Adds a small space between the text and dots */
@@ -166,5 +167,17 @@ h1.dashAction {
       font-size: 0.8rem;
       flex-wrap: wrap;
     }
+  }
+}
+
+.searchDetails {
+  display: flex;
+  justify-content: flex-end;
+  background-color: #fff;
+  margin-bottom: 1rem;
+  .searchInfo {
+    padding: 0.3rem;
+    padding-left: 2rem;
+    font-size: 1.2rem;
   }
 }
