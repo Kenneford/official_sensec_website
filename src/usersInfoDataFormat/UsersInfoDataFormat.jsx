@@ -2176,12 +2176,10 @@ const teachersColumn = (columnData) => {
                 open={columnData?.openRemoveLecturerModal}
                 onClose={() => columnData?.setOpenRemoveLecturerModal(false)}
                 removeClassLecturerFunction={removeClassSectionLecturer({
-                  data: {
-                    lecturerId: row?.uniqueId,
-                    classSectionId:
-                      row?.lecturerSchoolData?.classLevelHandling?._id,
-                    previousLecturerRemovedBy: columnData?.authAdmin?.id,
-                  },
+                  lecturerId: row?.uniqueId,
+                  classSectionId:
+                    row?.lecturerSchoolData?.classLevelHandling?._id,
+                  previousLecturerRemovedBy: columnData?.authAdmin?.id,
                 })}
                 setLoadingComplete={columnData?.setLoadingComplete}
                 setSelectedLecturerToRemove={columnData?.setLoadingComplete}
