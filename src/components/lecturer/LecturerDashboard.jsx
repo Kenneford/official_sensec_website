@@ -1,15 +1,31 @@
 import { Avatar, Box, Stack, Typography } from "@mui/material";
-import { useNavigate, useOutletContext, useParams } from "react-router-dom";
+import {
+  Outlet,
+  useNavigate,
+  useOutletContext,
+  useParams,
+} from "react-router-dom";
 import { NavigationBar } from "../navbar/NavigationBar";
 import "./lecturerDashboard.scss";
 import { useSelector } from "react-redux";
 import { getAuthUser } from "../../features/auth/authSlice";
 import { CreateReport } from "./components/reports/CreateReport";
-import { SearchReport } from "../lazyLoading/lecturer/LecturerLazyComponents";
+import {
+  ClassHandlingStudents,
+  LecturerAttendance,
+  ProgrammeStudents,
+  SearchAttendance,
+  SearchReport,
+  Subjects,
+  TeacherDashboardOverview,
+} from "../lazyLoading/lecturer/LecturerLazyComponents";
+import { ElectiveReport } from "./components/reports/ElectiveReport";
+import NotAuthorized from "../notAuthorized/NotAuthorized";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
 
 export function LecturerDashboard() {
   const authUser = useSelector(getAuthUser);
-  console.log(authUser);
 
   const navigate = useNavigate();
   const {
@@ -34,7 +50,21 @@ export function LecturerDashboard() {
     drawerWidthExpanded,
   } = useOutletContext();
   const { lecturerCurrentAction, lecturerCurrentLink } = useParams();
-  console.log(lecturerCurrentAction, lecturerCurrentLink);
+
+  useEffect(() => {
+    if (!authUser?.roles?.includes("Lecturer")) {
+      toast.error("You are not an authorized user!", {
+        position: "top-right",
+        theme: "light",
+        toastId: "unAuthorizedInfo",
+      });
+      return;
+    }
+  }, [authUser]);
+
+  if (!authUser?.roles?.includes("Lecturer")) {
+    return <NotAuthorized />;
+  }
 
   return (
     <Box>
@@ -102,9 +132,41 @@ export function LecturerDashboard() {
           // marginTop: fixedNavbar ? "20rem" : "",
         }}
       >
-        {lecturerCurrentLink === "create_report" && <CreateReport />}
+        {lecturerCurrentLink === "Overview" && <TeacherDashboardOverview />}
+        {lecturerCurrentLink === "Class_Handling_Students" && (
+          <ClassHandlingStudents />
+        )}
+        {lecturerCurrentLink === "Programme_Students" && <ProgrammeStudents />}
+        {lecturerCurrentLink === "Subjects" && <Subjects />}
+        {lecturerCurrentLink === "View_Attendance" && <LecturerAttendance />}
+        {lecturerCurrentLink === "Search_Attendance" && <SearchAttendance />}
+        {/* {lecturerCurrentLink === "create_report" && <CreateReport />} */}
+        {/* {lecturerCurrentLink === "create_report" && <ElectiveReport />} */}
         {lecturerCurrentLink === "search" && <SearchReport />}
       </Box>
+      <Outlet
+        context={{
+          currentAction,
+          setCurrentAction,
+          currentLink,
+          setCurrentLink,
+          setOpenSubNavLinks,
+          openSubNavLinks,
+          setOpenUserActions,
+          openUserActions,
+          setOpenSignUpActions,
+          openSignUpActions,
+          setOpenMenuLinks,
+          openMenuLinks,
+          isSidebarOpen,
+          openSearchModal,
+          setOpenSearchModal,
+          hovered,
+          setHovered,
+          drawerWidthCollapsed,
+          drawerWidthExpanded,
+        }}
+      />
     </Box>
   );
 }

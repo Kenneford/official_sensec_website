@@ -8,6 +8,7 @@ const initialState = {
   programInfo: "",
   divisionProgramInfo: "",
   allProgrammes: [],
+  allFlattenedProgrammes: [],
   allDivisionProgrammesById: [],
   createdDivisionProgrammes: [],
   error: "",
@@ -61,9 +62,20 @@ export const fetchAllProgrammes = createAsyncThunk(
   }
 );
 
+export const fetchAllFlattenedProgrammes = createAsyncThunk(
+  "Programme/fetchAllFlattenedProgrammes",
+  async () => {
+    const response = await axios.get(
+      `${SENSEC_API_ENDPOINT}/academics/programmes_and_divisions/fetch_all`
+    );
+    // const students = response.data;
+    console.log(response.data);
+    return response.data;
+  }
+);
 export const fetchAllDivisionProgrammes = createAsyncThunk(
   "Programme/fetchAllDivisionProgrammes",
-  async (programId, { rejectWithValue }) => {
+  async ({ programId }, { rejectWithValue }) => {
     console.log(programId);
 
     try {
@@ -228,6 +240,27 @@ const programmeSlice = createSlice({
         error: action.payload,
       };
     });
+    // fetchAllFlattenedProgrammes
+    builder.addCase(fetchAllFlattenedProgrammes.pending, (state, action) => {
+      return { ...state, fetchingStatus: "pending" };
+    });
+    builder.addCase(fetchAllFlattenedProgrammes.fulfilled, (state, action) => {
+      if (action.payload) {
+        return {
+          ...state,
+          allFlattenedProgrammes: action.payload.flattenedProgrammes,
+          successMessage: action.payload.successMessage,
+          fetchingStatus: "success",
+        };
+      } else return state;
+    });
+    builder.addCase(fetchAllFlattenedProgrammes.rejected, (state, action) => {
+      return {
+        ...state,
+        fetchingStatus: "rejected",
+        error: action.payload,
+      };
+    });
 
     builder.addCase(fetchAllDivisionProgrammes.pending, (state, action) => {
       return { ...state, fetchStatus: "pending" };
@@ -344,6 +377,8 @@ const programmeSlice = createSlice({
 export const { resetCreateProgrammeState, selectProgramme } =
   programmeSlice.actions;
 export const getAllProgrammes = (state) => state.programme.allProgrammes;
+export const getAllFlattenedProgrammes = (state) =>
+  state.programme.allFlattenedProgrammes;
 export const getAllDivisionProgrammes = (state) =>
   state.programme.allDivisionProgrammesById;
 export const getCreatedDivisionProgrammes = (state) =>

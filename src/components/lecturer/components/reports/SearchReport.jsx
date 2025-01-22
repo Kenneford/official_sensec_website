@@ -23,7 +23,7 @@ import { CustomTextField } from "../../../../muiStyling/muiStyling";
 import { FetchAllClassLevels } from "../../../../data/class/FetchClassLevel";
 import {
   createMultiStudentsReport,
-  fetchDraftReport,
+  //   fetchDraftReport,
   getDraftReportInfo,
   resetCreateMultiReportState,
   resetCreateReportState,
@@ -165,7 +165,7 @@ export function SearchReport() {
         subject: localStorage.getItem("reportSubject") || subject,
         lecturer: authUser?.id,
       };
-      dispatch(fetchDraftReport(data));
+      //   dispatch(fetchDraftReport(data));
     }
   }, [classLevel, subject, currentAcademicTerm, authUser, dispatch]);
   // Retrieve and set students on page render
@@ -233,7 +233,7 @@ export function SearchReport() {
           subject: localStorage.getItem("reportSubject") || subject,
           lecturer: authUser?.id,
         };
-        dispatch(fetchDraftReport(data));
+        // dispatch(fetchDraftReport(data));
       }, 6000);
     }
   }, [
@@ -273,7 +273,7 @@ export function SearchReport() {
             subject: localStorage.getItem("reportSubject") || subject,
             lecturer: authUser?.id,
           };
-          dispatch(fetchDraftReport(data));
+          //   dispatch(fetchDraftReport(data));
         }, 2000);
         return;
       }

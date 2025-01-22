@@ -1,4 +1,9 @@
-import { Outlet, useParams } from "react-router-dom";
+import {
+  Outlet,
+  useNavigate,
+  useOutletContext,
+  useParams,
+} from "react-router-dom";
 import {
   AllAdmins,
   AssignLectureClassForm,
@@ -10,11 +15,33 @@ import {
   PendingLecturers,
   PendingNTStaffs,
 } from "../../../lazyLoading/admin/AdminLazyLoadingComponents";
-import { Box } from "@mui/material";
+import { Avatar, Box, Stack, Typography } from "@mui/material";
+import { useSelector } from "react-redux";
+import { getAuthUser } from "../../../../features/auth/authSlice";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
+import SearchForm from "../../../searchForm/SearchForm";
+import { NavigationBar } from "../../../navbar/NavigationBar";
+import NotAuthorized from "../../../notAuthorized/NotAuthorized";
 
 export function UserTypesContainer() {
+  const authUser = useSelector(getAuthUser);
   const { employees_link, adminCurrentLink } = useParams();
 
+  useEffect(() => {
+    if (!authUser?.roles?.includes("Admin")) {
+      toast.error("You are not an authorized user!", {
+        position: "top-right",
+        theme: "light",
+        toastId: "unAuthorizedInfo",
+      });
+      return;
+    }
+  }, [authUser]);
+
+  if (!authUser?.roles?.includes("Admin")) {
+    return <NotAuthorized />;
+  }
   return (
     <Box>
       <Box>

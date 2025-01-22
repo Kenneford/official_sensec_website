@@ -21,17 +21,16 @@ import { useSelector } from "react-redux";
 
 const quickLinks = [
   { name: "Overview" },
-  { name: "Class Students" },
-  { name: "Program Students" },
-  { name: "Staff Members" },
-  { name: "Teachers" },
-  { name: "Blogs" },
+  { name: "Class Handling Students" },
+  { name: "Programme Students" },
+  // { name: "Staff Members" },
+  { name: "Subjects" },
+  // { name: "Blogs" },
 ];
 
 export function LecturerDashboardLinks({ hovered }) {
   const authLecturer = useSelector(getAuthUser);
   const { lecturerCurrentLink } = useParams();
-  console.log(hovered);
 
   // Set sub-link to expand on page render
   const [openDashBoardLinks, setOpenDashBoardLinks] = useState(true);
@@ -107,21 +106,24 @@ export function LecturerDashboardLinks({ hovered }) {
                   ? "currentAdminSidebarLink"
                   : "notCurrentAdminSidebarLink"
               }
-              // onClick={() => {
-              //   setCurrentAction("Dashboard");
-              //   setCurrentLink(qLink.name);
-              // }}
+              onClick={() => {
+                // if (qLink.name === "Subjects") {
+                //   localStorage.setItem("currentSubjectType", "cores");
+                // }
+                // setCurrentAction("Dashboard");
+                // setCurrentLink(qLink.name);
+              }}
             >
               {qLink.name === "Overview" && <Tv className="icon" />}
-              {qLink.name === "Class Students" && (
+              {qLink.name === "Class Handling Students" && (
                 <Equalizer className="icon" />
               )}
-              {qLink.name === "Program Students" && (
+              {qLink.name === "Programme Students" && (
                 <Architecture className="icon" />
               )}
-              {qLink.name === "Staff Members" && <Class className="icon" />}
-              {qLink.name === "Teachers" && <AutoStories className="icon" />}
-              {qLink.name === "Blogs" && <RssFeed className="icon" />}
+              {/* {qLink.name === "Staff Members" && <Class className="icon" />} */}
+              {qLink.name === "Subjects" && <AutoStories className="icon" />}
+              {/* {qLink.name === "Blogs" && <RssFeed className="icon" />} */}
               {hovered && <h4>{qLink.name}</h4>}
             </HashLink>
           ))}

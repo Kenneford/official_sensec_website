@@ -2,9 +2,11 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchAllDivisionProgrammes,
+  fetchAllFlattenedProgrammes,
   fetchAllProgrammes,
   fetchCreatedDivisionProgrammes,
   getAllDivisionProgrammes,
+  getAllFlattenedProgrammes,
   getAllProgrammes,
   getCreatedDivisionProgrammes,
 } from "../../features/academics/programmeSlice";
@@ -15,6 +17,16 @@ const FetchAllProgrammes = () => {
 
   useEffect(() => {
     dispatch(fetchAllProgrammes());
+  }, [dispatch]);
+
+  return allProgrammes;
+};
+const FetchAllFlattenedProgrammes = () => {
+  const allProgrammes = useSelector(getAllFlattenedProgrammes);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchAllFlattenedProgrammes());
   }, [dispatch]);
 
   return allProgrammes;
@@ -43,6 +55,7 @@ const FetchAllCreatedDivisionProgrammes = () => {
 
 export {
   FetchAllProgrammes,
+  FetchAllFlattenedProgrammes,
   FetchAllDivisionProgrammes,
   FetchAllCreatedDivisionProgrammes,
 };

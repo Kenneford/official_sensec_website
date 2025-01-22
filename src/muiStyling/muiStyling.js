@@ -113,6 +113,7 @@ export const CustomTextField = styled(TextField)({
 export const CustomMobileDatePicker = styled(MobileDatePicker)({
   // Border styles for focused state
   "& .MuiOutlinedInput-root": {
+    fontSize: ".65em",
     "& fieldset": {
       borderColor: "#b5b3b3 !important", // Remove the border color
       // boxShadow: "2px 2px 3px 0px #454343ad",

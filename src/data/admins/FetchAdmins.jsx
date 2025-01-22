@@ -6,7 +6,7 @@ const FetchAllAdmins = () => {
   const dispatch = useDispatch();
   const allUsers = useSelector(getAllUsers);
   const allAdmins = allUsers?.filter(
-    (user) => user?.roles?.includes("admin") && user
+    (user) => user?.roles?.includes("Admin") && user
   );
 
   useEffect(() => {

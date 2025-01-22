@@ -52,7 +52,12 @@ import {
 } from "../lazyLoading/student/StudentsLazyLoadingComponents";
 import { useSelector } from "react-redux";
 import { getAuthUser } from "../../features/auth/authSlice";
-import { LecturerDashboard } from "../lazyLoading/lecturer/LecturerLazyComponents";
+import {
+  CreateReport,
+  LecturerDashboard,
+} from "../lazyLoading/lecturer/LecturerLazyComponents";
+import { ElectiveReport } from "../lecturer/components/reports/ElectiveReport";
+import { CoreReport } from "../lecturer/components/reports/CoreReport";
 
 export default function PageNavigation() {
   const authUser = useSelector(getAuthUser);
@@ -266,10 +271,14 @@ export default function PageNavigation() {
                     <LecturerDashboard />
                   ),
                   children: [
-                    // {
-                    //   path: "",
-                    //   element: <Reports />,
-                    // },
+                    {
+                      path: "elective",
+                      element: <ElectiveReport />,
+                    },
+                    {
+                      path: "core",
+                      element: <CoreReport />,
+                    },
                   ],
                 },
                 // Student Dashboard

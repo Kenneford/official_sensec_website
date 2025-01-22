@@ -31,6 +31,7 @@ export function CreateElectiveSubject() {
   const authAdmin = useSelector(getAuthUser);
   const allProgrammes = FetchAllProgrammes();
   const allDivisionProgrammes = useSelector(getAllDivisionProgrammes);
+  console.log(allDivisionProgrammes);
 
   const dispatch = useDispatch();
   const [loadingComplete, setLoadingComplete] = useState(null);
@@ -46,6 +47,7 @@ export function CreateElectiveSubject() {
     isOptional: "",
     createdBy: `${authAdmin.id}`,
   });
+  console.log(electiveSubject);
 
   const handleInputValues = (e) => {
     setElectiveSubject({
@@ -59,12 +61,22 @@ export function CreateElectiveSubject() {
 
   const handleElectiveSubject = (e) => {
     e.preventDefault();
+    if (!electiveSubject?.isOptional) {
+      toast?.error("Please select an option", {
+        position: "top-right",
+        theme: "light",
+        toastId: "optionSelectionError",
+      });
+      return;
+    }
     const data = {
       subjectName: electiveSubject?.subjectName,
       isCore: false,
       programId: electiveSubject?.programId,
       divisionProgramId: electiveSubject?.divisionProgramId,
-      isOptional: electiveSubject?.isOptional,
+      isOptional: electiveSubject?.isOptional
+        ? electiveSubject?.isOptional
+        : null,
       createdBy: authAdmin?.id,
     };
     dispatch(createESubject({ data }));

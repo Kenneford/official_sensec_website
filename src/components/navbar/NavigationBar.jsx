@@ -141,7 +141,7 @@ export function NavigationBar({
       name: "Dashboard",
       path: {
         admin: `/sensec/users/${authUser?.uniqueId}/admin/Dashboard/Overview`,
-        teacher: `/sensec/users/${authUser?.uniqueId}/teacher#teacher`,
+        lecturer: `/sensec/users/${authUser?.uniqueId}/lecturer/Dashboard/Overview`,
         nt_Staff: `/sensec/users/${authUser?.uniqueId}/nt_staff#staff`,
         student: `/sensec/users/${authUser?.uniqueId}/student#student`,
       },
@@ -196,7 +196,7 @@ export function NavigationBar({
       name: "Dashboard",
       path: {
         admin: `/sensec/users/${authUser?.uniqueId}/admin/Dashboard/Overview`,
-        teacher: `/sensec/users/${authUser?.uniqueId}/teacher#teacher`,
+        lecturer: `/sensec/users/${authUser?.uniqueId}/lecturer/Dashboard/Overview`,
         nt_Staff: `/sensec/users/${authUser?.uniqueId}/nt_staff#staff`,
         student: `/sensec/users/${authUser?.uniqueId}/student#student`,
       },
@@ -427,7 +427,7 @@ export function NavigationBar({
           <Box display={isScrolled && isDashboard ? "none" : "block"}>
             {openMenuLinks && (
               <Box id="smallScreenMenu">
-                <li>
+                <Box>
                   {userInfo &&
                     menuLinks?.map((link) => (
                       <HashLink
@@ -478,8 +478,8 @@ export function NavigationBar({
                           userInfo?.adminStatusExtend?.isAdmin
                             ? link?.path?.admin
                             : link?.name === "Dashboard" &&
-                              userInfo?.teacherStatusExtend?.isTeacher
-                            ? link?.path?.teacher
+                              userInfo?.lecturerStatusExtend?.isLecturer
+                            ? link?.path?.lecturer
                             : link?.name === "Dashboard" &&
                               userInfo?.nTStaffStatusExtend?.isNTStaff
                             ? link?.path?.nt_Staff
@@ -500,7 +500,7 @@ export function NavigationBar({
                         {link?.name}
                       </NavHashLink>
                     ))}
-                </li>
+                </Box>
               </Box>
             )}
           </Box>
@@ -622,9 +622,9 @@ export function NavigationBar({
                                       userInfo?.adminStatusExtend?.isAdmin
                                         ? link?.path?.admin
                                         : link?.name === "Dashboard" &&
-                                          userInfo?.teacherStatusExtend
-                                            ?.isTeacher
-                                        ? link?.path?.teacher
+                                          userInfo?.lecturerStatusExtend
+                                            ?.isLecturer
+                                        ? link?.path?.lecturer
                                         : link?.name === "Dashboard" &&
                                           userInfo?.nTStaffStatusExtend
                                             ?.isNTStaff
@@ -653,6 +653,14 @@ export function NavigationBar({
                                         setCurrentAction("Dashboard");
                                         setCurrentLink("Overview");
                                       }
+                                      if (
+                                        link?.name === "Dashboard" &&
+                                        userInfo?.lecturerStatusExtend
+                                          ?.isLecturer
+                                      ) {
+                                        setCurrentAction("Dashboard");
+                                        setCurrentLink("Overview");
+                                      }
                                     }}
                                   >
                                     {link?.name}
@@ -675,9 +683,9 @@ export function NavigationBar({
                                       userInfo?.adminStatusExtend?.isAdmin
                                         ? link?.path?.admin
                                         : link?.name === "Dashboard" &&
-                                          userInfo?.teacherStatusExtend
-                                            ?.isTeacher
-                                        ? link?.path?.teacher
+                                          userInfo?.lecturerStatusExtend
+                                            ?.isLecturer
+                                        ? link?.path?.lecturer
                                         : link?.name === "Dashboard" &&
                                           userInfo?.nTStaffStatusExtend
                                             ?.isNTStaff

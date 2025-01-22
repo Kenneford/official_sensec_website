@@ -69,7 +69,9 @@ export function StudentPlacementVerification() {
   const verifiedButNotDoneEnrolling = allStudents?.find(
     (std) =>
       // std?.uniqueId === foundPlacementStudent?.enrollmentId &&
-      std?.studentStatusExtend?.enrollmentStatus === "in progress"
+      std?.studentStatusExtend?.enrollmentStatus === "in progress" &&
+      std?.studentSchoolData?.enrollmentCode ===
+        foundPlacementStudent?.enrollmentCode
   );
   // Check if student has enrolled already
   const enrolledStudent = allStudents?.find(
@@ -82,16 +84,12 @@ export function StudentPlacementVerification() {
       std?.studentSchoolData?.jhsIndexNo === formData?.jhsIndexNo &&
       std?.studentStatusExtend?.enrollmentStatus === "pending"
   );
-  console.log(unApprovedStudent);
 
   const graduatedStudent = allStudents?.find(
     (std) =>
       std?.studentSchoolData?.jhsIndexNo === formData?.jhsIndexNo &&
       std?.studentStatusExtend?.isGraduated
   );
-  console.log(foundPlacementStudent);
-  console.log(enrolledStudent);
-  console.log(graduatedStudent);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -194,11 +192,11 @@ export function StudentPlacementVerification() {
       setTimeout(() => {
         if (adminCurrentAction) {
           navigate(
-            `/sensec/users/${authUser?.uniqueId}/admin/User-Types/Students/${foundPlacementStudent?.enrollmentId}/new_enrollment/parent/add`
+            `/sensec/users/${authUser?.uniqueId}/admin/User-Types/Students/${maskedStudentId}/new_enrollment/parent/add`
           );
         } else {
           navigate(
-            `/sensec/students/enrollment/online/${foundPlacementStudent?.enrollmentId}/parent/add`
+            `/sensec/students/enrollment/online/${maskedStudentId}/parent/add`
           );
         }
       }, 7000);
@@ -283,22 +281,35 @@ export function StudentPlacementVerification() {
   // Mask unique-ID
   useEffect(() => {
     if (foundPlacementStudent) {
-      const studentID = foundPlacementStudent?.jhsIndexNo;
+      const studentIndex = foundPlacementStudent?.jhsIndexNo;
+      const studentID = verifiedButNotDoneEnrolling?.uniqueId;
       // Mask the ID: keep first 6 characters, add "****", and keep the last 6 characters
-      const masked = `${studentID.slice(0, 3)}***${studentID.slice(-2)}`;
-      setMaskedStudentIndex(masked);
-      Cookies?.set("masked_student_index", foundPlacementStudent?.jhsIndexNo, {
-        expires: 1, // 1 day
-        secure: false, // Set to true in production if using HTTPS
-        sameSite: "Strict",
-      });
+      const maskedIndex = `${studentIndex?.slice(0, 3)}***${studentIndex?.slice(
+        -2
+      )}`;
+      const maskedID = `${studentID?.slice(0, 3)}***${studentID?.slice(-2)}`;
+      setMaskedStudentIndex(maskedIndex);
+      setMaskedStudentId(maskedID);
+      if (verifiedButNotDoneEnrolling) {
+        Cookies?.set("masked_student_id", studentID, {
+          expires: 1, // 1 day
+          secure: false, // Set to true in production if using HTTPS
+          sameSite: "Strict",
+        });
+      } else {
+        Cookies?.set("masked_student_index", studentIndex, {
+          expires: 1, // 1 day
+          secure: false, // Set to true in production if using HTTPS
+          sameSite: "Strict",
+        });
+      }
     }
     if (unApprovedStudent) {
       const studentID = unApprovedStudent?.uniqueId;
       // Mask the ID: keep first 6 characters, add "****", and keep the last 6 characters
-      const masked = `${studentID.slice(0, 6)}***${studentID.slice(-4)}`;
+      const masked = `${studentID?.slice(0, 3)}***${studentID?.slice(-2)}`;
       setMaskedStudentId(masked);
-      Cookies?.set("masked_student_id", unApprovedStudent?.uniqueId, {
+      Cookies?.set("masked_student_id", studentID, {
         expires: 1, // 1 day
         secure: false, // Set to true in production if using HTTPS
         sameSite: "Strict",
@@ -307,9 +318,9 @@ export function StudentPlacementVerification() {
     if (enrolledStudent) {
       const studentID = enrolledStudent?.uniqueId;
       // Mask the ID: keep first 6 characters, add "****", and keep the last 6 characters
-      const masked = `${studentID.slice(0, 6)}***${studentID.slice(-4)}`;
+      const masked = `${studentID?.slice(0, 3)}***${studentID?.slice(-2)}`;
       setMaskedStudentId(masked);
-      Cookies?.set("masked_student_id", enrolledStudent?.uniqueId, {
+      Cookies?.set("masked_student_id", studentID, {
         expires: 1, // 1 day
         secure: false, // Set to true in production if using HTTPS
         sameSite: "Strict",
@@ -318,9 +329,9 @@ export function StudentPlacementVerification() {
     if (graduatedStudent) {
       const studentID = graduatedStudent?.uniqueId;
       // Mask the ID: keep first 6 characters, add "****", and keep the last 6 characters
-      const masked = `${studentID.slice(0, 6)}***${studentID.slice(-4)}`;
+      const masked = `${studentID?.slice(0, 3)}***${studentID?.slice(-2)}`;
       setMaskedStudentId(masked);
-      Cookies?.set("masked_student_id", graduatedStudent?.uniqueId, {
+      Cookies?.set("masked_student_id", studentID, {
         expires: 1, // 1 day
         secure: false, // Set to true in production if using HTTPS
         sameSite: "Strict",
@@ -331,6 +342,7 @@ export function StudentPlacementVerification() {
     enrolledStudent,
     graduatedStudent,
     foundPlacementStudent,
+    verifiedButNotDoneEnrolling,
   ]);
   //Verification status check
   useEffect(() => {

@@ -19,11 +19,12 @@ import { getAuthUser } from "../../../../features/auth/authSlice";
 const quickLinks = [{ name: "Create Report" }, { name: "Search" }];
 
 export function LecturerReportLinks({ hovered }) {
-  const authAdmin = useSelector(getAuthUser);
+  const authUser = useSelector(getAuthUser);
   const { adminCurrentLink } = useParams();
 
   // Set sub-link to expand on page render
-  const [openDashBoardLinks, setOpenDashBoardLinks] = useState(false);
+  const [openDashBoardLinks, setOpenDashBoardLinks] = useState(true);
+  const [openReportsOptions, setOpenReportsOptions] = useState(false);
   // Set initial height for sidebar sub-links
   const [contentHeight, setContentHeight] = useState(0);
   // Set a ref for the div that holds the sub-links
@@ -74,32 +75,76 @@ export function LecturerReportLinks({ hovered }) {
           hovered ? "sidebarContentLinks" : "sidebarContentLinks closed"
         }
       >
-        <div ref={contentRef} className="allSidebarLinksWrap">
+        <Box ref={contentRef} className="allSidebarLinksWrap">
           {quickLinks.map((Qlink) => (
-            <HashLink
+            <Box
+              minHeight={Qlink.name === "Create Report" ? "1.5rem" : ""}
               key={Qlink.name}
-              to={`/sensec/users/${
-                authAdmin?.uniqueId
-              }/lecturer/academic_report/${Qlink.name
-                .replace(/ /g, "_")
-                .toLocaleLowerCase()}`}
-              // className="links"
-              className={
-                Qlink.name?.replace(/ /g, "_") === adminCurrentLink
-                  ? "currentAdminSidebarLink"
-                  : "notCurrentAdminSidebarLink"
-              }
-              smooth
-              title={!hovered ? Qlink.name : ""}
             >
-              {Qlink.name === "Create Report" && (
-                <Construction className="icon" />
-              )}
-              {Qlink.name === "Search" && <Search className="icon" />}
-              {hovered && <h4>{Qlink.name}</h4>}
-            </HashLink>
+              <HashLink
+                to={
+                  Qlink.name === "Create Report"
+                    ? "#"
+                    : `/sensec/users/${
+                        authUser?.uniqueId
+                      }/lecturer/Academic_Report/${Qlink.name
+                        .replace(/ /g, "_")
+                        .toLocaleLowerCase()}`
+                }
+                // className="links"
+                className={
+                  Qlink.name?.replace(/ /g, "_") === adminCurrentLink
+                    ? "currentAdminSidebarLink"
+                    : "notCurrentAdminSidebarLink"
+                }
+                smooth
+                title={!hovered ? Qlink.name : ""}
+                onClick={() => {
+                  if (Qlink.name === "Create Report") {
+                    setOpenReportsOptions(!openReportsOptions);
+                  }
+                }}
+              >
+                {Qlink.name === "Create Report" && (
+                  <Construction className="icon" />
+                )}
+                {Qlink.name === "Search" && <Search className="icon" />}
+                {hovered && <h4>{Qlink.name}</h4>}
+                {Qlink.name === "Create Report" && hovered && (
+                  <Box position={"absolute"} right={0} top={10}>
+                    {!openReportsOptions ? (
+                      <ExpandMore
+                      // className="expandMoreIcon"
+                      // onClick={() => setOpenActionsLinks(!openActionsLinks)}
+                      />
+                    ) : (
+                      <ExpandLess
+                      // className="expandMoreIcon"
+                      // onClick={() => setOpenActionsLinks(!openActionsLinks)}
+                      />
+                    )}
+                  </Box>
+                )}
+              </HashLink>
+              {Qlink.name === "Create Report" &&
+                openReportsOptions &&
+                hovered && (
+                  <Box className="reportOptionsWrap">
+                    <HashLink
+                      to={`/sensec/users/${authUser?.uniqueId}/lecturer/academic_report/create_report/elective`}
+                    >
+                      Elective
+                    </HashLink>
+                    <HashLink
+                      to={`/sensec/users/${authUser?.uniqueId}/lecturer/academic_report/create_report/core`}
+                    >
+                      Core
+                    </HashLink>
+                  </Box>
+                )}
+            </Box>
           ))}
-        </div>
+        </Box>
       </SidebarSubLinksContainer>
     </>
   );

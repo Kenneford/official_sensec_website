@@ -121,7 +121,7 @@ export function EnrollmentForm() {
 
   // New Student state
   const [studentId, setStudentId] = useState("");
-  console.log(studentId);
+  const [unMaskedStudentId, setUnMaskedStudentId] = useState("");
 
   const [newStudent, setNewStudent] = useState({
     uniqueId: studentId ? studentId : "",
@@ -165,7 +165,6 @@ export function EnrollmentForm() {
   const studentFound = allStudents?.find(
     (student) => student?.studentSchoolData?.jhsIndexNo === studentIndex
   );
-  console.log(studentFound);
 
   // Find student's division programme
   const selectedDivisionProgramme = allDivisionProgrammes?.find(
@@ -272,7 +271,6 @@ export function EnrollmentForm() {
   const studentFirstAcademicYear = allCreatedAcademicYears?.find(
     (year) => year?.yearRange === `${placementYear}/${getNextYear}`
   );
-  console.log(studentFirstAcademicYear);
 
   // Find student's programme
   const studentProgramme = allProgrammes?.find(
@@ -282,7 +280,7 @@ export function EnrollmentForm() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const newStudentData = {
-      studentId,
+      studentId: unMaskedStudentId,
       enrollmentCode: memoizedPlacementStudentData?.enrollmentCode,
       fullName: memoizedPlacementStudentData?.fullName,
       dateOfBirth: memoizedPlacementStudentData?.dateOfBirth,
@@ -317,11 +315,10 @@ export function EnrollmentForm() {
       mobile: newStudent?.mobile,
       email: newStudent?.email,
     };
-    console.log(newStudentData);
+    // console.log(newStudentData);
 
     dispatch(studentEnrollment(newStudentData));
   };
-  console.log(studentProgramme);
   // Helper function to generate new unique-Id for new student
   const generateUniqueId = (fName) => {
     // Get current year
@@ -341,6 +338,7 @@ export function EnrollmentForm() {
   useEffect(() => {
     const newId = generateUniqueId(memoizedPlacementStudentData?.fullName);
     const maskedID = `${newId?.slice(0, 3)}***${newId?.slice(-2)}`;
+    setUnMaskedStudentId(newId);
     setStudentId(maskedID);
     Cookies?.set("masked_student_id", newId, {
       expires: 1, // 1 day
@@ -424,13 +422,13 @@ export function EnrollmentForm() {
     }
   }, [newStudent, memoizedPlacementStudentData]);
 
-  console.log(
-    memoizedPlacementStudentData?.dateOfBirth
-      ? dateFormatter.format(
-          new Date(memoizedPlacementStudentData?.dateOfBirth)
-        )
-      : "---"
-  );
+  // console.log(
+  //   memoizedPlacementStudentData?.dateOfBirth
+  //     ? dateFormatter.format(
+  //         new Date(memoizedPlacementStudentData?.dateOfBirth)
+  //       )
+  //     : "---"
+  // );
 
   useEffect(() => {
     if (!studentIndex) {
@@ -468,15 +466,15 @@ export function EnrollmentForm() {
         dispatch(resetEnrolmentState());
       }, 6000);
       setTimeout(() => {
-        if (authUser?.roles?.includes("admin")) {
-          navigate(
-            `/sensec/users/${authUser?.uniqueId}/admin/User-Types/Students/${studentId}/new_enrollment/parent/add`
-          );
-        } else {
-          navigate(
-            `/sensec/students/enrollment/online/${studentId}/parent/add`
-          );
-        }
+        // if (authUser?.roles?.includes("admin")) {
+        //   navigate(
+        //     `/sensec/users/${authUser?.uniqueId}/admin/User-Types/Students/${studentId}/new_enrollment/parent/add`
+        //   );
+        // } else {
+        //   navigate(
+        //     `/sensec/students/enrollment/online/${studentId}/parent/add`
+        //   );
+        // }
       }, 9000);
     }
   }, [
@@ -1220,7 +1218,7 @@ export function EnrollmentForm() {
                   name="currentAcademicYear"
                   value={studentFirstAcademicYear?._id || ""}
                   onChange={handleChange}
-                  required
+                  // required
                   sx={{
                     "& .MuiInputLabel-asterisk": {
                       color: newStudent?.currentAcademicYear ? "green" : "red", // Change the asterisk color to red
