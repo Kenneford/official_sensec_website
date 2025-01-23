@@ -54,12 +54,19 @@ export default function AssignSubjectLecturerModal({
       )
     : [];
 
+  const canAssign =
+    Boolean(programme) &&
+    Boolean(classLevel) &&
+    Boolean(selectedLecturer?._id) &&
+    Boolean(subject);
   useEffect(() => {
     if (selectedLecturerInfo) {
       setSelectedLecturer(selectedLecturerInfo);
     }
     if (!searchTeacher) {
       setSelectedLecturer("");
+      setProgramme("");
+      setClassLevel("");
     }
     if (selectedLecturer) {
       setSelectedLecturerInfo("");
@@ -357,8 +364,11 @@ export default function AssignSubjectLecturerModal({
                       currentTeacher: selectedLecturer?._id,
                       lastUpdatedBy: authAdmin?.id,
                     };
-                    dispatch(assignSubjectLecturer(data));
+                    if (data) {
+                      dispatch(assignSubjectLecturer(data));
+                    }
                   }}
+                  disabled={!canAssign}
                   sx={{
                     transition: ".5s ease",
                     textTransform: "capitalize",
@@ -367,7 +377,16 @@ export default function AssignSubjectLecturerModal({
                     minWidth: "6rem",
                     "&:hover": {
                       backgroundColor: "green",
-                      color: "#fff",
+                      color: canAssign ? "#fff" : "",
+                    },
+                    backgroundColor: canAssign
+                      ? "green"
+                      : "transparent !important",
+                    color: canAssign ? "#fff" : "",
+                    "&.Mui-disabled": {
+                      cursor: "not-allowed", // Show not-allowed cursor
+                      pointerEvents: "auto",
+                      // color: "#fff",
                     },
                   }}
                 >

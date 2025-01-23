@@ -23,6 +23,7 @@ import { FetchAllClassLevels } from "../../../../../data/class/FetchClassLevel";
 import NewEnrollmentModal from "../../../../modals/NewEnrollmentModal";
 import { resetPromotionState } from "../../../../../features/students/promotionSlice";
 import { toast } from "react-toastify";
+import NotAuthorized from "../../../../notAuthorized/NotAuthorized";
 
 export function AllEnrolledStudents() {
   const authAdmin = useSelector(getAuthUser);
@@ -175,6 +176,9 @@ export function AllEnrolledStudents() {
   }, [promotionStatus, successMessage, error, dispatch, studentToPromote]);
 
   const allStd = `All Enrolled Students / Total = ${approvedStudents?.length}`;
+  if (!authAdmin?.roles?.includes("Admin")) {
+    return <NotAuthorized />;
+  }
   return (
     <>
       {/* Current dashboard title */}

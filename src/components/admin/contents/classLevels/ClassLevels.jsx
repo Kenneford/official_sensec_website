@@ -10,8 +10,12 @@ import {
   FetchPendingClassLevelStudents,
 } from "../../../../data/students/FetchAllStudents";
 import { FetchAllClassLevelLecturers } from "../../../../data/lecturers/FetchLecturers";
+import { useSelector } from "react-redux";
+import { getAuthUser } from "../../../../features/auth/authSlice";
+import NotAuthorized from "../../../notAuthorized/NotAuthorized";
 
 export function ClassLevels() {
+  const authAdmin = useSelector(getAuthUser);
   const { adminCurrentAction, adminCurrentLink } = useParams();
 
   const allClassLevels = FetchAllClassLevels();
@@ -150,6 +154,9 @@ export function ClassLevels() {
   ];
 
   const allCLevels = `All Class Levels / Total = ${allClassLevels?.length}`;
+  if (!authAdmin?.roles?.includes("Admin")) {
+    return <NotAuthorized />;
+  }
   return (
     <>
       {/* Current dashboard title */}
