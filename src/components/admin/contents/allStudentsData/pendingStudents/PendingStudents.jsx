@@ -32,6 +32,7 @@ import {
   resetMultiRejectionState,
 } from "../../../../../features/students/studentsSlice";
 import SearchFilter from "../../../../searchForm/SearchFilter";
+import NotAuthorized from "../../../../notAuthorized/NotAuthorized";
 // import { toast } from "react-toastify";
 
 export function PendingStudents() {
@@ -322,6 +323,10 @@ export function PendingStudents() {
   ]);
 
   const title = `All Pending Students / Total = ${allPendingStudents?.length}`;
+
+  if (!authAdmin?.roles?.includes("Admin")) {
+    return <NotAuthorized />;
+  }
 
   return (
     <>

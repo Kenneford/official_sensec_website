@@ -28,6 +28,8 @@ import {
 } from "../lazyLoading/student/StudentsLazyLoadingComponents";
 import { NavigationBar } from "../navbar/NavigationBar";
 import { AdminDashboardOverview } from "./contents/overview/AdminDashboardOverview";
+import { useSelector } from "react-redux";
+import { getAuthUser } from "../../features/auth/authSlice";
 
 export function AdminDashboard() {
   const {
@@ -50,6 +52,7 @@ export function AdminDashboard() {
   const { adminCurrentLink, adminCurrentAction, studentId } = useParams();
   const navigate = useNavigate();
 
+  const { authUser } = useSelector(getAuthUser);
   const { pathname } = useLocation();
 
   const [isScrolled, setIsScrolled] = useState(false);

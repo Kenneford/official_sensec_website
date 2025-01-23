@@ -95,7 +95,7 @@ export default function NotAuthorized() {
             fontSize: "1em",
           }}
         >
-          Not Authorized!
+          Not An Authorized User!
         </h4>
       </Box>
     </Box>

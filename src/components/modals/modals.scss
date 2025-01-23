@@ -72,7 +72,7 @@
   font-size: 0.8em;
 }
 .listOfSubjectLecturers {
-  height: 30rem;
+  max-height: 30rem;
   margin-bottom: 1rem;
   overflow-y: auto;
   &::-webkit-scrollbar {
