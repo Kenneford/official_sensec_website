@@ -255,7 +255,9 @@ export function ViewAttendance({ filteredStudents }) {
             Current Record
           </Typography>
           {attendanceData?.every((item) => item?.value === 0) ? (
-            <p>No attendance data available</p>
+            <Typography variant="h6" fontSize={".8em"} color="#696969">
+              No attendance data available
+            </Typography>
           ) : (
             <PieChart width={200} height={250}>
               <Pie
@@ -293,7 +295,9 @@ export function ViewAttendance({ filteredStudents }) {
             Weekly Record
           </Typography>
           {weeklyAttendanceData?.every((item) => item?.value === 0) ? (
-            <p>No attendance data available</p>
+            <Typography variant="h6" fontSize={".8em"} color="#696969">
+              No attendance data available
+            </Typography>
           ) : (
             <PieChart width={200} height={250}>
               <Pie

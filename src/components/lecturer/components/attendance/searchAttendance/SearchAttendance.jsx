@@ -98,7 +98,7 @@ export function SearchAttendance() {
   const [loadingComplete, setLoadingComplete] = useState(null);
   const [searchAttendance, setSearchAttendance] = useState(false);
   const [dataFetched, setDataFetched] = useState(false);
-  const [overviewStudents, setOverviewStudents] = useState([]);
+  const [overviewStudents, setOverviewStudents] = useState({});
   const [openAttendanceOverviewModal, setOpenAttendanceOverviewModal] =
     useState(false);
   const [searchStudent, setSearchStudent] = useState("");

@@ -17,7 +17,7 @@ function App() {
       <ScrollToTop />
       <TokenExpiry />
       <PageNavigation />
-      <ToastContainer />
+      <ToastContainer style={{ top: "-.1rem" }} />
       <ScrollToTopButton />
     </>
   );
