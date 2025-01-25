@@ -39,7 +39,7 @@ export default function AssignSubjectLecturerModal({
   const [programme, setProgramme] = useState("");
   const [classLevel, setClassLevel] = useState("");
   const dispatch = useDispatch();
-  console.log(classLevel);
+  console.log(subject);
   console.log(programme);
 
   const filteredLecturers = searchTeacher
@@ -55,10 +55,7 @@ export default function AssignSubjectLecturerModal({
     : [];
 
   const canAssign =
-    Boolean(programme) &&
-    Boolean(classLevel) &&
-    Boolean(selectedLecturer?._id) &&
-    Boolean(subject);
+    Boolean(classLevel) && Boolean(selectedLecturer?._id) && Boolean(subject);
   useEffect(() => {
     if (selectedLecturerInfo) {
       setSelectedLecturer(selectedLecturerInfo);
@@ -285,11 +282,14 @@ export default function AssignSubjectLecturerModal({
                         fullWidth
                         name="programme"
                         label="Select Programme"
-                        value={programme}
+                        value={subject?.subjectInfo?.program?.programId || ""}
                         size="small"
                         onChange={(e) => {
                           setProgramme(e.target.value);
                           // localStorage.setItem("reportClassLevel", e.target.value);
+                        }}
+                        slotProps={{
+                          input: { readOnly: true },
                         }}
                         required
                         sx={{
@@ -358,9 +358,9 @@ export default function AssignSubjectLecturerModal({
                   onClick={() => {
                     setConfirmed(true);
                     const data = {
-                      subjectId: subject,
+                      subjectId: subject?._id,
                       classLevel: classLevel,
-                      program: programme,
+                      program: subject?.subjectInfo?.program?.programId,
                       currentTeacher: selectedLecturer?._id,
                       lastUpdatedBy: authAdmin?.id,
                     };
@@ -540,7 +540,7 @@ AssignSubjectLecturerModal.propTypes = {
   onClose: PropTypes.func,
   authAdmin: PropTypes.object,
   lecturer: PropTypes.object,
-  subject: PropTypes.string,
-  loadingComplete: PropTypes.string,
+  subject: PropTypes.object,
+  loadingComplete: PropTypes.bool,
   assignLecturerStatus: PropTypes.string,
 };

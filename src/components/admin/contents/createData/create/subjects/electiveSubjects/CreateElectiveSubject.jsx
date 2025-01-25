@@ -14,7 +14,10 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { CustomTextField } from "../../../../../../../muiStyling/muiStyling";
-import { FetchAllProgrammes } from "../../../../../../../data/programme/FetchProgrammeData";
+import {
+  FetchAllFlattenedProgrammes,
+  FetchAllProgrammes,
+} from "../../../../../../../data/programme/FetchProgrammeData";
 import { getAuthUser } from "../../../../../../../features/auth/authSlice";
 import {
   createESubject,
@@ -30,8 +33,9 @@ import {
 export function CreateElectiveSubject() {
   const authAdmin = useSelector(getAuthUser);
   const allProgrammes = FetchAllProgrammes();
-  const allDivisionProgrammes = useSelector(getAllDivisionProgrammes);
-  console.log(allDivisionProgrammes);
+  const allFlattenedProgrammes = FetchAllFlattenedProgrammes();
+  // const allDivisionProgrammes = useSelector(getAllDivisionProgrammes);
+  // console.log(allDivisionProgrammes);
 
   const dispatch = useDispatch();
   const [loadingComplete, setLoadingComplete] = useState(null);
@@ -43,7 +47,6 @@ export function CreateElectiveSubject() {
   const [electiveSubject, setElectiveSubject] = useState({
     subjectName: "",
     programId: "",
-    divisionProgramId: "",
     isOptional: "",
     createdBy: `${authAdmin.id}`,
   });
@@ -72,8 +75,7 @@ export function CreateElectiveSubject() {
     const data = {
       subjectName: electiveSubject?.subjectName,
       isCore: false,
-      programId: electiveSubject?.programId,
-      divisionProgramId: electiveSubject?.divisionProgramId,
+      program: electiveSubject?.programId,
       isOptional: electiveSubject?.isOptional
         ? electiveSubject?.isOptional
         : null,
@@ -128,13 +130,13 @@ export function CreateElectiveSubject() {
     }
   }, [error, successMessage, createStatus, authAdmin, dispatch]);
 
-  useEffect(() => {
-    if (electiveSubject?.programId) {
-      dispatch(
-        fetchAllDivisionProgrammes({ programId: electiveSubject?.programId })
-      );
-    }
-  }, [dispatch, electiveSubject?.programId]);
+  // useEffect(() => {
+  //   if (electiveSubject?.programId) {
+  //     dispatch(
+  //       fetchAllDivisionProgrammes({ programId: electiveSubject?.programId })
+  //     );
+  //   }
+  // }, [dispatch, electiveSubject?.programId]);
 
   return (
     <div className="electiveSubjectWrap">
@@ -183,15 +185,17 @@ export function CreateElectiveSubject() {
                 onChange={handleInputValues}
                 required
               >
-                {allProgrammes?.map((programme) => (
+                {allFlattenedProgrammes?.map((programme) => (
                   <MenuItem key={programme?._id} value={programme?._id}>
-                    {programme?.name}
+                    {programme?.name
+                      ? programme?.name
+                      : programme?.divisionName}
                   </MenuItem>
                 ))}
               </CustomTextField>
             </Grid>
             {/* Division Program Selection (conditional) */}
-            {allDivisionProgrammes && allDivisionProgrammes?.length > 0 && (
+            {/* {allDivisionProgrammes && allDivisionProgrammes?.length > 0 && (
               <Grid item xs={12} sm={6} md={6} lg={6}>
                 <CustomTextField
                   select
@@ -209,7 +213,7 @@ export function CreateElectiveSubject() {
                   ))}
                 </CustomTextField>
               </Grid>
-            )}
+            )} */}
             <Grid item xs={12} sm={6} md={6} lg={6} className="inputCont">
               <FormControl component="fieldset">
                 <Box>

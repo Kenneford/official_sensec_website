@@ -110,6 +110,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "bold",
     color: "#696969",
+    marginTop: 5,
   },
   image: {
     marginTop: -10,
@@ -209,6 +210,9 @@ export default function UndertakingPDF({ enrolledStudent }) {
         <View style={styles.headerTitleWrap}>
           <Text style={styles.headerTitle}>SENYA SENIOR HIGH SCHOOL</Text>
           <Text style={styles.centeredText}>
+            P.O. Box 23, Senya-Beraku / GPS: CG-2308-4841
+          </Text>
+          <Text style={styles.miniTitle}>
             STUDENT’S UNDERTAKING ({" "}
             <Text style={{ fontWeight: "bold" }}>
               {enrolledStudent?.studentSchoolData?.batch?.fromYear}/
@@ -328,7 +332,7 @@ export default function UndertakingPDF({ enrolledStudent }) {
               <Text style={styles.bullet2}>11.</Text>
               <Text style={[styles.text, styles.listItem]}>
                 I shall not bring or use any unprescribed item in the school.
-                Eg: Mobile phone, electrical heater, mp3 player music box etc.
+                Eg: Mobile phone, electrical heater, mp3 player, music box, etc.
               </Text>
             </View>
           </View>

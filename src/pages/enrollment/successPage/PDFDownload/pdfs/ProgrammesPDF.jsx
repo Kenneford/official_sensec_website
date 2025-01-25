@@ -7,9 +7,23 @@ import {
   Image,
   StyleSheet,
   View,
+  Font,
 } from "@react-pdf/renderer";
 import PropTypes from "prop-types";
 
+// Register fonts
+Font.register({
+  family: "Roboto",
+  fonts: [
+    {
+      src: "/fonts/Roboto-Regular.ttf", // Regular font
+    },
+    {
+      src: "/fonts/Roboto-Bold.ttf", // Bold font
+      fontWeight: "bold",
+    },
+  ],
+});
 export default function ProgrammesPDF({
   allCoreSubjects,
   allProgrammes,
@@ -21,6 +35,7 @@ export default function ProgrammesPDF({
       paddingTop: 35,
       paddingBottom: 65,
       paddingHorizontal: 35,
+      fontFamily: "Roboto",
     },
     letterBody: {
       marginTop: 35,
@@ -29,13 +44,31 @@ export default function ProgrammesPDF({
       paddingTop: 16,
     },
     headerTitleWrap: {
-      marginTop: 8,
+      marginTop: 0,
     },
     headerTitle: {
       textAlign: "center",
-      textDecoration: "underline",
+      fontWeight: "bold",
+      fontSize: 18,
+      // textDecoration: "underline",
       color: "#555",
       marginTop: 5,
+      letterSpacing: 1,
+    },
+    centeredText: {
+      marginVertical: 5,
+      fontSize: 12,
+      textAlign: "center",
+      color: "#696969",
+      // lineHeight: 1.5,
+      fontWeight: "medium",
+    },
+    miniTitle: {
+      // marginTop: 6,
+      fontSize: 12,
+      textAlign: "center",
+      fontWeight: "bold",
+      color: "#696969",
     },
     textBox: {
       marginTop: 24,
@@ -177,7 +210,10 @@ export default function ProgrammesPDF({
         <Image style={styles.image} src={"/assets/sensec-logo1.png"} />
         <View style={styles.headerTitleWrap}>
           <Text style={styles.headerTitle}>SENYA SENIOR HIGH SCHOOL</Text>
-          <Text style={styles.headerTitle}>PROGRAMMES AND SUBJECTS</Text>
+          <Text style={styles.centeredText}>
+            P.O. Box 23, Senya-Beraku / GPS: CG-2308-4841
+          </Text>
+          <Text style={styles.miniTitle}>PROGRAMMES AND SUBJECTS</Text>
         </View>
         <Text style={styles.h3}>All Featured Programmes</Text>
         <View style={styles.list}>

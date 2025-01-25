@@ -31,6 +31,8 @@ import { dateFormatter } from "../../../dateFormatter/DateFormatter";
 import EnrollmentSuccessSidebar from "./sidebar/EnrollmentSuccessSidebar";
 import SmallFooter from "../../../components/footer/SmallFooter";
 import { NavigationBar } from "../../../components/navbar/NavigationBar";
+import DataNotFound from "../../../components/pageNotFound/DataNotFound";
+import NotAuthorized from "../../../components/notAuthorized/NotAuthorized";
 
 export function StudentDataOverview() {
   const {
@@ -53,6 +55,7 @@ export function StudentDataOverview() {
   const enrolledStudent = allStudents?.find(
     (std) => std?.uniqueId === studentId
   );
+  console.log(enrolledStudent);
 
   const links = [
     {
@@ -118,6 +121,11 @@ export function StudentDataOverview() {
     { id: 2, name: "Jane Smith", email: "jane@example.com" },
   ];
 
+  if (!enrolledStudent) {
+    return <DataNotFound message={"Student data not found!"} />;
+  } else if (enrolledStudent?.studentStatusExtend?.isGraduated) {
+    return <NotAuthorized />;
+  }
   return (
     <>
       <Box display={"flex"}>

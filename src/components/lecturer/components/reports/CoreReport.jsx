@@ -435,12 +435,7 @@ export function CoreReport() {
       >
         <h1 className="dashAction">
           {lecturerCurrentAction?.replace(/_/g, " ")} /{" "}
-          <span>
-            {lecturerCurrentLink?.replace(
-              /_/g,
-              `${takeCoreSubjectReport ? " Core " : " Elective "}`
-            )}
-          </span>
+          <span>{lecturerCurrentLink?.replace(/_/g, ` Core `)}</span>
         </h1>
       </Box>
       <Box padding={{ xs: 1, sm: 2 }} bgcolor={"#383838"}>

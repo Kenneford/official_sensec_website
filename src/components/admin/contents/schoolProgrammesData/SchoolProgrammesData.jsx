@@ -9,7 +9,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Box, Button } from "@mui/material";
-import { FetchAllProgrammes } from "../../../../data/programme/FetchProgrammeData";
+import {
+  FetchAllFlattenedProgrammes,
+  FetchAllProgrammes,
+} from "../../../../data/programme/FetchProgrammeData";
 import { FetchProgrammeStudents } from "../../../../data/students/FetchAllStudents";
 import {
   FetchAllLecturers,
@@ -44,6 +47,7 @@ export function SchoolProgrammesData() {
   const deleteProgramStatus = "";
   const allProgrammes = FetchAllProgrammes();
   const allSubjectsData = FetchAllSubjects();
+  const allFlattenedProgrammes = FetchAllFlattenedProgrammes();
   const allElectiveSubjectsData = FetchAllElectiveSubjects();
   console.log(allElectiveSubjectsData);
   console.log(currentRowId);
@@ -240,15 +244,26 @@ export function SchoolProgrammesData() {
     },
     {
       name: "Programme",
-      selector: (row) => (
-        <p>
-          {row?.electiveSubInfo?.divisionProgramId
-            ? row?.electiveSubInfo?.divisionProgramId?.divisionName
-            : row?.electiveSubInfo?.programId
-            ? row?.electiveSubInfo?.programId?.name
-            : "---"}
-        </p>
-      ),
+      selector: (row) => {
+        const programFound = allFlattenedProgrammes?.find(
+          (program) => program?._id === row?.subjectInfo?.program?.programId
+        );
+        if (programFound) {
+          return (
+            <p
+              title={
+                programFound?.name
+                  ? programFound?.name
+                  : programFound?.divisionName
+              }
+            >
+              {programFound?.name && programFound?.name}
+              {programFound?.divisionName && programFound?.divisionName}
+            </p>
+          );
+        }
+        return "---";
+      },
       sortable: true,
     },
     // {
@@ -305,7 +320,7 @@ export function SchoolProgrammesData() {
             <Button
               title="Add New Lecturer"
               onClick={() => {
-                setCurrentRowId(row?._id);
+                setCurrentRowId(row);
                 setOpenAssignLecturerModal(true);
               }}
               sx={{

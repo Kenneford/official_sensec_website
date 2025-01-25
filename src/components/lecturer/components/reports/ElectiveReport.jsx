@@ -36,6 +36,8 @@ import {
 } from "../../../../features/academics/classLevelsSlice";
 import PropTypes from "prop-types";
 import { fetchElectiveDraftReport } from "../../../../features/reports/reportSlice";
+import AssignClassLecturerModal from "../../../modals/AssignClassLecturerModal";
+import StudentReportRemarkModal from "../../../modals/studentReportRemarkModal";
 
 export function ElectiveReport() {
   const { createStatus, createMultiStatus, error, successMessage } =
@@ -55,6 +57,7 @@ export function ElectiveReport() {
   // const allClassLevels = FetchAllClassLevels();
   // console.log(lecturerSubjects);
 
+  const [openRemarkModal, setOpenRemarkModal] = useState(false);
   const [takeCoreSubjectReport, setTakeCoreSubjectReport] = useState(false);
   const [allCoreSubjectStudents, setAllCoreSubjectStudents] = useState([]);
   const [allElectiveSubjectStudents, setAllElectiveSubjectStudents] = useState(
@@ -74,6 +77,7 @@ export function ElectiveReport() {
   const [multiStudents, setMultiStudents] = useState([]);
   const [toggleClearRows, setToggleClearRows] = useState(false);
   const [currentStudent, setCurrentStudent] = useState("");
+  const [studentId, setStudentId] = useState("");
 
   // Report State
   const [classLevel, setClassLevel] = useState(
@@ -82,6 +86,7 @@ export function ElectiveReport() {
   const [subject, setSubject] = useState(
     localStorage.getItem("reportSubject") || null
   );
+  const [remark, setRemark] = useState("");
   // Maintain a local state for editing scores
   const fetchedStudents = useSubjectStudents({
     classLevel: classLevel ? classLevel : reportClassLevel,
@@ -106,6 +111,7 @@ export function ElectiveReport() {
           Number(updatedStudent.classScore || 0) +
           Number(updatedStudent.examScore || 0); // Recalculate totalScore
         updatedStudent.grade = calculateGrade(updatedStudent.totalScore || 0);
+        updatedStudent.remark = remark;
         return updatedStudent;
       }
       return student;
@@ -116,8 +122,11 @@ export function ElectiveReport() {
       subject: subject,
       lecturer: authUser?.id,
       students: updatedStudents,
+      // remark: remark,
       year: new Date().getFullYear(),
     };
+    console.log(reportObj);
+
     // Save to localStorage whenever allSubjectStudents changes
     localStorage.setItem("allSubjectStudents", JSON.stringify(reportObj));
     dispatch(saveDraftReport(reportObj));
@@ -169,6 +178,8 @@ export function ElectiveReport() {
     setSaveDataInProgress,
     saveDataInProgress,
     createStatus,
+    setOpenRemarkModal,
+    setStudentId,
   };
   const studentDataFormat = studentsReportColumn(columnData);
 
@@ -210,6 +221,8 @@ export function ElectiveReport() {
     setAllElectiveSubjectStudents,
     setAllCoreSubjectStudents,
   ]);
+  console.log(allElectiveSubjectStudents);
+
   useEffect(() => {
     setIsElective(true);
     if (authUser) {
@@ -226,6 +239,7 @@ export function ElectiveReport() {
           classScore: user?.classScore,
           examScore: user?.examScore,
           totalScore: user?.totalScore,
+          remark: user?.remark,
           grade: user?.grade,
         };
         return userObject;
@@ -366,12 +380,7 @@ export function ElectiveReport() {
       >
         <h1 className="dashAction">
           {lecturerCurrentAction?.replace(/_/g, " ")} /{" "}
-          <span>
-            {lecturerCurrentLink?.replace(
-              /_/g,
-              `${takeCoreSubjectReport ? " Core " : " Elective "}`
-            )}
-          </span>
+          <span>{lecturerCurrentLink?.replace(/_/g, " Elective ")}</span>
         </h1>
       </Box>
       <Box padding={{ xs: 1, sm: 2 }} bgcolor={"#383838"}>
@@ -512,6 +521,7 @@ export function ElectiveReport() {
                       subject: subject,
                       lecturer: authUser?.id,
                       year: currentYear,
+                      remark,
                       students: multiStudents,
                     };
                     if (multiStudents?.length > 0) {
@@ -548,21 +558,41 @@ export function ElectiveReport() {
                 </Button>
               </Box>
               {isElective && (
-                <DataTable
-                  title={allStd}
-                  columns={studentDataFormat}
-                  data={allElectiveSubjectStudents || []}
-                  customStyles={customUserTableStyle}
-                  pagination
-                  selectableRows
-                  fixedHeader
-                  selectableRowsHighlight
-                  highlightOnHover
-                  responsive
-                  onSelectedRowsChange={handleMultiSelect}
-                  clearSelectedRows={toggleClearRows}
-                />
+                <>
+                  <DataTable
+                    title={allStd}
+                    columns={studentDataFormat}
+                    data={allElectiveSubjectStudents || []}
+                    customStyles={customUserTableStyle}
+                    pagination
+                    selectableRows
+                    fixedHeader
+                    selectableRowsHighlight
+                    highlightOnHover
+                    responsive
+                    onSelectedRowsChange={handleMultiSelect}
+                    clearSelectedRows={toggleClearRows}
+                  />
+                </>
               )}
+              <StudentReportRemarkModal
+                open={openRemarkModal}
+                onClose={() => setOpenRemarkModal(false)}
+                setRemark={setRemark}
+                remark={remark}
+                handleScoreChange={handleScoreChange}
+                studentId={studentId}
+                setLoadingComplete={setLoadingComplete}
+                loadingComplete={loadingComplete}
+                fetchDraft={fetchElectiveDraftReport({
+                  classLevel:
+                    localStorage.getItem("reportClassLevel") || classLevel,
+                  semester: currentAcademicTerm?.name,
+                  subject: localStorage.getItem("reportSubject") || subject,
+                  lecturer: authUser?.id,
+                })}
+                dispatch={dispatch}
+              />
             </Box>
           </Box>
         ) : (

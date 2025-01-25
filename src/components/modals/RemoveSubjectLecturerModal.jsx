@@ -415,6 +415,6 @@ RemoveSubjectLecturerModal.propTypes = {
   authAdmin: PropTypes.object,
   lecturer: PropTypes.object,
   subject: PropTypes.string,
-  loadingComplete: PropTypes.string,
+  loadingComplete: PropTypes.bool,
   assignLecturerStatus: PropTypes.string,
 };

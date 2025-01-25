@@ -6,10 +6,24 @@ import {
   Image,
   StyleSheet,
   View,
+  Font,
 } from "@react-pdf/renderer";
 import PropTypes from "prop-types";
 import { dateFormatter } from "../../../../../dateFormatter/DateFormatter";
 
+// Register fonts
+Font.register({
+  family: "Roboto",
+  fonts: [
+    {
+      src: "/fonts/Roboto-Regular.ttf", // Regular font
+    },
+    {
+      src: "/fonts/Roboto-Bold.ttf", // Bold font
+      fontWeight: "bold",
+    },
+  ],
+});
 export default function StudentProfilePDF({ enrolledStudent }) {
   console.log(enrolledStudent);
 
@@ -22,6 +36,7 @@ export default function StudentProfilePDF({ enrolledStudent }) {
       paddingTop: 35,
       paddingBottom: 65,
       paddingHorizontal: 35,
+      fontFamily: "Roboto",
     },
     pageNumber: {
       position: "absolute",
@@ -43,7 +58,7 @@ export default function StudentProfilePDF({ enrolledStudent }) {
     },
     imageWrap: { alignItems: "flex-end" },
     image: {
-      marginTop: 16,
+      marginTop: 10,
       // marginHorizontal: "auto",
       right: 0,
       borderRadius: ".4rem",
@@ -55,7 +70,7 @@ export default function StudentProfilePDF({ enrolledStudent }) {
       fontSize: 16,
       color: "#696969",
       paddingLeft: 16,
-      marginTop: 16,
+      marginTop: 10,
       marginBottom: 8,
     },
     table: {
@@ -72,17 +87,35 @@ export default function StudentProfilePDF({ enrolledStudent }) {
       borderBottomStyle: "solid",
     },
     headerTitleWrap: {
-      marginTop: 8,
+      marginTop: 0,
     },
     headerTitle: {
       textAlign: "center",
-      textDecoration: "underline",
+      fontWeight: "bold",
+      fontSize: 18,
+      // textDecoration: "underline",
       color: "#555",
       marginTop: 5,
+      letterSpacing: 1,
     },
     tableHeader: {
       // display: "flex",
       backgroundColor: "#f5f5f5",
+    },
+    centeredText: {
+      marginVertical: 5,
+      fontSize: 12,
+      textAlign: "center",
+      color: "#696969",
+      // lineHeight: 1.5,
+      fontWeight: "medium",
+    },
+    miniTitle: {
+      // marginTop: 6,
+      fontSize: 12,
+      textAlign: "center",
+      fontWeight: "bold",
+      color: "#696969",
     },
     row: {
       flexDirection: "column",
@@ -134,12 +167,12 @@ export default function StudentProfilePDF({ enrolledStudent }) {
             <Text style={styles.centeredText}>
               P.O. Box 23, Senya-Beraku / GPS: CG-2308-4841
             </Text>
-            <Text style={styles.miniTitle}>STUDENT PROSPECTUS</Text>
+            <Text style={styles.miniTitle}>STUDENT PROFILE</Text>
           </View>
-          <View style={styles.headerTitleWrap}>
+          {/* <View style={styles.headerTitleWrap}>
             <Text style={styles.headerTitle}>SENYA SENIOR HIGH SCHOOL</Text>
-            <Text style={styles.headerTitle}>STUDENT PROFILE</Text>
-          </View>
+            <Text style={styles.miniTitle}>STUDENT PROFILE</Text>
+          </View> */}
           <View style={styles.imageWrap}>
             <Image
               style={styles.image}

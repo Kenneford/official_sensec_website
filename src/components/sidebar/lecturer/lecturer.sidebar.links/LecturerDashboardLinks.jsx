@@ -18,6 +18,7 @@ import { SidebarSubLinksContainer } from "../../../../muiStyling/muiStyling";
 import { Link } from "react-router-dom";
 import { getAuthUser } from "../../../../features/auth/authSlice";
 import { useSelector } from "react-redux";
+import Cookies from "js-cookie";
 
 const quickLinks = [
   { name: "Overview" },
@@ -107,9 +108,13 @@ export function LecturerDashboardLinks({ hovered }) {
                   : "notCurrentAdminSidebarLink"
               }
               onClick={() => {
-                // if (qLink.name === "Subjects") {
-                //   localStorage.setItem("currentSubjectType", "cores");
-                // }
+                if (qLink.name === "Subjects") {
+                  Cookies?.set("currentSubjectType", "electives", {
+                    expires: 1, // 1 day
+                    secure: false, // Set to true in production if using HTTPS
+                    sameSite: "Strict",
+                  });
+                }
                 // setCurrentAction("Dashboard");
                 // setCurrentLink(qLink.name);
               }}

@@ -38,10 +38,13 @@ export default function TakeAttendance() {
   const lecturerFound = allLecturers?.find(
     (lect) => lect?.uniqueId === authUser?.uniqueId
   );
+  const lecturerClassHandling =
+    lecturerFound?.lecturerSchoolData?.classLevelHandling?._id;
   const sectionStudents = FetchClassSectionStudents({
-    class_section: lecturerFound?.lecturerSchoolData?.classLevelHandling?._id,
+    class_section: lecturerClassHandling,
   });
   console.log(sectionStudents);
+  console.log(lecturerFound);
   const currentAcademicTerms = FetchCurrentAcademicTerms();
 
   const { createStatus, error, successMessage } = useSelector(

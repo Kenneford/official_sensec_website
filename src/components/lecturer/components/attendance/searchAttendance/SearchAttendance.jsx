@@ -60,6 +60,11 @@ import { customAttendanceTableStyle } from "../../../../../usersInfoDataFormat/u
 import { FetchAllAcademicTerms } from "../../../../../data/term.year/FetchAcademicTerms";
 import SearchedAttendanceOverviewModal from "../../../../modals/SearchedAttendanceOverviewModal";
 import LoadingProgress from "../../../../pageLoading/LoadingProgress";
+import {
+  dateFormatter,
+  getLastNMonthsData,
+  getLastNWeeksData,
+} from "../../../../../dateFormatter/DateFormatter";
 
 // Mock data for students and attendance
 const students = [
@@ -94,6 +99,11 @@ export function SearchAttendance() {
   const { searchingStatus, error, successMessage } = useSelector(
     (state) => state.attendance
   );
+  // State to track the selected month
+  const [selectedMonth, setSelectedMonth] = useState("");
+  // State to track the selected week
+  const [selectedWeek, setSelectedWeek] = useState("");
+
   // Handle Process State
   const [loadingComplete, setLoadingComplete] = useState(null);
   const [searchAttendance, setSearchAttendance] = useState(false);
@@ -113,7 +123,7 @@ export function SearchAttendance() {
     by: "",
   });
   console.log(searchForAttendance);
-  console.log(attendanceData);
+  console.log(selectedMonth);
 
   const authLecturer = useSelector(getAuthUser);
   const searchedClassAttendance = useSelector(getSearchedClassAttendance);
@@ -143,6 +153,22 @@ export function SearchAttendance() {
         studentData?.year?.toLowerCase()?.includes(searchStudent.toLowerCase())
     );
 
+  // Handle selection change
+  const handleMonthChange = (event) => {
+    const selected = monthData.find(
+      (month) => month.label === event.target.value
+    );
+    setSelectedMonth(selected);
+  };
+  // Handle selection change
+  const handleWeekChange = (event) => {
+    const selected = weekData.find((week) => week.label === event.target.value);
+    setSelectedWeek(selected);
+  };
+  // Generate the last 6 months' labels
+  const monthData = getLastNMonthsData(12);
+  // Generate the last 6 weeks' data
+  const weekData = getLastNWeeksData(6);
   // Convert it to the desired format:
   const day = String(attendanceData?.date?.$D).padStart(2, "0"); // Adds leading zero if needed
   const month = String(attendanceData?.date?.$M + 1).padStart(2, "0"); // Month is 0-based, so +1
@@ -182,6 +208,16 @@ export function SearchAttendance() {
     if (searchForAttendance?.by === "Year") {
       data = {
         year: attendanceData?.year,
+        lecturer: authLecturer?.id,
+        classLevel:
+          lecturerFound?.lecturerSchoolData?.classLevelHandling?.classLevelId ||
+          "",
+        classSection: classLevelSection?._id,
+      };
+    }
+    if (searchForAttendance?.by === "Month") {
+      data = {
+        monthRange: { start: selectedMonth?.start, end: selectedMonth?.end },
         lecturer: authLecturer?.id,
         classLevel:
           lecturerFound?.lecturerSchoolData?.classLevelHandling?.classLevelId ||
@@ -271,7 +307,17 @@ export function SearchAttendance() {
           <p style={{ fontSize: ".8em" }}>Date</p>
         </Box>
       ),
-      selector: (row) => <>{row?.date}</>,
+      selector: (row) => (
+        <>
+          {row?.date ? (
+            <p title={dateFormatter?.format(new Date(row?.date))}>
+              {dateFormatter?.format(new Date(row?.date))}
+            </p>
+          ) : (
+            "---"
+          )}
+        </>
+      ),
       // sortable: true,
     },
     {
@@ -519,6 +565,12 @@ export function SearchAttendance() {
                           <MenuItem value={"Year"} sx={{ fontSize: ".8em" }}>
                             Year
                           </MenuItem>
+                          <MenuItem value={"Month"} sx={{ fontSize: ".8em" }}>
+                            Month
+                          </MenuItem>
+                          {/* <MenuItem value={"Week"} sx={{ fontSize: ".8em" }}>
+                            Week
+                          </MenuItem> */}
                           <MenuItem value={"Date"} sx={{ fontSize: ".8em" }}>
                             Date
                           </MenuItem>
@@ -576,6 +628,80 @@ export function SearchAttendance() {
                     </Grid>
                   </>
                 )}
+                {searchForAttendance?.by === "Month" && (
+                  <>
+                    <Grid
+                      item
+                      xs={12}
+                      sm={3}
+                      className="attendanceDate"
+                      // sx={{ pt: 1 }}
+                    >
+                      <h4>Month:</h4>
+                      <Box fontSize={"calc(0.7rem + 1vmin)"}>
+                        <CustomTextField
+                          fullWidth
+                          select
+                          size="small"
+                          name="selectedMonth"
+                          value={selectedMonth?.label || ""}
+                          onChange={handleMonthChange}
+                          sx={{
+                            width: "100%",
+                            "& .MuiOutlinedInput-input": {
+                              paddingTop: ".5rem",
+                              paddingBottom: ".5rem",
+                              fontSize: ".8em",
+                            },
+                          }}
+                        >
+                          {monthData.map((month) => (
+                            <MenuItem key={month.label} value={month.label}>
+                              {month.label}
+                            </MenuItem>
+                          ))}
+                        </CustomTextField>
+                      </Box>
+                    </Grid>
+                  </>
+                )}
+                {/* {searchForAttendance?.by === "Week" && (
+                  <>
+                    <Grid
+                      item
+                      xs={12}
+                      sm={3}
+                      className="attendanceDate"
+                      // sx={{ pt: 1 }}
+                    >
+                      <h4>Week:</h4>
+                      <Box fontSize={"calc(0.7rem + 1vmin)"}>
+                        <CustomTextField
+                          fullWidth
+                          select
+                          size="small"
+                          name="selectedWeek"
+                          value={selectedWeek?.label || ""}
+                          onChange={handleWeekChange}
+                          sx={{
+                            width: "100%",
+                            "& .MuiOutlinedInput-input": {
+                              paddingTop: ".5rem",
+                              paddingBottom: ".5rem",
+                              fontSize: ".8em",
+                            },
+                          }}
+                        >
+                          {weekData.map((week) => (
+                            <MenuItem key={week.label} value={week.label}>
+                              {week.label}
+                            </MenuItem>
+                          ))}
+                        </CustomTextField>
+                      </Box>
+                    </Grid>
+                  </>
+                )} */}
                 {searchForAttendance?.by === "Semester" && (
                   <Grid
                     item

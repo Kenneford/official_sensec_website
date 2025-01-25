@@ -19,7 +19,10 @@ import {
   studentEnrollment,
 } from "../../../features/students/studentsSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { FetchAllProgrammes } from "../../../data/programme/FetchProgrammeData";
+import {
+  FetchAllFlattenedProgrammes,
+  FetchAllProgrammes,
+} from "../../../data/programme/FetchProgrammeData";
 import {
   fetchAllDivisionProgrammes,
   getAllDivisionProgrammes,
@@ -76,12 +79,14 @@ export function EnrollmentForm() {
   const allStudents = FetchAllStudents();
   const allClassLevels = FetchAllClassLevels();
   const allBatches = FetchAllBatches();
+  const allFlattenedProgrammes = FetchAllFlattenedProgrammes();
   const allDivisionProgrammes = useSelector(getAllDivisionProgrammes);
   const allPlacementStudents = useSelector(getAllPlacementStudents);
   const allCreatedAcademicYears = useSelector(getAllAcademicYears);
   const { enrollmentStatus, error, successMessage } = useSelector(
     (state) => state.student
   );
+  console.log(allFlattenedProgrammes);
 
   //Get current year and random number for student's unique-Id
   const currentYear = new Date().getFullYear();
@@ -160,6 +165,7 @@ export function EnrollmentForm() {
     mobile: "",
     email: "",
   });
+  console.log(newStudent);
 
   // Find student's programme
   const studentFound = allStudents?.find(
@@ -273,9 +279,13 @@ export function EnrollmentForm() {
   );
 
   // Find student's programme
-  const studentProgramme = allProgrammes?.find(
-    (programme) => programme?.name === memoizedPlacementStudentData?.programme
+  const studentProgramme = allFlattenedProgrammes?.find(
+    (programme) => programme?._id === newStudent?.program
   );
+  const filteredOptionalSubjects = studentProgramme?.electiveSubjects?.filter(
+    (subject) => subject?.subjectInfo?.isOptional
+  );
+
   // Handle enrollment
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -292,9 +302,12 @@ export function EnrollmentForm() {
       jhsAttended: memoizedPlacementStudentData?.jhsAttended,
       completedJhs: memoizedPlacementStudentData?.yearGraduated,
       jhsIndexNo: studentIndex,
-      program: studentProgramme?._id,
-      divisionProgram: newStudent?.divisionProgram,
-      optionalElectiveSubject: newStudent?.optionalElectiveSubject,
+      program: newStudent?.program,
+      // divisionProgram: newStudent?.divisionProgram,
+      optionalElectiveSubject:
+        !studentProgramme?.electiveSubjects?.length > 0
+          ? ""
+          : newStudent?.optionalElectiveSubject,
       currentClassLevel: newStudent?.currentClassLevel,
       currentAcademicYear: studentFirstAcademicYear?._id,
       batch: studentBatch?._id,
@@ -315,7 +328,7 @@ export function EnrollmentForm() {
       mobile: newStudent?.mobile,
       email: newStudent?.email,
     };
-    // console.log(newStudentData);
+    console.log(newStudentData);
 
     dispatch(studentEnrollment(newStudentData));
   };
@@ -349,9 +362,9 @@ export function EnrollmentForm() {
 
   // Fetch needed data
   useEffect(() => {
-    if (newStudent?.program) {
-      dispatch(fetchAllDivisionProgrammes({ programId: newStudent?.program }));
-    }
+    // if (newStudent?.program) {
+    //   dispatch(fetchAllDivisionProgrammes({ programId: newStudent?.program }));
+    // }
     dispatch(fetchAllPlacementStudents());
     dispatch(fetchAllAcademicYears());
   }, [dispatch, newStudent]);
@@ -453,6 +466,7 @@ export function EnrollmentForm() {
       }, 1000);
       setTimeout(() => {
         setLoadingComplete(null);
+        setRedirecting(false);
         dispatch(resetEnrolmentState());
       }, 3000);
       return;
@@ -466,15 +480,17 @@ export function EnrollmentForm() {
         dispatch(resetEnrolmentState());
       }, 6000);
       setTimeout(() => {
-        // if (authUser?.roles?.includes("admin")) {
-        //   navigate(
-        //     `/sensec/users/${authUser?.uniqueId}/admin/User-Types/Students/${studentId}/new_enrollment/parent/add`
-        //   );
-        // } else {
-        //   navigate(
-        //     `/sensec/students/enrollment/online/${studentId}/parent/add`
-        //   );
-        // }
+        // setRedirecting(false);
+        // setLoadingComplete(null);
+        if (authUser?.roles?.includes("admin")) {
+          navigate(
+            `/sensec/users/${authUser?.uniqueId}/admin/User-Types/Students/${studentId}/new_enrollment/parent/add`
+          );
+        } else {
+          navigate(
+            `/sensec/students/enrollment/online/${studentId}/parent/add`
+          );
+        }
       }, 9000);
     }
   }, [
@@ -1065,21 +1081,29 @@ export function EnrollmentForm() {
                   fullWidth
                   label="Select Programme"
                   name="program"
-                  value={studentProgramme?._id || ""}
+                  value={newStudent?.program || ""}
                   onChange={handleChange}
-                  slotProps={{
-                    input: { readOnly: true },
+                  required
+                  sx={{
+                    "& .MuiInputLabel-asterisk": {
+                      color: newStudent?.program ? "green" : "red", // Change the asterisk color to red
+                    },
                   }}
+                  // slotProps={{
+                  //   input: { readOnly: true },
+                  // }}
                 >
-                  {allProgrammes?.map((programme) => (
+                  {allFlattenedProgrammes?.map((programme) => (
                     <MenuItem key={programme?._id} value={programme?._id}>
-                      {programme?.name}
+                      {programme?.name
+                        ? programme?.name
+                        : programme?.divisionName}
                     </MenuItem>
                   ))}
                 </CustomTextField>
               </Grid>
               {/* Division Program (conditional) */}
-              {allDivisionProgrammes && allDivisionProgrammes?.length > 0 && (
+              {/* {allDivisionProgrammes && allDivisionProgrammes?.length > 0 && (
                 <Grid item xs={12} sm={6} md={4} lg={4}>
                   <CustomTextField
                     select
@@ -1104,9 +1128,9 @@ export function EnrollmentForm() {
                     ))}
                   </CustomTextField>
                 </Grid>
-              )}
+              )} */}
               {/* Optional Elective Subject (conditional) */}
-              {selectedDivisionProgramme &&
+              {/* {selectedDivisionProgramme &&
                 selectedDivisionProgramme?.optionalElectiveSubjects?.length >
                   0 && (
                   <Grid item xs={12} sm={6} md={4} lg={4}>
@@ -1135,10 +1159,9 @@ export function EnrollmentForm() {
                       )}
                     </CustomTextField>
                   </Grid>
-                )}
-              {allDivisionProgrammes &&
-                !allDivisionProgrammes?.length > 0 &&
-                studentProgramme?.optionalElectiveSubjects?.length > 0 && (
+                )} */}
+              {filteredOptionalSubjects &&
+                filteredOptionalSubjects?.length > 0 && (
                   <Grid item xs={12} sm={6} md={4} lg={4}>
                     <CustomTextField
                       select
@@ -1156,13 +1179,11 @@ export function EnrollmentForm() {
                         },
                       }}
                     >
-                      {studentProgramme?.optionalElectiveSubjects?.map(
-                        (subject) => (
-                          <MenuItem key={subject?._id} value={subject?._id}>
-                            {subject?.subjectName}
-                          </MenuItem>
-                        )
-                      )}
+                      {filteredOptionalSubjects?.map((subject) => (
+                        <MenuItem key={subject?._id} value={subject?._id}>
+                          {subject?.subjectName}
+                        </MenuItem>
+                      ))}
                     </CustomTextField>
                   </Grid>
                 )}

@@ -40,12 +40,11 @@ export function ParentForm() {
   const allStudents = FetchAllStudents();
   const allPlacementStudents = useSelector(getAllPlacementStudents);
   const [studentId, setStudentId] = useState("");
-  console.log(studentId);
+  console.log(allStudents);
 
   // Find student
-  const foundStudent = allStudents?.find(
-    (std) => std?.studentSchoolData?.enrollmentCode === studentId
-  );
+  const foundStudent = allStudents?.find((std) => std?.uniqueId === studentId);
+  console.log(foundStudent);
 
   // Find placement student
   const foundPlacementStudent = allPlacementStudents?.find(

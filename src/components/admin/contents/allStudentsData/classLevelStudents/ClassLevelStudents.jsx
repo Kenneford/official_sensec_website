@@ -34,6 +34,7 @@ import {
   resetMultiPromotionsState,
   resetPromotionState,
 } from "../../../../../features/students/promotionSlice";
+import { FetchAllFlattenedProgrammes } from "../../../../../data/programme/FetchProgrammeData";
 
 export function ClassLevelStudents() {
   const authAdmin = useSelector(getAuthUser);
@@ -73,6 +74,7 @@ export function ClassLevelStudents() {
   const allClassLevels = FetchAllClassLevels();
   const allClassLevelSections = FetchAllClassSections();
   const approvedStudents = FetchAllApprovedStudents();
+  const allFlattenedProgrammes = FetchAllFlattenedProgrammes();
 
   const classLevelFound = allClassLevels?.find(
     (cLevel) => cLevel?.name === class_level?.replace(/_/g, " ")
@@ -105,10 +107,8 @@ export function ClassLevelStudents() {
   );
   const filteredStudents = classLevelStudents?.filter(
     (std) =>
-      std?.personalInfo?.firstName?.toLowerCase()?.includes(searchStudent) ||
-      std?.personalInfo?.firstName?.includes(searchStudent) ||
-      std?.personalInfo?.lastName?.toLowerCase()?.includes(searchStudent) ||
-      std?.personalInfo?.lastName?.includes(searchStudent)
+      std?.personalInfo?.fullName?.toLowerCase()?.includes(searchStudent) ||
+      (std?.personalInfo?.fullName?.includes(searchStudent) && std)
   );
   const foundStudent = classLevelStudents?.find(
     (std) => std._id === currentStudentId

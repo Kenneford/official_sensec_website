@@ -13,6 +13,8 @@ import { FetchAllStudents } from "../../../data/students/FetchAllStudents";
 import { StudentEnrollmentUpdateForm } from "../../../components/lazyLoading/student/StudentsLazyLoadingComponents";
 import EnrollmentSuccessSidebar from "./sidebar/EnrollmentSuccessSidebar";
 import { NavigationBar } from "../../../components/navbar/NavigationBar";
+import DataNotFound from "../../../components/pageNotFound/DataNotFound";
+import NotAuthorized from "../../../components/notAuthorized/NotAuthorized";
 
 export default function UpdateEnrollmentData() {
   const {
@@ -58,6 +60,11 @@ export default function UpdateEnrollmentData() {
   const currentTerm = FetchCurrentAcademicTerms();
   const currentAcademicYear = FetchCurrentAcademicYear();
 
+  if (!enrolledStudent) {
+    return <DataNotFound message={"Student data not found!"} />;
+  } else if (enrolledStudent?.studentStatusExtend?.isGraduated) {
+    return <NotAuthorized />;
+  }
   return (
     <Box display={"flex"}>
       <EnrollmentSuccessSidebar

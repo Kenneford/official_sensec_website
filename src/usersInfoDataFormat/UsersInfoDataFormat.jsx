@@ -16,6 +16,7 @@ import { promoteStudent } from "../features/students/promotionSlice";
 import PromotionsModal from "../components/modals/PromotionsModal";
 import DemotionsModal from "../components/modals/DemotionsModal";
 import {
+  Add,
   Close,
   Edit,
   HowToReg,
@@ -31,6 +32,7 @@ import { CustomTextField } from "../muiStyling/muiStyling";
 import { createStudentReport } from "../features/reports/reportSlice";
 import { toast } from "react-toastify";
 import { color } from "framer-motion";
+import { FetchAllFlattenedProgrammes } from "../data/programme/FetchProgrammeData";
 
 const adminsColumn = (authAdmin) => {
   const adminsColumn = [
@@ -504,8 +506,29 @@ const studentsColumn = (columnData) => {
     },
     {
       name: "Programme",
-      selector: (row) =>
-        row?.studentSchoolData ? row.studentSchoolData?.program?.name : "---",
+      selector: (row) => {
+        const allFlattenedProgrammes = FetchAllFlattenedProgrammes();
+        const studentProgramFound = allFlattenedProgrammes?.find(
+          (program) =>
+            program?._id === row.studentSchoolData?.program?.programId
+        );
+        if (studentProgramFound) {
+          return (
+            <p
+              title={
+                studentProgramFound?.name
+                  ? studentProgramFound?.name
+                  : studentProgramFound?.divisionName
+              }
+            >
+              {studentProgramFound?.name
+                ? studentProgramFound?.name
+                : studentProgramFound?.divisionName}
+            </p>
+          );
+        }
+        return "---";
+      },
     },
     {
       name: "Student-ID",
@@ -1184,6 +1207,36 @@ const studentsReportColumn = (columnData) => {
       },
     },
     {
+      name: "Remark",
+      selector: (row) => {
+        return (
+          <>
+            <Button
+              size="small"
+              sx={{
+                padding: ".2rem",
+                borderRadius: ".4rem",
+                color: "#0ab312",
+                fontSize: ".9em",
+              }}
+              onClick={() => {
+                columnData?.setStudentId(row?.uniqueId);
+                columnData?.setOpenRemarkModal(true);
+              }}
+            >
+              {!row?.remark ? (
+                <>
+                  Add <Add fontSize=".8em" />
+                </>
+              ) : (
+                "Update"
+              )}
+            </Button>
+          </>
+        );
+      },
+    },
+    {
       name: "Save",
       selector: (row) => (
         <HashLink
@@ -1237,6 +1290,7 @@ const studentsReportColumn = (columnData) => {
                     classScore: row?.classScore,
                     examScore: row?.examScore,
                     totalScore: row?.totalScore,
+                    remark: row?.remark,
                     semester: columnData?.currentAcademicTerm?.name,
                     classLevel: columnData?.classLevel,
                     subject: columnData?.selectedSubject,

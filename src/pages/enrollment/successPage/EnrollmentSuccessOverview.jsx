@@ -37,6 +37,7 @@ import { ContainerBox } from "../../../muiStyling/muiStyling";
 import {
   FetchAllCreatedDivisionProgrammes,
   FetchAllDivisionProgrammes,
+  FetchAllFlattenedProgrammes,
   FetchAllProgrammes,
 } from "../../../data/programme/FetchProgrammeData";
 import SmallFooter from "../../../components/footer/SmallFooter";
@@ -50,6 +51,7 @@ import { NavigationBar } from "../../../components/navbar/NavigationBar";
 import Cookies from "js-cookie";
 import PageLoading from "../../../components/pageLoading/PageLoading";
 import DataNotFound from "../../../components/pageNotFound/DataNotFound";
+import NotAuthorized from "../../../components/notAuthorized/NotAuthorized";
 
 export function EnrollmentSuccessOverview({
   setEnroledStudent,
@@ -78,18 +80,20 @@ export function EnrollmentSuccessOverview({
   const allStudents = FetchAllStudents();
   const allCoreSubjects = FetchAllCoreSubjects();
   const allProgrammes = FetchAllProgrammes();
+  const allFlattenedProgrammes = FetchAllFlattenedProgrammes();
   const allDivisionProgrammes = FetchAllCreatedDivisionProgrammes();
-  console.log(allDivisionProgrammes);
 
   const nonDivisionPrograms = allProgrammes?.find(
     (program) => !program?.hasDivisions && program
   );
-  console.log(nonDivisionPrograms);
+  console.log(maskedStudentId);
 
   const enrolledStudent = allStudents?.find(
     (std) => std?.uniqueId === maskedStudentId
   );
-  console.log(enrolledStudent?.studentSchoolData?.program?._id);
+  console.log(enrolledStudent?.studentSchoolData?.program);
+  console.log(enrolledStudent);
+  console.log(allFlattenedProgrammes);
   const stdProgram = allProgrammes?.find(
     (prgrm) => prgrm?._id === enrolledStudent?.studentSchoolData?.program?._id
   );
@@ -132,23 +136,21 @@ export function EnrollmentSuccessOverview({
     [allCoreSubjects]
   );
   useEffect(() => {
-    if (enrolledStudent?.studentSchoolData?.divisionProgram) {
-      const studentProgramme = allDivisionProgrammes?.find(
+    if (allFlattenedProgrammes) {
+      const studentProgramme = allFlattenedProgrammes?.find(
         (programme) =>
           programme?._id ===
-          enrolledStudent?.studentSchoolData?.divisionProgram?._id
+          enrolledStudent?.studentSchoolData?.program?.programId
       );
       setStudentProgramme(studentProgramme);
-      setProgramId(studentProgramme?.programId);
-    } else {
-      const studentProgramme = allProgrammes?.find(
-        (programme) =>
-          programme?._id === enrolledStudent?.studentSchoolData?.program?._id
-      );
-      setStudentProgramme(studentProgramme);
-      setProgramId(studentProgramme?._id);
+      // setProgramId(studentProgramme?._id);
     }
-  }, [enrolledStudent, allProgrammes, allDivisionProgrammes]);
+  }, [
+    enrolledStudent,
+    // allProgrammes,
+    // allDivisionProgrammes,
+    allFlattenedProgrammes,
+  ]);
 
   useEffect(() => {
     setDisappear(false);
@@ -169,7 +171,9 @@ export function EnrollmentSuccessOverview({
   if (!enrolledStudent) {
     return <DataNotFound message={"Student data not found!"} />;
   }
-
+  if (enrolledStudent?.studentStatusExtend?.isGraduated) {
+    return <NotAuthorized />;
+  }
   return (
     <Box display={"flex"}>
       <EnrollmentSuccessSidebar
@@ -366,12 +370,24 @@ export function EnrollmentSuccessOverview({
                       <Grid container>
                         <Grid item xs={12} sm={6} md={4} lg={4}>
                           <Box className="infoCard">
-                            <h3>
-                              {enrolledStudent?.studentSchoolData?.program?.name
-                                ? enrolledStudent?.studentSchoolData?.program
-                                    ?.name
-                                : "Unknown"}
-                            </h3>
+                            {allFlattenedProgrammes?.map((program) => {
+                              const foundProgram =
+                                program?._id ===
+                                enrolledStudent?.studentSchoolData?.program
+                                  ?.programId;
+                              if (foundProgram) {
+                                return (
+                                  <h3 key={program?._id}>
+                                    {program?.name
+                                      ? program?.name
+                                      : program?.divisionName
+                                      ? program?.divisionName
+                                      : "---"}
+                                  </h3>
+                                );
+                              }
+                              // return "---";
+                            })}
                             <span>(Programme)</span>
                           </Box>
                         </Grid>
@@ -513,19 +529,20 @@ export function EnrollmentSuccessOverview({
                     <h2>Your Elective Subjects</h2>
                     <Box className="eSubjects">
                       <Box className="generalSubjects">
-                        {studentProgramme?.electiveSubjects?.length > 0 ? (
+                        {enrolledStudent?.studentSchoolData?.subjects?.length >
+                        0 ? (
                           <ul>
-                            {studentProgramme?.electiveSubjects?.map(
+                            {enrolledStudent?.studentSchoolData?.subjects?.map(
                               (subject) => (
                                 <li key={subject._id}>
                                   <span
                                     className={
-                                      subject?.electiveSubInfo?.isOptional
+                                      subject?.subjectInfo?.isOptional
                                         ? "optionalSub"
                                         : ""
                                     }
                                     title={
-                                      subject?.electiveSubInfo?.isOptional
+                                      subject?.subjectInfo?.isOptional
                                         ? "Optional Elective Subject"
                                         : ""
                                     }

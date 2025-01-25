@@ -23,6 +23,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import {
   FetchAllCreatedDivisionProgrammes,
+  FetchAllFlattenedProgrammes,
   FetchAllProgrammes,
 } from "../../../data/programme/FetchProgrammeData";
 import { FetchAllClassLevels } from "../../../data/class/FetchClassLevel";
@@ -47,6 +48,7 @@ export function StudentDataUpdateForm() {
   const authUser = useSelector(getAuthUser);
   const allStudents = FetchAllStudents();
   const allProgrammes = FetchAllProgrammes();
+  const allFlattenedProgrammes = FetchAllFlattenedProgrammes();
   const allClassLevels = FetchAllClassLevels();
   const allBatches = FetchAllBatches();
   const allDivisionProgrammes = FetchAllCreatedDivisionProgrammes();
@@ -69,6 +71,7 @@ export function StudentDataUpdateForm() {
   const foundStudent = allStudents?.find(
     (std) => std?.uniqueId === studentUniqueId
   );
+  console.log(student);
   console.log(foundStudent);
   console.log(foundStudent?.studentSchoolData?.batch?._id);
 
@@ -211,9 +214,9 @@ export function StudentDataUpdateForm() {
         dateOfBirth: dayjs(foundStudent?.personalInfo?.dateOfBirth).isValid()
           ? dayjs(foundStudent?.personalInfo?.dateOfBirth)
           : dayjs("MM/DD/YYYY"),
-        programId: foundStudent?.studentSchoolData?.program?._id,
-        divisionProgramId:
-          foundStudent?.studentSchoolData?.divisionProgram?._id,
+        programId: foundStudent?.studentSchoolData?.program?.programId,
+        // divisionProgramId:
+        //   foundStudent?.studentSchoolData?.divisionProgram?._id,
         batchId: foundStudent?.studentSchoolData?.batch?._id,
         classLevelId: foundStudent?.studentSchoolData?.currentClassLevel?._id,
       };
@@ -804,6 +807,9 @@ export function StudentDataUpdateForm() {
                     name="studentSchoolData.jhsAttended"
                     value={student?.studentSchoolData?.jhsAttended || ""}
                     onChange={handleChange}
+                    slotProps={{
+                      input: { readOnly: true },
+                    }}
                   />
                 </Grid>
                 {/* JHS Graduated Year */}
@@ -814,6 +820,9 @@ export function StudentDataUpdateForm() {
                     name="studentSchoolData.completedJhs"
                     value={student?.studentSchoolData?.completedJhs || ""}
                     onChange={handleChange}
+                    slotProps={{
+                      input: { readOnly: true },
+                    }}
                   />
                 </Grid>
                 {/* JHS Index No. */}
@@ -824,7 +833,10 @@ export function StudentDataUpdateForm() {
                     name="studentSchoolData.jhsIndexNo"
                     value={student?.studentSchoolData?.jhsIndexNo || ""}
                     onChange={handleChange}
-                    disabled
+                    // disabled
+                    slotProps={{
+                      input: { readOnly: true },
+                    }}
                   />
                 </Grid>
                 {/* Programme Selection */}
@@ -834,24 +846,27 @@ export function StudentDataUpdateForm() {
                     fullWidth
                     label="Select Programme"
                     name="programId"
-                    value={
-                      allProgrammes?.some(
-                        (program) => program._id === student?.programId
-                      )
-                        ? student?.programId
-                        : ""
-                    }
+                    value={student?.programId || ""}
                     onChange={handleChange}
+                    slotProps={{
+                      input: {
+                        readOnly: !authUser?.roles?.includes("Admin")
+                          ? true
+                          : false,
+                      },
+                    }}
                   >
-                    {allProgrammes?.map((programme) => (
+                    {allFlattenedProgrammes?.map((programme) => (
                       <MenuItem key={programme?._id} value={programme?._id}>
-                        {programme?.name}
+                        {programme?.name
+                          ? programme?.name
+                          : programme?.divisionName}
                       </MenuItem>
                     ))}
                   </CustomTextField>
                 </Grid>
                 {/* Division Program (conditional) */}
-                {newProgrammeSelected?.hasDivisions === "true" && (
+                {/* {newProgrammeSelected?.hasDivisions === "true" && (
                   <Grid item xs={12} sm={6} md={4} lg={4}>
                     <CustomTextField
                       select
@@ -883,7 +898,7 @@ export function StudentDataUpdateForm() {
                       ))}
                     </CustomTextField>
                   </Grid>
-                )}
+                )} */}
                 {/* Class Level Selection */}
                 <Grid item xs={12} sm={6} md={4} lg={4}>
                   <CustomTextField
