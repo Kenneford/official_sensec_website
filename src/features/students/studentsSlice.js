@@ -26,7 +26,7 @@ export const studentEnrollment = createAsyncThunk(
     try {
       const res = await axios.post(
         `${SENSEC_API_ENDPOINT}/students/enrolment/online`,
-        { newStudentData }
+        newStudentData
       );
       return res.data;
     } catch (error) {

@@ -23,6 +23,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import {
   FetchAllCreatedDivisionProgrammes,
+  FetchAllFlattenedProgrammes,
   FetchAllProgrammes,
 } from "../../../data/programme/FetchProgrammeData";
 import { FetchAllClassLevels } from "../../../data/class/FetchClassLevel";
@@ -47,6 +48,7 @@ export function StudentEnrollmentUpdateForm() {
   const authUser = useSelector(getAuthUser);
   const allStudents = FetchAllStudents();
   const allProgrammes = FetchAllProgrammes();
+  const allFlattenedProgrammes = FetchAllFlattenedProgrammes();
   const allClassLevels = FetchAllClassLevels();
   const allBatches = FetchAllBatches();
   const allDivisionProgrammes = FetchAllCreatedDivisionProgrammes();
@@ -190,7 +192,7 @@ export function StudentEnrollmentUpdateForm() {
       completedJhs: student?.studentSchoolData?.completedJhs,
       jhsIndexNo: student?.studentSchoolData?.jhsIndexNo,
       program: student?.programId,
-      programDivision: student?.divisionProgramId,
+      // programDivision: student?.divisionProgramId,
       currentClassLevel: student?.classLevelId,
       batch: student?.batchId,
       residentialStatus: student?.status?.residentialStatus,
@@ -211,9 +213,9 @@ export function StudentEnrollmentUpdateForm() {
         dateOfBirth: dayjs(foundStudent?.personalInfo?.dateOfBirth).isValid()
           ? dayjs(foundStudent?.personalInfo?.dateOfBirth)
           : dayjs("MM/DD/YYYY"),
-        programId: foundStudent?.studentSchoolData?.program?._id,
-        divisionProgramId:
-          foundStudent?.studentSchoolData?.divisionProgram?._id,
+        programId: foundStudent?.studentSchoolData?.program?.programId,
+        // divisionProgramId:
+        //   foundStudent?.studentSchoolData?.divisionProgram?._id,
         batchId: foundStudent?.studentSchoolData?.batch?._id,
         classLevelId: foundStudent?.studentSchoolData?.currentClassLevel?._id,
       };
@@ -741,6 +743,22 @@ export function StudentEnrollmentUpdateForm() {
               sx={{
                 display: "flex",
                 // flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                textTransform: "capitalize",
+                // textAlign: "center",
+                color: "#696969",
+                fontSize: "1em",
+                marginBottom: "1rem",
+              }}
+            >
+              Only Admins
+            </Typography>
+            <Typography
+              variant="h6"
+              sx={{
+                display: "flex",
+                // flexDirection: "column",
                 // justifyContent: "center",
                 alignItems: "center",
                 textTransform: "capitalize",
@@ -782,6 +800,9 @@ export function StudentEnrollmentUpdateForm() {
                     name="studentSchoolData.jhsAttended"
                     value={student?.studentSchoolData?.jhsAttended || ""}
                     onChange={handleChange}
+                    slotProps={{
+                      input: { readOnly: true },
+                    }}
                   />
                 </Grid>
                 {/* JHS Graduated Year */}
@@ -792,6 +813,9 @@ export function StudentEnrollmentUpdateForm() {
                     name="studentSchoolData.completedJhs"
                     value={student?.studentSchoolData?.completedJhs || ""}
                     onChange={handleChange}
+                    slotProps={{
+                      input: { readOnly: true },
+                    }}
                   />
                 </Grid>
                 {/* JHS Index No. */}
@@ -802,7 +826,10 @@ export function StudentEnrollmentUpdateForm() {
                     name="studentSchoolData.jhsIndexNo"
                     value={student?.studentSchoolData?.jhsIndexNo || ""}
                     onChange={handleChange}
-                    disabled
+                    // disabled
+                    slotProps={{
+                      input: { readOnly: true },
+                    }}
                   />
                 </Grid>
                 {/* Programme Selection */}
@@ -812,24 +839,27 @@ export function StudentEnrollmentUpdateForm() {
                     fullWidth
                     label="Select Programme"
                     name="programId"
-                    value={
-                      allProgrammes?.some(
-                        (program) => program._id === student?.programId
-                      )
-                        ? student?.programId
-                        : ""
-                    }
+                    value={student?.programId || ""}
                     onChange={handleChange}
+                    slotProps={{
+                      input: {
+                        readOnly: !authUser?.roles?.includes("Admin")
+                          ? true
+                          : false,
+                      },
+                    }}
                   >
-                    {allProgrammes?.map((programme) => (
+                    {allFlattenedProgrammes?.map((programme) => (
                       <MenuItem key={programme?._id} value={programme?._id}>
-                        {programme?.name}
+                        {programme?.name
+                          ? programme?.name
+                          : programme?.divisionName}
                       </MenuItem>
                     ))}
                   </CustomTextField>
                 </Grid>
                 {/* Division Program (conditional) */}
-                {newProgrammeSelected?.hasDivisions === "true" && (
+                {/* {newProgrammeSelected?.hasDivisions === "true" && (
                   <Grid item xs={12} sm={6} md={4} lg={4}>
                     <CustomTextField
                       select
@@ -863,7 +893,7 @@ export function StudentEnrollmentUpdateForm() {
                       ))}
                     </CustomTextField>
                   </Grid>
-                )}
+                )} */}
                 {/* Class Level Selection */}
                 <Grid item xs={12} sm={6} md={4} lg={4}>
                   <CustomTextField
@@ -879,6 +909,13 @@ export function StudentEnrollmentUpdateForm() {
                         : ""
                     }
                     onChange={handleChange}
+                    slotProps={{
+                      input: {
+                        readOnly: !authUser?.roles?.includes("Admin")
+                          ? true
+                          : false,
+                      },
+                    }}
                   >
                     {allClassLevels?.map((cLevel) => (
                       <MenuItem key={cLevel?._id} value={cLevel?._id}>
@@ -902,6 +939,13 @@ export function StudentEnrollmentUpdateForm() {
                         : ""
                     }
                     onChange={handleChange}
+                    slotProps={{
+                      input: {
+                        readOnly: !authUser?.roles?.includes("Admin")
+                          ? true
+                          : false,
+                      },
+                    }}
                   >
                     {allBatches?.map((batch) => (
                       <MenuItem key={batch?._id} value={batch?._id}>
@@ -919,6 +963,13 @@ export function StudentEnrollmentUpdateForm() {
                     name="status.residentialStatus"
                     value={student?.status?.residentialStatus || ""}
                     onChange={handleChange}
+                    slotProps={{
+                      input: {
+                        readOnly: !authUser?.roles?.includes("Admin")
+                          ? true
+                          : false,
+                      },
+                    }}
                   >
                     <MenuItem value="Day">Day</MenuItem>
                     <MenuItem value="Boarding">Boarding</MenuItem>
@@ -937,11 +988,16 @@ export function StudentEnrollmentUpdateForm() {
                     color="success"
                     type="submit"
                     fullWidth
+                    disabled={!authUser?.roles?.includes("Admin")}
                     sx={{
                       height: "3.5rem",
                       letterSpacing: "1px",
                       textTransform: "capitalize",
                       fontSize: "1.2rem",
+                      "&.Mui-disabled": {
+                        cursor: "not-allowed", // Show not-allowed cursor
+                        pointerEvents: "auto",
+                      },
                     }}
                   >
                     {loadingComplete === false && (

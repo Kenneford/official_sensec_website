@@ -16,7 +16,10 @@ import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
 import { getAuthUser } from "../../../../features/auth/authSlice";
 
-const quickLinks = [{ name: "Create Report" }, { name: "Search" }];
+const quickLinks = [
+  { name: "Create Report" },
+  // { name: "Search" }
+];
 
 export function LecturerReportLinks({ hovered }) {
   const authUser = useSelector(getAuthUser);
@@ -83,13 +86,14 @@ export function LecturerReportLinks({ hovered }) {
             >
               <HashLink
                 to={
-                  Qlink.name === "Create Report"
-                    ? "#"
-                    : `/sensec/users/${
-                        authUser?.uniqueId
-                      }/lecturer/Academic_Report/${Qlink.name
-                        .replace(/ /g, "_")
-                        .toLocaleLowerCase()}`
+                  `/sensec/users/${authUser?.uniqueId}/lecturer/academic_report/create_report/elective`
+                  // Qlink.name === "Create Report"
+                  //   ? "#"
+                  //   : `/sensec/users/${
+                  //       authUser?.uniqueId
+                  //     }/lecturer/Academic_Report/${Qlink.name
+                  //       .replace(/ /g, "_")
+                  //       .toLocaleLowerCase()}`
                 }
                 // className="links"
                 className={
@@ -110,7 +114,7 @@ export function LecturerReportLinks({ hovered }) {
                 )}
                 {Qlink.name === "Search" && <Search className="icon" />}
                 {hovered && <h4>{Qlink.name}</h4>}
-                {Qlink.name === "Create Report" && hovered && (
+                {/* {Qlink.name === "Create Report" && hovered && (
                   <Box position={"absolute"} right={0} top={10}>
                     {!openReportsOptions ? (
                       <ExpandMore
@@ -124,9 +128,9 @@ export function LecturerReportLinks({ hovered }) {
                       />
                     )}
                   </Box>
-                )}
+                )} */}
               </HashLink>
-              {Qlink.name === "Create Report" &&
+              {/* {Qlink.name === "Create Report" &&
                 openReportsOptions &&
                 hovered && (
                   <Box className="reportOptionsWrap">
@@ -141,7 +145,7 @@ export function LecturerReportLinks({ hovered }) {
                       Core
                     </HashLink>
                   </Box>
-                )}
+                )} */}
             </Box>
           ))}
         </Box>

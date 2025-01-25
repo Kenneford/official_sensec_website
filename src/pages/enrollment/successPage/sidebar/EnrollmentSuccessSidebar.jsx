@@ -9,6 +9,8 @@ export default function EnrollmentSuccessSidebar({
   enrolledStudent,
   current_link,
 }) {
+  console.log(enrolledStudent);
+
   const scrollWithOffset = (el) => {
     const yCoordinate = el.getBoundingClientRect().top + window.scrollY;
     const yOffset = 150;
@@ -123,8 +125,8 @@ export default function EnrollmentSuccessSidebar({
                 </>
               )}
             {enrolledStudent?.studentStatusExtend?.enrollmentStatus ===
-              "approved" ||
-              (enrolledStudent?.studentStatusExtend?.isGraduated && (
+              "approved" &&
+              !enrolledStudent?.studentStatusExtend?.isGraduated && (
                 <>
                   {links?.map((link) => (
                     <HashLink
@@ -143,7 +145,7 @@ export default function EnrollmentSuccessSidebar({
                     </HashLink>
                   ))}
                 </>
-              ))}
+              )}
           </Box>
         </Drawer>
       )}

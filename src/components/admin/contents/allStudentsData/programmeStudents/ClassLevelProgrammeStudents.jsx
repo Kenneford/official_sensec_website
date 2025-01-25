@@ -24,6 +24,7 @@ import SearchFilter from "../../../../searchForm/SearchFilter";
 import { FetchAllClassSections } from "../../../../../data/class/FetchClassSections";
 import {
   FetchAllDivisionProgrammes,
+  FetchAllFlattenedProgrammes,
   FetchAllProgrammes,
 } from "../../../../../data/programme/FetchProgrammeData";
 import NewEnrollmentModal from "../../../../modals/NewEnrollmentModal";
@@ -51,14 +52,17 @@ export function ClassLevelProgrammeStudents() {
   const allClassLevels = FetchAllClassLevels();
   const approvedStudents = FetchAllApprovedStudents();
   const allClassLevelSections = FetchAllClassSections();
+  const allFlattenedProgrammes = FetchAllFlattenedProgrammes();
   // Find class section and pass its _id in FetchClassSectionStudents to get students
-  const foundClassSection = allClassLevelSections?.find(
+  const foundProgram = allFlattenedProgrammes?.find(
     (section) =>
-      section?.sectionName === programme?.replace(/_/g, " ") &&
-      section?.classLevelName === class_level?.replace(/_/g, " ")
+      section?.name === programme?.replace(/_/g, " ") ||
+      section?.divisionName === programme?.replace(/_/g, " ")
   );
 
-  const programmeStudents = FetchClassSectionStudents(foundClassSection?._id);
+  const programmeStudents = FetchClassSectionStudents({
+    class_section: foundProgram?._id,
+  });
 
   // console.log(allClassLevelSections);
   const [currentStudent, setCurrentStudent] = useState("");
@@ -78,10 +82,8 @@ export function ClassLevelProgrammeStudents() {
 
   const filteredStudents = programmeStudents?.filter(
     (std) =>
-      std?.personalInfo?.firstName?.toLowerCase()?.includes(searchStudent) ||
-      std?.personalInfo?.firstName?.includes(searchStudent) ||
-      std?.personalInfo?.lastName?.toLowerCase()?.includes(searchStudent) ||
-      std?.personalInfo?.lastName?.includes(searchStudent)
+      std?.personalInfo?.fullName?.toLowerCase()?.includes(searchStudent) ||
+      (std?.personalInfo?.fullName?.includes(searchStudent) && std)
   );
 
   //Find selected student to promote
