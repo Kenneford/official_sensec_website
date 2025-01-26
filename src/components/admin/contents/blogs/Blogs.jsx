@@ -22,6 +22,7 @@ import { toast } from "react-toastify";
 import { resetDeleteBlogState } from "../../../../features/blogs/blogSlice";
 import Footer from "../../../footer/Footer";
 import SmallFooter from "../../../footer/SmallFooter";
+import PageLoading from "../../../pageLoading/PageLoading";
 
 export function Blogs() {
   const {
@@ -136,6 +137,14 @@ export function Blogs() {
       }, 6000);
     }
   }, [error, successMessage, deleteStatus, dispatch]);
+  // const allProgrammes = FetchAllProgrammes();
+  // if (!allProgrammes) {
+  //   return (
+  //     <Box fontSize={"calc( 0.7rem + 1vmin)"}>
+  //       <PageLoading />
+  //     </Box>
+  //   );
+  // }
 
   return (
     <Box id="blogsPage">
@@ -262,28 +271,40 @@ export function Blogs() {
           </Box>
         </Box>
       )}
-      <Box className="blogs">
-        <Box m={".5rem"}>
-          <Box
-            sx={{
-              width: { xs: "100%", sm: "95%", md: "90%", lg: "90%", xl: "70%" },
-            }}
-            margin={"auto"}
-          >
-            {allBlogs.map((blog) => (
-              <Box key={blog?.title} mb={4}>
-                <BlogCard
-                  blogId={blog?._id}
-                  title={blog?.title}
-                  content={blog?.text}
-                  image={blog?.image?.url}
-                  postedBy={blog?.postedBy}
-                />
-              </Box>
-            ))}
+      {allBlogs ? (
+        <Box className="blogs">
+          <Box m={".5rem"}>
+            <Box
+              sx={{
+                width: {
+                  xs: "100%",
+                  sm: "95%",
+                  md: "90%",
+                  lg: "90%",
+                  xl: "70%",
+                },
+              }}
+              margin={"auto"}
+            >
+              {allBlogs.map((blog) => (
+                <Box key={blog?.title} mb={4}>
+                  <BlogCard
+                    blogId={blog?._id}
+                    title={blog?.title}
+                    content={blog?.text}
+                    image={blog?.image?.url}
+                    postedBy={blog?.postedBy}
+                  />
+                </Box>
+              ))}
+            </Box>
           </Box>
         </Box>
-      </Box>
+      ) : (
+        <Box fontSize={"calc( 0.7rem + 1vmin)"} mb={3}>
+          <PageLoading />
+        </Box>
+      )}
       {/* <Footer /> */}
       <SmallFooter />
     </Box>
