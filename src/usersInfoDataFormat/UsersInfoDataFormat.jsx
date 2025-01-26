@@ -1218,6 +1218,10 @@ const studentsReportColumn = (columnData) => {
                 borderRadius: ".4rem",
                 color: "#0ab312",
                 fontSize: ".9em",
+                textTransform: "capitalize",
+                ":hover": {
+                  backgroundColor: "transparent",
+                },
               }}
               onClick={() => {
                 columnData?.setStudentId(row?.uniqueId);
@@ -1229,7 +1233,7 @@ const studentsReportColumn = (columnData) => {
                   Add <Add fontSize=".8em" />
                 </>
               ) : (
-                "Update"
+                <Edit style={{ color: "#696969" }} />
               )}
             </Button>
           </>
@@ -1238,80 +1242,79 @@ const studentsReportColumn = (columnData) => {
     },
     {
       name: "Save",
-      selector: (row) => (
-        <HashLink
-          to={"#"}
-          className="editLink"
-          onClick={async () => {
-            // Only set current student if data saving is not in progress
-            if (!columnData?.saveDataInProgress) {
-              columnData?.setCurrentStudent(row._id);
-            }
-          }}
-        >
-          {columnData?.foundStudent &&
-            columnData?.foundStudent._id === row._id && (
-              <>
-                {columnData?.loadingComplete === false && (
-                  <Box
-                    className="promotionSpinner"
-                    sx={
-                      {
-                        // marginTop: ".8rem",
-                      }
-                    }
-                  >
-                    <span>Saving</span>
-                    <span className="dot-ellipsis">
-                      <span className="dot">.</span>
-                      <span className="dot">.</span>
-                      <span className="dot">.</span>
-                    </span>
-                  </Box>
-                )}
-                {columnData?.loadingComplete &&
-                  columnData?.createStatus === "success" && (
+      selector: (row) => {
+        const disableBtn = Boolean(
+          columnData?.subjectMultiStudentsReports &&
+            columnData?.subjectMultiStudentsReports?.subject ===
+              columnData?.draftReportInfo?.subject
+        );
+        return (
+          <Button
+            disabled={disableBtn}
+            // sx={{
+            //   // color: "#fff !important",
+            //   "&.Mui-disabled": {
+            //     cursor: "not-allowed", // Show not-allowed cursor
+            //     pointerEvents: "auto",
+            //   },
+            // }}
+            sx={{
+              textTransform: "capitalize",
+              ":hover": {
+                backgroundColor: "transparent",
+              },
+              color:
+                columnData?.subjectMultiStudentsReports &&
+                columnData?.subjectMultiStudentsReports?.subject ===
+                  columnData?.draftReportInfo?.subject
+                  ? ""
+                  : "#03950a !important",
+              "&.Mui-disabled": {
+                cursor: "not-allowed", // Show not-allowed cursor
+                pointerEvents: "auto",
+              },
+            }}
+            to={"#"}
+            // className="editLink"
+            onClick={async () => {
+              // Only set current student if data saving is not in progress
+              if (!columnData?.saveDataInProgress) {
+                columnData?.setCurrentStudent(row._id);
+              }
+            }}
+          >
+            {columnData?.foundStudent &&
+              columnData?.foundStudent._id === row._id && (
+                <>
+                  {columnData?.loadingComplete === false && (
                     <Box
-                      sx={{ display: "flex", alignItems: "center" }}
-                      fontSize={".8em"}
+                      className="promotionSpinner"
+                      sx={{
+                        // marginTop: ".8rem",
+                        fontSize: "calc( 0.7rem 1vmin)",
+                      }}
                     >
-                      <span>Saved</span> <TaskAlt />
+                      <span style={{ fontSize: "1em" }}>Saving</span>
+                      <span className="dot-ellipsis">
+                        <span className="dot">.</span>
+                        <span className="dot">.</span>
+                        <span className="dot">.</span>
+                      </span>
                     </Box>
                   )}
-              </>
-            )}
-          <>
-            {columnData?.loadingComplete === null && (
-              <Save
-                titleAccess="Save"
-                onClick={() => {
-                  const data = {
-                    studentId: row?.uniqueId,
-                    classScore: row?.classScore,
-                    examScore: row?.examScore,
-                    totalScore: row?.totalScore,
-                    remark: row?.remark,
-                    semester: columnData?.currentAcademicTerm?.name,
-                    classLevel: columnData?.classLevel,
-                    subject: columnData?.selectedSubject,
-                    lecturer: columnData?.authUser?.id,
-                    year: new Date().getFullYear(),
-                    isDraftSave: true,
-                  };
-                  if (row?.classScore || row?.examScore) {
-                    columnData?.dispatch(createStudentReport(data));
-                  } else {
-                    toast.error("Both class and exam scores cannot be empty!", {
-                      position: "top-right",
-                      theme: "dark",
-                      toastId: "emptyReportDataError",
-                    });
-                  }
-                }}
-              />
-            )}
-            {row?._id !== columnData?.foundStudent?._id &&
-              columnData?.loadingComplete !== null && (
+                  {columnData?.loadingComplete &&
+                    columnData?.createStatus === "success" && (
+                      <Box
+                        sx={{ display: "flex", alignItems: "center" }}
+                        fontSize={".8em"}
+                      >
+                        <span>Saved</span> <TaskAlt />
+                      </Box>
+                    )}
+                </>
+              )}
+            <>
+              {columnData?.loadingComplete === null && (
                 <Save
                   titleAccess="Save"
                   onClick={() => {
@@ -1320,6 +1323,7 @@ const studentsReportColumn = (columnData) => {
                       classScore: row?.classScore,
                       examScore: row?.examScore,
                       totalScore: row?.totalScore,
+                      remark: row?.remark,
                       semester: columnData?.currentAcademicTerm?.name,
                       classLevel: columnData?.classLevel,
                       subject: columnData?.selectedSubject,
@@ -1327,24 +1331,39 @@ const studentsReportColumn = (columnData) => {
                       year: new Date().getFullYear(),
                       isDraftSave: true,
                     };
-                    if (row?.classScore || row?.examScore) {
+                    if (!disableBtn) {
                       columnData?.dispatch(createStudentReport(data));
-                    } else {
-                      toast.error(
-                        "Both class and exam scores cannot be empty!",
-                        {
-                          position: "top-right",
-                          theme: "dark",
-                          // toastId: successId,
-                        }
-                      );
                     }
                   }}
                 />
               )}
-          </>
-        </HashLink>
-      ),
+              {row?._id !== columnData?.foundStudent?._id &&
+                columnData?.loadingComplete !== null && (
+                  <Save
+                    titleAccess="Save"
+                    onClick={() => {
+                      const data = {
+                        studentId: row?.uniqueId,
+                        classScore: row?.classScore,
+                        examScore: row?.examScore,
+                        totalScore: row?.totalScore,
+                        semester: columnData?.currentAcademicTerm?.name,
+                        classLevel: columnData?.classLevel,
+                        subject: columnData?.selectedSubject,
+                        lecturer: columnData?.authUser?.id,
+                        year: new Date().getFullYear(),
+                        isDraftSave: true,
+                      };
+                      if (!disableBtn) {
+                        columnData?.dispatch(createStudentReport(data));
+                      }
+                    }}
+                  />
+                )}
+            </>
+          </Button>
+        );
+      },
     },
   ];
   return studentColumn;

@@ -23,7 +23,9 @@ import {
 } from "../../../../data/class/FetchClassLevel";
 import {
   createMultiStudentsReport,
+  fetchSubjectMultiStudentsReport,
   getDraftReportInfo,
+  getSubjectMultiStudentsReports,
   resetCreateReportState,
   saveDraftReport,
 } from "../../../../features/reports/reportSlice";
@@ -38,6 +40,7 @@ import PropTypes from "prop-types";
 import { fetchElectiveDraftReport } from "../../../../features/reports/reportSlice";
 import AssignClassLecturerModal from "../../../modals/AssignClassLecturerModal";
 import StudentReportRemarkModal from "../../../modals/studentReportRemarkModal";
+import { styled } from "@mui/system";
 
 export function ElectiveReport() {
   const { createStatus, createMultiStatus, error, successMessage } =
@@ -48,7 +51,11 @@ export function ElectiveReport() {
   console.log(authUser?.id);
   const currentYear = new Date().getFullYear();
   const draftReportInfo = useSelector(getDraftReportInfo);
-  console.log(draftReportInfo);
+  const subjectMultiStudentsReports = useSelector(
+    getSubjectMultiStudentsReports
+  );
+  console.log("Fetched Reports in Redux:", draftReportInfo);
+  console.log(subjectMultiStudentsReports);
 
   const { lecturerCurrentAction, lecturerCurrentLink } = useParams();
   const dispatch = useDispatch();
@@ -63,14 +70,20 @@ export function ElectiveReport() {
   const [allElectiveSubjectStudents, setAllElectiveSubjectStudents] = useState(
     []
   );
+  console.log("allElectiveSubjectStudents: ", allElectiveSubjectStudents);
+
   const [isElective, setIsElective] = useState(true);
-  console.log(takeCoreSubjectReport);
+  const [fetchingCoreLoadingComplete, setFetchingCoreLoadingComplete] =
+    useState(null);
 
   const lecturerSubjects = FetchAllLecturerSubjects(takeCoreSubjectReport);
   const currentAcademicTerm = FetchCurrentAcademicTerms();
+  console.log(currentAcademicTerm);
+
   // Report saving state
   const [multiLoadingComplete, setMultiLoadingComplete] = useState(null);
   const [loadingComplete, setLoadingComplete] = useState(null);
+  const [savingRemarkComplete, setSavingRemarkComplete] = useState(null);
   const [saveDataInProgress, setSaveDataInProgress] = useState(false);
 
   // Multi select state
@@ -81,23 +94,22 @@ export function ElectiveReport() {
 
   // Report State
   const [classLevel, setClassLevel] = useState(
-    localStorage.getItem("reportClassLevel") || null
+    localStorage.getItem("reportClassLevel") || ""
   );
   const [subject, setSubject] = useState(
-    localStorage.getItem("reportSubject") || null
+    localStorage.getItem("reportSubject") || ""
   );
   const [remark, setRemark] = useState("");
-  // Maintain a local state for editing scores
-  const fetchedStudents = useSubjectStudents({
-    classLevel: classLevel ? classLevel : reportClassLevel,
-    subject: subject ? subject : reportSubject,
-    programmes: [],
-    // draftReportInfo,
-  });
-  //   const [allSubjectStudents, setAllSubjectStudents] = useState(
-  //     draftReportInfo?.students ? draftReportInfo?.students : []
-  //   );
-  //   console.log(allSubjectStudents);
+
+  // Find class level
+  const foundClassLevel = allClassLevels?.find(
+    (cLevel) => cLevel?._id === classLevel
+  );
+  // Find subject
+  const foundSubject = lecturerSubjects?.find(
+    (data) => data?.subject?._id === subject
+  );
+  console.log(foundSubject);
 
   // Handle score values ✅
   const handleScoreChange = (id, field, value) => {
@@ -180,48 +192,80 @@ export function ElectiveReport() {
     createStatus,
     setOpenRemarkModal,
     setStudentId,
+    subjectMultiStudentsReports,
+    draftReportInfo,
   };
   const studentDataFormat = studentsReportColumn(columnData);
 
   // Fetch Draft Data
-  useEffect(() => {
-    if (!takeCoreSubjectReport) {
-      const data = {
-        classLevel: localStorage.getItem("reportClassLevel") || classLevel,
-        semester: currentAcademicTerm?.name,
-        subject: localStorage.getItem("reportSubject") || subject,
-        lecturer: authUser?.id,
-      };
-      dispatch(fetchElectiveDraftReport(data));
-      setAllCoreSubjectStudents([]);
-    } else {
-      setAllElectiveSubjectStudents([]);
-    }
-  }, [
-    takeCoreSubjectReport,
-    classLevel,
-    subject,
-    currentAcademicTerm,
-    authUser,
-    dispatch,
-    setAllElectiveSubjectStudents,
-    setAllCoreSubjectStudents,
-  ]);
+  // useEffect(() => {
+  //   if (!takeCoreSubjectReport) {
+  //     const data = {
+  //       classLevel: localStorage.getItem("reportClassLevel") || classLevel,
+  //       semester: currentAcademicTerm?.name,
+  //       subject: localStorage.getItem("reportSubject") || subject,
+  //       lecturer: authUser?.id,
+  //       year: new Date().getFullYear(),
+  //     };
+  //     dispatch(fetchElectiveDraftReport(data));
+  //     dispatch(fetchSubjectMultiStudentsReport(data));
+  //     setAllCoreSubjectStudents([]);
+  //   } else {
+  //     setAllElectiveSubjectStudents([]);
+  //   }
+  // }, [
+  //   takeCoreSubjectReport,
+  //   classLevel,
+  //   subject,
+  //   currentAcademicTerm,
+  //   authUser,
+  //   dispatch,
+  //   setAllElectiveSubjectStudents,
+  //   setAllCoreSubjectStudents,
+  // ]);
   // Retrieve and set students on page render
+  // useEffect(() => {
+  //   if (takeCoreSubjectReport) {
+  //     setAllElectiveSubjectStudents([]);
+  //   } else {
+  //     setAllElectiveSubjectStudents(draftReportInfo?.students);
+  //     setAllCoreSubjectStudents([]);
+  //   }
+  // }, [
+  //   draftReportInfo,
+  //   takeCoreSubjectReport,
+  //   setAllElectiveSubjectStudents,
+  //   setAllCoreSubjectStudents,
+  // ]);
+
+  // Sync localStorage with state
   useEffect(() => {
-    if (takeCoreSubjectReport) {
-      setAllElectiveSubjectStudents([]);
-    } else {
-      setAllElectiveSubjectStudents(draftReportInfo?.students);
-      setAllCoreSubjectStudents([]);
+    localStorage.setItem("reportClassLevel", classLevel || "");
+  }, [classLevel]);
+
+  useEffect(() => {
+    localStorage.setItem("reportSubject", subject || "");
+  }, [subject]);
+  useEffect(() => {
+    setAllElectiveSubjectStudents(draftReportInfo?.students || []);
+  }, [draftReportInfo]);
+
+  // Fetch data when inputs change
+  useEffect(() => {
+    if (classLevel && subject) {
+      const data = {
+        classLevel,
+        semester: currentAcademicTerm?.name,
+        subject,
+        lecturer: authUser?.id,
+        year: new Date().getFullYear(),
+      };
+      console.log(data);
+
+      dispatch(fetchElectiveDraftReport(data));
+      dispatch(fetchSubjectMultiStudentsReport(data));
     }
-  }, [
-    draftReportInfo,
-    takeCoreSubjectReport,
-    setAllElectiveSubjectStudents,
-    setAllCoreSubjectStudents,
-  ]);
-  console.log(allElectiveSubjectStudents);
+  }, [classLevel, subject, currentAcademicTerm, authUser, dispatch]);
 
   useEffect(() => {
     setIsElective(true);
@@ -272,6 +316,7 @@ export function ElectiveReport() {
           semester: currentAcademicTerm?.name,
           subject: localStorage.getItem("reportSubject") || subject,
           lecturer: authUser?.id,
+          year: new Date().getFullYear(),
         };
         dispatch(fetchElectiveDraftReport(data));
       }, 2000);
@@ -284,9 +329,6 @@ export function ElectiveReport() {
       setTimeout(() => {
         setToggleClearRows(!toggleClearRows);
         setMultiLoadingComplete(null);
-        localStorage.removeItem("allSubjectStudents");
-        localStorage.removeItem("reportClassLevel");
-        localStorage.removeItem("reportSubject");
         setMultiStudents([]);
         dispatch(resetCreateMultiReportState());
         const data = {
@@ -296,6 +338,10 @@ export function ElectiveReport() {
           lecturer: authUser?.id,
         };
         dispatch(fetchElectiveDraftReport(data));
+        dispatch(fetchSubjectMultiStudentsReport(data));
+        localStorage.removeItem("allSubjectStudents");
+        localStorage.removeItem("reportClassLevel");
+        localStorage.removeItem("reportSubject");
       }, 6000);
     }
   }, [
@@ -333,12 +379,21 @@ export function ElectiveReport() {
             semester: currentAcademicTerm?.name,
             subject: localStorage.getItem("reportSubject") || subject,
             lecturer: authUser?.id,
+            year: new Date().getFullYear(),
           };
           dispatch(fetchElectiveDraftReport(data));
+          dispatch(fetchSubjectMultiStudentsReport(data));
         }, 2000);
         return;
       }
       if (createStatus === "success") {
+        const data = {
+          classLevel: localStorage.getItem("reportClassLevel") || classLevel,
+          semester: currentAcademicTerm?.name,
+          subject: localStorage.getItem("reportSubject") || subject,
+          lecturer: authUser?.id,
+          year: new Date().getFullYear(),
+        };
         setTimeout(() => {
           setLoadingComplete(true);
         }, 3000);
@@ -346,6 +401,8 @@ export function ElectiveReport() {
           setLoadingComplete(null);
           setSaveDataInProgress(false);
           dispatch(resetCreateReportState());
+          dispatch(fetchElectiveDraftReport(data));
+          dispatch(fetchSubjectMultiStudentsReport(data));
         }, 6000);
       }
     }
@@ -360,11 +417,70 @@ export function ElectiveReport() {
     dispatch,
   ]);
 
-  const allStd = `Students / Total = ${
-    allElectiveSubjectStudents?.length > 0
-      ? allElectiveSubjectStudents?.length
-      : 0
-  }`;
+  // const [isVisible, setIsVisible] = useState(true);
+  const [shouldBlink, setShouldBlink] = useState(false);
+
+  useEffect(() => {
+    if (subjectMultiStudentsReports) {
+      setShouldBlink(true);
+      // const interval = setInterval(() => {
+      //   setIsVisible((prev) => !prev);
+      // }, 500); // Toggle visibility every 500ms
+      // return () => clearInterval(interval); // Cleanup on unmount
+    }
+  }, [subjectMultiStudentsReports]);
+
+  const allStd =
+    subjectMultiStudentsReports &&
+    subjectMultiStudentsReports?.subject !== draftReportInfo?.subject ? (
+      `Students / Total = ${
+        allElectiveSubjectStudents?.length > 0
+          ? allElectiveSubjectStudents?.length
+          : 0
+      }`
+    ) : (
+      <Box fontSize={"calc( 0.7rem + 1vmin)"}>
+        {/* {isVisible && ( */}
+        {/* <BlinkingText
+          shouldBlink={shouldBlink}
+          sx={{
+            color: "#de1f1f",
+            fontSize: ".9em",
+            fontWeight: 100,
+            textAlign: "center",
+          }}
+        >
+          Report for {foundClassLevel?.name === "Level 100" && "Form 1"}
+          {foundClassLevel?.name === "Level 200" && "Form 2"}
+          {foundClassLevel?.name === "Level 300" && "Form 3"}{" "}
+          {foundSubject?.subject?.subjectName} already taking!
+        </BlinkingText> */}
+        {shouldBlink && (
+          <Typography
+            variant="h6"
+            color="#de1f1f"
+            textAlign={"center"}
+            mt={0}
+            fontSize={".9em"}
+            fontWeight={100}
+            sx={{
+              animation: shouldBlink ? "blink 1s step-start infinite" : "none",
+              "@keyframes blink": {
+                "5%": {
+                  visibility: "hidden",
+                },
+              },
+            }}
+          >
+            Report for {foundClassLevel?.name === "Level 100" && "Form 1"}
+            {foundClassLevel?.name === "Level 200" && "Form 2"}
+            {foundClassLevel?.name === "Level 300" && "Form 3"}{" "}
+            {foundSubject?.subject?.subjectName} already taking!
+          </Typography>
+        )}
+        {/* )} */}
+      </Box>
+    );
 
   return (
     <>
@@ -425,7 +541,6 @@ export function ElectiveReport() {
                 size="small"
                 onChange={(e) => {
                   setClassLevel(e.target.value);
-                  localStorage.setItem("reportClassLevel", e.target.value);
                 }}
                 //   onChange={(e) => {
                 //     setReportData({
@@ -464,7 +579,6 @@ export function ElectiveReport() {
                 size="small"
                 onChange={(e) => {
                   setSubject(e.target.value);
-                  localStorage.setItem("reportSubject", e.target.value);
                 }}
                 //   onChange={(e) => {
                 //     setReportData({
@@ -492,124 +606,196 @@ export function ElectiveReport() {
                 ))}
               </CustomTextField>
             </Grid>
+            <Grid item xs={12} sm={2}>
+              <Button
+                disabled={!classLevel && !subject}
+                variant="contained"
+                fullWidth
+                sx={{
+                  backgroundColor:
+                    classLevel && subject ? "green" : "#adacaccc !important",
+                  borderRadius: ".4rem",
+                  color: "#fff !important",
+                  "&.Mui-disabled": {
+                    cursor: "not-allowed", // Show not-allowed cursor
+                    pointerEvents: "auto",
+                  },
+                  alignItems: "center",
+                  minHeight: { xs: "2.7em", sm: "2.7rem" },
+                  textTransform: "capitalize",
+                }}
+                onClick={(e) => {
+                  e?.preventDefault();
+                  const data = {
+                    classLevel: classLevel,
+                    semester: currentAcademicTerm?.name,
+                    subject: subject,
+                    lecturer: authUser?.id,
+                    year: new Date().getFullYear(),
+                  };
+                  if (classLevel && subject) {
+                    dispatch(fetchElectiveDraftReport(data));
+                    dispatch(fetchSubjectMultiStudentsReport(data));
+                  }
+                }}
+              >
+                {fetchingCoreLoadingComplete === false && (
+                  <Box className="promotionSpinner">
+                    <p>Fetching</p>
+                    <span
+                      className="dot-ellipsis"
+                      style={{ marginTop: "-.1rem" }}
+                    >
+                      <span className="dot">.</span>
+                      <span className="dot">.</span>
+                      <span className="dot">.</span>
+                    </span>
+                  </Box>
+                )}
+                {/* {fetchingCoreLoadingComplete &&
+                  fetchCoreStatus === "success" && (
+                    <>
+                      <span>Fetched</span> <TaskAlt />
+                    </>
+                  )} */}
+                {fetchingCoreLoadingComplete === null && "Fetch"}
+              </Button>
+            </Grid>
           </Grid>
         </Box>
-        {!takeCoreSubjectReport && allElectiveSubjectStudents?.length > 0 ? (
-          <Box fontSize={"calc(0.7rem + 1vmin)"} position={"relative"}>
-            <Box className="studentDataTable">
-              <Box mt={3} mb={1.5}>
-                <Button
-                  disabled={!multiStudents?.length > 0}
-                  variant="contained"
-                  sx={{
-                    backgroundColor:
-                      multiStudents?.length > 0
-                        ? "green"
-                        : "#adacaccc !important",
-                    borderRadius: ".4rem",
-                    color: "#fff !important",
-                    "&.Mui-disabled": {
-                      cursor: "not-allowed", // Show not-allowed cursor
-                      pointerEvents: "auto",
-                    },
-                    alignItems: "center",
-                  }}
-                  onClick={() => {
-                    const data = {
+        <>
+          {draftReportInfo &&
+            draftReportInfo?.students?.length > 0 &&
+            draftReportInfo?.subject === subject &&
+            draftReportInfo?.classLevel === classLevel && (
+              <Box fontSize={"calc(0.7rem + 1vmin)"} position={"relative"}>
+                <Box className="studentDataTable">
+                  <Box mt={3} mb={1.5}>
+                    <Button
+                      disabled={!multiStudents?.length > 0}
+                      variant="contained"
+                      sx={{
+                        backgroundColor:
+                          multiStudents?.length > 0
+                            ? "green"
+                            : "#adacaccc !important",
+                        borderRadius: ".4rem",
+                        color: "#fff !important",
+                        "&.Mui-disabled": {
+                          cursor: "not-allowed", // Show not-allowed cursor
+                          pointerEvents: "auto",
+                        },
+                        alignItems: "center",
+                      }}
+                      onClick={() => {
+                        const data = {
+                          semester: currentAcademicTerm?.name,
+                          classLevel: classLevel,
+                          subject: subject,
+                          lecturer: authUser?.id,
+                          year: currentYear,
+                          remark,
+                          students: multiStudents,
+                        };
+                        if (multiStudents?.length > 0) {
+                          dispatch(createMultiStudentsReport(data));
+                        }
+                      }}
+                    >
+                      {isElective &&
+                        multiStudents?.length > 0 &&
+                        multiLoadingComplete === false && (
+                          <Box className="promotionSpinner">
+                            <p>Saving</p>
+                            <span
+                              className="dot-ellipsis"
+                              style={{ marginTop: "-.1rem" }}
+                            >
+                              <span className="dot">.</span>
+                              <span className="dot">.</span>
+                              <span className="dot">.</span>
+                            </span>
+                          </Box>
+                        )}
+                      {isElective &&
+                        multiStudents?.length > 0 &&
+                        multiLoadingComplete &&
+                        createMultiStatus === "success" && (
+                          <>
+                            <span>All Saved</span> <TaskAlt />
+                          </>
+                        )}
+                      {isElective &&
+                        multiLoadingComplete === null &&
+                        "Save All Reports"}
+                    </Button>
+                  </Box>
+                  {/* {isElective && ( */}
+                  <>
+                    <DataTable
+                      title={allStd}
+                      columns={studentDataFormat}
+                      data={allElectiveSubjectStudents || []}
+                      customStyles={customUserTableStyle}
+                      pagination
+                      selectableRows
+                      fixedHeader
+                      selectableRowsHighlight
+                      highlightOnHover
+                      responsive
+                      onSelectedRowsChange={handleMultiSelect}
+                      clearSelectedRows={toggleClearRows}
+                    />
+                  </>
+                  {/* )} */}
+                  <StudentReportRemarkModal
+                    open={openRemarkModal}
+                    onClose={() => setOpenRemarkModal(false)}
+                    setRemark={setRemark}
+                    remark={remark}
+                    handleScoreChange={handleScoreChange}
+                    studentId={studentId}
+                    setLoadingComplete={setSavingRemarkComplete}
+                    loadingComplete={savingRemarkComplete}
+                    fetchDraft={fetchElectiveDraftReport({
+                      classLevel:
+                        localStorage.getItem("reportClassLevel") || classLevel,
                       semester: currentAcademicTerm?.name,
-                      classLevel: classLevel,
-                      subject: subject,
+                      subject: localStorage.getItem("reportSubject") || subject,
                       lecturer: authUser?.id,
-                      year: currentYear,
-                      remark,
-                      students: multiStudents,
-                    };
-                    if (multiStudents?.length > 0) {
-                      dispatch(createMultiStudentsReport(data));
-                    }
-                  }}
-                >
-                  {isElective &&
-                    multiStudents?.length > 0 &&
-                    multiLoadingComplete === false && (
-                      <Box className="promotionSpinner">
-                        <p>Saving</p>
-                        <span
-                          className="dot-ellipsis"
-                          style={{ marginTop: "-.1rem" }}
-                        >
-                          <span className="dot">.</span>
-                          <span className="dot">.</span>
-                          <span className="dot">.</span>
-                        </span>
-                      </Box>
-                    )}
-                  {isElective &&
-                    multiStudents?.length > 0 &&
-                    multiLoadingComplete &&
-                    createMultiStatus === "success" && (
-                      <>
-                        <span>All Saved</span> <TaskAlt />
-                      </>
-                    )}
-                  {isElective &&
-                    multiLoadingComplete === null &&
-                    "Save All Reports"}
-                </Button>
-              </Box>
-              {isElective && (
-                <>
-                  <DataTable
-                    title={allStd}
-                    columns={studentDataFormat}
-                    data={allElectiveSubjectStudents || []}
-                    customStyles={customUserTableStyle}
-                    pagination
-                    selectableRows
-                    fixedHeader
-                    selectableRowsHighlight
-                    highlightOnHover
-                    responsive
-                    onSelectedRowsChange={handleMultiSelect}
-                    clearSelectedRows={toggleClearRows}
+                    })}
+                    dispatch={dispatch}
                   />
-                </>
-              )}
-              <StudentReportRemarkModal
-                open={openRemarkModal}
-                onClose={() => setOpenRemarkModal(false)}
-                setRemark={setRemark}
-                remark={remark}
-                handleScoreChange={handleScoreChange}
-                studentId={studentId}
-                setLoadingComplete={setLoadingComplete}
-                loadingComplete={loadingComplete}
-                fetchDraft={fetchElectiveDraftReport({
-                  classLevel:
-                    localStorage.getItem("reportClassLevel") || classLevel,
-                  semester: currentAcademicTerm?.name,
-                  subject: localStorage.getItem("reportSubject") || subject,
-                  lecturer: authUser?.id,
-                })}
-                dispatch={dispatch}
-              />
+                </Box>
+              </Box>
+            )}
+          {!classLevel && !subject && (
+            <Box>
+              <Typography
+                variant="h6"
+                color="#fff"
+                textAlign={"center"}
+                mt={2}
+                fontSize={".9em"}
+              >
+                Select Form and Subject to begin...
+              </Typography>
             </Box>
-          </Box>
-        ) : (
-          <Box>
-            <Typography
-              variant="h6"
-              color="#fff"
-              textAlign={"center"}
-              mt={5}
-              fontSize={".9em"}
-            >
-              {!classLevel && !subject
-                ? "Select Form and Subject to begin..."
-                : "No data found!"}
-            </Typography>
-          </Box>
-        )}
+          )}
+          {classLevel && subject && !draftReportInfo && (
+            <Box>
+              <Typography
+                variant="h6"
+                color="#fff"
+                textAlign={"center"}
+                mt={2}
+                fontSize={".9em"}
+              >
+                No data found!
+              </Typography>
+            </Box>
+          )}
+        </>
       </Box>
     </>
   );
