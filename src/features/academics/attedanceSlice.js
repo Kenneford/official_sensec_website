@@ -175,12 +175,6 @@ export const searchClassAttendance = createAsyncThunk(
       const response = await tokenInterceptor.put(
         `/academics/class_attendance/search`,
         data
-        // {
-        //   date: data?.date,
-        //   lecturer: data?.lecturer,
-        //   classLevel: data?.classLevel,
-        //   classSection: data?.classSection,
-        // }
       );
       console.log(response.data);
       return response.data;

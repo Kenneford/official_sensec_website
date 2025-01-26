@@ -21,6 +21,7 @@ import { FetchAllClassLevels } from "../../data/class/FetchClassLevel";
 import { useDispatch } from "react-redux";
 import DataTable from "react-data-table-component";
 import { customAttendanceTableStyle } from "../../usersInfoDataFormat/usersInfoTableStyle";
+import { dateFormatter } from "../../dateFormatter/DateFormatter";
 
 export default function SearchedAttendanceOverviewModal({
   open,
@@ -249,7 +250,12 @@ export default function SearchedAttendanceOverviewModal({
                   fontSize={".8em"}
                   color="#292929"
                 >
-                  Date: <span style={{ color: "#696969" }}>{data?.date}</span>
+                  Date:{" "}
+                  <span style={{ color: "#696969" }}>
+                    {data?.date
+                      ? dateFormatter?.format(new Date(data?.date))
+                      : "---"}
+                  </span>
                 </Typography>
                 <Typography
                   id="responsive-modal-title"

@@ -10,6 +10,7 @@ const initialState = {
   multiStudentsReportInfo: "",
   draftReportInfo: "",
   allReports: [],
+  subjectMultiStudentsReports: "",
   allStudentReports: [],
   successMessage: "",
   error: "",
@@ -68,6 +69,21 @@ export const createMultiStudentsReport = createAsyncThunk(
     }
   }
 );
+export const fetchSubjectMultiStudentsReport = createAsyncThunk(
+  "Report/fetchSubjectMultiStudentsReport",
+  async (data, { rejectWithValue }) => {
+    try {
+      const res = await tokenInterceptor.put(
+        `/academics/report/subject/fetch_all`,
+        data
+      );
+      return res.data;
+    } catch (error) {
+      console.log(error.response.data);
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 export const saveDraftReport = createAsyncThunk(
   "Report/saveDraftReport",
   async (data, { rejectWithValue }) => {
@@ -88,14 +104,10 @@ export const saveDraftReport = createAsyncThunk(
 export const fetchElectiveDraftReport = createAsyncThunk(
   "Report/fetchElectiveDraftReport",
   async (data, { rejectWithValue }) => {
-    console.log(data);
-
     try {
       const res = await tokenInterceptor.post(
         `/academics/student_report/draft/elective/fetch`,
-        {
-          data,
-        }
+        data
       );
       return res.data;
     } catch (error) {
@@ -112,9 +124,7 @@ export const fetchCoreDraftReport = createAsyncThunk(
     try {
       const res = await tokenInterceptor.post(
         `/academics/student_report/draft/core/fetch`,
-        {
-          data,
-        }
+        data
       );
       return res.data;
     } catch (error) {
@@ -334,6 +344,33 @@ const reportSlice = createSlice({
         error: action.payload,
       };
     });
+    // Fetch Subject MultiStudents Report
+    builder.addCase(fetchSubjectMultiStudentsReport.pending, (state) => {
+      return { ...state, fetchStatus: "pending" };
+    });
+    builder.addCase(
+      fetchSubjectMultiStudentsReport.fulfilled,
+      (state, action) => {
+        if (action.payload) {
+          return {
+            ...state,
+            subjectMultiStudentsReports: action.payload.foundReports,
+            successMessage: action.payload.successMessage,
+            fetchStatus: "success",
+          };
+        } else return state;
+      }
+    );
+    builder.addCase(
+      fetchSubjectMultiStudentsReport.rejected,
+      (state, action) => {
+        return {
+          ...state,
+          fetchStatus: "rejected",
+          error: action.payload,
+        };
+      }
+    );
     //   Fetch all student reports
     builder.addCase(fetchAllStudentReports.pending, (state) => {
       return { ...state, fetchStatus: "pending" };
@@ -366,6 +403,8 @@ export const {
   resetFetchCoreReportState,
 } = reportSlice.actions;
 export const getAllReports = (state) => state.report.allReports;
+export const getSubjectMultiStudentsReports = (state) =>
+  state.report.subjectMultiStudentsReports;
 export const getAllStudentReports = (state) => state.report.allStudentReports;
 export const getDraftReportInfo = (state) => state.report.draftReportInfo;
 
