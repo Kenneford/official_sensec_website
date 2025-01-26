@@ -1,12 +1,8 @@
-import { Avatar, Box, Stack, Typography } from "@mui/material";
-import React, { useEffect } from "react";
+import { Box } from "@mui/material";
 import CoursesBanner from "../../components/forCoursesPage/banner/CoursesBanner";
 import Footer from "../../components/footer/Footer";
-// import { AllCourses } from "../../components/lazyLoading/LazyComponents";
 import { AllCourses } from "../../components/forCoursesPage/courses/AllCourses";
 import { FetchAllProgrammes } from "../../data/programme/FetchProgrammeData";
-import { useNavigate, useOutletContext } from "react-router-dom";
-import { NavigationBar } from "../../components/navbar/NavigationBar";
 import PageLoading from "../../components/pageLoading/PageLoading";
 
 export function Courses() {
@@ -21,7 +17,7 @@ export function Courses() {
   return (
     <Box id="allProgrammes">
       <CoursesBanner />
-      <AllCourses />
+      <AllCourses allProgrammes={allProgrammes} />
       <Footer />
     </Box>
   );

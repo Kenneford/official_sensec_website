@@ -22,7 +22,6 @@ export default function Footer() {
     window.history.replaceState("", document.title, window.location.pathname);
   }
   const [openChatBox, setOpenChatBox] = useState(false);
-  console.log(openChatBox);
 
   const openChat = () => setOpenChatBox(!openChatBox);
 

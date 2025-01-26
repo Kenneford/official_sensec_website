@@ -338,6 +338,7 @@ export function SchoolProgrammesData() {
               <Button
                 title="Remove Existing Lecturer"
                 onClick={() => {
+                  setCurrentRowId(row);
                   setOpenRemoveLecturerModal(true);
                 }}
                 sx={{
@@ -863,10 +864,8 @@ export function SchoolProgrammesData() {
           open={openRemoveLecturerModal}
           onClose={() => setOpenRemoveLecturerModal(false)}
           authAdmin={authAdmin}
-          subject={foundElectiveSubject?._id}
-          // lecturer={lecturerFound}
-          // subject={row}
-          loadingComplete={loadingComplete}
+          subject={currentRowId}
+          removeLecturerStatus={removeLecturerStatus}
         />
       </Box>
     </>
