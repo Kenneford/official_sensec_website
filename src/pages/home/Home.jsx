@@ -9,8 +9,18 @@ import { PopularCoursesSection } from "../../components/forHomePage/coursesSecti
 import { ImageSlider } from "../../components/forHomePage/imageSlider/ImageSlider";
 import { QuestionsSection } from "../../components/forHomePage/questionsSection/QuestionsSection";
 import { Box } from "@mui/material";
+import { FetchAllProgrammes } from "../../data/programme/FetchProgrammeData";
+import PageLoading from "../../components/pageLoading/PageLoading";
 
 export function Home() {
+  const allProgrammes = FetchAllProgrammes();
+  if (!allProgrammes) {
+    return (
+      <Box fontSize={"calc( 0.7rem + 1vmin)"}>
+        <PageLoading />
+      </Box>
+    );
+  }
   return (
     <Box id="homePage">
       <Box sx={{ overflow: "hidden" }}>
