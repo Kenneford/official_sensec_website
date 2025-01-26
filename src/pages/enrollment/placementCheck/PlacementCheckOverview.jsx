@@ -498,46 +498,48 @@ export function PlacementCheckOverview() {
                             className="changeDOBWrap"
                           >
                             {/* {changeDOB && ( */}
-                            <CustomMobileDatePicker
-                              label={
-                                <span>
-                                  Date of Birth{" "}
-                                  <span
-                                    style={{
-                                      color: placementStudent?.dateOfBirth
-                                        ? "green"
-                                        : "red",
-                                      marginRight: "8px",
-                                    }}
-                                  >
-                                    *
+                            <Box fontSize={"calc(0.7rem + 1vmin)"}>
+                              <CustomMobileDatePicker
+                                label={
+                                  <span>
+                                    Date of Birth{" "}
+                                    <span
+                                      style={{
+                                        color: placementStudent?.dateOfBirth
+                                          ? "green"
+                                          : "red",
+                                        marginRight: "8px",
+                                      }}
+                                    >
+                                      *
+                                    </span>
                                   </span>
-                                </span>
-                              }
-                              name="dateOfBirth"
-                              // inputFormat="MM/dd/yyyy"
-                              value={
-                                placementStudent?.dateOfBirth ||
-                                dayjs("MM/DD/YYYY")
-                              }
-                              onChange={handleDateChange}
-                              maxDate={dayjs()}
-                              renderInput={(params) => (
-                                <CustomTextField {...params} />
-                              )}
-                              required
-                              error={false} // Make sure this is false
-                              helperText="" // Optionally clear helper text
-                              sx={{
-                                width: "100%",
-                                cursor: "pointer",
-                                "& .MuiInputLabel-asterisk": {
-                                  color: foundStudent?.dateOfBirth
-                                    ? "green"
-                                    : "red", // Change the asterisk color to red
-                                },
-                              }}
-                            />
+                                }
+                                name="dateOfBirth"
+                                // inputFormat="MM/dd/yyyy"
+                                value={
+                                  placementStudent?.dateOfBirth ||
+                                  dayjs("MM/DD/YYYY")
+                                }
+                                onChange={handleDateChange}
+                                maxDate={dayjs()}
+                                renderInput={(params) => (
+                                  <CustomTextField {...params} />
+                                )}
+                                required
+                                error={false} // Make sure this is false
+                                helperText="" // Optionally clear helper text
+                                sx={{
+                                  width: "100%",
+                                  cursor: "pointer",
+                                  "& .MuiInputLabel-asterisk": {
+                                    color: foundStudent?.dateOfBirth
+                                      ? "green"
+                                      : "red", // Change the asterisk color to red
+                                  },
+                                }}
+                              />
+                            </Box>
                             {changeDOB && (
                               <Close
                                 onClick={() => setChangeDOB(false)}

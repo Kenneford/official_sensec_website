@@ -505,17 +505,19 @@ export function EmploymentForm() {
               {/* Date Of Birth */}
               <Grid item xs={12} sm={6} md={4} lg={4}>
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  <CustomMobileDatePicker
-                    label="Date of Birth"
-                    // inputFormat="MM/dd/yyyy"
-                    value={newEmployment?.dateOfBirth || {}}
-                    onChange={(date) => handleDateChange("dateOfBirth", date)}
-                    maxDate={new Date()}
-                    renderInput={(params) => <CustomTextField {...params} />}
-                    sx={{
-                      width: "100%",
-                    }}
-                  />
+                  <Box fontSize={"calc(1rem + 1vmin)"}>
+                    <CustomMobileDatePicker
+                      label="Date of Birth"
+                      // inputFormat="MM/dd/yyyy"
+                      value={newEmployment?.dateOfBirth || {}}
+                      onChange={(date) => handleDateChange("dateOfBirth", date)}
+                      maxDate={new Date()}
+                      renderInput={(params) => <CustomTextField {...params} />}
+                      sx={{
+                        width: "100%",
+                      }}
+                    />
+                  </Box>
                 </LocalizationProvider>
               </Grid>
               {/* Nationality */}

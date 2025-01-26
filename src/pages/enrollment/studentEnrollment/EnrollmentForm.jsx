@@ -86,7 +86,7 @@ export function EnrollmentForm() {
   const { enrollmentStatus, error, successMessage } = useSelector(
     (state) => state.student
   );
-  console.log(allFlattenedProgrammes);
+  console.log("allFlattenedProgrammes: ", allFlattenedProgrammes);
 
   //Get current year and random number for student's unique-Id
   const currentYear = new Date().getFullYear();

@@ -44,7 +44,6 @@ const FetchAllDivisionProgrammes = ({ programId }) => {
 const FetchAllCreatedDivisionProgrammes = () => {
   const allProgrammes = useSelector(getCreatedDivisionProgrammes);
   const dispatch = useDispatch();
-  console.log(allProgrammes);
 
   useEffect(() => {
     dispatch(fetchCreatedDivisionProgrammes());

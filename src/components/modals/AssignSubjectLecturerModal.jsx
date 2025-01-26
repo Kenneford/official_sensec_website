@@ -28,10 +28,11 @@ export default function AssignSubjectLecturerModal({
   loadingComplete,
   assignLecturerStatus,
 }) {
+  console.log(subject?.subjectName);
+
   const allLecturers = FetchAllLecturers();
   const allClassLevels = FetchAllClassLevels();
   const allFlattenedProgrammes = FetchAllFlattenedProgrammes();
-  console.log(allLecturers);
   const [confirmed, setConfirmed] = useState(false);
   const [selectedLecturerInfo, setSelectedLecturerInfo] = useState("");
   const [selectedLecturer, setSelectedLecturer] = useState("");
@@ -39,8 +40,6 @@ export default function AssignSubjectLecturerModal({
   const [programme, setProgramme] = useState("");
   const [classLevel, setClassLevel] = useState("");
   const dispatch = useDispatch();
-  console.log(subject);
-  console.log(programme);
 
   const filteredLecturers = searchTeacher
     ? allLecturers.filter(
@@ -278,6 +277,33 @@ export default function AssignSubjectLecturerModal({
                   <Grid item xs={12} sm={6}>
                     <Box mt={3}>
                       <CustomTextField
+                        fullWidth
+                        // name="programme"
+                        label="Subject"
+                        value={subject?.subjectName || ""}
+                        size="small"
+                        onChange={(e) => {
+                          setProgramme(e.target.value);
+                          // localStorage.setItem("reportClassLevel", e.target.value);
+                        }}
+                        slotProps={{
+                          input: { readOnly: true },
+                        }}
+                        required
+                        sx={{
+                          "& .MuiInputBase-input": {
+                            height: "1.2rem",
+                            fontSize: ".8em",
+                          },
+                          "& .MuiInputLabel-root": {
+                            fontSize: ".7em", // Default label size
+                            transition: "font-size 0.2s, color 0.2s",
+                          },
+                        }}
+                      />
+                    </Box>
+                    <Box mt={3}>
+                      <CustomTextField
                         select
                         fullWidth
                         name="programme"
@@ -351,10 +377,12 @@ export default function AssignSubjectLecturerModal({
                 direction="row"
                 spacing={2}
                 sx={{ justifyContent: "flex-end" }}
+                mt={2}
               >
                 <Button
                   variant="outlined"
                   color="success"
+                  size="small"
                   onClick={() => {
                     setConfirmed(true);
                     const data = {
@@ -416,6 +444,7 @@ export default function AssignSubjectLecturerModal({
                 <Button
                   variant="outlined"
                   color="error"
+                  size="small"
                   onClick={() => {
                     setConfirmed(false);
                     setSearchTeacher("");

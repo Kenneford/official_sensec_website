@@ -59,7 +59,6 @@ export function StudentPlacementCheck() {
   const placementBatchFound = FetchPlacementBatchByYear(
     formData?.yearGraduated
   );
-  console.log(allPlacementSBatches);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -84,7 +83,6 @@ export function StudentPlacementCheck() {
     );
     return placementStudentFound;
   }, [memoizedPlacementStudentData, placementBatchFound]);
-  console.log(placementBatchStudentFound);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -112,11 +110,6 @@ export function StudentPlacementCheck() {
     } else {
       setYearGraduatedError(false);
     }
-  }, [formData, memoizedPlacementStudentData, placementBatchStudentFound]);
-
-  // Fetch data
-  useEffect(() => {
-    dispatch(fetchAllPlacementStudents());
     if (memoizedPlacementStudentData) {
       const studentID = memoizedPlacementStudentData?.jhsIndexNo;
       // Mask the ID: keep first 6 characters, add "****", and keep the last 6 characters
@@ -132,7 +125,12 @@ export function StudentPlacementCheck() {
         }
       );
     }
-  }, [formData, dispatch, memoizedPlacementStudentData]);
+  }, [formData, memoizedPlacementStudentData, placementBatchStudentFound]);
+
+  // Fetch data
+  useEffect(() => {
+    dispatch(fetchAllPlacementStudents());
+  }, [dispatch]);
 
   // Placement check status
   useEffect(() => {
@@ -189,9 +187,7 @@ export function StudentPlacementCheck() {
   }, [
     navigate,
     checkStatus,
-    successMessage,
     error,
-    loadingComplete,
     memoizedPlacementStudentData,
     dispatch,
     formData,

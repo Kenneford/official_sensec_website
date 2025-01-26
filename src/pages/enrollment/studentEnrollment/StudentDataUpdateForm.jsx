@@ -358,9 +358,9 @@ export function StudentDataUpdateForm() {
                 <Grid item xs={12} sm={6} md={4} lg={4}>
                   <CustomTextField
                     fullWidth
-                    label="First Name"
+                    label="Full Name"
                     name="personalInfo.firstName"
-                    value={student?.personalInfo?.firstName || ""}
+                    value={student?.personalInfo?.fullName || ""}
                     onChange={handleChange}
                     className="textField"
                     // InputProps={{
@@ -369,7 +369,7 @@ export function StudentDataUpdateForm() {
                   />
                 </Grid>
                 {/* Student Surname */}
-                <Grid item xs={12} sm={6} md={4} lg={4}>
+                {/* <Grid item xs={12} sm={6} md={4} lg={4}>
                   <CustomTextField
                     fullWidth
                     label="Surname"
@@ -377,9 +377,9 @@ export function StudentDataUpdateForm() {
                     value={student?.personalInfo?.lastName || ""}
                     onChange={handleChange}
                   />
-                </Grid>
+                </Grid> */}
                 {/* Student Other Name */}
-                <Grid item xs={12} sm={6} md={4} lg={4}>
+                {/* <Grid item xs={12} sm={6} md={4} lg={4}>
                   <CustomTextField
                     fullWidth
                     label="Other Name"
@@ -387,7 +387,7 @@ export function StudentDataUpdateForm() {
                     value={student?.personalInfo?.otherName || ""}
                     onChange={handleChange}
                   />
-                </Grid>
+                </Grid> */}
                 {/* Place Of Birth */}
                 <Grid item xs={12} sm={6} md={4} lg={4}>
                   <CustomTextField
@@ -400,27 +400,29 @@ export function StudentDataUpdateForm() {
                 </Grid>
                 {/* Date Of Birth */}
                 <Grid item xs={12} sm={6} md={4} lg={4}>
-                  <CustomMobileDatePicker
-                    label={<span>Date of Birth </span>}
-                    name="dateOfBirth"
-                    // inputFormat="MM/dd/yyyy"
-                    value={student?.dateOfBirth || dayjs("MM/DD/YYYY")}
-                    onChange={handleDateChange}
-                    maxDate={dayjs()}
-                    slots={{
-                      input: (params) => <CustomTextField {...params} />,
-                    }}
-                    // required
-                    // error={false} // Make sure this is false
-                    // helperText="" // Optionally clear helper text
-                    // sx={{
-                    //   width: "100%",
-                    //   cursor: "pointer",
-                    //   "& .MuiInputLabel-asterisk": {
-                    //     color: foundStudent?.dateOfBirth ? "green" : "red", // Change the asterisk color to red
-                    //   },
-                    // }}
-                  />
+                  <Box fontSize={"calc(1rem + 1vmin)"}>
+                    <CustomMobileDatePicker
+                      label={<span>Date of Birth </span>}
+                      name="dateOfBirth"
+                      // inputFormat="MM/dd/yyyy"
+                      value={student?.dateOfBirth || dayjs("MM/DD/YYYY")}
+                      onChange={handleDateChange}
+                      maxDate={dayjs()}
+                      slots={{
+                        input: (params) => <CustomTextField {...params} />,
+                      }}
+                      // required
+                      // error={false} // Make sure this is false
+                      // helperText="" // Optionally clear helper text
+                      sx={{
+                        width: "100%",
+                        // cursor: "pointer",
+                        // "& .MuiInputLabel-asterisk": {
+                        //   color: foundStudent?.dateOfBirth ? "green" : "red", // Change the asterisk color to red
+                        // },
+                      }}
+                    />
+                  </Box>
                 </Grid>
                 {/* Nationality */}
                 <Grid item xs={12} sm={6} md={4} lg={4}>

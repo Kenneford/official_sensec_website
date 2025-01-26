@@ -1639,8 +1639,29 @@ const pendingStudentsColumn = (columnData) => {
     },
     {
       name: "Program",
-      selector: (row) =>
-        row?.studentSchoolData ? row.studentSchoolData?.program?.name : "---",
+      selector: (row) => {
+        const allFlattenedProgrammes = FetchAllFlattenedProgrammes();
+        const studentProgramFound = allFlattenedProgrammes?.find(
+          (program) =>
+            program?._id === row.studentSchoolData?.program?.programId
+        );
+        if (studentProgramFound) {
+          return (
+            <p
+              title={
+                studentProgramFound?.name
+                  ? studentProgramFound?.name
+                  : studentProgramFound?.divisionName
+              }
+            >
+              {studentProgramFound?.name
+                ? studentProgramFound?.name
+                : studentProgramFound?.divisionName}
+            </p>
+          );
+        }
+        return "---";
+      },
     },
     {
       name: "Unique-ID",
