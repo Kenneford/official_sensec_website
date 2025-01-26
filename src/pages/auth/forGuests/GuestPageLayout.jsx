@@ -26,7 +26,6 @@ export function GuestPageLayout() {
   const { currentGuestPage, uniqueId } = useParams();
   const signUpAction = localStorage.getItem("loginAction");
   const signUpId = localStorage.getItem("signUpId");
-  console.log(currentGuestPage);
 
   const navigate = useNavigate();
   const location = useLocation();

@@ -17,12 +17,15 @@ const FetchAllSubjects = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (assignLecturerStatus === "success") {
+    if (
+      assignLecturerStatus === "success" ||
+      removeLecturerStatus === "success"
+    ) {
       dispatch(fetchAllSubjects());
     } else {
       dispatch(fetchAllSubjects());
     }
-  }, [assignLecturerStatus, dispatch]);
+  }, [assignLecturerStatus, removeLecturerStatus, dispatch]);
 
   return allSubjects;
 };

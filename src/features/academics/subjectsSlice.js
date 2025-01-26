@@ -6,6 +6,7 @@ import tokenInterceptor from "../../apiEndPoint/interceptors";
 const initialState = {
   subjectInfo: "",
   subjectLecturerInfo: "",
+  lecturerRemovedInfo: "",
   allSubjectLecturers: [],
   allSubjects: [],
   createStatus: "",
@@ -73,11 +74,9 @@ export const removeSubjectLecturer = createAsyncThunk(
   "Subject/removeSubjectLecturer",
   async (data, { rejectWithValue }) => {
     try {
-      const res = await tokenInterceptor.post(
+      const res = await tokenInterceptor.put(
         `/academics/subjects/${data?.subjectId}/remove_lecturer`,
-        {
-          data,
-        }
+        data
       );
       console.log(res.data);
       return res.data;
@@ -235,6 +234,27 @@ const subjectSlice = createSlice({
         error: action.payload,
       };
     });
+    // Remove Subject Lecturer
+    builder.addCase(removeSubjectLecturer.pending, (state) => {
+      return { ...state, removeLecturerStatus: "pending" };
+    });
+    builder.addCase(removeSubjectLecturer.fulfilled, (state, action) => {
+      if (action.payload) {
+        return {
+          ...state,
+          lecturerRemovedInfo: action.payload.lecturerRemoved,
+          successMessage: action.payload.successMessage,
+          removeLecturerStatus: "success",
+        };
+      } else return state;
+    });
+    builder.addCase(removeSubjectLecturer.rejected, (state, action) => {
+      return {
+        ...state,
+        removeLecturerStatus: "rejected",
+        error: action.payload,
+      };
+    });
     builder.addCase(fetchAllSubjects.pending, (state) => {
       return { ...state, fetchStatus: "pending" };
     });
@@ -278,8 +298,11 @@ const subjectSlice = createSlice({
     });
   },
 });
-export const { resetCreateSubjectState, resetAssignSubjectLecturerState } =
-  subjectSlice.actions;
+export const {
+  resetCreateSubjectState,
+  resetAssignSubjectLecturerState,
+  resetRemoveSubjectLecturerState,
+} = subjectSlice.actions;
 export const getAllSubjects = (state) => state.subject.allSubjects;
 export const getAllSubjectLecturers = (state) =>
   state.subject.allSubjectLecturers;

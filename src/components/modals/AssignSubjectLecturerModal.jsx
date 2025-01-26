@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import PropTypes from "prop-types";
 import { assignSubjectLecturer } from "../../features/academics/subjectsSlice";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CustomTextField } from "../../muiStyling/muiStyling";
 import { Close, Search, TaskAlt } from "@mui/icons-material";
 import { FetchAllLecturers } from "../../data/lecturers/FetchLecturers";
@@ -28,7 +28,7 @@ export default function AssignSubjectLecturerModal({
   loadingComplete,
   assignLecturerStatus,
 }) {
-  console.log(subject?.subjectName);
+  const inputRef = useRef(null);
 
   const allLecturers = FetchAllLecturers();
   const allClassLevels = FetchAllClassLevels();
@@ -55,6 +55,14 @@ export default function AssignSubjectLecturerModal({
 
   const canAssign =
     Boolean(classLevel) && Boolean(selectedLecturer?._id) && Boolean(subject);
+
+  // Ensure focus when the modal becomes visible
+  useEffect(() => {
+    if (confirmed && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [confirmed]);
+
   useEffect(() => {
     if (selectedLecturerInfo) {
       setSelectedLecturer(selectedLecturerInfo);
@@ -163,6 +171,7 @@ export default function AssignSubjectLecturerModal({
               </Typography>
               <Box sx={{ mt: 2, mb: 2 }} position={"relative"}>
                 <CustomTextField
+                  inputRef={inputRef}
                   fullWidth
                   name="lecturers"
                   label="Search filter"
