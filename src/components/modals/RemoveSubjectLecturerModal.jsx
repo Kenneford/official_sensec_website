@@ -35,7 +35,6 @@ export default function RemoveSubjectLecturerModal({
   const allLecturers = FetchAllLecturers();
   const allClassLevels = FetchAllClassLevels();
   const allFlattenedProgrammes = FetchAllFlattenedProgrammes();
-  console.log(subject);
   const allSubjectLecturers = useSelector(getAllSubjectLecturers);
   const [confirmed, setConfirmed] = useState(false);
   const [selectedLecturerInfo, setSelectedLecturerInfo] = useState("");
@@ -44,8 +43,6 @@ export default function RemoveSubjectLecturerModal({
   const [programme, setProgramme] = useState("");
   const [classLevel, setClassLevel] = useState("");
   const dispatch = useDispatch();
-  console.log(classLevel);
-  console.log(allSubjectLecturers);
 
   const filteredLecturers = allSubjectLecturers.filter((lecturer) =>
     lecturer?.name?.toLowerCase()?.includes(searchTeacher.toLowerCase())

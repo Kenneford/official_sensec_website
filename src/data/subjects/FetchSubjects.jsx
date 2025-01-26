@@ -46,7 +46,6 @@ const FetchAllCoreSubjects = () => {
 };
 const FetchAllLecturerSubjects = (isCore) => {
   const authUser = useSelector(getAuthUser);
-  console.log(authUser);
   const [subjects, setSubjects] = useState([]);
 
   // const allSubjects = FetchAllSubjects();
@@ -72,9 +71,7 @@ const FetchAllLecturerSubjects = (isCore) => {
     }
   }, [lecturerFound, isCore]);
 
-  console.log(subjects);
   if (!subjects) {
-    console.log("No subjects found for lecturer");
     return [];
   }
   // Extract all subjects from the nested subjects array
@@ -95,7 +92,6 @@ const FetchAllLecturerSubjects = (isCore) => {
 };
 const FetchAllSubjectStudents = (selectedSubject) => {
   const dispatch = useDispatch();
-  console.log(selectedSubject);
   const allUsers = useSelector(getAllUsers);
 
   const allLecturerSubjects = allUsers?.filter(

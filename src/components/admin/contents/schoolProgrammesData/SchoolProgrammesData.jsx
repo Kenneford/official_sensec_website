@@ -40,7 +40,7 @@ export function SchoolProgrammesData() {
   const [program, setProgram] = useState(false);
   const [electiveSub, setElectiveSub] = useState(false);
   const [coreSub, setCoreSub] = useState(false);
-  const [currentRowId, setCurrentRowId] = useState("");
+  const [currentRowId, setCurrentRowId] = useState({});
   const [itemToDelete, setItemToDelete] = useState("");
   const [electiveSubProgram, setElectiveSubProgram] = useState("");
   const [electiveSubClassLevel, setElectiveSubClassLevel] = useState("");
@@ -49,11 +49,8 @@ export function SchoolProgrammesData() {
   const allSubjectsData = FetchAllSubjects();
   const allFlattenedProgrammes = FetchAllFlattenedProgrammes();
   const allElectiveSubjectsData = FetchAllElectiveSubjects();
-  console.log(allElectiveSubjectsData);
-  console.log(currentRowId);
 
   const allCoreSubjectsData = FetchAllCoreSubjects();
-  console.log(allCoreSubjectsData);
 
   const { assignLecturerStatus, successMessage, removeLecturerStatus, error } =
     useSelector((state) => state.subject);
@@ -65,10 +62,8 @@ export function SchoolProgrammesData() {
   const [lecturerToAssign, setLecturerToAssign] = useState("");
   const [lecturerToRemove, setLecturerToRemove] = useState("");
   const [openAssignLecturerModal, setOpenAssignLecturerModal] = useState(false);
-  console.log(openAssignLecturerModal);
 
   const [openRemoveLecturerModal, setOpenRemoveLecturerModal] = useState(false);
-  console.log(openRemoveLecturerModal);
 
   const [assignLecturerInProgress, setAssignLecturerInProgress] =
     useState(false);
@@ -85,7 +80,6 @@ export function SchoolProgrammesData() {
   const foundElectiveSubject = allElectiveSubjectsData.find(
     (eSubj) => eSubj._id === currentRowId
   );
-  console.log(foundElectiveSubject);
 
   const foundCoreSubject = allCoreSubjectsData.find(
     (cSubj) => cSubj._id === currentRowId
@@ -464,7 +458,6 @@ export function SchoolProgrammesData() {
         const lecturerFound = allLecturers?.find(
           (lecturer) => lecturer?._id === row?.currentTeacher
         );
-        console.log(lecturerFound);
 
         return (
           <>
@@ -760,9 +753,10 @@ export function SchoolProgrammesData() {
       }, 3000);
       setTimeout(() => {
         dispatch(resetAssignSubjectLecturerState());
+        setLoadingComplete(null);
       }, 6000);
     }
-  }, [assignLecturerStatus, successMessage, error, dispatch, loadingComplete]);
+  }, [assignLecturerStatus, successMessage, error, dispatch]);
 
   return (
     <>

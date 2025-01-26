@@ -475,7 +475,7 @@ export function ElectiveReport() {
             Report for {foundClassLevel?.name === "Level 100" && "Form 1"}
             {foundClassLevel?.name === "Level 200" && "Form 2"}
             {foundClassLevel?.name === "Level 300" && "Form 3"}{" "}
-            {foundSubject?.subject?.subjectName} already taking!
+            {foundSubject?.subject?.subjectName} already taken!
           </Typography>
         )}
         {/* )} */}

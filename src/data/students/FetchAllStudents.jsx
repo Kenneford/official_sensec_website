@@ -105,7 +105,9 @@ const FetchClassSectionStudents = ({ class_section }) => {
   if (class_section) {
     const classLevelStudents = allApprovedStudents?.filter(
       (std) =>
-        (std && std?.studentSchoolData?.program?.programId === class_section) ||
+        (std?.studentStatusExtend?.enrollmentStatus === "approved" &&
+          std &&
+          std?.studentSchoolData?.program?.programId === class_section) ||
         (std &&
           std?.studentSchoolData?.currentClassLevelSection?._id ===
             class_section)

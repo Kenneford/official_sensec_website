@@ -55,8 +55,8 @@ export const createDivisionProgramme = createAsyncThunk(
 export const fetchAllProgrammes = createAsyncThunk(
   "Programme/fetchAllProgrammes",
   async () => {
-    const response = await axios.get(
-      `${SENSEC_API_ENDPOINT}/academics/programmes/fetch_all`
+    const response = await tokenInterceptor.get(
+      `/academics/programmes/fetch_all`
     );
     return response.data;
   }
@@ -64,13 +64,17 @@ export const fetchAllProgrammes = createAsyncThunk(
 
 export const fetchAllFlattenedProgrammes = createAsyncThunk(
   "Programme/fetchAllFlattenedProgrammes",
-  async () => {
-    const response = await axios.get(
-      `${SENSEC_API_ENDPOINT}/academics/programmes_and_divisions/fetch_all`
-    );
-    // const students = response.data;
-    console.log(response.data);
-    return response.data;
+  async (rejectWithValue) => {
+    try {
+      const response = await tokenInterceptor.get(
+        `/academics/programmes_and_divisions/fetch_all`
+      );
+      // const students = response.data;
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
   }
 );
 export const fetchAllDivisionProgrammes = createAsyncThunk(
@@ -79,8 +83,8 @@ export const fetchAllDivisionProgrammes = createAsyncThunk(
     console.log(programId);
 
     try {
-      const response = await axios.get(
-        `${SENSEC_API_ENDPOINT}/academics/programs/${programId}/divisions/fetch_all`
+      const response = await tokenInterceptor.get(
+        `/academics/programs/${programId}/divisions/fetch_all`
       );
       return response.data;
     } catch (error) {
@@ -93,8 +97,8 @@ export const fetchCreatedDivisionProgrammes = createAsyncThunk(
   "Programme/fetchCreatedDivisionProgrammes",
   async (rejectWithValue) => {
     try {
-      const response = await axios.get(
-        `${SENSEC_API_ENDPOINT}/academics/programs/divisions/fetch_all`
+      const response = await tokenInterceptor.get(
+        `/academics/programs/divisions/fetch_all`
       );
       return response.data;
     } catch (error) {
@@ -107,8 +111,8 @@ export const fetchSingleProgram = createAsyncThunk(
   "Program/fetchSingleProgram",
   async (programName, { rejectWithValue }) => {
     try {
-      const response = await axios.get(
-        `${SENSEC_API_ENDPOINT}/admin/academics/single_program/${programName}`
+      const response = await tokenInterceptor.get(
+        `/admin/academics/single_program/${programName}`
       );
       // const students = response.data;
       return response.data;
@@ -124,8 +128,8 @@ export const updateProgram = createAsyncThunk(
   async ({ name, programId, lastUpdatedBy }, { rejectWithValue }) => {
     try {
       const accessToken = localStorage.getItem("userToken");
-      const response = await axios.put(
-        `${SENSEC_API_ENDPOINT}/admin/academics/program/${programId}/update`,
+      const response = await tokenInterceptor.put(
+        `/admin/academics/program/${programId}/update`,
         { name, lastUpdatedBy },
         { headers: { Authorization: `Bearer ${accessToken}` } }
       );
@@ -143,8 +147,8 @@ export const deleteProgram = createAsyncThunk(
     console.log(id);
     console.log(deletedBy);
     try {
-      const response = await axios.delete(
-        `${SENSEC_API_ENDPOINT}/admin/academics/delete_program/${id}/${deletedBy}`
+      const response = await tokenInterceptor.delete(
+        `/admin/academics/delete_program/${id}/${deletedBy}`
       );
       return response.data;
     } catch (error) {
