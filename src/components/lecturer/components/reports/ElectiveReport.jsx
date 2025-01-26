@@ -38,7 +38,9 @@ import {
 } from "../../../../features/academics/classLevelsSlice";
 import PropTypes from "prop-types";
 import { fetchElectiveDraftReport } from "../../../../features/reports/reportSlice";
+import AssignClassLecturerModal from "../../../modals/AssignClassLecturerModal";
 import StudentReportRemarkModal from "../../../modals/studentReportRemarkModal";
+import { styled } from "@mui/system";
 
 export function ElectiveReport() {
   const { createStatus, createMultiStatus, error, successMessage } =
