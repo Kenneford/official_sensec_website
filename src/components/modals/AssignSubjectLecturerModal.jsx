@@ -11,7 +11,10 @@ import {
   Grid,
 } from "@mui/material";
 import PropTypes from "prop-types";
-import { assignSubjectLecturer } from "../../features/academics/subjectsSlice";
+import {
+  assignSubjectLecturer,
+  fetchAllSubjects,
+} from "../../features/academics/subjectsSlice";
 import { useEffect, useRef, useState } from "react";
 import { CustomTextField } from "../../muiStyling/muiStyling";
 import { Close, Search, TaskAlt } from "@mui/icons-material";
@@ -19,6 +22,7 @@ import { FetchAllLecturers } from "../../data/lecturers/FetchLecturers";
 import { FetchAllFlattenedProgrammes } from "../../data/programme/FetchProgrammeData";
 import { FetchAllClassLevels } from "../../data/class/FetchClassLevel";
 import { useDispatch } from "react-redux";
+import { fetchAllUsers } from "../../features/auth/authSlice";
 
 export default function AssignSubjectLecturerModal({
   open,
@@ -80,6 +84,8 @@ export default function AssignSubjectLecturerModal({
         setConfirmed(false);
         setSearchTeacher("");
         setProgramme("");
+        dispatch(fetchAllSubjects());
+        dispatch(fetchAllUsers());
         onClose();
       }, 6000);
     }
@@ -89,6 +95,7 @@ export default function AssignSubjectLecturerModal({
     selectedLecturer,
     assignLecturerStatus,
     onClose,
+    dispatch,
   ]);
 
   if (!open) return null;

@@ -11,6 +11,7 @@ import {
 import PropTypes from "prop-types";
 import {
   fetchAllSubjectLecturers,
+  fetchAllSubjects,
   getAllSubjectLecturers,
   removeSubjectLecturer,
   resetRemoveSubjectLecturerState,
@@ -20,6 +21,7 @@ import { CustomTextField } from "../../muiStyling/muiStyling";
 import { Close, Search, TaskAlt } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import { fetchAllUsers } from "../../features/auth/authSlice";
 
 export default function RemoveSubjectLecturerModal({
   open,
@@ -31,7 +33,9 @@ export default function RemoveSubjectLecturerModal({
   const { removeLecturerStatus, error } = useSelector((state) => state.subject);
 
   const allSubjectLecturers = useSelector(getAllSubjectLecturers);
+  const [subjectToRemove, setSubjectToRemove] = useState("");
   const [removingComplete, setRemovingComplete] = useState(null);
+  const [removingInProgress, setRemovingInProgress] = useState(false);
   const [selectedLecturerInfo, setSelectedLecturerInfo] = useState("");
   const [selectedLecturer, setSelectedLecturer] = useState("");
   const [searchTeacher, setSearchTeacher] = useState("");
@@ -54,6 +58,7 @@ export default function RemoveSubjectLecturerModal({
   useEffect(() => {
     if (removeLecturerStatus === "pending") {
       setRemovingComplete(false);
+      setRemovingInProgress(true);
     }
     if (removeLecturerStatus === "rejected") {
       setTimeout(() => {
@@ -68,20 +73,25 @@ export default function RemoveSubjectLecturerModal({
       setTimeout(() => {
         setRemovingComplete(null);
         dispatch(resetRemoveSubjectLecturerState());
-      }, 3000);
+      }, 2000);
       return;
     }
     if (removeLecturerStatus === "success") {
       setTimeout(() => {
         setRemovingComplete(true);
-      }, 3000);
+      }, 2000);
       setTimeout(() => {
+        const data = { subjectId: subject?._id };
         setSearchTeacher("");
+        setRemovingInProgress(false);
+        dispatch(fetchAllSubjects());
+        dispatch(fetchAllSubjectLecturers(data));
         dispatch(resetRemoveSubjectLecturerState());
-        onClose();
-      }, 6000);
+        setRemovingComplete(false);
+        // onClose();
+      }, 4000);
     }
-  }, [removeLecturerStatus, onClose, error, dispatch]);
+  }, [subject, removeLecturerStatus, onClose, error, dispatch]);
 
   useEffect(() => {
     if (open) {
@@ -100,6 +110,7 @@ export default function RemoveSubjectLecturerModal({
   const filteredLecturers = allSubjectLecturers.filter((lecturer) =>
     lecturer?.name?.toLowerCase()?.includes(searchTeacher.toLowerCase())
   );
+  console.log(filteredLecturers);
 
   if (!open) return null;
   return (
@@ -371,42 +382,52 @@ export default function RemoveSubjectLecturerModal({
                                 justifyContent: "unset",
                               }}
                               onClick={() => {
-                                const data = {
-                                  subjectId: subject?._id,
-                                  classLevel: electiveData?.classLevel,
-                                  program:
-                                    subject?.subjectInfo?.program?.programId,
-                                  currentTeacher: lecturer?.uniqueId,
-                                  lastUpdatedBy: authAdmin?.id,
-                                };
-                                if (data) {
+                                if (!removingInProgress) {
+                                  setSubjectToRemove(electiveData?._id);
+                                  const data = {
+                                    subjectId: subject?._id,
+                                    classLevel: electiveData?.classLevel,
+                                    program:
+                                      subject?.subjectInfo?.program?.programId,
+                                    currentTeacher: lecturer?.uniqueId,
+                                    lastUpdatedBy: authAdmin?.id,
+                                  };
                                   dispatch(removeSubjectLecturer(data));
                                 }
                               }}
                             >
-                              {removingComplete === false && (
-                                <Box
-                                  className="promotionSpinner"
-                                  sx={{
-                                    fontSize: "1em",
-                                  }}
-                                >
-                                  <p>Removing</p>
-                                  <span className="dot-ellipsis" style={{}}>
-                                    <span className="dot">.</span>
-                                    <span className="dot">.</span>
-                                    <span className="dot">.</span>
-                                  </span>
-                                </Box>
+                              {subjectToRemove === electiveData?._id && (
+                                <>
+                                  {removingComplete === false && (
+                                    <Box
+                                      className="promotionSpinner"
+                                      sx={{
+                                        fontSize: "1em",
+                                      }}
+                                    >
+                                      <p>Removing</p>
+                                      <span className="dot-ellipsis" style={{}}>
+                                        <span className="dot">.</span>
+                                        <span className="dot">.</span>
+                                        <span className="dot">.</span>
+                                      </span>
+                                    </Box>
+                                  )}
+                                  {removingComplete &&
+                                    removeLecturerStatus === "success" && (
+                                      <>
+                                        <span>Removed</span>{" "}
+                                        <TaskAlt
+                                          style={{ fontSize: "1.3em" }}
+                                        />
+                                      </>
+                                    )}
+                                </>
                               )}
-                              {removingComplete &&
-                                removeLecturerStatus === "success" && (
-                                  <>
-                                    <span>Removed</span>{" "}
-                                    <TaskAlt style={{ fontSize: "1.3em" }} />
-                                  </>
-                                )}
                               {removingComplete === null && "Remove"}
+                              {removingComplete !== null &&
+                                subjectToRemove !== electiveData?._id &&
+                                "Remove"}
                             </Button>
                           </Box>
                         ))}

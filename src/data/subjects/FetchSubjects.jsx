@@ -11,8 +11,9 @@ import {
 } from "../../features/auth/authSlice";
 
 const FetchAllSubjects = () => {
-  const { assignLecturerStatus, successMessage, removeLecturerStatus, error } =
-    useSelector((state) => state.subject);
+  const { assignLecturerStatus, removeLecturerStatus } = useSelector(
+    (state) => state.subject
+  );
   const allSubjects = useSelector(getAllSubjects);
   const dispatch = useDispatch();
 
