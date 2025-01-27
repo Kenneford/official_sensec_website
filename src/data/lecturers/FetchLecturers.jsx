@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchAllUsers, getAllUsers } from "../../features/auth/authSlice";
 
 const FetchAllLecturers = () => {
+  const { assignLecturerStatus } = useSelector((state) => state.subject);
   const dispatch = useDispatch();
   const allUsers = useSelector(getAllUsers);
   const allLecturers = allUsers?.filter(
@@ -10,8 +11,12 @@ const FetchAllLecturers = () => {
   );
 
   useEffect(() => {
-    dispatch(fetchAllUsers());
-  }, [dispatch]);
+    if (assignLecturerStatus === "success") {
+      dispatch(fetchAllUsers());
+    } else {
+      dispatch(fetchAllUsers());
+    }
+  }, [dispatch, assignLecturerStatus]);
 
   return allLecturers;
 };
