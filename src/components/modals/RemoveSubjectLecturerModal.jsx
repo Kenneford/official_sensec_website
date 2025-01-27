@@ -16,12 +16,13 @@ import {
   removeSubjectLecturer,
   resetRemoveSubjectLecturerState,
 } from "../../features/academics/subjectsSlice";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { CustomTextField } from "../../muiStyling/muiStyling";
 import { Close, Search, TaskAlt } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { fetchAllUsers } from "../../features/auth/authSlice";
+import { FetchAllSubjectLecturers } from "../../data/lecturers/FetchLecturers";
 
 export default function RemoveSubjectLecturerModal({
   open,
@@ -32,7 +33,10 @@ export default function RemoveSubjectLecturerModal({
   const inputRef = useRef(null);
   const { removeLecturerStatus, error } = useSelector((state) => state.subject);
 
-  const allSubjectLecturers = useSelector(getAllSubjectLecturers);
+  const allSubjectLecturers = FetchAllSubjectLecturers({
+    open,
+    subjectId: subject?._id,
+  });
   const [subjectToRemove, setSubjectToRemove] = useState("");
   const [removingComplete, setRemovingComplete] = useState(null);
   const [removingInProgress, setRemovingInProgress] = useState(false);
@@ -41,7 +45,7 @@ export default function RemoveSubjectLecturerModal({
   const [searchTeacher, setSearchTeacher] = useState("");
   const dispatch = useDispatch();
 
-  console.log(allSubjectLecturers);
+  console.log("allSubjectLecturers: ", allSubjectLecturers);
 
   useEffect(() => {
     if (selectedLecturerInfo) {
@@ -72,6 +76,7 @@ export default function RemoveSubjectLecturerModal({
       }, 1000);
       setTimeout(() => {
         setRemovingComplete(null);
+        setRemovingInProgress(false);
         dispatch(resetRemoveSubjectLecturerState());
       }, 2000);
       return;
@@ -81,28 +86,19 @@ export default function RemoveSubjectLecturerModal({
         setRemovingComplete(true);
       }, 2000);
       setTimeout(() => {
-        const data = { subjectId: subject?._id };
         setSearchTeacher("");
         setRemovingInProgress(false);
         dispatch(fetchAllSubjects());
-        dispatch(fetchAllSubjectLecturers(data));
+        setRemovingComplete(null);
+        setSubjectToRemove("");
         dispatch(resetRemoveSubjectLecturerState());
-        setRemovingComplete(false);
-        // onClose();
       }, 4000);
     }
-  }, [subject, removeLecturerStatus, onClose, error, dispatch]);
-
-  useEffect(() => {
-    if (open) {
-      const data = { subjectId: subject?._id };
-      dispatch(fetchAllSubjectLecturers(data));
-    }
-  }, [open, dispatch, subject]);
+  }, [subject, removeLecturerStatus, error, allSubjectLecturers, dispatch]);
 
   // Ensure focus when the modal becomes visible
   useEffect(() => {
-    if (allSubjectLecturers && inputRef.current) {
+    if (allSubjectLecturers?.length > 0 && inputRef.current) {
       inputRef.current.focus();
     }
   }, [allSubjectLecturers]);
@@ -110,13 +106,12 @@ export default function RemoveSubjectLecturerModal({
   const filteredLecturers = allSubjectLecturers.filter((lecturer) =>
     lecturer?.name?.toLowerCase()?.includes(searchTeacher.toLowerCase())
   );
-  console.log(filteredLecturers);
 
   if (!open) return null;
   return (
     <Modal
       open={open}
-      onClose={onClose}
+      // onClose={onClose}
       aria-labelledby="responsive-modal-title"
       aria-describedby="responsive-modal-description"
     >
@@ -223,220 +218,239 @@ export default function RemoveSubjectLecturerModal({
             </Box>
             {/* Lecturer & Subjects Details */}
             <Box className="listOfSubjectLecturers">
-              {filteredLecturers?.map((lecturer) => (
-                <Box key={lecturer?.uniqueId}>
-                  <Box
-                    display={"flex"}
-                    flexWrap={"wrap"}
-                    alignItems={"center"}
-                    gap={".5rem"}
-                    mt={".5rem"}
-                    mb={".5rem"}
-                    sx={{
-                      cursor: "pointer",
-                      "&:hover": { backgroundColor: "#e6e4e4cc" },
-                      padding: ".5rem",
-                      borderRadius: ".5rem 0 0 .5rem",
-                      // position: "relative",
-                      minWidth: "27rem",
-                    }}
-                    className="removeLSubjectLecturerWrap"
-                  >
-                    <Box className="lecturerAssignedInfos">
-                      {/* <Box className="lecturerAssignedItem"></Box> */}
-                      <Avatar
-                        sx={{
-                          width: "5rem",
-                          height: "5rem",
-                          borderRadius: ".4rem",
-                        }}
-                        className="avatar"
-                        src={lecturer?.profilePicture}
-                      />
-                    </Box>
-                    <Box>
-                      <Box
-                        className="lecturerAssignedItem"
-                        fontSize={".8em"}
-                        display={"flex"}
-                        gap={".5rem"}
-                        mb={".5rem"}
-                      >
-                        <span
-                          style={{
-                            color: "#383838",
-                            fontWeight: "500",
-                            letterSpacing: "1px",
+              {filteredLecturers?.length > 0 ? (
+                filteredLecturers?.map((lecturer) => (
+                  <Box key={lecturer?.uniqueId}>
+                    <Box
+                      display={"flex"}
+                      flexWrap={"wrap"}
+                      alignItems={"center"}
+                      gap={".5rem"}
+                      mt={".5rem"}
+                      mb={".5rem"}
+                      sx={{
+                        cursor: "pointer",
+                        "&:hover": { backgroundColor: "#e6e4e4cc" },
+                        padding: ".5rem",
+                        borderRadius: ".5rem 0 0 .5rem",
+                        // position: "relative",
+                        minWidth: "27rem",
+                      }}
+                      className="removeLSubjectLecturerWrap"
+                    >
+                      <Box className="lecturerAssignedInfos">
+                        {/* <Box className="lecturerAssignedItem"></Box> */}
+                        <Avatar
+                          sx={{
+                            width: "5rem",
+                            height: "5rem",
+                            borderRadius: ".4rem",
                           }}
-                        >
-                          Name:
-                        </span>{" "}
-                        <p
-                          style={{
-                            letterSpacing: "1px",
-                          }}
-                        >
-                          {lecturer?.gender === "Male" ? "Mr." : "Mrs."}{" "}
-                          {lecturer?.name}
-                        </p>
+                          className="avatar"
+                          src={lecturer?.profilePicture}
+                        />
                       </Box>
-                      <Box display={"flex"} gap={".5rem"}>
-                        {lecturer?.electives?.map((electiveData) => (
-                          <Box key={electiveData?._id} position={"relative"}>
-                            <Box>
-                              <Box
-                                className="lecturerAssignedItem"
-                                fontSize={".8em"}
-                                display={"flex"}
-                                gap={".5rem"}
-                              >
-                                <span
-                                  style={{
-                                    color: "#383838",
-                                    fontWeight: "500",
-                                    letterSpacing: "1px",
-                                  }}
+                      <Box>
+                        <Box
+                          className="lecturerAssignedItem"
+                          fontSize={".8em"}
+                          display={"flex"}
+                          gap={".5rem"}
+                          mb={".5rem"}
+                        >
+                          <span
+                            style={{
+                              color: "#383838",
+                              fontWeight: "500",
+                              letterSpacing: "1px",
+                            }}
+                          >
+                            Name:
+                          </span>{" "}
+                          <p
+                            style={{
+                              letterSpacing: "1px",
+                            }}
+                          >
+                            {lecturer?.gender === "Male" ? "Mr." : "Mrs."}{" "}
+                            {lecturer?.name}
+                          </p>
+                        </Box>
+                        <Box display={"flex"} gap={".5rem"}>
+                          {lecturer?.electives?.map((electiveData) => (
+                            <Box key={electiveData?._id} position={"relative"}>
+                              <Box>
+                                <Box
+                                  className="lecturerAssignedItem"
+                                  fontSize={".8em"}
+                                  display={"flex"}
+                                  gap={".5rem"}
                                 >
-                                  Subject:
-                                </span>{" "}
-                                <p>{electiveData?.subject}</p>
-                              </Box>
-                              <Box
-                                className="lecturerAssignedItem"
-                                fontSize={".8em"}
-                                display={"flex"}
-                                gap={".5rem"}
-                              >
-                                <span
-                                  style={{
-                                    color: "#383838",
-                                    fontWeight: "500",
-                                    letterSpacing: "1px",
-                                  }}
+                                  <span
+                                    style={{
+                                      color: "#383838",
+                                      fontWeight: "500",
+                                      letterSpacing: "1px",
+                                    }}
+                                  >
+                                    Subject:
+                                  </span>{" "}
+                                  <p>{electiveData?.subject}</p>
+                                </Box>
+                                <Box
+                                  className="lecturerAssignedItem"
+                                  fontSize={".8em"}
+                                  display={"flex"}
+                                  gap={".5rem"}
                                 >
-                                  Form:
-                                </span>{" "}
-                                <p>
-                                  {electiveData?.classLevel === "Level 100" &&
-                                    "Form 1"}
-                                  {electiveData?.classLevel === "Level 200" &&
-                                    "Form 2"}
-                                  {electiveData?.classLevel === "Level 300" &&
-                                    "Form 3"}
-                                </p>
-                              </Box>
-                              <Box
-                                className="lecturerAssignedItem"
-                                fontSize={".8em"}
-                                display={"flex"}
-                                gap={".5rem"}
-                              >
-                                <span
-                                  style={{
-                                    color: "#383838",
-                                    fontWeight: "500",
-                                    letterSpacing: "1px",
-                                  }}
+                                  <span
+                                    style={{
+                                      color: "#383838",
+                                      fontWeight: "500",
+                                      letterSpacing: "1px",
+                                    }}
+                                  >
+                                    Form:
+                                  </span>{" "}
+                                  <p>
+                                    {electiveData?.classLevel === "Level 100" &&
+                                      "Form 1"}
+                                    {electiveData?.classLevel === "Level 200" &&
+                                      "Form 2"}
+                                    {electiveData?.classLevel === "Level 300" &&
+                                      "Form 3"}
+                                  </p>
+                                </Box>
+                                <Box
+                                  className="lecturerAssignedItem"
+                                  fontSize={".8em"}
+                                  display={"flex"}
+                                  gap={".5rem"}
                                 >
-                                  Programme:
-                                </span>{" "}
-                                <p>{electiveData?.program}</p>
-                              </Box>
-                              <Box
-                                className="lecturerAssignedItem"
-                                fontSize={".8em"}
-                                display={"flex"}
-                                gap={".5rem"}
-                              >
-                                <span
-                                  style={{
-                                    color: "#383838",
-                                    fontWeight: "500",
-                                    letterSpacing: "1px",
-                                  }}
+                                  <span
+                                    style={{
+                                      color: "#383838",
+                                      fontWeight: "500",
+                                      letterSpacing: "1px",
+                                    }}
+                                  >
+                                    Programme:
+                                  </span>{" "}
+                                  <p>{electiveData?.program}</p>
+                                </Box>
+                                <Box
+                                  className="lecturerAssignedItem"
+                                  fontSize={".8em"}
+                                  display={"flex"}
+                                  gap={".5rem"}
                                 >
-                                  Elective:
-                                </span>{" "}
-                                <Box>
-                                  {electiveData?.isElectiveSubject ? (
-                                    <p style={{ color: "green" }}>Yes</p>
-                                  ) : (
-                                    <p style={{ color: "red" }}>No</p>
-                                  )}
+                                  <span
+                                    style={{
+                                      color: "#383838",
+                                      fontWeight: "500",
+                                      letterSpacing: "1px",
+                                    }}
+                                  >
+                                    Elective:
+                                  </span>{" "}
+                                  <Box>
+                                    {electiveData?.isElectiveSubject ? (
+                                      <p style={{ color: "green" }}>Yes</p>
+                                    ) : (
+                                      <p style={{ color: "red" }}>No</p>
+                                    )}
+                                  </Box>
                                 </Box>
                               </Box>
-                            </Box>
-                            <Button
-                              sx={{
-                                // position: "absolute",
-                                right: "0",
-                                cursor: "pointer",
-                                bottom: 0,
-                                textTransform: "capitalize",
-                                textAlign: "left",
-                                paddingX: "unset",
-                                color: "#d20606",
-                                ":hover": {
-                                  backgroundColor: "transparent",
-                                },
-                                justifyContent: "unset",
-                              }}
-                              onClick={() => {
-                                if (!removingInProgress) {
-                                  setSubjectToRemove(electiveData?._id);
-                                  const data = {
-                                    subjectId: subject?._id,
-                                    classLevel: electiveData?.classLevel,
-                                    program:
-                                      subject?.subjectInfo?.program?.programId,
-                                    currentTeacher: lecturer?.uniqueId,
-                                    lastUpdatedBy: authAdmin?.id,
-                                  };
-                                  dispatch(removeSubjectLecturer(data));
-                                }
-                              }}
-                            >
-                              {subjectToRemove === electiveData?._id && (
-                                <>
-                                  {removingComplete === false && (
-                                    <Box
-                                      className="promotionSpinner"
-                                      sx={{
-                                        fontSize: "1em",
-                                      }}
-                                    >
-                                      <p>Removing</p>
-                                      <span className="dot-ellipsis" style={{}}>
-                                        <span className="dot">.</span>
-                                        <span className="dot">.</span>
-                                        <span className="dot">.</span>
-                                      </span>
-                                    </Box>
-                                  )}
-                                  {removingComplete &&
-                                    removeLecturerStatus === "success" && (
-                                      <>
-                                        <span>Removed</span>{" "}
-                                        <TaskAlt
-                                          style={{ fontSize: "1.3em" }}
-                                        />
-                                      </>
+                              <Button
+                                sx={{
+                                  // position: "absolute",
+                                  right: "0",
+                                  cursor: "pointer",
+                                  bottom: 0,
+                                  textTransform: "capitalize",
+                                  textAlign: "left",
+                                  paddingX: "unset",
+                                  color: "#d20606",
+                                  ":hover": {
+                                    backgroundColor: "transparent",
+                                  },
+                                  justifyContent: "unset",
+                                }}
+                                onClick={() => {
+                                  if (!removingInProgress) {
+                                    setRemovingInProgress(true);
+                                    setSubjectToRemove(electiveData?._id);
+                                    const data = {
+                                      subjectId: subject?._id,
+                                      classLevel: electiveData?.classLevel,
+                                      program:
+                                        subject?.subjectInfo?.program
+                                          ?.programId,
+                                      currentTeacher: lecturer?.uniqueId,
+                                      lastUpdatedBy: authAdmin?.id,
+                                    };
+                                    dispatch(removeSubjectLecturer(data));
+                                  }
+                                }}
+                              >
+                                {subjectToRemove === electiveData?._id && (
+                                  <>
+                                    {removingComplete === false && (
+                                      <Box
+                                        className="promotionSpinner"
+                                        sx={{
+                                          fontSize: "1em",
+                                        }}
+                                      >
+                                        <p>Removing</p>
+                                        <span
+                                          className="dot-ellipsis"
+                                          style={{ marginTop: 0 }}
+                                        >
+                                          <span className="dot">.</span>
+                                          <span className="dot">.</span>
+                                          <span className="dot">.</span>
+                                        </span>
+                                      </Box>
                                     )}
-                                </>
-                              )}
-                              {removingComplete === null && "Remove"}
-                              {removingComplete !== null &&
-                                subjectToRemove !== electiveData?._id &&
-                                "Remove"}
-                            </Button>
-                          </Box>
-                        ))}
+                                    {removingComplete &&
+                                      removeLecturerStatus === "success" && (
+                                        <>
+                                          <span>Removed</span>{" "}
+                                          <TaskAlt
+                                            style={{ fontSize: "1.3em" }}
+                                          />
+                                        </>
+                                      )}
+                                  </>
+                                )}
+                                {removingComplete === null && "Remove"}
+                                {removingComplete !== null &&
+                                  subjectToRemove !== electiveData?._id &&
+                                  "Remove"}
+                              </Button>
+                            </Box>
+                          ))}
+                        </Box>
                       </Box>
                     </Box>
+                    <Divider />
                   </Box>
-                  <Divider />
+                ))
+              ) : (
+                <Box>
+                  <Typography
+                    variant="h6"
+                    // color="#fff"
+                    textAlign={"center"}
+                    mt={2}
+                    fontSize={".9em"}
+                  >
+                    No lecturers data found!
+                  </Typography>
                 </Box>
-              ))}
+              )}
             </Box>
             {/* Action Buttons */}
             {/* <Stack

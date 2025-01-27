@@ -100,10 +100,10 @@ export const fetchAllSubjects = createAsyncThunk(
 );
 export const fetchAllSubjectLecturers = createAsyncThunk(
   "Subject/fetchAllSubjectLecturers",
-  async (data, { rejectWithValue }) => {
+  async (subjectId, { rejectWithValue }) => {
     try {
       const response = await tokenInterceptor.get(
-        `/academics/subjects/${data?.subjectId}/lecturers/fetch_all`
+        `/academics/subjects/${subjectId}/lecturers/fetch_all`
       );
       // const students = response.data;
       console.log(response.data);

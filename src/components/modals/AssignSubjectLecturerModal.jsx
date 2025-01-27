@@ -41,7 +41,6 @@ export default function AssignSubjectLecturerModal({
   const [selectedLecturerInfo, setSelectedLecturerInfo] = useState("");
   const [selectedLecturer, setSelectedLecturer] = useState("");
   const [searchTeacher, setSearchTeacher] = useState("");
-  const [programme, setProgramme] = useState("");
   const [classLevel, setClassLevel] = useState("");
   const dispatch = useDispatch();
 
@@ -73,7 +72,6 @@ export default function AssignSubjectLecturerModal({
     }
     if (!searchTeacher) {
       setSelectedLecturer("");
-      setProgramme("");
       setClassLevel("");
     }
     if (selectedLecturer) {
@@ -83,11 +81,9 @@ export default function AssignSubjectLecturerModal({
       setTimeout(() => {
         setConfirmed(false);
         setSearchTeacher("");
-        setProgramme("");
-        dispatch(fetchAllSubjects());
-        dispatch(fetchAllUsers());
+        // dispatch(fetchAllSubjects());
         onClose();
-      }, 6000);
+      }, 4000);
     }
   }, [
     selectedLecturerInfo,
@@ -95,7 +91,6 @@ export default function AssignSubjectLecturerModal({
     selectedLecturer,
     assignLecturerStatus,
     onClose,
-    dispatch,
   ]);
 
   if (!open) return null;
@@ -155,7 +150,6 @@ export default function AssignSubjectLecturerModal({
                     onClick={() => {
                       setConfirmed(false);
                       setSearchTeacher("");
-                      setProgramme("");
                       onClose();
                     }}
                     style={{
@@ -294,18 +288,12 @@ export default function AssignSubjectLecturerModal({
                     <Box mt={3}>
                       <CustomTextField
                         fullWidth
-                        // name="programme"
                         label="Subject"
                         value={subject?.subjectName || ""}
                         size="small"
-                        onChange={(e) => {
-                          setProgramme(e.target.value);
-                          // localStorage.setItem("reportClassLevel", e.target.value);
-                        }}
                         slotProps={{
                           input: { readOnly: true },
                         }}
-                        required
                         sx={{
                           "& .MuiInputBase-input": {
                             height: "1.2rem",
@@ -322,18 +310,12 @@ export default function AssignSubjectLecturerModal({
                       <CustomTextField
                         select
                         fullWidth
-                        name="programme"
-                        label="Select Programme"
+                        label="Programme"
                         value={subject?.subjectInfo?.program?.programId || ""}
                         size="small"
-                        onChange={(e) => {
-                          setProgramme(e.target.value);
-                          // localStorage.setItem("reportClassLevel", e.target.value);
-                        }}
                         slotProps={{
                           input: { readOnly: true },
                         }}
-                        required
                         sx={{
                           "& .MuiInputBase-input": {
                             height: "1.2rem",
@@ -464,7 +446,6 @@ export default function AssignSubjectLecturerModal({
                   onClick={() => {
                     setConfirmed(false);
                     setSearchTeacher("");
-                    setProgramme("");
                     onClose();
                   }}
                   sx={{

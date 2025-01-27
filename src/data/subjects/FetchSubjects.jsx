@@ -22,7 +22,9 @@ const FetchAllSubjects = () => {
       assignLecturerStatus === "success" ||
       removeLecturerStatus === "success"
     ) {
-      dispatch(fetchAllSubjects());
+      setTimeout(() => {
+        dispatch(fetchAllSubjects());
+      }, 4000);
     } else {
       dispatch(fetchAllSubjects());
     }
