@@ -23,7 +23,6 @@ const FetchAllSubjects = () => {
       removeLecturerStatus === "success"
     ) {
       dispatch(fetchAllSubjects());
-      dispatch(fetchAllUsers());
     } else {
       dispatch(fetchAllSubjects());
     }
