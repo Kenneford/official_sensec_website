@@ -28,7 +28,11 @@ import { HashLink } from "react-router-hash-link";
 import { getAuthUser } from "../../../../features/auth/authSlice";
 import RemoveSubjectLecturerModal from "../../../modals/RemoveSubjectLecturerModal";
 import AssignSubjectLecturerModal from "../../../modals/AssignSubjectLecturerModal";
-import { resetAssignSubjectLecturerState } from "../../../../features/academics/subjectsSlice";
+import {
+  fetchAllSubjects,
+  resetAssignSubjectLecturerState,
+} from "../../../../features/academics/subjectsSlice";
+import PageLoading from "../../../pageLoading/PageLoading";
 // import DeleteProgramDataModal from "./deleteProgramData/DeleteProgramDataModal";
 
 export function SchoolProgrammesData() {
@@ -44,6 +48,7 @@ export function SchoolProgrammesData() {
   const [itemToDelete, setItemToDelete] = useState("");
   const [electiveSubProgram, setElectiveSubProgram] = useState("");
   const [electiveSubClassLevel, setElectiveSubClassLevel] = useState("");
+
   const deleteProgramStatus = "";
   const allProgrammes = FetchAllProgrammes();
   const allSubjectsData = FetchAllSubjects();
@@ -55,24 +60,11 @@ export function SchoolProgrammesData() {
   const { assignLecturerStatus, successMessage, removeLecturerStatus, error } =
     useSelector((state) => state.subject);
 
-  const [redirect, setRedirect] = useState(false);
-  const [removingLecturer, setRemovingLecturer] = useState(null);
   const [loadingComplete, setLoadingComplete] = useState(null);
   const [deleteLoadingComplete, setDeleteLoadingComplete] = useState(null);
-  const [lecturerToAssign, setLecturerToAssign] = useState("");
-  const [lecturerToRemove, setLecturerToRemove] = useState("");
   const [openAssignLecturerModal, setOpenAssignLecturerModal] = useState(false);
 
   const [openRemoveLecturerModal, setOpenRemoveLecturerModal] = useState(false);
-
-  const [assignLecturerInProgress, setAssignLecturerInProgress] =
-    useState(false);
-  const [removeLecturerInProgress, setRemoveLecturerInProgress] =
-    useState(false);
-  const [assignLecturerLoadingComplete, setAssignLecturerLoadingComplete] =
-    useState(null);
-  const [removeLecturerLoadingComplete, setRemoveLecturerLoadingComplete] =
-    useState(null);
 
   const foundProgram = allProgrammes.find(
     (program) => program._id === currentRowId
@@ -84,7 +76,7 @@ export function SchoolProgrammesData() {
   const foundCoreSubject = allCoreSubjectsData.find(
     (cSubj) => cSubj._id === currentRowId
   );
-  const subjects = 34;
+
   const deleteSubjectStatus = "";
 
   const customStyle = {
@@ -305,10 +297,6 @@ export function SchoolProgrammesData() {
     {
       name: "Assign Lecturers",
       selector: (row) => {
-        const allLecturers = FetchAllLecturers();
-        const lecturerFound = allLecturers?.find(
-          (lecturer) => lecturer?._id === row?.currentTeacher
-        );
         return (
           <Box display={"flex"}>
             <Button
@@ -734,11 +722,11 @@ export function SchoolProgrammesData() {
             // toastId: successId,
           })
         );
-      }, 2000);
+      }, 1000);
       setTimeout(() => {
         setLoadingComplete(null);
         dispatch(resetAssignSubjectLecturerState());
-      }, 3000);
+      }, 2000);
       return;
     }
     if (assignLecturerStatus === "success") {
@@ -751,14 +739,26 @@ export function SchoolProgrammesData() {
       }, 1000);
       setTimeout(() => {
         setLoadingComplete(true);
-      }, 3000);
+      }, 2000);
       setTimeout(() => {
-        dispatch(resetAssignSubjectLecturerState());
         setLoadingComplete(null);
-      }, 6000);
+        setOpenAssignLecturerModal(false);
+        dispatch(resetAssignSubjectLecturerState());
+      }, 4000);
     }
   }, [assignLecturerStatus, successMessage, error, dispatch]);
 
+  useEffect(() => {
+    if (removeLecturerStatus === "success") {
+      setTimeout(() => {
+        dispatch(fetchAllSubjects());
+      }, 4000);
+    }
+  }, [removeLecturerStatus, dispatch]);
+
+  if (!allProgrammes) {
+    return <PageLoading />;
+  }
   return (
     <>
       {/* Current dashboard title */}
@@ -865,7 +865,6 @@ export function SchoolProgrammesData() {
           onClose={() => setOpenRemoveLecturerModal(false)}
           authAdmin={authAdmin}
           subject={currentRowId}
-          removeLecturerStatus={removeLecturerStatus}
         />
       </Box>
     </>

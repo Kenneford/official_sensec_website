@@ -1,6 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllUsers, getAllUsers } from "../../features/auth/authSlice";
+import {
+  fetchAllSubjectLecturers,
+  getAllSubjectLecturers,
+} from "../../features/academics/subjectsSlice";
 
 const FetchAllLecturers = () => {
   const { assignLecturerStatus } = useSelector((state) => state.subject);
@@ -12,13 +16,35 @@ const FetchAllLecturers = () => {
 
   useEffect(() => {
     if (assignLecturerStatus === "success") {
-      dispatch(fetchAllUsers());
+      setTimeout(() => {
+        dispatch(fetchAllUsers());
+      }, 4000);
     } else {
       dispatch(fetchAllUsers());
     }
   }, [dispatch, assignLecturerStatus]);
 
   return allLecturers;
+};
+const FetchAllSubjectLecturers = ({ open, subjectId }) => {
+  // console.log(subjectId);
+
+  const { removeLecturerStatus } = useSelector((state) => state.subject);
+  const dispatch = useDispatch();
+  const allSubjectLecturers = useSelector(getAllSubjectLecturers);
+
+  useEffect(() => {
+    if (subjectId && open && removeLecturerStatus !== "success") {
+      dispatch(fetchAllSubjectLecturers(subjectId));
+    }
+    if (removeLecturerStatus === "success") {
+      setTimeout(() => {
+        dispatch(fetchAllSubjectLecturers(subjectId));
+      }, 3500);
+    }
+  }, [dispatch, removeLecturerStatus, subjectId, open]);
+
+  return allSubjectLecturers;
 };
 
 const FetchAllEmployedLecturers = () => {
@@ -71,4 +97,5 @@ export {
   FetchAllClassLevelLecturers,
   FetchAllClassSectionLecturers,
   FetchProgrammeLecturers,
+  FetchAllSubjectLecturers,
 };
