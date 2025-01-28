@@ -7,21 +7,19 @@ import {
   InputAdornment,
   Avatar,
   Divider,
+  Stack,
 } from "@mui/material";
 import PropTypes from "prop-types";
 import {
-  fetchAllSubjectLecturers,
   fetchAllSubjects,
-  getAllSubjectLecturers,
   removeSubjectLecturer,
   resetRemoveSubjectLecturerState,
 } from "../../features/academics/subjectsSlice";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CustomTextField } from "../../muiStyling/muiStyling";
 import { Close, Search, TaskAlt } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { fetchAllUsers } from "../../features/auth/authSlice";
 import { FetchAllSubjectLecturers } from "../../data/lecturers/FetchLecturers";
 
 export default function RemoveSubjectLecturerModal({
@@ -58,6 +56,18 @@ export default function RemoveSubjectLecturerModal({
       setSelectedLecturerInfo("");
     }
   }, [selectedLecturerInfo, searchTeacher, selectedLecturer]);
+
+  // Ensure focus when the modal becomes visible
+  useEffect(() => {
+    if (allSubjectLecturers?.length > 0 && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [allSubjectLecturers]);
+
+  const filteredLecturers = allSubjectLecturers.filter((lecturer) =>
+    lecturer?.name?.toLowerCase()?.includes(searchTeacher.toLowerCase())
+  );
+
   // Remove status
   useEffect(() => {
     if (removeLecturerStatus === "pending") {
@@ -88,26 +98,16 @@ export default function RemoveSubjectLecturerModal({
       setTimeout(() => {
         setSearchTeacher("");
         setRemovingInProgress(false);
-        dispatch(fetchAllSubjects());
         setRemovingComplete(null);
         setSubjectToRemove("");
+        dispatch(fetchAllSubjects());
         dispatch(resetRemoveSubjectLecturerState());
       }, 4000);
     }
   }, [subject, removeLecturerStatus, error, allSubjectLecturers, dispatch]);
 
-  // Ensure focus when the modal becomes visible
-  useEffect(() => {
-    if (allSubjectLecturers?.length > 0 && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [allSubjectLecturers]);
-
-  const filteredLecturers = allSubjectLecturers.filter((lecturer) =>
-    lecturer?.name?.toLowerCase()?.includes(searchTeacher.toLowerCase())
-  );
-
   if (!open) return null;
+
   return (
     <Modal
       open={open}
@@ -378,7 +378,10 @@ export default function RemoveSubjectLecturerModal({
                                   justifyContent: "unset",
                                 }}
                                 onClick={() => {
-                                  if (!removingInProgress) {
+                                  if (
+                                    !removingInProgress &&
+                                    removeLecturerStatus !== "success"
+                                  ) {
                                     setRemovingInProgress(true);
                                     setSubjectToRemove(electiveData?._id);
                                     const data = {
@@ -453,59 +456,17 @@ export default function RemoveSubjectLecturerModal({
               )}
             </Box>
             {/* Action Buttons */}
-            {/* <Stack
+            <Stack
               direction="row"
               spacing={2}
               sx={{ justifyContent: "flex-end" }}
             >
               <Button
                 variant="outlined"
-                color="success"
-                onClick={() => {
-                  setConfirmed(true);
-                  const data = {
-                    subjectId: subject,
-                    classLevel: classLevel,
-                    program: programme,
-                    currentTeacher: selectedLecturer?._id,
-                    lastUpdatedBy: authAdmin?.id,
-                  };
-                  dispatch(assignSubjectLecturer(data));
-                }}
-                sx={{
-                  transition: ".5s ease",
-                  textTransform: "capitalize",
-                  "&:hover": {
-                    backgroundColor: "green",
-                    color: "#fff",
-                  },
-                }}
-              >
-                {loadingComplete === false && (
-                  <Box className="promotionSpinner">
-                    <p>Assigning</p>
-                    <span className="dot-ellipsis" style={{}}>
-                      <span className="dot">.</span>
-                      <span className="dot">.</span>
-                      <span className="dot">.</span>
-                    </span>
-                  </Box>
-                )}
-                {loadingComplete && assignLecturerStatus === "success" && (
-                  <>
-                    <span>Assigned</span>{" "}
-                    <TaskAlt style={{ fontSize: "1.3em" }} />
-                  </>
-                )}
-                {loadingComplete === null && "Assign"}
-              </Button>
-              <Button
-                variant="outlined"
                 color="error"
+                size="small"
                 onClick={() => {
-                  setConfirmed(false);
                   setSearchTeacher("");
-                  setProgramme("");
                   onClose();
                 }}
                 sx={{
@@ -519,7 +480,7 @@ export default function RemoveSubjectLecturerModal({
               >
                 Cancel
               </Button>
-            </Stack> */}
+            </Stack>
           </Box>
         </Box>
       </Box>

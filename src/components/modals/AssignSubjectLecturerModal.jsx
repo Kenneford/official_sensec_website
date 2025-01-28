@@ -14,6 +14,7 @@ import PropTypes from "prop-types";
 import {
   assignSubjectLecturer,
   fetchAllSubjects,
+  resetAssignSubjectLecturerState,
 } from "../../features/academics/subjectsSlice";
 import { useEffect, useRef, useState } from "react";
 import { CustomTextField } from "../../muiStyling/muiStyling";
@@ -81,8 +82,6 @@ export default function AssignSubjectLecturerModal({
       setTimeout(() => {
         setConfirmed(false);
         setSearchTeacher("");
-        // dispatch(fetchAllSubjects());
-        onClose();
       }, 4000);
     }
   }, [
@@ -91,6 +90,7 @@ export default function AssignSubjectLecturerModal({
     selectedLecturer,
     assignLecturerStatus,
     onClose,
+    dispatch,
   ]);
 
   if (!open) return null;

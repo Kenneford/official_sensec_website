@@ -32,6 +32,7 @@ import {
   fetchAllSubjects,
   resetAssignSubjectLecturerState,
 } from "../../../../features/academics/subjectsSlice";
+import PageLoading from "../../../pageLoading/PageLoading";
 // import DeleteProgramDataModal from "./deleteProgramData/DeleteProgramDataModal";
 
 export function SchoolProgrammesData() {
@@ -741,6 +742,7 @@ export function SchoolProgrammesData() {
       }, 2000);
       setTimeout(() => {
         setLoadingComplete(null);
+        setOpenAssignLecturerModal(false);
         dispatch(resetAssignSubjectLecturerState());
       }, 4000);
     }
@@ -754,6 +756,9 @@ export function SchoolProgrammesData() {
     }
   }, [removeLecturerStatus, dispatch]);
 
+  if (!allProgrammes) {
+    return <PageLoading />;
+  }
   return (
     <>
       {/* Current dashboard title */}
