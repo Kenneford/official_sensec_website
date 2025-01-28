@@ -31,8 +31,16 @@ import AssignSubjectLecturerModal from "../../../modals/AssignSubjectLecturerMod
 import {
   fetchAllSubjects,
   resetAssignSubjectLecturerState,
+  resetDeleteSubjectState,
 } from "../../../../features/academics/subjectsSlice";
 import PageLoading from "../../../pageLoading/PageLoading";
+import DeleteProgrammeOrSubjectModal from "../../../modals/DeleteProgrammeOrSubjectModal";
+import UpdateSubjectModal from "../../../modals/UpdateSubjectModal";
+import ViewSubjectLecturersModal from "../../../modals/ViewSubjectLecturersModal";
+import {
+  fetchAllProgrammes,
+  resetDeleteProgrammeState,
+} from "../../../../features/academics/programmeSlice";
 // import DeleteProgramDataModal from "./deleteProgramData/DeleteProgramDataModal";
 
 export function SchoolProgrammesData() {
@@ -41,15 +49,18 @@ export function SchoolProgrammesData() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [openModal, setOpenModal] = useState(false);
-  const [program, setProgram] = useState(false);
-  const [electiveSub, setElectiveSub] = useState(false);
+  const [openDeletionModal, setOpenDeletionModal] = useState(false);
+  const [programToDelete, setProgramToDelete] = useState(null);
+  const [programToUpdate, setProgramToUpdate] = useState(null);
+  const [subjectToDelete, setSubjectToDelete] = useState(null);
+  const [subjectProgram, setSubjectProgram] = useState("");
   const [coreSub, setCoreSub] = useState(false);
-  const [currentRowId, setCurrentRowId] = useState({});
+  const [currentRowId, setCurrentRowId] = useState(null);
+  const [itemId, setItemId] = useState({});
   const [itemToDelete, setItemToDelete] = useState("");
   const [electiveSubProgram, setElectiveSubProgram] = useState("");
   const [electiveSubClassLevel, setElectiveSubClassLevel] = useState("");
 
-  const deleteProgramStatus = "";
   const allProgrammes = FetchAllProgrammes();
   const allSubjectsData = FetchAllSubjects();
   const allFlattenedProgrammes = FetchAllFlattenedProgrammes();
@@ -57,14 +68,26 @@ export function SchoolProgrammesData() {
 
   const allCoreSubjectsData = FetchAllCoreSubjects();
 
-  const { assignLecturerStatus, successMessage, removeLecturerStatus, error } =
-    useSelector((state) => state.subject);
+  const {
+    assignLecturerStatus,
+    successMessage,
+    removeLecturerStatus,
+    deleteStatus,
+    error,
+    deleteSuccessMessage,
+  } = useSelector((state) => state.subject);
+  const {
+    deleteProgramSuccessMessage,
+    deleteProgramStatus,
+    deleteProgramError,
+  } = useSelector((state) => state.programme);
 
   const [loadingComplete, setLoadingComplete] = useState(null);
   const [deleteLoadingComplete, setDeleteLoadingComplete] = useState(null);
   const [openAssignLecturerModal, setOpenAssignLecturerModal] = useState(false);
-
   const [openRemoveLecturerModal, setOpenRemoveLecturerModal] = useState(false);
+  const [openViewLecturerModal, setOpenViewLecturerModal] = useState(false);
+  const [openUpdateSubjectModal, setOpenUpdateSubjectModal] = useState(false);
 
   const foundProgram = allProgrammes.find(
     (program) => program._id === currentRowId
@@ -173,57 +196,71 @@ export function SchoolProgrammesData() {
     {
       name: "Edit",
       selector: (row) => (
-        <Link
+        <Button
           className="editLink"
-          to={`/sensec/admin/${adminCurrentAction}/${adminCurrentLink}/Programme/${row?.name.replace(
-            / /g,
-            "_"
-          )}/edit`}
+          onClick={() => {
+            setProgramToUpdate(row);
+            setOpenUpdateSubjectModal(true);
+          }}
         >
           <EditIcon />
-        </Link>
+        </Button>
       ),
     },
-    {
-      name: "Delete",
-      selector: (row) => (
-        <>
-          <button
-            onClick={async () => {
-              setCurrentRowId(row._id);
-              setItemToDelete(row?.name);
-              setOpenModal(true);
-              setProgram(true);
-              setElectiveSub(false);
-              setCoreSub(false);
-            }}
-            className="deleteLink"
-          >
-            {foundProgram && foundProgram?._id === row._id && (
-              <>
-                {loadingComplete === false && "Deleting..."}
-                {loadingComplete && deleteProgramStatus === "success" && (
-                  <>
-                    <span>Deleted</span> <TaskAltIcon />
-                  </>
-                )}
-              </>
-            )}
-            {loadingComplete === null && <DeleteForeverIcon />}
-            {row._id !== foundProgram?._id && loadingComplete !== null && (
-              <DeleteForeverIcon />
-            )}
-          </button>
-        </>
-      ),
-    },
+    // {
+    //   name: "Delete",
+    //   selector: (row) => (
+    //     <>
+    //       <button
+    //         onClick={async () => {
+    //           setItemId(row._id);
+    //           setProgramToDelete(row);
+    //           setOpenDeletionModal(true);
+    //         }}
+    //         className="deleteLink"
+    //       >
+    //         {itemId && itemId === row._id && (
+    //           <>
+    //             {deleteLoadingComplete === false && "Deleting..."}
+    //             {deleteLoadingComplete && deleteProgramStatus === "success" && (
+    //               <>
+    //                 <span>Deleted</span> <TaskAltIcon />
+    //               </>
+    //             )}
+    //           </>
+    //         )}
+    //         {deleteLoadingComplete === null && <DeleteForeverIcon />}
+    //         {row._id !== itemId && deleteLoadingComplete !== null && (
+    //           <DeleteForeverIcon />
+    //         )}
+    //       </button>
+    //     </>
+    //   ),
+    // },
   ];
   const electiveSubColumn = [
     {
       name: "Subject",
       selector: (row) =>
         row?.subjectName ? (
-          <p title={row?.subjectName}>{row?.subjectName}</p>
+          <Box>
+            {row?.subjectInfo?.isOptional && (
+              <p
+                title={row?.subjectName}
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  right: "1rem",
+                  height: "100%",
+                  color: "#9508b5",
+                  paddingTop: ".1rem",
+                }}
+              >
+                Opt
+              </p>
+            )}
+            <p title={row?.subjectName}>{row?.subjectName}</p>
+          </Box>
         ) : (
           <p>---</p>
         ),
@@ -277,8 +314,8 @@ export function SchoolProgrammesData() {
           fullWidth
           title="View All Lecturer"
           onClick={() => {
-            setCurrentRowId(row?._id);
-            setOpenRemoveLecturerModal(true);
+            setCurrentRowId(row);
+            setOpenViewLecturerModal(true);
           }}
           sx={{
             bgcolor: "transparent",
@@ -351,80 +388,101 @@ export function SchoolProgrammesData() {
         );
       },
     },
-    {
-      name: "Optional",
-      selector: (row) => (row?.electiveSubInfo?.isOptional ? "Yes" : "No"),
-    },
+    // {
+    //   name: "Optional",
+    //   selector: (row) => (row?.subjectInfo?.isOptional ? "Yes" : "No"),
+    // },
     // {
     //   name: "Duration",
     //   selector: (row) => (row?.duration ? row?.duration : "---"),
     // },
-    {
-      name: "CreatedBy",
-      selector: (row) => (
-        <p
-          title={
-            row?.createdBy?.personalInfo?.fullName?.length > 20
-              ? row?.createdBy?.personalInfo?.fullName
-              : ""
-          }
-        >
-          {row?.createdBy ? row?.createdBy?.personalInfo?.fullName : "---"}
-        </p>
-      ),
-    },
-    {
-      name: "Last Updated By",
-      selector: (row) =>
-        row?.lastUpdatedBy ? row?.lastUpdatedBy?.personalInfo?.fullName : "---",
-    },
+    // {
+    //   name: "CreatedBy",
+    //   selector: (row) => (
+    //     <p
+    //       title={
+    //         row?.createdBy?.personalInfo?.fullName?.length > 20
+    //           ? row?.createdBy?.personalInfo?.fullName
+    //           : ""
+    //       }
+    //     >
+    //       {row?.createdBy ? row?.createdBy?.personalInfo?.fullName : "---"}
+    //     </p>
+    //   ),
+    // },
+    // {
+    //   name: "Last Updated By",
+    //   selector: (row) =>
+    //     row?.lastUpdatedBy ? row?.lastUpdatedBy?.personalInfo?.fullName : "---",
+    // },
     {
       name: "Edit",
       selector: (row) => (
-        <Link
+        <Button
           className="editLink"
-          to={`/sensec/admin/${adminCurrentAction}/${adminCurrentLink}/Subject/${row?.subjectName.replace(
-            / /g,
-            "_"
-          )}/edit`}
+          onClick={() => {
+            setCurrentRowId(row);
+            setOpenUpdateSubjectModal(true);
+          }}
         >
           <EditIcon />
-        </Link>
+        </Button>
       ),
     },
     {
       name: "Delete",
-      selector: (row) => (
-        <button
-          onClick={async () => {
-            setCurrentRowId(row._id);
-            setItemToDelete(row?.subjectName);
-            setElectiveSubProgram(row?.nameOfProgram);
-            setElectiveSubClassLevel(row?.classLevel?._id);
-            setOpenModal(true);
-            setProgram(false);
-            setElectiveSub(true);
-            setCoreSub(false);
-          }}
-          className="deleteLink"
-        >
-          {foundElectiveSubject && foundElectiveSubject?._id === row._id && (
-            <>
-              {deleteLoadingComplete === false && "Deleting..."}
-              {deleteLoadingComplete && deleteSubjectStatus === "success" && (
-                <>
-                  <span>Deleted</span> <TaskAltIcon />
-                </>
-              )}
-            </>
-          )}
-          {deleteLoadingComplete === null && <DeleteForeverIcon />}
-          {row._id !== foundElectiveSubject?._id &&
-            deleteLoadingComplete !== null && <DeleteForeverIcon />}
-        </button>
-      ),
+      selector: (row) => {
+        const programFound = allFlattenedProgrammes?.find(
+          (program) => program?._id === row?.subjectInfo?.program?.programId
+        );
+        return (
+          <button
+            onClick={async () => {
+              setItemId(row._id);
+              setOpenDeletionModal(true);
+              setSubjectProgram(
+                programFound?.name
+                  ? programFound?.name
+                  : programFound?.divisionName
+              );
+              setSubjectToDelete(row);
+            }}
+            className="deleteLink"
+          >
+            {itemId && itemId === row._id && (
+              <>
+                {deleteLoadingComplete === false && (
+                  <Box
+                    className="promotionSpinner"
+                    sx={{
+                      fontSize: "1em",
+                    }}
+                  >
+                    <p>Deleting</p>
+                    <span className="dot-ellipsis" style={{}}>
+                      <span className="dot">.</span>
+                      <span className="dot">.</span>
+                      <span className="dot">.</span>
+                    </span>
+                  </Box>
+                )}
+                {deleteLoadingComplete && deleteStatus === "success" && (
+                  <>
+                    <span>Deleted</span> <TaskAltIcon />
+                  </>
+                )}
+              </>
+            )}
+            {deleteLoadingComplete === null && <DeleteForeverIcon />}
+            {row._id !== itemId && deleteLoadingComplete !== null && (
+              <DeleteForeverIcon />
+            )}
+          </button>
+        );
+      },
     },
   ];
+
   const coreSubColumn = [
     {
       name: "Subject",
@@ -524,8 +582,8 @@ export function SchoolProgrammesData() {
               setCurrentRowId(row._id);
               setItemToDelete(row?.subjectName);
               setOpenModal(true);
-              setProgram(false);
-              setElectiveSub(false);
+              setProgramToDelete(false);
+              setSubjectToDelete(false);
               setCoreSub(true);
             }}
             className="deleteLink"
@@ -747,14 +805,96 @@ export function SchoolProgrammesData() {
       }, 4000);
     }
   }, [assignLecturerStatus, successMessage, error, dispatch]);
+  // Deletion status check
+  useEffect(() => {
+    if (deleteStatus === "pending") {
+      setDeleteLoadingComplete(false);
+    }
+    if (deleteStatus === "rejected") {
+      setTimeout(() => {
+        error?.errorMessage?.message?.map((err) =>
+          toast.error(err, {
+            position: "top-right",
+            theme: "light",
+            // toastId: successId,
+          })
+        );
+      }, 1000);
+      setTimeout(() => {
+        setDeleteLoadingComplete(null);
+        dispatch(resetDeleteSubjectState());
+      }, 2000);
+      return;
+    }
+    if (deleteStatus === "success") {
+      setTimeout(() => {
+        toast.success(deleteSuccessMessage, {
+          position: "top-right",
+          theme: "dark",
+          toastId: deleteSuccessMessage,
+        });
+      }, 1000);
+      setTimeout(() => {
+        setDeleteLoadingComplete(true);
+      }, 2000);
+      setTimeout(() => {
+        setDeleteLoadingComplete(null);
+        dispatch(fetchAllSubjects());
+        dispatch(resetDeleteSubjectState());
+      }, 4000);
+    }
+  }, [deleteStatus, deleteSuccessMessage, error, dispatch]);
+  // Delete programme status check
+  useEffect(() => {
+    if (deleteProgramStatus === "pending") {
+      setDeleteLoadingComplete(false);
+    }
+    if (deleteProgramStatus === "rejected") {
+      setTimeout(() => {
+        deleteProgramError?.errorMessage?.message?.map((err) =>
+          toast.error(err, {
+            position: "top-right",
+            theme: "light",
+            // toastId: successId,
+          })
+        );
+      }, 1000);
+      setTimeout(() => {
+        setDeleteLoadingComplete(null);
+        dispatch(resetDeleteProgrammeState());
+      }, 2000);
+      return;
+    }
+    if (deleteProgramStatus === "success") {
+      setTimeout(() => {
+        toast.success(deleteProgramSuccessMessage, {
+          position: "top-right",
+          theme: "dark",
+          toastId: deleteProgramSuccessMessage,
+        });
+      }, 1000);
+      setTimeout(() => {
+        setDeleteLoadingComplete(true);
+      }, 2000);
+      setTimeout(() => {
+        setDeleteLoadingComplete(null);
+        dispatch(fetchAllProgrammes());
+        dispatch(resetDeleteProgrammeState());
+      }, 4000);
+    }
+  }, [
+    deleteProgramStatus,
+    deleteProgramSuccessMessage,
+    deleteProgramError,
+    dispatch,
+  ]);
 
   useEffect(() => {
     if (removeLecturerStatus === "success") {
-      setTimeout(() => {
-        dispatch(fetchAllSubjects());
-      }, 4000);
+      dispatch(fetchAllSubjects());
+      setTimeout(() => {}, 4000);
     }
-  }, [removeLecturerStatus, dispatch]);
+  }, [removeLecturerStatus, deleteStatus, dispatch]);
 
   if (!allProgrammes) {
     return <PageLoading />;
@@ -842,27 +982,51 @@ export function SchoolProgrammesData() {
             responsive
           />
         </Box>
-        {/* <DeleteProgramDataModal
-        open={openModal}
-        onClose={() => setOpenModal(false)}
-        handleProgramDeletion={handleProgramDeletion}
-        // program={program}
-        // electiveSub={electiveSub}
-        // coreSub={coreSub}
-        // itemToDelete={itemToDelete}
-      /> */}
+        <DeleteProgrammeOrSubjectModal
+          open={openDeletionModal}
+          onClose={() =>
+            setOpenDeletionModal(
+              false,
+              setSubjectToDelete(null),
+              setProgramToDelete(null)
+            )
+          }
+          programToDelete={programToDelete}
+          subjectToDelete={subjectToDelete}
+          subjectProgram={subjectProgram}
+        />
         <AssignSubjectLecturerModal
           open={openAssignLecturerModal}
           onClose={() => setOpenAssignLecturerModal(false)}
           authAdmin={authAdmin}
-          // lecturer={lecturerFound}
           subject={currentRowId}
+          loadingComplete={loadingComplete}
+          assignLecturerStatus={assignLecturerStatus}
+        />
+        <UpdateSubjectModal
+          open={openUpdateSubjectModal}
+          onClose={() =>
+            setOpenUpdateSubjectModal(
+              false,
+              setProgramToUpdate(null),
+              setCurrentRowId(null)
+            )
+          }
+          authAdmin={authAdmin}
+          subject={currentRowId}
+          programme={programToUpdate}
           loadingComplete={loadingComplete}
           assignLecturerStatus={assignLecturerStatus}
         />
         <RemoveSubjectLecturerModal
           open={openRemoveLecturerModal}
           onClose={() => setOpenRemoveLecturerModal(false)}
+          authAdmin={authAdmin}
+          subject={currentRowId}
+        />
+        <ViewSubjectLecturersModal
+          open={openViewLecturerModal}
+          onClose={() => setOpenViewLecturerModal(false)}
           authAdmin={authAdmin}
           subject={currentRowId}
         />

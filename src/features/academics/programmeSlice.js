@@ -8,14 +8,21 @@ const initialState = {
   programInfo: "",
   divisionProgramInfo: "",
   allProgrammes: [],
+  allProgrammeStudents: [],
   allFlattenedProgrammes: [],
   allDivisionProgrammesById: [],
   createdDivisionProgrammes: [],
   error: "",
   successMessage: "",
+  fetchSuccessMessage: "",
+  updateProgramSuccessMessage: "",
+  deleteProgramSuccessMessage: "",
   createStatus: "",
-  deleteStatus: "",
+  deleteProgramStatus: "",
+  deleteProgramError: "",
+  updateProgramError: "",
   updateStatus: "",
+  updateProgramStatus: "",
   fetchingStatus: "",
 };
 
@@ -93,6 +100,20 @@ export const fetchAllDivisionProgrammes = createAsyncThunk(
     }
   }
 );
+export const fetchAllProgrammeStudents = createAsyncThunk(
+  "Programme/fetchAllProgrammeStudents",
+  async ({ programId }, { rejectWithValue }) => {
+    try {
+      const response = await tokenInterceptor.get(
+        `/academics/programs/${programId}/students/fetch_all`
+      );
+      return response.data;
+    } catch (error) {
+      console.log(error.response.data);
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 export const fetchCreatedDivisionProgrammes = createAsyncThunk(
   "Programme/fetchCreatedDivisionProgrammes",
   async (rejectWithValue) => {
@@ -125,13 +146,11 @@ export const fetchSingleProgram = createAsyncThunk(
 
 export const updateProgram = createAsyncThunk(
   "Program/updateProgram",
-  async ({ name, programId, lastUpdatedBy }, { rejectWithValue }) => {
+  async (data, { rejectWithValue }) => {
     try {
-      const accessToken = localStorage.getItem("userToken");
       const response = await tokenInterceptor.put(
-        `/admin/academics/program/${programId}/update`,
-        { name, lastUpdatedBy },
-        { headers: { Authorization: `Bearer ${accessToken}` } }
+        `/academics/programs/${data?.programId}/update`,
+        data
       );
       return response.data;
     } catch (error) {
@@ -143,12 +162,11 @@ export const updateProgram = createAsyncThunk(
 
 export const deleteProgram = createAsyncThunk(
   "Program/deleteProgram",
-  async ({ id, deletedBy }, { rejectWithValue }) => {
-    console.log(id);
-    console.log(deletedBy);
+  async (data, { rejectWithValue }) => {
     try {
       const response = await tokenInterceptor.delete(
-        `/admin/academics/delete_program/${id}/${deletedBy}`
+        `/academics/programs/${data?.programId}/delete`,
+        data
       );
       return response.data;
     } catch (error) {
@@ -173,9 +191,22 @@ const programmeSlice = createSlice({
         createStatus: "",
         successMessage: "",
         error: "",
-        deleteStatus: "",
-        updateStatus: "",
-        fetchingStatus: "",
+      };
+    },
+    resetUpdateProgramState(state) {
+      return {
+        ...state,
+        updateProgramStatus: "",
+        updateProgramSuccessMessage: "",
+        updateProgramError: "",
+      };
+    },
+    resetDeleteProgrammeState(state) {
+      return {
+        ...state,
+        deleteProgramStatus: "",
+        deleteProgramSuccessMessage: "",
+        deleteProgramError: "",
       };
     },
   },
@@ -223,7 +254,7 @@ const programmeSlice = createSlice({
         error: action.payload,
       };
     });
-
+    // Fetch all programmes
     builder.addCase(fetchAllProgrammes.pending, (state, action) => {
       return { ...state, fetchingStatus: "pending" };
     });
@@ -232,12 +263,33 @@ const programmeSlice = createSlice({
         return {
           ...state,
           allProgrammes: action.payload.programs,
-          successMessage: action.payload.successMessage,
+          fetchSuccessMessage: action.payload.successMessage,
           fetchingStatus: "success",
         };
       } else return state;
     });
     builder.addCase(fetchAllProgrammes.rejected, (state, action) => {
+      return {
+        ...state,
+        fetchingStatus: "rejected",
+        error: action.payload,
+      };
+    });
+    // Fetch all programmes
+    builder.addCase(fetchAllProgrammeStudents.pending, (state, action) => {
+      return { ...state, fetchingStatus: "pending" };
+    });
+    builder.addCase(fetchAllProgrammeStudents.fulfilled, (state, action) => {
+      if (action.payload) {
+        return {
+          ...state,
+          allProgrammeStudents: action.payload.programStudentFound,
+          fetchSuccessMessage: action.payload.successMessage,
+          fetchingStatus: "success",
+        };
+      } else return state;
+    });
+    builder.addCase(fetchAllProgrammeStudents.rejected, (state, action) => {
       return {
         ...state,
         fetchingStatus: "rejected",
@@ -253,7 +305,7 @@ const programmeSlice = createSlice({
         return {
           ...state,
           allFlattenedProgrammes: action.payload.flattenedProgrammes,
-          successMessage: action.payload.successMessage,
+          fetchSuccessMessage: action.payload.successMessage,
           fetchingStatus: "success",
         };
       } else return state;
@@ -274,7 +326,7 @@ const programmeSlice = createSlice({
         return {
           ...state,
           allDivisionProgrammesById: action.payload.programs,
-          successMessage: action.payload.successMessage,
+          fetchSuccessMessage: action.payload.successMessage,
           fetchStatus: "success",
         };
       } else return state;
@@ -297,7 +349,7 @@ const programmeSlice = createSlice({
           return {
             ...state,
             createdDivisionProgrammes: action.payload.divisionProgramsFound,
-            successMessage: action.payload.successMessage,
+            fetchSuccessMessage: action.payload.successMessage,
             fetchStatus: "success",
           };
         } else return state;
@@ -378,9 +430,15 @@ const programmeSlice = createSlice({
   },
 });
 
-export const { resetCreateProgrammeState, selectProgramme } =
-  programmeSlice.actions;
+export const {
+  resetCreateProgrammeState,
+  selectProgramme,
+  resetDeleteProgrammeState,
+  resetUpdateProgramState,
+} = programmeSlice.actions;
 export const getAllProgrammes = (state) => state.programme.allProgrammes;
+export const getAllProgrammeStudents = (state) =>
+  state.programme.allProgrammeStudents;
 export const getAllFlattenedProgrammes = (state) =>
   state.programme.allFlattenedProgrammes;
 export const getAllDivisionProgrammes = (state) =>

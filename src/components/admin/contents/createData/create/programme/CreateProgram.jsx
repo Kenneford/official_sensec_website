@@ -60,14 +60,14 @@ export function CreateProgram() {
             toastId: "createProgrammeError",
           })
         );
-        resetCreateProgrammeState();
-      }, 2000);
+        dispatch(resetCreateProgrammeState());
+      }, 1000);
       return;
     }
     if (createStatus === "success") {
       setTimeout(() => {
         setLoadingComplete(true);
-      }, 3000);
+      }, 2000);
       setTimeout(() => {
         toast.success(successMessage, {
           position: "top-right",
@@ -80,11 +80,11 @@ export function CreateProgram() {
           name: "",
           createdBy: `${authAdmin?.id}`,
         });
-        resetCreateProgrammeState();
+        dispatch(resetCreateProgrammeState());
         setLoadingComplete(null);
-      }, 6000);
+      }, 4000);
     }
-  }, [error, successMessage, createStatus, authAdmin]);
+  }, [error, successMessage, createStatus, authAdmin, dispatch]);
 
   return (
     <Box

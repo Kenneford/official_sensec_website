@@ -5,16 +5,20 @@ import tokenInterceptor from "../../apiEndPoint/interceptors";
 
 const initialState = {
   subjectInfo: "",
+  updatedSubjectInfo: "",
+  subjectDeleted: "",
   subjectLecturerInfo: "",
   lecturerRemovedInfo: "",
   allSubjectLecturers: [],
   allSubjects: [],
   createStatus: "",
+  updateStatus: "",
   assignLecturerStatus: "",
   removeLecturerStatus: "",
   successMessage: "",
   error: "",
   fetchSuccessMessage: "",
+  deleteSuccessMessage: "",
   deleteStatus: "",
 };
 //Works ✅
@@ -126,13 +130,30 @@ export const fetchSingleSubject = createAsyncThunk(
     return response.data;
   }
 );
-//❓
+//✅
+export const updateSubject = createAsyncThunk(
+  "Subject/updateSubject",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await tokenInterceptor.put(
+        `/academics/subjects/${data?.subjectId}/update`,
+        data
+      );
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.log(error.response.data);
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+//✅
 export const deleteSubject = createAsyncThunk(
   "Subject/deleteSubject",
-  async ({ id, adminId }, { rejectWithValue }) => {
+  async ({ subjectId }, { rejectWithValue }) => {
     try {
-      const response = await axios.delete(
-        `${SENSEC_API_ENDPOINT}/admin/${adminId}/academics/subject/${id}/delete`
+      const response = await tokenInterceptor.delete(
+        `/academics/subjects/${subjectId}/delete`
       );
       console.log(response.data);
       return response.data;
@@ -171,6 +192,22 @@ const subjectSlice = createSlice({
         error: "",
       };
     },
+    resetUpdateSubjectState(state) {
+      return {
+        ...state,
+        updateStatus: "",
+        successMessage: "",
+        error: "",
+      };
+    },
+    resetDeleteSubjectState(state) {
+      return {
+        ...state,
+        deleteStatus: "",
+        successMessage: "",
+        error: "",
+      };
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(createSubject.pending, (state) => {
@@ -190,6 +227,26 @@ const subjectSlice = createSlice({
       return {
         ...state,
         createStatus: "rejected",
+        error: action.payload,
+      };
+    });
+    builder.addCase(updateSubject.pending, (state) => {
+      return { ...state, updateStatus: "pending" };
+    });
+    builder.addCase(updateSubject.fulfilled, (state, action) => {
+      if (action.payload) {
+        return {
+          ...state,
+          updatedSubjectInfo: action.payload.updatedSubject,
+          successMessage: action.payload.successMessage,
+          updateStatus: "success",
+        };
+      } else return state;
+    });
+    builder.addCase(updateSubject.rejected, (state, action) => {
+      return {
+        ...state,
+        updateStatus: "rejected",
         error: action.payload,
       };
     });
@@ -296,12 +353,35 @@ const subjectSlice = createSlice({
         error: action.payload,
       };
     });
+    // Delete Subject
+    builder.addCase(deleteSubject.pending, (state) => {
+      return { ...state, deleteStatus: "pending" };
+    });
+    builder.addCase(deleteSubject.fulfilled, (state, action) => {
+      if (action.payload) {
+        return {
+          ...state,
+          subjectDeleted: action.payload.subjectDeleted,
+          deleteSuccessMessage: action.payload.successMessage,
+          deleteStatus: "success",
+        };
+      } else return state;
+    });
+    builder.addCase(deleteSubject.rejected, (state, action) => {
+      return {
+        ...state,
+        deleteStatus: "rejected",
+        error: action.payload,
+      };
+    });
   },
 });
 export const {
   resetCreateSubjectState,
   resetAssignSubjectLecturerState,
   resetRemoveSubjectLecturerState,
+  resetDeleteSubjectState,
+  resetUpdateSubjectState,
 } = subjectSlice.actions;
 export const getAllSubjects = (state) => state.subject.allSubjects;
 export const getAllSubjectLecturers = (state) =>

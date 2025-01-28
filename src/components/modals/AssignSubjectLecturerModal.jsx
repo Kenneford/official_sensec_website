@@ -22,7 +22,7 @@ import { Close, Search, TaskAlt } from "@mui/icons-material";
 import { FetchAllLecturers } from "../../data/lecturers/FetchLecturers";
 import { FetchAllFlattenedProgrammes } from "../../data/programme/FetchProgrammeData";
 import { FetchAllClassLevels } from "../../data/class/FetchClassLevel";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchAllUsers } from "../../features/auth/authSlice";
 
 export default function AssignSubjectLecturerModal({
@@ -31,7 +31,6 @@ export default function AssignSubjectLecturerModal({
   authAdmin,
   subject,
   loadingComplete,
-  assignLecturerStatus,
 }) {
   const inputRef = useRef(null);
 
@@ -44,6 +43,8 @@ export default function AssignSubjectLecturerModal({
   const [searchTeacher, setSearchTeacher] = useState("");
   const [classLevel, setClassLevel] = useState("");
   const dispatch = useDispatch();
+
+  const { assignLecturerStatus } = useSelector((state) => state.subject);
 
   const filteredLecturers = searchTeacher
     ? allLecturers.filter(
@@ -180,7 +181,6 @@ export default function AssignSubjectLecturerModal({
                   size="small"
                   onChange={(e) => {
                     setSearchTeacher(e.target.value);
-                    // localStorage.setItem("reportClassLevel", e.target.value);
                   }}
                   autoComplete="off"
                   slotProps={{
@@ -346,7 +346,6 @@ export default function AssignSubjectLecturerModal({
                         size="small"
                         onChange={(e) => {
                           setClassLevel(e.target.value);
-                          // localStorage.setItem("reportClassLevel", e.target.value);
                         }}
                         required
                         sx={{
@@ -382,7 +381,6 @@ export default function AssignSubjectLecturerModal({
                   color="success"
                   size="small"
                   onClick={() => {
-                    setConfirmed(true);
                     const data = {
                       subjectId: subject?._id,
                       classLevel: classLevel,
@@ -401,6 +399,7 @@ export default function AssignSubjectLecturerModal({
                     fontSize: "1em",
                     padding: "0 .5rem",
                     minWidth: "6rem",
+                    height: "2rem",
                     "&:hover": {
                       backgroundColor: "green",
                       color: canAssign ? "#fff" : "",
@@ -468,15 +467,6 @@ export default function AssignSubjectLecturerModal({
             <Box
               className="newEmploymentModalOverlay"
               sx={{
-                //   position: "absolute",
-                //   top: "50%",
-                //   left: "50%",
-                //   transform: "translate(-50%, -50%)",
-                //   width: { xs: 300, sm: 400, md: 500 }, // Responsive width based on screen size
-                //   bgcolor: "background.paper",
-                //   borderRadius: 2,
-                // boxShadow: 24,
-                //   outline: "none",
                 padding: { xs: 1, sm: 2 },
               }}
             >
@@ -504,12 +494,6 @@ export default function AssignSubjectLecturerModal({
                   color="success"
                   onClick={() => {
                     setConfirmed(true);
-                    // const data = {
-                    //   subjectId: subject?._id,
-                    //   currentTeacher: lecturer?._id,
-                    //   lastUpdatedBy: authAdmin?.id,
-                    // };
-                    // assignSubjectLecturer(data);
                   }}
                   sx={{
                     transition: ".5s ease-out",
@@ -536,24 +520,6 @@ export default function AssignSubjectLecturerModal({
                   No
                 </Button>
               </Stack>
-              {loadingComplete === false && (
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    marginTop: "1rem",
-                  }}
-                >
-                  <p>Processing</p>
-                  {/* <CircularProgress style={{ color: "#555" }} size={"1.3em"} /> */}
-                  <span className="dot-ellipsis">
-                    <span className="dot">.</span>
-                    <span className="dot">.</span>
-                    <span className="dot">.</span>
-                  </span>
-                </Box>
-              )}
             </Box>
           </Box>
         )}
@@ -568,5 +534,4 @@ AssignSubjectLecturerModal.propTypes = {
   lecturer: PropTypes.object,
   subject: PropTypes.object,
   loadingComplete: PropTypes.bool,
-  assignLecturerStatus: PropTypes.string,
 };
