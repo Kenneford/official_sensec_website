@@ -22,7 +22,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { FetchAllSubjectLecturers } from "../../data/lecturers/FetchLecturers";
 
-export default function RemoveSubjectLecturerModal({
+export default function ViewSubjectLecturersModal({
   open,
   onClose,
   authAdmin,
@@ -362,7 +362,7 @@ export default function RemoveSubjectLecturerModal({
                                   </Box>
                                 </Box>
                               </Box>
-                              <Button
+                              {/* <Button
                                 sx={{
                                   // position: "absolute",
                                   right: "0",
@@ -372,7 +372,6 @@ export default function RemoveSubjectLecturerModal({
                                   textAlign: "left",
                                   paddingX: "unset",
                                   color: "#d20606",
-                                  height: "2rem",
                                   ":hover": {
                                     backgroundColor: "transparent",
                                   },
@@ -433,7 +432,7 @@ export default function RemoveSubjectLecturerModal({
                                 {removingComplete !== null &&
                                   subjectToRemove !== electiveData?._id &&
                                   "Remove"}
-                              </Button>
+                              </Button> */}
                             </Box>
                           ))}
                         </Box>
@@ -488,7 +487,7 @@ export default function RemoveSubjectLecturerModal({
     </Modal>
   );
 }
-RemoveSubjectLecturerModal.propTypes = {
+ViewSubjectLecturersModal.propTypes = {
   open: PropTypes.bool,
   onClose: PropTypes.func,
   authAdmin: PropTypes.object,

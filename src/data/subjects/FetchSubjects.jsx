@@ -11,16 +11,16 @@ import {
 } from "../../features/auth/authSlice";
 
 const FetchAllSubjects = () => {
-  const { assignLecturerStatus, removeLecturerStatus } = useSelector(
-    (state) => state.subject
-  );
+  const { assignLecturerStatus, removeLecturerStatus, deleteStatus } =
+    useSelector((state) => state.subject);
   const allSubjects = useSelector(getAllSubjects);
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (
       assignLecturerStatus === "success" ||
-      removeLecturerStatus === "success"
+      removeLecturerStatus === "success" ||
+      deleteStatus === "success"
     ) {
       setTimeout(() => {
         dispatch(fetchAllSubjects());
@@ -28,7 +28,7 @@ const FetchAllSubjects = () => {
     } else {
       dispatch(fetchAllSubjects());
     }
-  }, [assignLecturerStatus, removeLecturerStatus, dispatch]);
+  }, [assignLecturerStatus, removeLecturerStatus, deleteStatus, dispatch]);
 
   return allSubjects;
 };
