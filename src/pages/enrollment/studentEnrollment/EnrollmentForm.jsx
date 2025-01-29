@@ -86,7 +86,7 @@ export function EnrollmentForm() {
   const { enrollmentStatus, error, successMessage } = useSelector(
     (state) => state.student
   );
-  console.log("allFlattenedProgrammes: ", allFlattenedProgrammes);
+  console.log("allBatches: ", allBatches);
 
   //Get current year and random number for student's unique-Id
   const currentYear = new Date().getFullYear();
@@ -277,6 +277,7 @@ export function EnrollmentForm() {
   const studentFirstAcademicYear = allCreatedAcademicYears?.find(
     (year) => year?.yearRange === `${placementYear}/${getNextYear}`
   );
+  console.log("studentFirstAcademicYear", studentFirstAcademicYear);
 
   // Find student's programme
   const studentProgramme = allFlattenedProgrammes?.find(
@@ -309,8 +310,8 @@ export function EnrollmentForm() {
           ? ""
           : newStudent?.optionalElectiveSubject,
       currentClassLevel: newStudent?.currentClassLevel,
-      currentAcademicYear: studentFirstAcademicYear?._id,
-      batch: studentBatch?._id,
+      currentAcademicYear: newStudent?.currentAcademicYear,
+      batch: newStudent?.batch,
       // Status
       height: newStudent?.height,
       weight: newStudent?.weight,
@@ -1217,10 +1218,16 @@ export function EnrollmentForm() {
                   fullWidth
                   label="Batch"
                   name="batch"
-                  value={studentBatch?._id || ""}
+                  value={newStudent?.batch || ""}
                   onChange={handleChange}
-                  slotProps={{
-                    input: { readOnly: true },
+                  required
+                  // slotProps={{
+                  //   input: { readOnly: true },
+                  // }}
+                  sx={{
+                    "& .MuiInputLabel-asterisk": {
+                      color: newStudent?.batch ? "green" : "red", // Change the asterisk color to red
+                    },
                   }}
                 >
                   {allBatches?.map((batch) => (
@@ -1237,9 +1244,9 @@ export function EnrollmentForm() {
                   fullWidth
                   label="Academic Year"
                   name="currentAcademicYear"
-                  value={studentFirstAcademicYear?._id || ""}
+                  value={newStudent?.currentAcademicYear || ""}
                   onChange={handleChange}
-                  // required
+                  required
                   sx={{
                     "& .MuiInputLabel-asterisk": {
                       color: newStudent?.currentAcademicYear ? "green" : "red", // Change the asterisk color to red
