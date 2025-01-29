@@ -142,8 +142,9 @@ export function SearchAttendance() {
   );
   const classLevelSection =
     lecturerFound?.lecturerSchoolData?.classLevelHandling;
+  console.log(searchedClassAttendance);
 
-  const filteredStudents =
+  const filteredAttendance =
     searchedClassAttendance &&
     searchedClassAttendance?.filter(
       (studentData) =>
@@ -308,15 +309,7 @@ export function SearchAttendance() {
         </Box>
       ),
       selector: (row) => (
-        <>
-          {row?.date ? (
-            <p title={dateFormatter?.format(new Date(row?.date))}>
-              {dateFormatter?.format(new Date(row?.date))}
-            </p>
-          ) : (
-            "---"
-          )}
-        </>
+        <>{row?.date ? dateFormatter?.format(new Date(row?.date)) : "---"}</>
       ),
       // sortable: true,
     },
@@ -890,14 +883,14 @@ export function SearchAttendance() {
           >
             {dataFetched && searchedClassAttendance && (
               <Box className="searchDetails" justifyItems={"flex-start"}>
-                {filteredStudents?.length === 0 && searchStudent !== "" && (
+                {filteredAttendance?.length === 0 && searchStudent !== "" && (
                   <p style={{ fontSize: ".8em" }} className="searchInfo">
                     We couldn&apos;t find any matches for &quot;
                     {searchStudent}
                     &quot;
                   </p>
                 )}
-                {filteredStudents?.length === 0 && searchStudent !== "" && (
+                {filteredAttendance?.length === 0 && searchStudent !== "" && (
                   <p
                     style={{
                       paddingLeft: "1.5rem",
@@ -912,7 +905,7 @@ export function SearchAttendance() {
                 )}
                 {searchStudent && (
                   <p style={{ fontSize: ".8em" }} className="searchInfo">
-                    Total Records Found = {filteredStudents?.length}
+                    Total Records Found = {filteredAttendance?.length}
                   </p>
                 )}
                 {!searchStudent && (
@@ -939,7 +932,7 @@ export function SearchAttendance() {
                 <DataTable
                   className="my-data-table"
                   columns={columns}
-                  data={filteredStudents}
+                  data={filteredAttendance}
                   customStyles={customAttendanceTableStyle}
                   pagination
                   // selectableRows
