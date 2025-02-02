@@ -25,7 +25,7 @@ export default function Footer() {
 
   const openChat = () => setOpenChatBox(!openChatBox);
 
-  const phoneNumber = "+491784535757"; // WhatsApp phone number
+  const phoneNumber = "+233245940586"; // WhatsApp phone number
 
   window.dataLayer = window.dataLayer || [];
   function gtag() {
@@ -59,28 +59,28 @@ export default function Footer() {
             <div className="pageLinks">
               <h3>Usefull Links</h3>
               <HashLink
-                to={"/sensec/homepage/#homepage"}
+                to={"/sensec/homepage#homePage"}
                 smooth
                 scroll={scrollWithOffset}
               >
                 Home
               </HashLink>
               <HashLink
-                to={"/sensec/about/#about"}
+                to={"/sensec/about#aboutPage"}
                 smooth
                 scroll={scrollWithOffset}
               >
                 About
               </HashLink>
               <HashLink
-                to={"/sensec/courses/#courses"}
+                to={"/sensec/courses#allProgrammes"}
                 smooth
                 scroll={scrollWithOffset}
               >
                 Courses
               </HashLink>
               <HashLink
-                to={"/sensec/contact/#contact"}
+                to={"/sensec/contact#contactPage"}
                 smooth
                 scroll={scrollWithOffset}
               >
@@ -112,7 +112,7 @@ export default function Footer() {
                   >
                     <a href="tel:+491784535757">
                       <LocalPhoneIcon style={{ color: "" }} />
-                      +49 1784 5357 57
+                      +233 508 670 598
                     </a>
                   </button>
                 </span>
@@ -122,7 +122,7 @@ export default function Footer() {
                     onClick={handleWhatsAppCallClick}
                   >
                     <WhatsAppIcon style={{ color: "rgb(25, 173, 30)" }} />
-                    <p>+491784535757</p>
+                    <p>+233 245 940 586</p>
                   </button>
                 </span>
                 <span>

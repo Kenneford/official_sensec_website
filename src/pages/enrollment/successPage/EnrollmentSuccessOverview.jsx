@@ -169,7 +169,7 @@ export function EnrollmentSuccessOverview({
   }, [currentEnrolmentSuccessLink, setCurrentEnrolmentSuccessLink]);
 
   if (!enrolledStudent) {
-    return <DataNotFound message={"Student data not found!"} />;
+    return <PageLoading />;
   }
   if (enrolledStudent?.studentStatusExtend?.isGraduated) {
     return <NotAuthorized />;

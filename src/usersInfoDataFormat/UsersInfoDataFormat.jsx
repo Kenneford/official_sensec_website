@@ -1211,31 +1211,35 @@ const studentsReportColumn = (columnData) => {
       selector: (row) => {
         return (
           <>
-            <Button
-              size="small"
-              sx={{
-                padding: ".2rem",
-                borderRadius: ".4rem",
-                color: "#0ab312",
-                fontSize: ".9em",
-                textTransform: "capitalize",
-                ":hover": {
-                  backgroundColor: "transparent",
-                },
-              }}
-              onClick={() => {
-                columnData?.setStudentId(row?.uniqueId);
-                columnData?.setOpenRemarkModal(true);
-              }}
-            >
-              {!row?.remark ? (
-                <>
-                  Add <Add fontSize=".8em" />
-                </>
-              ) : (
-                <Edit style={{ color: "#696969" }} />
-              )}
-            </Button>
+            {columnData?.subjectMultiStudentsReports ? (
+              <Button
+                size="small"
+                sx={{
+                  padding: ".2rem",
+                  borderRadius: ".4rem",
+                  color: "#0ab312",
+                  fontSize: ".9em",
+                  textTransform: "capitalize",
+                  ":hover": {
+                    backgroundColor: "transparent",
+                  },
+                }}
+                onClick={() => {
+                  columnData?.setStudentId(row?.uniqueId);
+                  columnData?.setOpenRemarkModal(true);
+                }}
+              >
+                {!row?.remark ? (
+                  <>
+                    Add <Add fontSize=".8em" />
+                  </>
+                ) : (
+                  <Edit style={{ color: "#696969" }} />
+                )}
+              </Button>
+            ) : (
+              "---"
+            )}
           </>
         );
       },

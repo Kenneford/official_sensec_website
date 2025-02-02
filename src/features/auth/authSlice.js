@@ -94,6 +94,7 @@ export const fetchVerificationData = createAsyncThunk(
 export const verifyUser = createAsyncThunk(
   "Auth/verifyUser",
   async ({ userId, emailToken }, { rejectWithValue }) => {
+      localStorage.setItem("signUpId", userId);
     try {
       const res = await axios.post(
         `${SENSEC_API_ENDPOINT}/users/${userId}/${emailToken}/verify`

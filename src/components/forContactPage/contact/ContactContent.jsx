@@ -246,9 +246,6 @@ export default function ContactContent() {
         </div>
         <div className="contactRight"></div>
       </div>
-      <div className="footer">
-        <Footer />
-      </div>
     </div>
   );
 }
