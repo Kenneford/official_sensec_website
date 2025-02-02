@@ -47,7 +47,7 @@ export function CoreReport() {
     createMultiStatus,
     error,
     successMessage,
-    fetchCoreStatus,
+    fetchCoreDraftStatus,
   } = useSelector((state) => state.report);
   const reportClassLevel = localStorage.getItem("reportClassLevel");
   const reportSubject = localStorage.getItem("reportSubject");
@@ -387,10 +387,10 @@ export function CoreReport() {
   ]);
   // Fetch students status
   useEffect(() => {
-    if (fetchCoreStatus === "pending") {
+    if (fetchCoreDraftStatus === "pending") {
       setFetchingCoreLoadingComplete(false);
     }
-    if (fetchCoreStatus === "rejected") {
+    if (fetchCoreDraftStatus === "rejected") {
       setTimeout(() => {
         setFetchingCoreLoadingComplete(null);
         dispatch(resetFetchCoreReportState());
@@ -406,7 +406,7 @@ export function CoreReport() {
       }, 2000);
       return;
     }
-    if (fetchCoreStatus === "success") {
+    if (fetchCoreDraftStatus === "success") {
       setTimeout(() => {
         setFetchingCoreLoadingComplete(true);
       }, 3000);
@@ -415,7 +415,7 @@ export function CoreReport() {
         dispatch(resetFetchCoreReportState());
       }, 6000);
     }
-  }, [fetchCoreStatus, error, dispatch]);
+  }, [fetchCoreDraftStatus, error, dispatch]);
 
   const allStd = `Students / Total = ${
     allCoreSubjectStudents?.length > 0 ? allCoreSubjectStudents?.length : 0
@@ -438,7 +438,11 @@ export function CoreReport() {
           <span>{lecturerCurrentLink?.replace(/_/g, ` Core `)}</span>
         </h1>
       </Box>
-      <Box padding={{ xs: 1, sm: 2 }} bgcolor={"#383838"}>
+      <Box
+        padding={{ xs: 1, sm: 2 }}
+        bgcolor={"#383838"}
+        fontSize={"calc(0.7rem + 1vmin)"}
+      >
         <Box bgcolor={"#fff"} padding={{ xs: 1, sm: 2 }} borderRadius={".4rem"}>
           <p
             style={{
@@ -482,17 +486,10 @@ export function CoreReport() {
                   setCoreClassLevel(e.target.value);
                   localStorage.setItem("coreReportClassLevel", e.target.value);
                 }}
-                //   onChange={(e) => {
-                //     setReportData({
-                //       ...reportData,
-                //       classLevel: e.target.value,
-                //     });
-                //     localStorage.setItem("reportClassLevel", e.target.value);
-                //   }}
                 sx={{
                   "& .MuiInputBase-input": {
-                    height: "1rem",
-                    fontSize: ".8em",
+                    height: "1.3rem",
+                    fontSize: ".7em",
                   },
                   "& .MuiInputLabel-root": {
                     fontSize: ".7em", // Default label size
@@ -530,8 +527,8 @@ export function CoreReport() {
                 //   }}
                 sx={{
                   "& .MuiInputBase-input": {
-                    height: "1rem",
-                    fontSize: ".8em",
+                    height: "1.3rem",
+                    fontSize: ".7em",
                   },
                   "& .MuiInputLabel-root": {
                     fontSize: ".7em", // Default label size
@@ -547,7 +544,7 @@ export function CoreReport() {
                 ))}
               </CustomTextField>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={5}>
               <Autocomplete
                 multiple
                 options={allFlattenedProgrammes}
@@ -576,8 +573,8 @@ export function CoreReport() {
                     //   }}
                     sx={{
                       "& .MuiInputBase-input": {
-                        minHeight: "1.8em",
-                        fontSize: ".8em",
+                        height: "1.3rem",
+                        fontSize: ".7em",
                       },
                       "& .MuiInputLabel-root": {
                         fontSize: ".7em", // Default label size
@@ -588,9 +585,13 @@ export function CoreReport() {
                 )}
               />
             </Grid>
-            <Grid item xs={12} sm={2}>
+            <Grid item xs={12} sm={1.7} md={1.3}>
               <Button
-                disabled={!selectedProgrammes?.length > 0}
+                disabled={
+                  !coreClassLevel ||
+                  !coreSubject ||
+                  !selectedProgrammes?.length > 0
+                }
                 variant="contained"
                 fullWidth
                 sx={{
@@ -605,7 +606,7 @@ export function CoreReport() {
                     pointerEvents: "auto",
                   },
                   alignItems: "center",
-                  minHeight: { xs: "2.7em", sm: "2.7rem" },
+                  height: "2.35rem",
                   textTransform: "capitalize",
                 }}
                 onClick={(e) => {
@@ -656,7 +657,7 @@ export function CoreReport() {
                   </Box>
                 )}
                 {fetchingCoreLoadingComplete &&
-                  fetchCoreStatus === "success" && (
+                  fetchCoreDraftStatus === "success" && (
                     <>
                       <span>Fetched</span> <TaskAlt />
                     </>
@@ -666,112 +667,132 @@ export function CoreReport() {
             </Grid>
           </Grid>
         </Box>
-        {selectedProgrammes?.length > 0 &&
-        allCoreSubjectStudents?.length > 0 ? (
-          <Box fontSize={"calc(0.7rem + 1vmin)"} position={"relative"}>
-            <Box className="studentDataTable">
-              <Box mt={3} mb={1.5}>
-                <Button
-                  disabled={!multiStudents?.length > 0}
-                  variant="contained"
-                  sx={{
-                    backgroundColor:
-                      multiStudents?.length > 0
-                        ? "green"
-                        : "#adacaccc !important",
-                    borderRadius: ".4rem",
-                    color: "#fff !important",
-                    "&.Mui-disabled": {
-                      cursor: "not-allowed", // Show not-allowed cursor
-                      pointerEvents: "auto",
-                    },
-                    alignItems: "center",
-                  }}
-                  onClick={() => {
-                    // Format the selected items into the desired structure
-                    const formattedProgrammes = selectedProgrammes.map(
-                      (program) => ({
-                        program: program._id, // Map _id to id
-                        type: program.isDivisionProgram
-                          ? "ProgramDivision"
-                          : "Program", // Map label to name
-                      })
-                    );
-                    const data = {
-                      semester: currentAcademicTerm?.name,
-                      classLevel: coreClassLevel,
-                      subject: coreSubject,
-                      lecturer: authUser?.id,
-                      students: multiStudents,
-                      programmes: formattedProgrammes || [],
-                      year: currentYear,
-                    };
-                    if (isCore && multiStudents?.length > 0) {
-                      dispatch(createMultiStudentsReport(data));
-                    }
-                  }}
-                >
-                  {isCore &&
-                    multiStudents?.length > 0 &&
-                    multiLoadingComplete === false && (
-                      <Box className="promotionSpinner">
-                        <p>Saving</p>
-                        <span
-                          className="dot-ellipsis"
-                          style={{ marginTop: "-.1rem" }}
-                        >
-                          <span className="dot">.</span>
-                          <span className="dot">.</span>
-                          <span className="dot">.</span>
-                        </span>
-                      </Box>
-                    )}
-                  {isCore &&
-                    multiStudents?.length > 0 &&
-                    multiLoadingComplete &&
-                    createMultiStatus === "success" && (
-                      <>
-                        <span>All Saved</span> <TaskAlt />
-                      </>
-                    )}
-                  {isCore &&
-                    multiLoadingComplete === null &&
-                    "Save All Reports"}
-                </Button>
+        <>
+          {draftReportInfo &&
+            draftReportInfo?.students?.length > 0 &&
+            draftReportInfo?.subject === coreSubject &&
+            draftReportInfo?.classLevel === coreClassLevel &&
+            fetchingCoreLoadingComplete === null && (
+              <Box fontSize={"calc(0.7rem + 1vmin)"} position={"relative"}>
+                <Box className="studentDataTable">
+                  <Box mt={3} mb={1.5}>
+                    <Button
+                      disabled={!multiStudents?.length > 0}
+                      variant="contained"
+                      sx={{
+                        backgroundColor:
+                          multiStudents?.length > 0
+                            ? "green"
+                            : "#adacaccc !important",
+                        borderRadius: ".4rem",
+                        color: "#fff !important",
+                        "&.Mui-disabled": {
+                          cursor: "not-allowed", // Show not-allowed cursor
+                          pointerEvents: "auto",
+                        },
+                        alignItems: "center",
+                      }}
+                      onClick={() => {
+                        // Format the selected items into the desired structure
+                        const formattedProgrammes = selectedProgrammes.map(
+                          (program) => ({
+                            program: program._id, // Map _id to id
+                            type: program.isDivisionProgram
+                              ? "ProgramDivision"
+                              : "Program", // Map label to name
+                          })
+                        );
+                        const data = {
+                          semester: currentAcademicTerm?.name,
+                          classLevel: coreClassLevel,
+                          subject: coreSubject,
+                          lecturer: authUser?.id,
+                          students: multiStudents,
+                          programmes: formattedProgrammes || [],
+                          year: currentYear,
+                        };
+                        if (isCore && multiStudents?.length > 0) {
+                          dispatch(createMultiStudentsReport(data));
+                        }
+                      }}
+                    >
+                      {isCore &&
+                        multiStudents?.length > 0 &&
+                        multiLoadingComplete === false && (
+                          <Box className="promotionSpinner">
+                            <p>Saving</p>
+                            <span
+                              className="dot-ellipsis"
+                              style={{ marginTop: "-.1rem" }}
+                            >
+                              <span className="dot">.</span>
+                              <span className="dot">.</span>
+                              <span className="dot">.</span>
+                            </span>
+                          </Box>
+                        )}
+                      {isCore &&
+                        multiStudents?.length > 0 &&
+                        multiLoadingComplete &&
+                        createMultiStatus === "success" && (
+                          <>
+                            <span>All Saved</span> <TaskAlt />
+                          </>
+                        )}
+                      {isCore &&
+                        multiLoadingComplete === null &&
+                        "Save All Reports"}
+                    </Button>
+                  </Box>
+                  <DataTable
+                    title={allStd}
+                    columns={studentDataFormat}
+                    data={allCoreSubjectStudents || []}
+                    customStyles={customUserTableStyle}
+                    pagination
+                    selectableRows
+                    fixedHeader
+                    selectableRowsHighlight
+                    highlightOnHover
+                    responsive
+                    onSelectedRowsChange={handleMultiSelect}
+                    clearSelectedRows={toggleClearRows}
+                  />
+                </Box>
               </Box>
-              {isCore && selectedProgrammes?.length > 0 && (
-                <DataTable
-                  title={allStd}
-                  columns={studentDataFormat}
-                  data={allCoreSubjectStudents || []}
-                  customStyles={customUserTableStyle}
-                  pagination
-                  selectableRows
-                  fixedHeader
-                  selectableRowsHighlight
-                  highlightOnHover
-                  responsive
-                  onSelectedRowsChange={handleMultiSelect}
-                  clearSelectedRows={toggleClearRows}
-                />
-              )}
-            </Box>
-          </Box>
-        ) : (
-          <Box>
-            <Typography
-              variant="h6"
-              color="#fff"
-              textAlign={"center"}
-              mt={5}
-              fontSize={".9em"}
-            >
-              {!coreClassLevel && !coreSubject
-                ? "Select Form and Subject to begin..."
-                : "No data found!"}
-            </Typography>
-          </Box>
-        )}
+            )}
+          {!coreClassLevel &&
+            !coreSubject &&
+            fetchingCoreLoadingComplete === null && (
+              <Box>
+                <Typography
+                  variant="h6"
+                  color="#fff"
+                  textAlign={"center"}
+                  mt={2}
+                  fontSize={".9em"}
+                >
+                  Select Form and Subject to begin...
+                </Typography>
+              </Box>
+            )}
+          {coreClassLevel &&
+            coreSubject &&
+            !draftReportInfo &&
+            fetchingCoreLoadingComplete === null && (
+              <Box>
+                <Typography
+                  variant="h6"
+                  color="#fff"
+                  textAlign={"center"}
+                  mt={2}
+                  fontSize={".9em"}
+                >
+                  No data found!
+                </Typography>
+              </Box>
+            )}
+        </>
       </Box>
     </>
   );

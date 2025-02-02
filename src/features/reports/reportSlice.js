@@ -17,8 +17,8 @@ const initialState = {
   createStatus: "",
   createMultiStatus: "",
   fetchStatus: "",
-  fetchElectiveStatus: "",
-  fetchCoreStatus: "",
+  fetchElectiveDraftStatus: "",
+  fetchCoreDraftStatus: "",
 };
 
 export const addGrade = createAsyncThunk(
@@ -204,7 +204,7 @@ const reportSlice = createSlice({
     resetFetchElectiveReportState(state) {
       return {
         ...state,
-        fetchElectiveStatus: "",
+        fetchElectiveDraftStatus: "",
         error: "",
         successMessage: "",
       };
@@ -212,7 +212,7 @@ const reportSlice = createSlice({
     resetFetchCoreReportState(state) {
       return {
         ...state,
-        fetchCoreStatus: "",
+        fetchCoreDraftStatus: "",
         error: "",
         successMessage: "",
       };
@@ -283,7 +283,7 @@ const reportSlice = createSlice({
     });
     // Fetch elective draft report
     builder.addCase(fetchElectiveDraftReport.pending, (state) => {
-      return { ...state, fetchElectiveStatus: "pending" };
+      return { ...state, fetchElectiveDraftStatus: "pending" };
     });
     builder.addCase(fetchElectiveDraftReport.fulfilled, (state, action) => {
       if (action.payload) {
@@ -291,20 +291,20 @@ const reportSlice = createSlice({
           ...state,
           draftReportInfo: action.payload.foundDraftReport,
           successMessage: action.payload.successMessage,
-          fetchElectiveStatus: "success",
+          fetchElectiveDraftStatus: "success",
         };
       } else return state;
     });
     builder.addCase(fetchElectiveDraftReport.rejected, (state, action) => {
       return {
         ...state,
-        fetchElectiveStatus: "rejected",
+        fetchElectiveDraftStatus: "rejected",
         error: action.payload,
       };
     });
     // Fetch elective draft report
     builder.addCase(fetchCoreDraftReport.pending, (state) => {
-      return { ...state, fetchCoreStatus: "pending" };
+      return { ...state, fetchCoreDraftStatus: "pending" };
     });
     builder.addCase(fetchCoreDraftReport.fulfilled, (state, action) => {
       if (action.payload) {
@@ -312,14 +312,14 @@ const reportSlice = createSlice({
           ...state,
           draftReportInfo: action.payload.foundDraftReport,
           successMessage: action.payload.successMessage,
-          fetchCoreStatus: "success",
+          fetchCoreDraftStatus: "success",
         };
       } else return state;
     });
     builder.addCase(fetchCoreDraftReport.rejected, (state, action) => {
       return {
         ...state,
-        fetchCoreStatus: "rejected",
+        fetchCoreDraftStatus: "rejected",
         error: action.payload,
       };
     });

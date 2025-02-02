@@ -27,6 +27,7 @@ import {
   getDraftReportInfo,
   getSubjectMultiStudentsReports,
   resetCreateReportState,
+  resetFetchElectiveReportState,
   saveDraftReport,
 } from "../../../../features/reports/reportSlice";
 import { toast } from "react-toastify";
@@ -43,8 +44,13 @@ import StudentReportRemarkModal from "../../../modals/StudentReportRemarkModal";
 import { styled } from "@mui/system";
 
 export function ElectiveReport() {
-  const { createStatus, createMultiStatus, error, successMessage } =
-    useSelector((state) => state.report);
+  const {
+    createStatus,
+    createMultiStatus,
+    error,
+    fetchElectiveDraftStatus,
+    fetchCoreDraftStatus,
+  } = useSelector((state) => state.report);
   const reportClassLevel = localStorage.getItem("reportClassLevel");
   const reportSubject = localStorage.getItem("reportSubject");
   const authUser = useSelector(getAuthUser);
@@ -55,7 +61,7 @@ export function ElectiveReport() {
     getSubjectMultiStudentsReports
   );
   console.log("Fetched Reports in Redux:", draftReportInfo);
-  console.log(subjectMultiStudentsReports);
+  console.log("subjectMultiStudentsReports: ", subjectMultiStudentsReports);
 
   const { lecturerCurrentAction, lecturerCurrentLink } = useParams();
   const dispatch = useDispatch();
@@ -73,7 +79,7 @@ export function ElectiveReport() {
   console.log("allElectiveSubjectStudents: ", allElectiveSubjectStudents);
 
   const [isElective, setIsElective] = useState(true);
-  const [fetchingCoreLoadingComplete, setFetchingCoreLoadingComplete] =
+  const [fetchingElectiveLoadingComplete, setFetchingElectiveLoadingComplete] =
     useState(null);
 
   const lecturerSubjects = FetchAllLecturerSubjects(takeCoreSubjectReport);
@@ -175,6 +181,7 @@ export function ElectiveReport() {
   );
   // Table column data
   const columnData = {
+    subjectMultiStudentsReports,
     authUser,
     handleScoreChange,
     calculateGrade,
@@ -251,21 +258,21 @@ export function ElectiveReport() {
   }, [draftReportInfo]);
 
   // Fetch data when inputs change
-  useEffect(() => {
-    if (classLevel && subject) {
-      const data = {
-        classLevel,
-        semester: currentAcademicTerm?.name,
-        subject,
-        lecturer: authUser?.id,
-        year: new Date().getFullYear(),
-      };
-      console.log(data);
+  // useEffect(() => {
+  //   if (classLevel && subject) {
+  //     const data = {
+  //       classLevel,
+  //       semester: currentAcademicTerm?.name,
+  //       subject,
+  //       lecturer: authUser?.id,
+  //       year: new Date().getFullYear(),
+  //     };
+  //     console.log(data);
 
-      dispatch(fetchElectiveDraftReport(data));
-      dispatch(fetchSubjectMultiStudentsReport(data));
-    }
-  }, [classLevel, subject, currentAcademicTerm, authUser, dispatch]);
+  //     dispatch(fetchElectiveDraftReport(data));
+  //     dispatch(fetchSubjectMultiStudentsReport(data));
+  //   }
+  // }, [classLevel, subject, currentAcademicTerm, authUser, dispatch]);
 
   useEffect(() => {
     setIsElective(true);
@@ -276,21 +283,23 @@ export function ElectiveReport() {
 
   // handle multi approval or rejection
   const handleMultiSelect = (state) => {
-    if (state) {
-      const studentObj = state?.selectedRows?.map((user) => {
-        const userObject = {
-          studentId: user?.uniqueId,
-          classScore: user?.classScore,
-          examScore: user?.examScore,
-          totalScore: user?.totalScore,
-          remark: user?.remark,
-          grade: user?.grade,
-        };
-        return userObject;
-      });
-      setMultiStudents(studentObj);
-    } else {
-      setMultiStudents([]);
+    if (!subjectMultiStudentsReports) {
+      if (state) {
+        const studentObj = state?.selectedRows?.map((user) => {
+          const userObject = {
+            studentId: user?.uniqueId,
+            classScore: user?.classScore,
+            examScore: user?.examScore,
+            totalScore: user?.totalScore,
+            remark: user?.remark,
+            grade: user?.grade,
+          };
+          return userObject;
+        });
+        setMultiStudents(studentObj);
+      } else {
+        setMultiStudents([]);
+      }
     }
   };
   //   console.log(multiStudents);
@@ -430,6 +439,38 @@ export function ElectiveReport() {
     }
   }, [subjectMultiStudentsReports]);
 
+  // Fetch students status
+  useEffect(() => {
+    if (fetchElectiveDraftStatus === "pending") {
+      setFetchingElectiveLoadingComplete(false);
+    }
+    if (fetchElectiveDraftStatus === "rejected") {
+      setTimeout(() => {
+        setFetchingElectiveLoadingComplete(null);
+        dispatch(resetFetchElectiveReportState());
+      }, 3000);
+      setTimeout(() => {
+        error.errorMessage.message.map((err) =>
+          toast.error(err, {
+            position: "top-right",
+            theme: "light",
+            toastId: "createStudentReportError",
+          })
+        );
+      }, 2000);
+      return;
+    }
+    if (fetchElectiveDraftStatus === "success") {
+      setTimeout(() => {
+        setFetchingElectiveLoadingComplete(true);
+      }, 3000);
+      setTimeout(() => {
+        setFetchingElectiveLoadingComplete(null);
+        dispatch(resetFetchElectiveReportState());
+      }, 6000);
+    }
+  }, [fetchElectiveDraftStatus, error, dispatch]);
+
   const allStd =
     subjectMultiStudentsReports &&
     subjectMultiStudentsReports?.subject !== draftReportInfo?.subject ? (
@@ -499,7 +540,11 @@ export function ElectiveReport() {
           <span>{lecturerCurrentLink?.replace(/_/g, " Elective ")}</span>
         </h1>
       </Box>
-      <Box padding={{ xs: 1, sm: 2 }} bgcolor={"#383838"}>
+      <Box
+        padding={{ xs: 1, sm: 2 }}
+        bgcolor={"#383838"}
+        fontSize={"calc(0.7rem + 1vmin)"}
+      >
         <Box bgcolor={"#fff"} padding={{ xs: 1, sm: 2 }} borderRadius={".4rem"}>
           <p
             style={{
@@ -551,8 +596,8 @@ export function ElectiveReport() {
                 //   }}
                 sx={{
                   "& .MuiInputBase-input": {
-                    height: "1rem",
-                    fontSize: ".8em",
+                    height: "1.3rem",
+                    fontSize: ".7em",
                   },
                   "& .MuiInputLabel-root": {
                     fontSize: ".7em", // Default label size
@@ -589,8 +634,8 @@ export function ElectiveReport() {
                 //   }}
                 sx={{
                   "& .MuiInputBase-input": {
-                    height: "1rem",
-                    fontSize: ".8em",
+                    height: "1.3rem",
+                    fontSize: ".7em",
                   },
                   "& .MuiInputLabel-root": {
                     fontSize: ".7em", // Default label size
@@ -606,9 +651,9 @@ export function ElectiveReport() {
                 ))}
               </CustomTextField>
             </Grid>
-            <Grid item xs={12} sm={2}>
+            <Grid item xs={12} sm={2} md={1.3}>
               <Button
-                disabled={!classLevel && !subject}
+                disabled={!classLevel || !subject}
                 variant="contained"
                 fullWidth
                 sx={{
@@ -621,8 +666,9 @@ export function ElectiveReport() {
                     pointerEvents: "auto",
                   },
                   alignItems: "center",
-                  minHeight: { xs: "2.7em", sm: "2.7rem" },
+                  height: "2.3rem",
                   textTransform: "capitalize",
+                  fontSize: ".7em",
                 }}
                 onClick={(e) => {
                   e?.preventDefault();
@@ -639,12 +685,12 @@ export function ElectiveReport() {
                   }
                 }}
               >
-                {fetchingCoreLoadingComplete === false && (
-                  <Box className="promotionSpinner">
+                {fetchingElectiveLoadingComplete === false && (
+                  <Box className="promotionSpinner" sx={{ padding: "unset" }}>
                     <p>Fetching</p>
                     <span
                       className="dot-ellipsis"
-                      style={{ marginTop: "-.1rem" }}
+                      // style={{ marginTop: "-.1rem" }}
                     >
                       <span className="dot">.</span>
                       <span className="dot">.</span>
@@ -652,13 +698,14 @@ export function ElectiveReport() {
                     </span>
                   </Box>
                 )}
-                {/* {fetchingCoreLoadingComplete &&
-                  fetchCoreStatus === "success" && (
+                {fetchingElectiveLoadingComplete &&
+                  fetchElectiveDraftStatus === "success" && (
                     <>
-                      <span>Fetched</span> <TaskAlt />
+                      <span>Fetched</span>{" "}
+                      <TaskAlt style={{ fontSize: "1.1rem" }} />
                     </>
-                  )} */}
-                {fetchingCoreLoadingComplete === null && "Fetch"}
+                  )}
+                {fetchingElectiveLoadingComplete === null && "Fetch"}
               </Button>
             </Grid>
           </Grid>
@@ -667,12 +714,16 @@ export function ElectiveReport() {
           {draftReportInfo &&
             draftReportInfo?.students?.length > 0 &&
             draftReportInfo?.subject === subject &&
-            draftReportInfo?.classLevel === classLevel && (
+            draftReportInfo?.classLevel === classLevel &&
+            fetchingElectiveLoadingComplete === null && (
               <Box fontSize={"calc(0.7rem + 1vmin)"} position={"relative"}>
                 <Box className="studentDataTable">
                   <Box mt={3} mb={1.5}>
                     <Button
-                      disabled={!multiStudents?.length > 0}
+                      disabled={
+                        !subjectMultiStudentsReports &&
+                        !multiStudents?.length > 0
+                      }
                       variant="contained"
                       sx={{
                         backgroundColor:
@@ -730,7 +781,6 @@ export function ElectiveReport() {
                         "Save All Reports"}
                     </Button>
                   </Box>
-                  {/* {isElective && ( */}
                   <>
                     <DataTable
                       title={allStd}
@@ -747,7 +797,6 @@ export function ElectiveReport() {
                       clearSelectedRows={toggleClearRows}
                     />
                   </>
-                  {/* )} */}
                   <StudentReportRemarkModal
                     open={openRemarkModal}
                     onClose={() => setOpenRemarkModal(false)}
@@ -769,32 +818,37 @@ export function ElectiveReport() {
                 </Box>
               </Box>
             )}
-          {!classLevel && !subject && (
-            <Box>
-              <Typography
-                variant="h6"
-                color="#fff"
-                textAlign={"center"}
-                mt={2}
-                fontSize={".9em"}
-              >
-                Select Form and Subject to begin...
-              </Typography>
-            </Box>
-          )}
-          {classLevel && subject && !draftReportInfo && (
-            <Box>
-              <Typography
-                variant="h6"
-                color="#fff"
-                textAlign={"center"}
-                mt={2}
-                fontSize={".9em"}
-              >
-                No data found!
-              </Typography>
-            </Box>
-          )}
+          {!classLevel &&
+            !subject &&
+            fetchingElectiveLoadingComplete === null && (
+              <Box>
+                <Typography
+                  variant="h6"
+                  color="#fff"
+                  textAlign={"center"}
+                  mt={2}
+                  fontSize={".9em"}
+                >
+                  Select Form and Subject to begin...
+                </Typography>
+              </Box>
+            )}
+          {classLevel &&
+            subject &&
+            !draftReportInfo &&
+            fetchingElectiveLoadingComplete === null && (
+              <Box>
+                <Typography
+                  variant="h6"
+                  color="#fff"
+                  textAlign={"center"}
+                  mt={2}
+                  fontSize={".9em"}
+                >
+                  No data fetched!
+                </Typography>
+              </Box>
+            )}
         </>
       </Box>
     </>

@@ -40,9 +40,18 @@ const getLastNMonthsData = (n) => {
     endOfMonth.setUTCDate(0); // Go back 1 day to get the last day of the current month
     endOfMonth.setUTCHours(23, 59, 59, 999); // Set to the end of the day
 
+    // Determine the label
+    let label;
+    if (i === 0) {
+      label = "Current Month";
+    } else if (i === 1) {
+      label = "Last Month";
+    } else {
+      label = `Last ${i} Months`;
+    }
     // Add label and date range
     results.push({
-      label: i === 0 ? "Current Month" : `${i + 0} Months Ago`,
+      label,
       start: formatDate(startOfMonth),
       end: formatDate(endOfMonth),
     });
@@ -68,9 +77,18 @@ const getLastNWeeksData = (n) => {
     endOfWeek.setUTCDate(startOfWeek.getUTCDate() + 6); // Add 6 days to get Sunday
     endOfWeek.setUTCHours(23, 59, 59, 999);
 
+    // Determine the label
+    let label;
+    if (i === 0) {
+      label = "Current Week";
+    } else if (i === 1) {
+      label = "Last Week";
+    } else {
+      label = `${i} Weeks Ago`;
+    }
     // Add label and date range
     results.push({
-      label: i === 0 ? "Last Week" : `${i + 1} Weeks Ago`,
+      label,
       start: formatDate(startOfWeek),
       end: formatDate(endOfWeek),
     });
