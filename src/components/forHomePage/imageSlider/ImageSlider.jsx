@@ -12,7 +12,7 @@ const sliderImages = [
     title: "Senya Senior High School",
     description: "We are the best among equals!",
     actionButtonText: "Enroll Now",
-    actionLink: "/sensec/students/enrollment/placement_verification",
+    actionLink: "/sensec/students/enrollment/documentation",
     alt: "Sensec Classroom Image",
   },
   {

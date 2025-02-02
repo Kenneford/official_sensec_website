@@ -25,6 +25,7 @@ import {
 } from "../../lazyLoading/auth/AuthLazyComponents";
 import { FetchAllUsers } from "../../../data/allUsers/FetchAllUsers";
 import { Box, Button, Grid } from "@mui/material";
+import PageLoading from "../../pageLoading/PageLoading";
 
 export function ConfirmVerification() {
   const dispatch = useDispatch();
@@ -149,20 +150,7 @@ export function ConfirmVerification() {
   }, [dispatch, navigate, verifyEmailStatus, error, successMessage, user]);
 
   if (!user) {
-    return (
-      <h3
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          textAlign: "center",
-          marginTop: "2rem",
-          color: "#cccc",
-        }}
-      >
-        Loading data...
-      </h3>
-    );
+    return <PageLoading />;
   }
   return (
     <>

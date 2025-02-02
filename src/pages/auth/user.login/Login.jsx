@@ -146,8 +146,10 @@ export function Login() {
   }, [newUser, userFound, passwordInputError]);
   // Fetch all users
   useEffect(() => {
-    dispatch(fetchAllUsers());
-  }, [dispatch]);
+    if (newUser?.uniqueId !== "") {
+      dispatch(fetchAllUsers());
+    }
+  }, [dispatch, newUser]);
 
   // Function to redirect users to their dashboard
   const getUserRolePath = () => {
