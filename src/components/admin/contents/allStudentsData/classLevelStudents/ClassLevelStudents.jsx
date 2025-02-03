@@ -392,8 +392,8 @@ export function ClassLevelStudents() {
             ))}
           </div>
         </div>
-        {/* Approval buttons */}
-        <Box sx={{ display: "flex", gap: 1 }}>
+        {/* Multi Approval buttons */}
+        {/* <Box sx={{ display: "flex", gap: 1 }}>
           <MultiStudentsPromotionBtn
             promoteMultiStudentsStatus={multiStudentsPromotionStatus}
             promoteMultiStudentsLoadingComplete={promoteMultiLoadingComplete}
@@ -417,7 +417,7 @@ export function ClassLevelStudents() {
             //   enrollmentApprovedBy: `${authAdmin?.id}`,
             // })}
           />
-        </Box>
+        </Box> */}
         <Box className="studentDataTable">
           <DataTable
             title={currentClassLevelStd}

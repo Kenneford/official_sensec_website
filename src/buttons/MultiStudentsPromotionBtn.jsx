@@ -15,14 +15,17 @@ export function MultiStudentsPromotionBtn({
   return (
     <Button
       variant="contained"
+      size="small"
       sx={{
         mb: 1,
         bgcolor: "green",
-        minWidth: "7.5rem",
-        fontSize: "1rem",
+        // minWidth: "7.5rem",
+        fontSize: ".7em",
         textTransform: "capitalize",
         lineHeight: "1.2rem",
-        minHeight: "2.5rem",
+        // minHeight: "2rem",
+        letterSpacing: 1,
+        fontWeight: "400",
       }}
       onClick={async (e) => {
         e.preventDefault();

@@ -176,7 +176,7 @@ export function ElectiveReport() {
     if (userData === "E8") return "#763c3c";
     return "#c30505"; // For scores below 40
   };
-  const foundStudent = allElectiveSubjectStudents?.find(
+  const foundStudent = allElectiveSubjectStudents?.students?.find(
     (std) => std._id === currentStudent
   );
   // Table column data
@@ -199,7 +199,6 @@ export function ElectiveReport() {
     createStatus,
     setOpenRemarkModal,
     setStudentId,
-    subjectMultiStudentsReports,
     draftReportInfo,
   };
   const studentDataFormat = studentsReportColumn(columnData);
@@ -846,6 +845,22 @@ export function ElectiveReport() {
                   fontSize={".9em"}
                 >
                   No data fetched!
+                </Typography>
+              </Box>
+            )}
+          {classLevel &&
+            subject &&
+            draftReportInfo?.students?.length === 0 &&
+            fetchingElectiveLoadingComplete === null && (
+              <Box>
+                <Typography
+                  variant="h6"
+                  color="#fff"
+                  textAlign={"center"}
+                  mt={2}
+                  fontSize={".9em"}
+                >
+                  No student data found!
                 </Typography>
               </Box>
             )}

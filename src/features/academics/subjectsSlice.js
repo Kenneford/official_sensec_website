@@ -9,17 +9,20 @@ const initialState = {
   subjectDeleted: "",
   subjectLecturerInfo: "",
   lecturerRemovedInfo: "",
-  allSubjectLecturers: [],
   allSubjects: [],
+  allSubjectLecturers: [],
+  allSubjectStudents: [],
   createStatus: "",
   updateStatus: "",
   assignLecturerStatus: "",
   removeLecturerStatus: "",
   successMessage: "",
   error: "",
+  fetchingError: "",
   fetchSuccessMessage: "",
   deleteSuccessMessage: "",
   deleteStatus: "",
+  fetchingStatus: "",
 };
 //Works ✅
 export const createSubject = createAsyncThunk(
@@ -118,6 +121,23 @@ export const fetchAllSubjectLecturers = createAsyncThunk(
     }
   }
 );
+export const fetchAllSubjectStudents = createAsyncThunk(
+  "Subject/fetchAllSubjectStudents",
+  async (data, { rejectWithValue }) => {
+    try {
+      const response = await tokenInterceptor.get(
+        `/academics/subjects/students/fetch_all`,
+        data
+      );
+      // const students = response.data;
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.log(error.response.data);
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 //❓
 export const fetchSingleSubject = createAsyncThunk(
   "Subject/fetchSingleSubject",
@@ -206,6 +226,14 @@ const subjectSlice = createSlice({
         deleteStatus: "",
         successMessage: "",
         error: "",
+      };
+    },
+    resetFetchState(state) {
+      return {
+        ...state,
+        fetchingStatus: "",
+        fetchSuccessMessage: "",
+        fetchingError: "",
       };
     },
   },
@@ -350,7 +378,28 @@ const subjectSlice = createSlice({
       return {
         ...state,
         fetchingStatus: "rejected",
-        error: action.payload,
+        fetchingError: action.payload,
+      };
+    });
+    // fetchAllSubjectStudents
+    builder.addCase(fetchAllSubjectStudents.pending, (state) => {
+      return { ...state, fetchingStatus: "pending" };
+    });
+    builder.addCase(fetchAllSubjectStudents.fulfilled, (state, action) => {
+      if (action.payload) {
+        return {
+          ...state,
+          allSubjectStudents: action.payload.allSubjectStudents,
+          fetchSuccessMessage: action.payload.successMessage,
+          fetchingStatus: "success",
+        };
+      } else return state;
+    });
+    builder.addCase(fetchAllSubjectStudents.rejected, (state, action) => {
+      return {
+        ...state,
+        fetchingStatus: "rejected",
+        fetchingError: action.payload,
       };
     });
     // Delete Subject
