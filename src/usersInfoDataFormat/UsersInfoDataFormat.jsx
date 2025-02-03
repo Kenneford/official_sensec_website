@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
 import { dateFormatter } from "../dateFormatter/DateFormatter";
-import { Box, Button, InputAdornment, Typography } from "@mui/material";
+import { Avatar, Box, Button, InputAdornment, Typography } from "@mui/material";
 import {
   approveStudentEnrollment,
   rejectStudentEnrollment,
@@ -432,24 +432,32 @@ const studentsColumn = (columnData) => {
       name: "Image",
       selector: (row) =>
         row?.personalInfo?.profilePicture ? (
-          <HashLink
-            to={`/sensec/admin/${columnData?.adminCurrentAction}/${
-              columnData?.adminCurrentLink
-            }/${row?.personalInfo?.firstName?.replace(/ /g, "_")}_${
-              row?.personalInfo?.lastName
-            }/${row?.uniqueId}/student_info#studentInfo`}
-            title="View Student Info"
-          >
-            <img
-              className="studentImg"
-              src={
-                row?.personalInfo?.profilePicture?.url
-                  ? row?.personalInfo?.profilePicture?.url
-                  : row?.personalInfo?.profilePicture
-              }
-              alt=""
-            />
-          </HashLink>
+          <Box fontSize={"calc(0.7rem + 1vmin)"}>
+            <HashLink
+              to={`/sensec/admin/${columnData?.adminCurrentAction}/${
+                columnData?.adminCurrentLink
+              }/${row?.personalInfo?.firstName?.replace(/ /g, "_")}_${
+                row?.personalInfo?.lastName
+              }/${row?.uniqueId}/student_info#studentInfo`}
+              title="View Student Info"
+            >
+              <Avatar
+                // className="studentImg"
+                src={
+                  row?.personalInfo?.profilePicture?.url
+                    ? row?.personalInfo?.profilePicture?.url
+                    : row?.personalInfo?.profilePicture
+                }
+                sx={{
+                  width: "1.5em",
+                  height: "1.5em",
+                  borderRadius: ".4rem",
+                  objectFit: "cover",
+                }}
+                alt=""
+              />
+            </HashLink>
+          </Box>
         ) : (
           <HashLink
             className="noImgLink"
@@ -485,7 +493,11 @@ const studentsColumn = (columnData) => {
     },
     {
       name: "Full Name",
-      selector: (row) => row?.personalInfo?.fullName,
+      selector: (row) => (
+        <Box fontSize={"calc(0.7rem + 1vmin)"}>
+          <p style={{ fontSize: ".7em" }}>{row?.personalInfo?.fullName}</p>
+        </Box>
+      ),
       sortable: true,
     },
     {
@@ -498,9 +510,14 @@ const studentsColumn = (columnData) => {
           date.getTime() + date.getTimezoneOffset() * 60000
         );
         return (
-          <p title={dateFormatter.format(utcDate)}>
-            {dateFormatter.format(utcDate)}
-          </p>
+          <Box fontSize={"calc(0.7rem + 1vmin)"}>
+            <p
+              style={{ fontSize: ".7em" }}
+              title={dateFormatter.format(utcDate)}
+            >
+              {dateFormatter.format(utcDate)}
+            </p>
+          </Box>
         );
       },
     },
@@ -514,17 +531,20 @@ const studentsColumn = (columnData) => {
         );
         if (studentProgramFound) {
           return (
-            <p
-              title={
-                studentProgramFound?.name
+            <Box fontSize={"calc(0.7rem + 1vmin)"}>
+              <p
+                style={{ fontSize: ".7em" }}
+                title={
+                  studentProgramFound?.name
+                    ? studentProgramFound?.name
+                    : studentProgramFound?.divisionName
+                }
+              >
+                {studentProgramFound?.name
                   ? studentProgramFound?.name
-                  : studentProgramFound?.divisionName
-              }
-            >
-              {studentProgramFound?.name
-                ? studentProgramFound?.name
-                : studentProgramFound?.divisionName}
-            </p>
+                  : studentProgramFound?.divisionName}
+              </p>
+            </Box>
           );
         }
         return "---";
@@ -532,7 +552,11 @@ const studentsColumn = (columnData) => {
     },
     {
       name: "Student-ID",
-      selector: (row) => row?.uniqueId,
+      selector: (row) => (
+        <Box fontSize={"calc(0.7rem + 1vmin)"}>
+          <p style={{ fontSize: ".7em" }}>{row?.uniqueId}</p>
+        </Box>
+      ),
       sortable: true,
     },
     // {
@@ -547,457 +571,529 @@ const studentsColumn = (columnData) => {
     // },
     {
       name: "Batch",
-      selector: (row) =>
-        row.studentSchoolData?.batch?.yearRange
-          ? `${row?.studentSchoolData?.batch?.yearRange.replace(/-/g, "/")}`
-          : "---",
+      selector: (row) => (
+        <Box fontSize={"calc(0.7rem + 1vmin)"}>
+          <p style={{ fontSize: ".7em" }}>
+            {row.studentSchoolData?.batch?.yearRange
+              ? `${row?.studentSchoolData?.batch?.yearRange.replace(/-/g, "/")}`
+              : "---"}
+          </p>
+        </Box>
+      ),
     },
     {
       name: "Level",
       selector: (row) =>
         row.studentSchoolData?.currentClassLevel && (
-          <div className="tableClassLevel">
+          <Box fontSize={"calc(0.7rem + 1vmin)"} className="tableClassLevel">
             {row.studentSchoolData?.currentClassLevel?.name === "Level 100" && (
-              <div className="firstYearTag" title="1st Year">
+              <p
+                // style={{
+                //   fontSize: ".7em",
+                //   backgroundColor: "#da076d",
+                //   width: "1em",
+                //   height: "1em",
+                //   display: "flex",
+                //   justifyContent: "center",
+                //   alignItems: "center",
+                //   padding: ".7em",
+                //   borderRadius: "50%",
+                //   color: "#fff",
+                // }}
+                className="firstYearTag"
+                title="1st Year"
+              >
                 1
-              </div>
+              </p>
             )}
             {row.studentSchoolData?.currentClassLevel?.name === "Level 200" && (
-              <div className="secondYearTag" title="2nd Year">
+              <p
+                style={{ fontSize: ".7em" }}
+                className="secondYearTag"
+                title="2nd Year"
+              >
                 2
-              </div>
+              </p>
             )}
             {row.studentSchoolData?.currentClassLevel?.name === "Level 300" &&
               !row.isGraduated && (
-                <div className="thirdYearTag" title="3rd Year">
+                <p
+                  style={{ fontSize: ".7em" }}
+                  className="thirdYearTag"
+                  title="3rd Year"
+                >
                   3
-                </div>
+                </p>
               )}
             {row.isGraduated && (
-              <div className="isGraduated" title="Graduated">
+              <p className="isGraduated" title="Graduated">
                 <SchoolOutlined />
-              </div>
+              </p>
             )}
-          </div>
+          </Box>
         ),
     },
     {
       name: "Promote",
-      selector: (row) =>
-        row?.studentSchoolData?.currentClassLevel && (
-          <>
-            {row?.studentSchoolData?.currentClassLevel?.name ===
-              "Level 100" && (
-              <>
-                <HashLink
-                  to={"#"}
-                  className="approveLink"
-                  onClick={async () => {
-                    // Do not open modal if approval/rejection is in progress
-                    if (
-                      !columnData?.demotionInProgress &&
-                      !columnData?.promotionInProgress
-                    ) {
-                      columnData?.setCurrentStudent(row._id);
-                      columnData?.setOpenPromotionModal(true);
-                      columnData?.setOpenDemotionModal(false);
-                    }
-                  }}
-                >
+      selector: (row) => {
+        const disableBtn = Boolean(columnData?.isProgramStudents);
+        if (row?.studentSchoolData?.currentClassLevel) {
+          return (
+            <Box fontSize={"calc(0.7rem + 1vmin)"}>
+              {row?.studentSchoolData?.currentClassLevel?.name ===
+                "Level 100" && (
+                <>
+                  <Button
+                    disabled={!disableBtn}
+                    // size="small"
+                    sx={{
+                      fontSize: ".7em",
+                      textTransform: "capitalize",
+                      ":hover": {
+                        backgroundColor: "transparent",
+                      },
+                      color: !disableBtn ? "grey" : "#03950a !important",
+                      "&.Mui-disabled": {
+                        cursor: "not-allowed", // Show not-allowed cursor
+                        pointerEvents: "auto",
+                      },
+                    }}
+                    // className="approveLink"
+
+                    onClick={async () => {
+                      // Do not open modal if approval/rejection is in progress
+                      if (
+                        !columnData?.demotionInProgress &&
+                        !columnData?.promotionInProgress
+                      ) {
+                        columnData?.setCurrentStudent(row._id);
+                        columnData?.setOpenPromotionModal(true);
+                        columnData?.setOpenDemotionModal(false);
+                      }
+                    }}
+                  >
+                    {columnData?.studentToPromote &&
+                      columnData?.studentToPromote._id === row._id && (
+                        <>
+                          {columnData?.loadingComplete === false && (
+                            <Box
+                              className="promotionSpinner"
+                              sx={{
+                                marginTop: ".8rem",
+                              }}
+                            >
+                              <span>Processing</span>
+                              <span className="dot-ellipsis">
+                                <span className="dot">.</span>
+                                <span className="dot">.</span>
+                                <span className="dot">.</span>
+                              </span>
+                            </Box>
+                          )}
+                          {columnData?.loadingComplete &&
+                            columnData?.promotionStatus === "success" && (
+                              <>
+                                <span>Promoted</span> <TaskAlt />
+                              </>
+                            )}
+                        </>
+                      )}
+                    <>
+                      {columnData?.loadingComplete === null && "P-L200"}
+                      {row._id !== columnData?.studentToPromote?._id &&
+                        columnData?.loadingComplete !== null &&
+                        "P-L200"}
+                    </>
+                  </Button>
                   {columnData?.studentToPromote &&
                     columnData?.studentToPromote._id === row._id && (
-                      <>
-                        {columnData?.loadingComplete === false && (
-                          <Box
-                            className="promotionSpinner"
-                            sx={{
-                              marginTop: ".8rem",
-                            }}
-                          >
-                            <span>Processing</span>
-                            <span className="dot-ellipsis">
-                              <span className="dot">.</span>
-                              <span className="dot">.</span>
-                              <span className="dot">.</span>
-                            </span>
-                          </Box>
-                        )}
-                        {columnData?.loadingComplete &&
-                          columnData?.promotionStatus === "success" && (
-                            <>
-                              <span>Promoted</span> <TaskAlt />
-                            </>
-                          )}
-                      </>
+                      <PromotionsModal
+                        open={columnData?.openPromotionModal}
+                        onClose={() => columnData?.setOpenPromotionModal(false)}
+                        promotionFunction={promoteStudent({
+                          studentId: row?.uniqueId,
+                          lastPromotedBy: `${columnData?.authAdmin?.id}`,
+                        })}
+                        setLoadingComplete={columnData?.setLoadingComplete}
+                        setSelectedUserToPromote={columnData?.setCurrentStudent}
+                        selectedUserToPromoteId={row?._id}
+                        userDataToPromote={columnData?.studentToPromote}
+                        userDataToDemote={columnData?.studentToDemote}
+                      />
                     )}
-                  <>
-                    {columnData?.loadingComplete === null && "P-L200"}
-                    {row._id !== columnData?.studentToPromote?._id &&
-                      columnData?.loadingComplete !== null &&
-                      "P-L200"}
-                  </>
-                </HashLink>
-                {columnData?.studentToPromote &&
-                  columnData?.studentToPromote._id === row._id && (
-                    <PromotionsModal
-                      open={columnData?.openPromotionModal}
-                      onClose={() => columnData?.setOpenPromotionModal(false)}
-                      promotionFunction={promoteStudent({
-                        studentId: row?.uniqueId,
-                        lastPromotedBy: `${columnData?.authAdmin?.id}`,
-                      })}
-                      setLoadingComplete={columnData?.setLoadingComplete}
-                      setSelectedUserToPromote={columnData?.setCurrentStudent}
-                      selectedUserToPromoteId={row?._id}
-                      userDataToPromote={columnData?.studentToPromote}
-                      userDataToDemote={columnData?.studentToDemote}
-                    />
-                  )}
-              </>
-            )}
-            {row?.studentSchoolData?.currentClassLevel?.name ===
-              "Level 200" && (
-              <>
-                <HashLink
-                  to={"#"}
-                  className="approveLink"
-                  onClick={async () => {
-                    // Do not open modal if approval/rejection is in progress
-                    if (
-                      !columnData?.demotionInProgress &&
-                      !columnData?.promotionInProgress
-                    ) {
-                      columnData?.setCurrentStudent(row._id);
-                      columnData?.setOpenPromotionModal(true);
-                      columnData?.setOpenDemotionModal(false);
-                    }
-                  }}
-                >
+                </>
+              )}
+              {row?.studentSchoolData?.currentClassLevel?.name ===
+                "Level 200" && (
+                <>
+                  <Button
+                    disabled={!disableBtn}
+                    // size="small"
+                    sx={{
+                      fontSize: ".7em",
+                      textTransform: "capitalize",
+                      ":hover": {
+                        backgroundColor: "transparent",
+                      },
+                      color: !disableBtn ? "grey" : "#03950a !important",
+                      "&.Mui-disabled": {
+                        cursor: "not-allowed", // Show not-allowed cursor
+                        pointerEvents: "auto",
+                      },
+                    }}
+                    // className="approveLink"
+                    onClick={async () => {
+                      // Do not open modal if approval/rejection is in progress
+                      if (
+                        !columnData?.demotionInProgress &&
+                        !columnData?.promotionInProgress
+                      ) {
+                        columnData?.setCurrentStudent(row._id);
+                        columnData?.setOpenPromotionModal(true);
+                        columnData?.setOpenDemotionModal(false);
+                      }
+                    }}
+                  >
+                    {columnData?.studentToPromote &&
+                      columnData?.studentToPromote._id === row._id && (
+                        <>
+                          {columnData?.loadingComplete === false && (
+                            <Box
+                              className="promotionSpinner"
+                              sx={{
+                                marginTop: ".8rem",
+                              }}
+                            >
+                              <span>Processing</span>
+                              <span className="dot-ellipsis">
+                                <span className="dot">.</span>
+                                <span className="dot">.</span>
+                                <span className="dot">.</span>
+                              </span>
+                            </Box>
+                          )}
+                          {columnData?.loadingComplete &&
+                            columnData?.promotionStatus === "success" && (
+                              <>
+                                <span>Promoted</span> <TaskAlt />
+                              </>
+                            )}
+                        </>
+                      )}
+                    <>
+                      {columnData?.loadingComplete === null && "P-L300"}
+                      {row._id !== columnData?.studentToPromote?._id &&
+                        columnData?.loadingComplete !== null &&
+                        "P-L300"}
+                    </>
+                  </Button>
                   {columnData?.studentToPromote &&
                     columnData?.studentToPromote._id === row._id && (
-                      <>
-                        {columnData?.loadingComplete === false && (
-                          <Box
-                            className="promotionSpinner"
-                            sx={{
-                              marginTop: ".8rem",
-                            }}
-                          >
-                            <span>Processing</span>
-                            <span className="dot-ellipsis">
-                              <span className="dot">.</span>
-                              <span className="dot">.</span>
-                              <span className="dot">.</span>
-                            </span>
-                          </Box>
-                        )}
-                        {columnData?.loadingComplete &&
-                          columnData?.promotionStatus === "success" && (
-                            <>
-                              <span>Promoted</span> <TaskAlt />
-                            </>
-                          )}
-                      </>
+                      <PromotionsModal
+                        open={columnData?.openPromotionModal}
+                        onClose={() => columnData?.setOpenPromotionModal(false)}
+                        promotionFunction={promoteStudent({
+                          studentId: row?.uniqueId,
+                          lastPromotedBy: `${columnData?.authAdmin?.id}`,
+                        })}
+                        setLoadingComplete={columnData?.setLoadingComplete}
+                        setSelectedUserToPromote={columnData?.setCurrentStudent}
+                        selectedUserToPromoteId={row?._id}
+                        userDataToPromote={columnData?.studentToPromote}
+                        userDataToDemote={columnData?.studentToDemote}
+                      />
                     )}
-                  <>
-                    {columnData?.loadingComplete === null && "P-L300"}
-                    {row._id !== columnData?.studentToPromote?._id &&
-                      columnData?.loadingComplete !== null &&
-                      "P-L300"}
-                  </>
-                </HashLink>
-                {columnData?.studentToPromote &&
-                  columnData?.studentToPromote._id === row._id && (
-                    <PromotionsModal
-                      open={columnData?.openPromotionModal}
-                      onClose={() => columnData?.setOpenPromotionModal(false)}
-                      promotionFunction={promoteStudent({
-                        studentId: row?.uniqueId,
-                        lastPromotedBy: `${columnData?.authAdmin?.id}`,
-                      })}
-                      setLoadingComplete={columnData?.setLoadingComplete}
-                      setSelectedUserToPromote={columnData?.setCurrentStudent}
-                      selectedUserToPromoteId={row?._id}
-                      userDataToPromote={columnData?.studentToPromote}
-                      userDataToDemote={columnData?.studentToDemote}
-                    />
-                  )}
-              </>
-            )}
-            {row?.studentSchoolData?.currentClassLevel?.name ===
-              "Level 300" && (
-              <>
-                <HashLink
-                  to={"#"}
-                  className="approveLink"
-                  onClick={async () => {
-                    // Do not open modal if approval/rejection is in progress
-                    if (
-                      !columnData?.demotionInProgress &&
-                      !columnData?.promotionInProgress
-                    ) {
-                      columnData?.setCurrentStudent(row._id);
-                      columnData?.setOpenPromotionModal(true);
-                      columnData?.setOpenDemotionModal(false);
-                    }
-                  }}
-                >
+                </>
+              )}
+              {row?.studentSchoolData?.currentClassLevel?.name ===
+                "Level 300" && (
+                <>
+                  <Button
+                    disabled={!disableBtn}
+                    // size="small"
+                    sx={{
+                      fontSize: ".7em",
+                      textTransform: "capitalize",
+                      ":hover": {
+                        backgroundColor: "transparent",
+                      },
+                      color: !disableBtn ? "grey" : "#03950a !important",
+                      "&.Mui-disabled": {
+                        cursor: "not-allowed", // Show not-allowed cursor
+                        pointerEvents: "auto",
+                      },
+                    }}
+                    // className="approveLink"
+                    onClick={async () => {
+                      // Do not open modal if approval/rejection is in progress
+                      if (
+                        !columnData?.demotionInProgress &&
+                        !columnData?.promotionInProgress
+                      ) {
+                        columnData?.setCurrentStudent(row._id);
+                        columnData?.setOpenPromotionModal(true);
+                        columnData?.setOpenDemotionModal(false);
+                      }
+                    }}
+                  >
+                    {columnData?.studentToPromote &&
+                      columnData?.studentToPromote._id === row._id && (
+                        <>
+                          {columnData?.loadingComplete === false && (
+                            <Box
+                              className="promotionSpinner"
+                              sx={{
+                                marginTop: ".8rem",
+                              }}
+                            >
+                              <span>Processing</span>
+                              <span className="dot-ellipsis">
+                                <span className="dot">.</span>
+                                <span className="dot">.</span>
+                                <span className="dot">.</span>
+                              </span>
+                            </Box>
+                          )}
+                          {columnData?.loadingComplete &&
+                            columnData?.promotionStatus === "success" && (
+                              <>
+                                <span>Promoted</span> <TaskAlt />
+                              </>
+                            )}
+                        </>
+                      )}
+                    <>
+                      {columnData?.loadingComplete === null && "Graduate"}
+                      {row._id !== columnData?.studentToPromote?._id &&
+                        columnData?.loadingComplete !== null &&
+                        "Graduate"}
+                    </>
+                  </Button>
                   {columnData?.studentToPromote &&
                     columnData?.studentToPromote._id === row._id && (
-                      <>
-                        {columnData?.loadingComplete === false && (
-                          <Box
-                            className="promotionSpinner"
-                            sx={{
-                              marginTop: ".8rem",
-                            }}
-                          >
-                            <span>Processing</span>
-                            <span className="dot-ellipsis">
-                              <span className="dot">.</span>
-                              <span className="dot">.</span>
-                              <span className="dot">.</span>
-                            </span>
-                          </Box>
-                        )}
-                        {columnData?.loadingComplete &&
-                          columnData?.promotionStatus === "success" && (
-                            <>
-                              <span>Promoted</span> <TaskAlt />
-                            </>
-                          )}
-                      </>
+                      <PromotionsModal
+                        open={columnData?.openPromotionModal}
+                        onClose={() => columnData?.setOpenPromotionModal(false)}
+                        promotionFunction={promoteStudent({
+                          studentId: row?.uniqueId,
+                          lastPromotedBy: `${columnData?.authAdmin?.id}`,
+                        })}
+                        setLoadingComplete={columnData?.setLoadingComplete}
+                        setSelectedUserToPromote={columnData?.setCurrentStudent}
+                        selectedUserToPromoteId={row?._id}
+                        userDataToPromote={columnData?.studentToPromote}
+                        userDataToDemote={columnData?.studentToDemote}
+                      />
                     )}
-                  <>
-                    {columnData?.loadingComplete === null && "Graduate"}
-                    {row._id !== columnData?.studentToPromote?._id &&
-                      columnData?.loadingComplete !== null &&
-                      "Graduate"}
-                  </>
-                </HashLink>
-                {columnData?.studentToPromote &&
-                  columnData?.studentToPromote._id === row._id && (
-                    <PromotionsModal
-                      open={columnData?.openPromotionModal}
-                      onClose={() => columnData?.setOpenPromotionModal(false)}
-                      promotionFunction={promoteStudent({
-                        studentId: row?.uniqueId,
-                        lastPromotedBy: `${columnData?.authAdmin?.id}`,
-                      })}
-                      setLoadingComplete={columnData?.setLoadingComplete}
-                      setSelectedUserToPromote={columnData?.setCurrentStudent}
-                      selectedUserToPromoteId={row?._id}
-                      userDataToPromote={columnData?.studentToPromote}
-                      userDataToDemote={columnData?.studentToDemote}
-                    />
-                  )}
-              </>
-            )}
-          </>
-        ),
+                </>
+              )}
+            </Box>
+          );
+        }
+      },
     },
-    {
-      name: "Demote",
-      selector: (row) =>
-        row?.studentSchoolData?.currentClassLevel && (
-          <>
-            {row?.studentSchoolData?.currentClassLevel?.name ===
-              "Level 100" && (
-              <>
-                <HashLink
-                  to={"#"}
-                  className="approveLink"
-                  style={{ color: "#696969" }}
-                >
-                  {columnData?.demotionLoadingComplete === null &&
-                    row?.studentSchoolData?.currentClassLevel?.name ===
-                      "Level 100" &&
-                    "---"}
-                  {row._id !== columnData?.studentToDemote?._id &&
-                    columnData?.demotionLoadingComplete !== null &&
-                    row?.studentSchoolData?.currentClassLevel?.name ===
-                      "Level 100" &&
-                    "---"}
-                </HashLink>
-                {columnData?.studentToDemote &&
-                  columnData?.studentToDemote._id === row._id && (
-                    <DemotionsModal
-                      open={columnData?.openDemotionModal}
-                      onClose={() => columnData?.setOpenDemotionModal(false)}
-                      promotionFunction={approveStudentEnrollment({
-                        studentId: row?.uniqueId,
-                        enrollmentApprovedBy: `${columnData?.authAdmin?.id}`,
-                      })}
-                      setLoadingComplete={
-                        columnData?.setDemotionLoadingComplete
-                      }
-                      setSelectedUserToDemote={columnData?.setDemoteStudent}
-                      selectedUserToDemoteId={row?._id}
-                      userDataToPromote={columnData?.studentToPromote}
-                      userDataToDemote={columnData?.studentToDemote}
-                    />
-                  )}
-              </>
-            )}
-            {row?.studentSchoolData?.currentClassLevel?.name ===
-              "Level 200" && (
-              <>
-                <HashLink
-                  to={"#"}
-                  className="approveLink"
-                  onClick={async () => {
-                    // Do not open modal if approval/rejection is in progress
-                    if (
-                      !columnData?.demotionInProgress &&
-                      !columnData?.promotionInProgress
-                    ) {
-                      columnData?.setDemoteStudent(row._id);
-                      columnData?.setOpenDemotionModal(true);
-                      columnData?.setOpenPromotionModal(false);
-                    }
-                  }}
-                  style={{ color: "#696969" }}
-                >
-                  {columnData?.studentToDemote &&
-                    columnData?.studentToDemote._id === row._id && (
-                      <>
-                        {columnData?.demotionLoadingComplete === false && (
-                          <Box
-                            className="promotionSpinner"
-                            sx={{
-                              marginTop: ".8rem",
-                              color: "red",
-                            }}
-                          >
-                            <span>Processing</span>
-                            <span className="dot-ellipsis">
-                              <span className="dot">.</span>
-                              <span className="dot">.</span>
-                              <span className="dot">.</span>
-                            </span>
-                          </Box>
-                        )}
-                        {columnData?.demotionLoadingComplete &&
-                          columnData?.promotionStatus === "success" && (
-                            <>
-                              <span>Demoted</span> <TaskAlt />
-                            </>
-                          )}
-                      </>
-                    )}
-                  <>
-                    {columnData?.demotionLoadingComplete === null &&
-                      row?.studentSchoolData?.currentClassLevel?.name ===
-                        "Level 200" &&
-                      "D-L100"}
-                    {row._id !== columnData?.studentToDemote?._id &&
-                      columnData?.demotionLoadingComplete !== null &&
-                      row?.studentSchoolData?.currentClassLevel?.name ===
-                        "Level 200" &&
-                      "D-L100"}
-                  </>
-                </HashLink>
-                {columnData?.studentToDemote &&
-                  columnData?.studentToDemote._id === row._id && (
-                    <DemotionsModal
-                      open={columnData?.openDemotionModal}
-                      onClose={() => columnData?.setOpenDemotionModal(false)}
-                      promotionFunction={approveStudentEnrollment({
-                        studentId: row?.uniqueId,
-                        enrollmentApprovedBy: `${columnData?.authAdmin?.id}`,
-                      })}
-                      setLoadingComplete={
-                        columnData?.setDemotionLoadingComplete
-                      }
-                      setSelectedUserToDemote={columnData?.setDemoteStudent}
-                      selectedUserToDemoteId={row?._id}
-                      userDataToPromote={columnData?.studentToPromote}
-                      userDataToDemote={columnData?.studentToDemote}
-                    />
-                  )}
-              </>
-            )}
-            {row?.studentSchoolData?.currentClassLevel?.name ===
-              "Level 300" && (
-              <>
-                <HashLink
-                  to={"#"}
-                  className="approveLink"
-                  onClick={async () => {
-                    // Do not open modal if approval/rejection is in progress
-                    if (
-                      !columnData?.demotionInProgress &&
-                      !columnData?.promotionInProgress
-                    ) {
-                      columnData?.setDemoteStudent(row._id);
-                      columnData?.setOpenDemotionModal(true);
-                      columnData?.setOpenPromotionModal(false);
-                    }
-                  }}
-                  style={{ color: "#696969" }}
-                >
-                  {columnData?.studentToDemote &&
-                    columnData?.studentToDemote._id === row._id && (
-                      <>
-                        {columnData?.demotionLoadingComplete === false && (
-                          <Box
-                            className="promotionSpinner"
-                            sx={{
-                              marginTop: ".8rem",
-                              color: "red",
-                            }}
-                          >
-                            <span>Processing</span>
-                            <span className="dot-ellipsis">
-                              <span className="dot">.</span>
-                              <span className="dot">.</span>
-                              <span className="dot">.</span>
-                            </span>
-                          </Box>
-                        )}
-                        {columnData?.demotionLoadingComplete &&
-                          columnData?.promotionStatus === "success" && (
-                            <>
-                              <span>Demoted</span> <TaskAlt />
-                            </>
-                          )}
-                      </>
-                    )}
-                  <>
-                    {columnData?.demotionLoadingComplete === null &&
-                      row?.studentSchoolData?.currentClassLevel?.name ===
-                        "Level 300" &&
-                      "D-L200"}
-                    {row._id !== columnData?.studentToDemote?._id &&
-                      columnData?.demotionLoadingComplete !== null &&
-                      row?.studentSchoolData?.currentClassLevel?.name ===
-                        "Level 300" &&
-                      "D-L200"}
-                  </>
-                </HashLink>
-                {columnData?.studentToDemote &&
-                  columnData?.studentToDemote._id === row._id && (
-                    <DemotionsModal
-                      open={columnData?.openDemotionModal}
-                      onClose={() => columnData?.setOpenDemotionModal(false)}
-                      promotionFunction={approveStudentEnrollment({
-                        studentId: row?.uniqueId,
-                        enrollmentApprovedBy: `${columnData?.authAdmin?.id}`,
-                      })}
-                      setLoadingComplete={
-                        columnData?.setDemotionLoadingComplete
-                      }
-                      setSelectedUserToDemote={columnData?.setDemoteStudent}
-                      selectedUserToDemoteId={row?._id}
-                      userDataToPromote={columnData?.studentToPromote}
-                      userDataToDemote={columnData?.studentToDemote}
-                    />
-                  )}
-              </>
-            )}
-          </>
-        ),
-    },
+    // {
+    //   name: "Demote",
+    //   selector: (row) =>
+    //     row?.studentSchoolData?.currentClassLevel && (
+    //       <>
+    //         {row?.studentSchoolData?.currentClassLevel?.name ===
+    //           "Level 100" && (
+    //           <>
+    //             <HashLink
+    //               to={"#"}
+    //               className="approveLink"
+    //               style={{ color: "#696969" }}
+    //             >
+    //               {columnData?.demotionLoadingComplete === null &&
+    //                 row?.studentSchoolData?.currentClassLevel?.name ===
+    //                   "Level 100" &&
+    //                 "---"}
+    //               {row._id !== columnData?.studentToDemote?._id &&
+    //                 columnData?.demotionLoadingComplete !== null &&
+    //                 row?.studentSchoolData?.currentClassLevel?.name ===
+    //                   "Level 100" &&
+    //                 "---"}
+    //             </HashLink>
+    //             {columnData?.studentToDemote &&
+    //               columnData?.studentToDemote._id === row._id && (
+    //                 <DemotionsModal
+    //                   open={columnData?.openDemotionModal}
+    //                   onClose={() => columnData?.setOpenDemotionModal(false)}
+    //                   promotionFunction={approveStudentEnrollment({
+    //                     studentId: row?.uniqueId,
+    //                     enrollmentApprovedBy: `${columnData?.authAdmin?.id}`,
+    //                   })}
+    //                   setLoadingComplete={
+    //                     columnData?.setDemotionLoadingComplete
+    //                   }
+    //                   setSelectedUserToDemote={columnData?.setDemoteStudent}
+    //                   selectedUserToDemoteId={row?._id}
+    //                   userDataToPromote={columnData?.studentToPromote}
+    //                   userDataToDemote={columnData?.studentToDemote}
+    //                 />
+    //               )}
+    //           </>
+    //         )}
+    //         {row?.studentSchoolData?.currentClassLevel?.name ===
+    //           "Level 200" && (
+    //           <>
+    //             <HashLink
+    //               to={"#"}
+    //               className="approveLink"
+    //               onClick={async () => {
+    //                 // Do not open modal if approval/rejection is in progress
+    //                 if (
+    //                   !columnData?.demotionInProgress &&
+    //                   !columnData?.promotionInProgress
+    //                 ) {
+    //                   columnData?.setDemoteStudent(row._id);
+    //                   columnData?.setOpenDemotionModal(true);
+    //                   columnData?.setOpenPromotionModal(false);
+    //                 }
+    //               }}
+    //               style={{ color: "#696969" }}
+    //             >
+    //               {columnData?.studentToDemote &&
+    //                 columnData?.studentToDemote._id === row._id && (
+    //                   <>
+    //                     {columnData?.demotionLoadingComplete === false && (
+    //                       <Box
+    //                         className="promotionSpinner"
+    //                         sx={{
+    //                           marginTop: ".8rem",
+    //                           color: "red",
+    //                         }}
+    //                       >
+    //                         <span>Processing</span>
+    //                         <span className="dot-ellipsis">
+    //                           <span className="dot">.</span>
+    //                           <span className="dot">.</span>
+    //                           <span className="dot">.</span>
+    //                         </span>
+    //                       </Box>
+    //                     )}
+    //                     {columnData?.demotionLoadingComplete &&
+    //                       columnData?.promotionStatus === "success" && (
+    //                         <>
+    //                           <span>Demoted</span> <TaskAlt />
+    //                         </>
+    //                       )}
+    //                   </>
+    //                 )}
+    //               <>
+    //                 {columnData?.demotionLoadingComplete === null &&
+    //                   row?.studentSchoolData?.currentClassLevel?.name ===
+    //                     "Level 200" &&
+    //                   "D-L100"}
+    //                 {row._id !== columnData?.studentToDemote?._id &&
+    //                   columnData?.demotionLoadingComplete !== null &&
+    //                   row?.studentSchoolData?.currentClassLevel?.name ===
+    //                     "Level 200" &&
+    //                   "D-L100"}
+    //               </>
+    //             </HashLink>
+    //             {columnData?.studentToDemote &&
+    //               columnData?.studentToDemote._id === row._id && (
+    //                 <DemotionsModal
+    //                   open={columnData?.openDemotionModal}
+    //                   onClose={() => columnData?.setOpenDemotionModal(false)}
+    //                   promotionFunction={approveStudentEnrollment({
+    //                     studentId: row?.uniqueId,
+    //                     enrollmentApprovedBy: `${columnData?.authAdmin?.id}`,
+    //                   })}
+    //                   setLoadingComplete={
+    //                     columnData?.setDemotionLoadingComplete
+    //                   }
+    //                   setSelectedUserToDemote={columnData?.setDemoteStudent}
+    //                   selectedUserToDemoteId={row?._id}
+    //                   userDataToPromote={columnData?.studentToPromote}
+    //                   userDataToDemote={columnData?.studentToDemote}
+    //                 />
+    //               )}
+    //           </>
+    //         )}
+    //         {row?.studentSchoolData?.currentClassLevel?.name ===
+    //           "Level 300" && (
+    //           <>
+    //             <HashLink
+    //               to={"#"}
+    //               className="approveLink"
+    //               onClick={async () => {
+    //                 // Do not open modal if approval/rejection is in progress
+    //                 if (
+    //                   !columnData?.demotionInProgress &&
+    //                   !columnData?.promotionInProgress
+    //                 ) {
+    //                   columnData?.setDemoteStudent(row._id);
+    //                   columnData?.setOpenDemotionModal(true);
+    //                   columnData?.setOpenPromotionModal(false);
+    //                 }
+    //               }}
+    //               style={{ color: "#696969" }}
+    //             >
+    //               {columnData?.studentToDemote &&
+    //                 columnData?.studentToDemote._id === row._id && (
+    //                   <>
+    //                     {columnData?.demotionLoadingComplete === false && (
+    //                       <Box
+    //                         className="promotionSpinner"
+    //                         sx={{
+    //                           marginTop: ".8rem",
+    //                           color: "red",
+    //                         }}
+    //                       >
+    //                         <span>Processing</span>
+    //                         <span className="dot-ellipsis">
+    //                           <span className="dot">.</span>
+    //                           <span className="dot">.</span>
+    //                           <span className="dot">.</span>
+    //                         </span>
+    //                       </Box>
+    //                     )}
+    //                     {columnData?.demotionLoadingComplete &&
+    //                       columnData?.promotionStatus === "success" && (
+    //                         <>
+    //                           <span>Demoted</span> <TaskAlt />
+    //                         </>
+    //                       )}
+    //                   </>
+    //                 )}
+    //               <>
+    //                 {columnData?.demotionLoadingComplete === null &&
+    //                   row?.studentSchoolData?.currentClassLevel?.name ===
+    //                     "Level 300" &&
+    //                   "D-L200"}
+    //                 {row._id !== columnData?.studentToDemote?._id &&
+    //                   columnData?.demotionLoadingComplete !== null &&
+    //                   row?.studentSchoolData?.currentClassLevel?.name ===
+    //                     "Level 300" &&
+    //                   "D-L200"}
+    //               </>
+    //             </HashLink>
+    //             {columnData?.studentToDemote &&
+    //               columnData?.studentToDemote._id === row._id && (
+    //                 <DemotionsModal
+    //                   open={columnData?.openDemotionModal}
+    //                   onClose={() => columnData?.setOpenDemotionModal(false)}
+    //                   promotionFunction={approveStudentEnrollment({
+    //                     studentId: row?.uniqueId,
+    //                     enrollmentApprovedBy: `${columnData?.authAdmin?.id}`,
+    //                   })}
+    //                   setLoadingComplete={
+    //                     columnData?.setDemotionLoadingComplete
+    //                   }
+    //                   setSelectedUserToDemote={columnData?.setDemoteStudent}
+    //                   selectedUserToDemoteId={row?._id}
+    //                   userDataToPromote={columnData?.studentToPromote}
+    //                   userDataToDemote={columnData?.studentToDemote}
+    //                 />
+    //               )}
+    //           </>
+    //         )}
+    //       </>
+    //     ),
+    // },
     {
       name: "Update",
       selector: (row) => (
@@ -1005,7 +1101,9 @@ const studentsColumn = (columnData) => {
           className="editLink"
           to={`/sensec/users/${columnData?.authAdmin?.uniqueId}/admin/Students/${row.uniqueId}/student_update`}
         >
-          <Edit />
+          <Box fontSize={"calc(0.7rem + 1vmin)"}>
+            <Edit style={{ fontSize: "1.1em" }} />
+          </Box>
         </Link>
       ),
     },
@@ -1278,7 +1376,6 @@ const studentsReportColumn = (columnData) => {
                 pointerEvents: "auto",
               },
             }}
-            to={"#"}
             // className="editLink"
             onClick={async () => {
               // Only set current student if data saving is not in progress

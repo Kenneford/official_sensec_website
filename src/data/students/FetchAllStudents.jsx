@@ -98,7 +98,7 @@ const FetchProgrammeStudents = (programmeFound) => {
   return classLevelStudents;
 };
 //Fetch ClassLevel Students
-const FetchClassSectionStudents = ({ class_section }) => {
+const FetchClassSectionStudents = ({ class_section, classLevelFound }) => {
   console.log(class_section);
 
   const allApprovedStudents = FetchAllStudents();
@@ -106,6 +106,8 @@ const FetchClassSectionStudents = ({ class_section }) => {
     const classLevelStudents = allApprovedStudents?.filter(
       (std) =>
         (std?.studentStatusExtend?.enrollmentStatus === "approved" &&
+          std?.studentSchoolData?.currentClassLevel?._id ===
+            classLevelFound?._id &&
           std &&
           std?.studentSchoolData?.program?.programId === class_section) ||
         (std &&

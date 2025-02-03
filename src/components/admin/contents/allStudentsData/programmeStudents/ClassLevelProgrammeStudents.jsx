@@ -28,14 +28,24 @@ import {
   FetchAllProgrammes,
 } from "../../../../../data/programme/FetchProgrammeData";
 import NewEnrollmentModal from "../../../../modals/NewEnrollmentModal";
-import { resetPromotionState } from "../../../../../features/students/promotionSlice";
+import {
+  promoteMultiStudents,
+  resetMultiPromotionsState,
+  resetPromotionState,
+} from "../../../../../features/students/promotionSlice";
+import { MultiStudentsPromotionBtn } from "../../../../../buttons/MultiStudentsPromotionBtn";
+import { MultiStudentsDemotionBtn } from "../../../../../buttons/MultiStudentsDemotionBtn";
 
 export function ClassLevelProgrammeStudents() {
   const authAdmin = useSelector(getAuthUser);
   const actionBtns = AllStudentsPageQuickLinks();
-  const { promotionStatus, successMessage, error } = useSelector(
-    (state) => state.promotion
-  );
+  const {
+    promotionStatus,
+    successMessage,
+    error,
+    multiStudentsPromotionStatus,
+    multiStudentsDemotionStatus,
+  } = useSelector((state) => state.promotion);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -59,12 +69,18 @@ export function ClassLevelProgrammeStudents() {
       section?.name === programme?.replace(/_/g, " ") ||
       section?.divisionName === programme?.replace(/_/g, " ")
   );
+  console.log(class_level);
+  const classLevelFound = allClassLevels?.find(
+    (cLevel) => cLevel?.name === class_level?.replace(/_/g, " ")
+  );
 
   const programmeStudents = FetchClassSectionStudents({
     class_section: foundProgram?._id,
+    classLevelFound,
   });
 
   // console.log(allClassLevelSections);
+  const isProgramStudents = true;
   const [currentStudent, setCurrentStudent] = useState("");
   const [demoteStudent, setDemoteStudent] = useState("");
   const [openPromotionModal, setOpenPromotionModal] = useState(false);
@@ -74,11 +90,18 @@ export function ClassLevelProgrammeStudents() {
   const [loadingComplete, setLoadingComplete] = useState(null);
   const [demotionLoadingComplete, setDemotionLoadingComplete] = useState(null);
   const [searchStudent, setSearchStudent] = useState("");
-  const [multiStudents, setMultiStudents] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
   const [uncompletedEmploymentTask, setUncompletedEmploymentTask] =
     useState("");
+  const [promoteMultiLoadingComplete, setPromoteMultiLoadingComplete] =
+    useState(null);
+  const [multiPromotionsInProgress, setMultiPromotionsInProgress] =
+    useState(false);
+  const [multiDemotionsInProgress, setMultiDemotionsInProgress] =
+    useState(false);
+  const [demoteMultiLoadingComplete, setDemoteMultiLoadingComplete] =
+    useState(null);
 
   const filteredStudents = programmeStudents?.filter(
     (std) =>
@@ -115,9 +138,25 @@ export function ClassLevelProgrammeStudents() {
     openDemotionModal,
     promotionStatus,
     studentToDemote,
+    isProgramStudents,
   };
   const studentDataFormat = studentsColumn(columnData);
 
+  const [multiStudents, setMultiStudents] = useState([]);
+  const [toggleClearRows, setToggleClearRows] = useState(false);
+  const handleMultiSelect = (state) => {
+    if (state) {
+      const studentObj = state?.selectedRows?.map((user) => {
+        const userId = {
+          uniqueId: user?.uniqueId,
+        };
+        return userId;
+      });
+      setMultiStudents(studentObj);
+    } else {
+      setMultiStudents([]);
+    }
+  };
   const handleNewEnrollment = () => {
     setRedirecting(true);
     setUncompletedEmploymentTask("You're being redirected");
@@ -172,7 +211,58 @@ export function ClassLevelProgrammeStudents() {
         }, 6000);
       }
     }
-  }, [promotionStatus, successMessage, error, dispatch, studentToPromote]);
+    if (multiStudents) {
+      if (multiStudentsPromotionStatus === "pending") {
+        setPromoteMultiLoadingComplete(false);
+        setMultiPromotionsInProgress(true);
+      }
+      if (multiStudentsPromotionStatus === "rejected") {
+        setTimeout(() => {
+          error?.errorMessage?.message?.map((err) =>
+            toast.error(err, {
+              position: "top-right",
+              theme: "light",
+              toastId: err,
+            })
+          );
+        }, 1000);
+        setTimeout(() => {
+          setPromoteMultiLoadingComplete(null);
+          setMultiPromotionsInProgress(false);
+          dispatch(resetMultiPromotionsState());
+        }, 3000);
+        return;
+      }
+      if (multiStudentsPromotionStatus === "success") {
+        setTimeout(() => {
+          setPromoteMultiLoadingComplete(true);
+        }, 3000);
+        setTimeout(() => {
+          toast.success(successMessage, {
+            position: "top-right",
+            theme: "dark",
+            toastId: successMessage,
+          });
+        }, 1000);
+        setTimeout(() => {
+          //Fetch all users again when successfully approved
+          dispatch(fetchAllUsers());
+          dispatch(resetMultiPromotionsState());
+          setPromoteMultiLoadingComplete(null);
+          setToggleClearRows(false);
+          setMultiPromotionsInProgress(false);
+        }, 6000);
+      }
+    }
+  }, [
+    promotionStatus,
+    multiStudentsPromotionStatus,
+    successMessage,
+    error,
+    dispatch,
+    studentToPromote,
+    multiStudents,
+  ]);
 
   const currentClassLevelStd = `${class_level?.replace(
     /_/g,
@@ -359,6 +449,32 @@ export function ClassLevelProgrammeStudents() {
             ))}
           </Box>
         </Box>
+        {/* Approval buttons */}
+        <Box sx={{ display: "flex", gap: 1 }}>
+          <MultiStudentsPromotionBtn
+            promoteMultiStudentsStatus={multiStudentsPromotionStatus}
+            promoteMultiStudentsLoadingComplete={promoteMultiLoadingComplete}
+            setPromoteMultiLoadingComplete={setPromoteMultiLoadingComplete}
+            multiStudentsDemotionInProgress={multiDemotionsInProgress}
+            setMultiStudentsPromotionInProgress={setMultiPromotionsInProgress}
+            multiStudentsPromotionFunction={promoteMultiStudents({
+              students: multiStudents,
+              classLevel: `${classLevelFound?.name}`,
+              lastPromotedBy: `${authAdmin?.id}`,
+            })}
+          />
+          {/* <MultiStudentsDemotionBtn
+            demoteMultiStudentsStatus={multiStudentsDemotionStatus}
+            demoteMultiStudentsLoadingComplete={demoteMultiLoadingComplete}
+            setDemoteMultiLoadingComplete={setDemoteMultiLoadingComplete}
+            multiStudentsPromotionInProgress={multiPromotionsInProgress}
+            setMultiStudentsDemotionInProgress={setMultiDemotionsInProgress}
+            // multiStudentsDemotionFunction={approvedMultiStudentEnrollment({
+            //   students: multiStudents,
+            //   enrollmentApprovedBy: `${authAdmin?.id}`,
+            // })}
+          /> */}
+        </Box>
         <Box className="studentDataTable">
           <DataTable
             title={currentClassLevelStd}
@@ -369,6 +485,8 @@ export function ClassLevelProgrammeStudents() {
             selectableRows
             selectableRowsHighlight
             highlightOnHover
+            onSelectedRowsChange={handleMultiSelect}
+            clearSelectedRows={toggleClearRows}
           />
         </Box>
       </Box>

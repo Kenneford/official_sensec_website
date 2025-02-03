@@ -214,7 +214,7 @@ export function AllEnrolledStudents() {
         <Box className="searchDetails" justifyItems={"flex-start"}>
           {filteredStudents?.length === 0 && searchStudent !== "" && (
             <p className="searchInfo">
-              We couldn't find any matches for "{searchStudent}"
+              We couldn&apos;t find any matches for &quot;{searchStudent}&quot;
             </p>
           )}
           {filteredStudents?.length === 0 && searchStudent !== "" && (
