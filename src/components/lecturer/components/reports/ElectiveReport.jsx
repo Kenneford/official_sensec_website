@@ -574,7 +574,7 @@ export function ElectiveReport() {
             </button>{" "}
             to take report for your core subjects.
           </p>
-          <Grid container spacing={1}>
+          <Grid container spacing={1} display={"flex"} alignItems={"center"}>
             <Grid item xs={12} sm={2}>
               <CustomTextField
                 select
@@ -602,6 +602,7 @@ export function ElectiveReport() {
                     fontSize: ".7em", // Default label size
                     transition: "font-size 0.2s, color 0.2s",
                   },
+                  mb: 1,
                 }}
               >
                 {allClassLevels?.map((cLevel) => (
@@ -640,6 +641,7 @@ export function ElectiveReport() {
                     fontSize: ".7em", // Default label size
                     transition: "font-size 0.2s, color 0.2s",
                   },
+                  mb: 1,
                 }}
               >
                 {/* <MenuItem>M</MenuItem> */}
@@ -655,6 +657,7 @@ export function ElectiveReport() {
                 disabled={!classLevel || !subject}
                 variant="contained"
                 fullWidth
+                size="small"
                 sx={{
                   backgroundColor:
                     classLevel && subject ? "green" : "#adacaccc !important",
@@ -665,9 +668,10 @@ export function ElectiveReport() {
                     pointerEvents: "auto",
                   },
                   alignItems: "center",
-                  height: "2.3rem",
+                  height: { xs: "2.5rem", sm: "2.7rem" },
                   textTransform: "capitalize",
                   fontSize: ".7em",
+                  mb: 1,
                 }}
                 onClick={(e) => {
                   e?.preventDefault();
