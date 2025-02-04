@@ -3,27 +3,8 @@ import "./login.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { toast } from "react-toastify";
-import {
-  Lock,
-  LockOpen,
-  LoginOutlined,
-  Security,
-  TaskAlt,
-  Visibility,
-  VisibilityOff,
-  VpnKey,
-} from "@mui/icons-material";
-import {
-  Avatar,
-  Box,
-  Button,
-  Checkbox,
-  FormControlLabel,
-  Grid,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { CustomTextField } from "../../../muiStyling/muiStyling";
+import { Lock, LoginOutlined, TaskAlt } from "@mui/icons-material";
+import { Box, Button, Grid, Typography } from "@mui/material";
 import {
   fetchAllUsers,
   getAllUsers,
@@ -144,12 +125,12 @@ export function LoginOptions() {
 
   // Function to redirect users to their dashboard
   const getUserRolePath = () => {
-    if (authUser?.roles?.includes("admin")) return "admin/Dashboard/Overview";
-    if (authUser?.roles?.includes("lecturer"))
+    if (authUser?.roles?.includes("Admin")) return "admin/Dashboard/Overview";
+    if (authUser?.roles?.includes("Lecturer"))
       return "lecturer/Dashboard/Overview";
-    if (authUser?.roles?.includes("student"))
+    if (authUser?.roles?.includes("Student"))
       return "student/Dashboard/Overview";
-    if (authUser?.roles?.includes("nt-Staff"))
+    if (authUser?.roles?.includes("NT-Staff"))
       return "nt_staff/Dashboard/Overview";
     return "*";
   };
