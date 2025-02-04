@@ -162,7 +162,7 @@ export function StudentDataUpdateForm() {
       gender: student?.personalInfo?.gender,
       profilePicture: imagePreview
         ? imagePreview
-        : student?.personalInfo?.profilePicture?.url,
+        : student?.personalInfo?.profilePicture,
       // Status
       height: student?.status?.height,
       weight: student?.status?.weight,
