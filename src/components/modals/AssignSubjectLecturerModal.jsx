@@ -9,6 +9,7 @@ import {
   Avatar,
   MenuItem,
   Grid,
+  Autocomplete,
 } from "@mui/material";
 import PropTypes from "prop-types";
 import {
@@ -42,9 +43,15 @@ export default function AssignSubjectLecturerModal({
   const [selectedLecturer, setSelectedLecturer] = useState("");
   const [searchTeacher, setSearchTeacher] = useState("");
   const [classLevel, setClassLevel] = useState("");
+  const [assignError, setAssignError] = useState("");
+  const [selectedProgrammes, setSelectedProgrammes] = useState([]);
+  const [formattedProgrammes, setFormattedProgrammes] = useState([]);
+  console.log(formattedProgrammes);
+  console.log(assignError);
+
   const dispatch = useDispatch();
 
-  const { assignLecturerStatus } = useSelector((state) => state.subject);
+  const { assignLecturerStatus, error } = useSelector((state) => state.subject);
 
   const filteredLecturers = searchTeacher
     ? allLecturers.filter(
@@ -61,12 +68,26 @@ export default function AssignSubjectLecturerModal({
   const canAssign =
     Boolean(classLevel) && Boolean(selectedLecturer?._id) && Boolean(subject);
 
+  // Format selected programmes
+  useEffect(() => {
+    const programmes = selectedProgrammes?.map((program) => ({
+      programId: program?._id,
+      nameOfProgram: program?.isDivisionProgram
+        ? program?.divisionName
+        : program?.name,
+      type: program?.isDivisionProgram ? "ProgramDivision" : "Program",
+    }));
+    setFormattedProgrammes(programmes);
+  }, [selectedProgrammes]);
   // Ensure focus when the modal becomes visible
   useEffect(() => {
     if (confirmed && inputRef.current) {
       inputRef.current.focus();
     }
-  }, [confirmed]);
+    if (error?.errorMessage?.programmes) {
+      setAssignError(error?.errorMessage?.programmes);
+    }
+  }, [confirmed, error]);
 
   useEffect(() => {
     if (selectedLecturerInfo) {
@@ -115,6 +136,7 @@ export default function AssignSubjectLecturerModal({
           //   boxShadow: 24,
           outline: "none",
         }}
+        fontSize={"calc(0.7rem + 1vmin)"}
       >
         {confirmed && (
           <Box
@@ -122,6 +144,7 @@ export default function AssignSubjectLecturerModal({
               backgroundColor: "#fff",
               margin: ".5rem",
             }}
+            fontSize={".8em"}
           >
             <Box
               className="newEmploymentModalOverlay"
@@ -157,7 +180,7 @@ export default function AssignSubjectLecturerModal({
                       backgroundColor: "red",
                       color: "#fff",
                       borderRadius: "50%",
-                      fontSize: "1.2rem",
+                      fontSize: "1.2em",
                     }}
                   />
                 </Box>
@@ -168,6 +191,7 @@ export default function AssignSubjectLecturerModal({
                 variant="h6"
                 component="h2"
                 textAlign={{ xs: "center", sm: "left" }}
+                fontSize={"1.2em"}
               >
                 Assign New Lecturer
               </Typography>
@@ -176,7 +200,7 @@ export default function AssignSubjectLecturerModal({
                   inputRef={inputRef}
                   fullWidth
                   name="lecturers"
-                  label="Search filter"
+                  label={<p style={{ fontSize: "1em" }}>Search Filter</p>}
                   value={searchTeacher}
                   size="small"
                   onChange={(e) => {
@@ -195,7 +219,7 @@ export default function AssignSubjectLecturerModal({
                   sx={{
                     "& .MuiInputBase-input": {
                       height: "1.2rem",
-                      fontSize: ".8em",
+                      fontSize: ".9em",
                     },
                     "& .MuiInputLabel-root": {
                       fontSize: ".7em", // Default label size
@@ -306,36 +330,110 @@ export default function AssignSubjectLecturerModal({
                         }}
                       />
                     </Box>
-                    <Box mt={3}>
-                      <CustomTextField
-                        select
-                        fullWidth
-                        label="Programme"
-                        value={subject?.subjectInfo?.program?.programId || ""}
-                        size="small"
-                        slotProps={{
-                          input: { readOnly: true },
-                        }}
-                        sx={{
-                          "& .MuiInputBase-input": {
-                            height: "1.2rem",
-                            fontSize: ".8em",
+                    {!subject?.subjectInfo?.isElectiveSubject && (
+                      <Box mt={3} fontSize={"calc(0.7rem + 1vmin)"}>
+                        <Autocomplete
+                          multiple
+                          options={allFlattenedProgrammes}
+                          getOptionLabel={(option) =>
+                            option.name ? option?.name : option?.divisionName
+                          }
+                          value={selectedProgrammes}
+                          //   value={selectedProgrammes || savedSelectedProgrammes}
+                          onChange={(event, newValue) =>
+                            setSelectedProgrammes(newValue)
+                          }
+                          isOptionEqualToValue={(option, value) =>
+                            option._id === value._id
+                          }
+                          renderInput={(params) => (
+                            <CustomTextField
+                              {...params}
+                              variant="outlined"
+                              //   label="Select Options"
+                              placeholder="Choose Programmes"
+                              size="small"
+                              //   onChange={(e) => {
+                              //     setReportData({
+                              //       ...reportData,
+                              //       subject: e.target.value,
+                              //     });
+                              //     localStorage.setItem("reportSubject", e.target.value);
+                              //   }}
+                              sx={{
+                                "& .MuiInputBase-input": {
+                                  // height: "1.3rem",
+                                  fontSize: ".7em",
+                                },
+                                "& .MuiInputLabel-root": {
+                                  fontSize: ".7em", // Default label size
+                                  transition: "font-size 0.2s, color 0.2s",
+                                },
+                              }}
+                            ></CustomTextField>
+                          )}
+                        />
+                      </Box>
+                    )}
+                    {subject?.subjectInfo?.isElectiveSubject && (
+                      <Box mt={3}>
+                        <CustomTextField
+                          select
+                          fullWidth
+                          label="Programme"
+                          value={subject?.subjectInfo?.program?.programId || ""}
+                          size="small"
+                          slotProps={{
+                            input: { readOnly: true },
+                          }}
+                          sx={{
+                            "& .MuiInputBase-input": {
+                              height: "1.2rem",
+                              fontSize: ".8em",
+                            },
+                            "& .MuiInputLabel-root": {
+                              fontSize: ".7em", // Default label size
+                              transition: "font-size 0.2s, color 0.2s",
+                            },
+                          }}
+                        >
+                          {allFlattenedProgrammes?.map((program) => (
+                            <MenuItem key={program?._id} value={program?._id}>
+                              {program?.name
+                                ? program?.name
+                                : program?.divisionName}
+                            </MenuItem>
+                          ))}
+                        </CustomTextField>
+                      </Box>
+                    )}
+                    {assignError && (
+                      <Box fontSize={".8em"}>
+                        <p style={{ color: "#b40a0a", letterSpacing: "1px" }}>
+                          {`Lecturer already assigned for${" "}
+                          ${
+                            assignError?.length > 1
+                              ? assignError
+                                  ?.slice(0, -1)
+                                  ?.map((program) => program?.nameOfProgram)
+                                  .join(", ")
+                              : assignError
+                                  ?.map((program) => program?.nameOfProgram)
+                                  .join(", ")
                           },
-                          "& .MuiInputLabel-root": {
-                            fontSize: ".7em", // Default label size
-                            transition: "font-size 0.2s, color 0.2s",
-                          },
-                        }}
-                      >
-                        {allFlattenedProgrammes?.map((program) => (
-                          <MenuItem key={program?._id} value={program?._id}>
-                            {program?.name
-                              ? program?.name
-                              : program?.divisionName}
-                          </MenuItem>
-                        ))}
-                      </CustomTextField>
-                    </Box>
+                          ${assignError?.length > 1 ? "and" : ""}
+                          ${
+                            assignError?.length > 1
+                              ? assignError
+                                  ?.slice(-1)
+                                  ?.map((program) => program?.nameOfProgram)
+                                  .join(", ")
+                              : ""
+                          }${" "}
+                          under this subject!`}
+                        </p>
+                      </Box>
+                    )}
                     <Box mt={3}>
                       <CustomTextField
                         select
@@ -385,6 +483,7 @@ export default function AssignSubjectLecturerModal({
                       subjectId: subject?._id,
                       classLevel: classLevel,
                       program: subject?.subjectInfo?.program?.programId,
+                      programmes: formattedProgrammes,
                       currentTeacher: selectedLecturer?._id,
                       lastUpdatedBy: authAdmin?.id,
                     };

@@ -1117,7 +1117,7 @@ const studentsReportColumn = (columnData) => {
     {
       name: "Image",
       selector: (row) =>
-        row?.personalInfo?.profilePicture ? (
+        row?.personalInfo?.profilePicture?.url ? (
           <HashLink
             // to={`/sensec/admin/${columnData?.adminCurrentAction}/${
             //   columnData?.adminCurrentLink
@@ -1128,11 +1128,7 @@ const studentsReportColumn = (columnData) => {
           >
             <img
               className="studentImg"
-              src={
-                row?.personalInfo?.profilePicture?.url
-                  ? row?.personalInfo?.profilePicture?.url
-                  : row?.personalInfo?.profilePicture
-              }
+              src={row?.personalInfo?.profilePicture?.url}
               alt=""
             />
           </HashLink>
@@ -1309,7 +1305,7 @@ const studentsReportColumn = (columnData) => {
       selector: (row) => {
         return (
           <>
-            {columnData?.subjectMultiStudentsReports ? (
+            {!columnData?.subjectMultiStudentsReports ? (
               <Button
                 size="small"
                 sx={{

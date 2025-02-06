@@ -303,7 +303,7 @@ export function SchoolProgrammesData() {
     //   sortable: true,
     // },
     {
-      name: "Teachers",
+      name: "Lecturers",
       selector: (row) => (
         // <Box
         //   sx={{
@@ -332,7 +332,11 @@ export function SchoolProgrammesData() {
       sortable: true,
     },
     {
-      name: "Assign Lecturers",
+      name: (
+        <Box width={"100%"} textAlign={"center"}>
+          <p title="Assign/Remove Lecturers">Assign/Remove Lecturer</p>
+        </Box>
+      ),
       selector: (row) => {
         return (
           <Box display={"flex"}>
@@ -488,123 +492,247 @@ export function SchoolProgrammesData() {
       name: "Subject",
       selector: (row) =>
         row?.subjectName ? (
-          <p title={row?.subjectName}>{row?.subjectName}</p>
+          <Box>
+            {row?.subjectInfo?.isOptional && (
+              <p
+                title={row?.subjectName}
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  right: "1rem",
+                  height: "100%",
+                  color: "#9508b5",
+                  paddingTop: ".1rem",
+                }}
+              >
+                Opt
+              </p>
+            )}
+            <p title={row?.subjectName}>{row?.subjectName}</p>
+          </Box>
         ) : (
           <p>---</p>
         ),
+    },
+    {
+      name: "Programmes",
+      selector: (row) => {
+        const programFound = allFlattenedProgrammes?.find(
+          (program) => program?._id === row?.subjectInfo?.program?.programId
+        );
+        if (programFound) {
+          return (
+            <p
+              title={
+                programFound?.name
+                  ? programFound?.name
+                  : programFound?.divisionName
+              }
+            >
+              {programFound?.name && programFound?.name}
+              {programFound?.divisionName && programFound?.divisionName}
+            </p>
+          );
+        }
+        return "---";
+      },
+      sortable: true,
+    },
+    // {
+    //   name: "Class Level",
+    //   selector: (row) => (row?.classLevel ? row?.classLevel?.name : "---"),
+    //   sortable: true,
+    // },
+    // {
+    //   name: "Current Teacher",
+    //   selector: (row) =>
+    //     row?.currentTeacher
+    //       ? row?.currentTeacher?.personalInfo?.fullName
+    //       : "---",
+    //   sortable: true,
+    // },
+    {
+      name: "Lecturers",
+      selector: (row) => (
+        // <Box
+        //   sx={{
+        //     width: "100%",
+        //   }}
+        // >
+        <Button
+          fullWidth
+          title="View All Lecturer"
+          onClick={() => {
+            setCurrentRowId(row);
+            setOpenViewLecturerModal(true);
+          }}
+          sx={{
+            bgcolor: "transparent",
+            fontSize: ".9em",
+            textTransform: "capitalize",
+            color: "green",
+          }}
+        >
+          {row?.teachers ? row?.teachers?.length : "---"}
+          {/* (row?.teachers ? row?.teachers?.length : "---") */}
+        </Button>
+        // </Box>
+      ),
       sortable: true,
     },
     {
-      name: "Lecturers",
-      selector: (row) => (row?.teachers ? row?.teachers?.length : "---"),
-    },
-    {
-      name: "Current Lecturer",
+      name: (
+        <Box width={"100%"} textAlign={"center"}>
+          <p title="Assign/Remove Lecturers">Assign/Remove Lecturer</p>
+        </Box>
+      ),
       selector: (row) => {
-        const allLecturers = FetchAllLecturers();
-        const lecturerFound = allLecturers?.find(
-          (lecturer) => lecturer?._id === row?.currentTeacher
-        );
-
         return (
-          <>
-            {row?.currentTeacher && (
-              <p title={lecturerFound?.personalInfo?.fullName}>
-                {lecturerFound?.personalInfo?.gender === "Male"
-                  ? "Mr. "
-                  : "Mrs. "}
-                {lecturerFound?.personalInfo?.fullName}
-              </p>
-            )}
-            {!row?.currentTeacher && (
+          <Box display={"flex"}>
+            <Button
+              title="Add New Lecturer"
+              onClick={() => {
+                setCurrentRowId(row);
+                setOpenAssignLecturerModal(true);
+              }}
+              sx={{
+                bgcolor: "transparent",
+                fontSize: ".9em",
+                textTransform: "capitalize",
+                color: "green",
+              }}
+            >
+              ANL
+              <Add
+                style={{
+                  position: "absolute",
+                  top: ".5rem",
+                  right: ".7rem",
+                  fontSize: ".9em",
+                }}
+              />
+            </Button>
+            {row?.teachers?.length > 0 && (
               <Button
+                title="Remove Existing Lecturer"
                 onClick={() => {
-                  if (!row?.currentTeacher) {
-                    setOpenModal(true);
-                  }
+                  setCurrentRowId(row);
+                  setOpenRemoveLecturerModal(true);
                 }}
                 sx={{
                   bgcolor: "transparent",
                   fontSize: ".9em",
                   textTransform: "capitalize",
+                  color: "red",
                 }}
               >
-                Assign Lecturer
+                REL
+                <Remove
+                  style={{
+                    position: "absolute",
+                    top: ".5rem",
+                    right: ".7rem",
+                    fontSize: ".9em",
+                  }}
+                />
               </Button>
             )}
-          </>
+          </Box>
         );
       },
     },
     // {
+    //   name: "Optional",
+    //   selector: (row) => (row?.subjectInfo?.isOptional ? "Yes" : "No"),
+    // },
+    // {
     //   name: "Duration",
     //   selector: (row) => (row?.duration ? row?.duration : "---"),
     // },
-    {
-      name: "CreatedBy",
-      selector: (row) => (
-        <p
-          title={
-            row?.createdBy?.personalInfo?.fullName?.length > 20
-              ? row?.createdBy?.personalInfo?.fullName
-              : ""
-          }
-        >
-          {row?.createdBy ? row?.createdBy?.personalInfo?.fullName : "---"}
-        </p>
-      ),
-    },
-    {
-      name: "Last Updated By",
-      selector: (row) =>
-        row?.lastUpdatedBy ? row?.lastUpdatedBy?.personalInfo?.fullName : "---",
-    },
+    // {
+    //   name: "CreatedBy",
+    //   selector: (row) => (
+    //     <p
+    //       title={
+    //         row?.createdBy?.personalInfo?.fullName?.length > 20
+    //           ? row?.createdBy?.personalInfo?.fullName
+    //           : ""
+    //       }
+    //     >
+    //       {row?.createdBy ? row?.createdBy?.personalInfo?.fullName : "---"}
+    //     </p>
+    //   ),
+    // },
+    // {
+    //   name: "Last Updated By",
+    //   selector: (row) =>
+    //     row?.lastUpdatedBy ? row?.lastUpdatedBy?.personalInfo?.fullName : "---",
+    // },
     {
       name: "Edit",
       selector: (row) => (
-        <Link
+        <Button
           className="editLink"
-          to={`/sensec/admin/${adminCurrentAction}/${adminCurrentLink}/Subject/${row?.subjectName.replace(
-            / /g,
-            "_"
-          )}/edit`}
+          onClick={() => {
+            setCurrentRowId(row);
+            setOpenUpdateSubjectModal(true);
+          }}
         >
           <EditIcon />
-        </Link>
+        </Button>
       ),
     },
     {
       name: "Delete",
-      selector: (row) => (
-        <>
+      selector: (row) => {
+        const programFound = allFlattenedProgrammes?.find(
+          (program) => program?._id === row?.subjectInfo?.program?.programId
+        );
+        return (
           <button
             onClick={async () => {
-              setCurrentRowId(row._id);
-              setItemToDelete(row?.subjectName);
-              setOpenModal(true);
-              setProgramToDelete(false);
-              setSubjectToDelete(false);
-              setCoreSub(true);
+              setItemId(row._id);
+              setOpenDeletionModal(true);
+              setSubjectProgram(
+                programFound?.name
+                  ? programFound?.name
+                  : programFound?.divisionName
+              );
+              setSubjectToDelete(row);
             }}
             className="deleteLink"
           >
-            {foundCoreSubject && foundCoreSubject._id === row._id && (
+            {itemId && itemId === row._id && (
               <>
-                {loadingComplete === false && "Deleting..."}
-                {loadingComplete && deleteSubjectStatus === "success" && (
+                {deleteLoadingComplete === false && (
+                  <Box
+                    className="promotionSpinner"
+                    sx={{
+                      fontSize: "1em",
+                    }}
+                  >
+                    <p>Deleting</p>
+                    <span className="dot-ellipsis" style={{}}>
+                      <span className="dot">.</span>
+                      <span className="dot">.</span>
+                      <span className="dot">.</span>
+                    </span>
+                  </Box>
+                )}
+                {deleteLoadingComplete && deleteStatus === "success" && (
                   <>
                     <span>Deleted</span> <TaskAltIcon />
                   </>
                 )}
               </>
             )}
-            {loadingComplete === null && <DeleteForeverIcon />}
-            {row._id !== foundCoreSubject?._id && loadingComplete !== null && (
+            {deleteLoadingComplete === null && <DeleteForeverIcon />}
+            {row._id !== itemId && deleteLoadingComplete !== null && (
               <DeleteForeverIcon />
             )}
           </button>
-        </>
-      ),
+        );
+      },
     },
   ];
 

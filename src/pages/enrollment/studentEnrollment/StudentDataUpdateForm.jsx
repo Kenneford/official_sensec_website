@@ -98,7 +98,7 @@ export function StudentDataUpdateForm() {
   // Handle scroll detection
   useEffect(() => {
     const handleScroll = () => {
-      console.log("Scroll detected:", window.scrollY);
+      // console.log("Scroll detected:", window.scrollY);
       if (window.scrollY >= 140) {
         setIsScrolled(true);
       } else {
@@ -107,7 +107,7 @@ export function StudentDataUpdateForm() {
     };
 
     window.addEventListener("scroll", handleScroll);
-    console.log(window.scrollY > 10);
+    // console.log(window.scrollY > 10);
 
     // Cleanup the event listener
     return () => {
@@ -162,7 +162,7 @@ export function StudentDataUpdateForm() {
       gender: student?.personalInfo?.gender,
       profilePicture: imagePreview
         ? imagePreview
-        : student?.personalInfo?.profilePicture?.url,
+        : student?.personalInfo?.profilePicture,
       // Status
       height: student?.status?.height,
       weight: student?.status?.weight,

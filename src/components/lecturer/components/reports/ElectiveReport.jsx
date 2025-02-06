@@ -574,8 +574,8 @@ export function ElectiveReport() {
             </button>{" "}
             to take report for your core subjects.
           </p>
-          <Grid container spacing={1}>
-            <Grid item xs={12} sm={2}>
+          <Grid container spacing={1} display={"flex"} alignItems={"center"}>
+            <Grid item xs={12} sm={6} md={3}>
               <CustomTextField
                 select
                 fullWidth
@@ -595,13 +595,14 @@ export function ElectiveReport() {
                 //   }}
                 sx={{
                   "& .MuiInputBase-input": {
-                    height: "1.3rem",
+                    // height: "1.3rem",
                     fontSize: ".7em",
                   },
                   "& .MuiInputLabel-root": {
                     fontSize: ".7em", // Default label size
                     transition: "font-size 0.2s, color 0.2s",
                   },
+                  mb: 1,
                 }}
               >
                 {allClassLevels?.map((cLevel) => (
@@ -613,7 +614,7 @@ export function ElectiveReport() {
                 ))}
               </CustomTextField>
             </Grid>
-            <Grid item xs={12} sm={2}>
+            <Grid item xs={12} sm={6} md={3}>
               <CustomTextField
                 select
                 fullWidth
@@ -633,13 +634,14 @@ export function ElectiveReport() {
                 //   }}
                 sx={{
                   "& .MuiInputBase-input": {
-                    height: "1.3rem",
+                    // height: "1.3rem",
                     fontSize: ".7em",
                   },
                   "& .MuiInputLabel-root": {
                     fontSize: ".7em", // Default label size
                     transition: "font-size 0.2s, color 0.2s",
                   },
+                  mb: 1,
                 }}
               >
                 {/* <MenuItem>M</MenuItem> */}
@@ -650,11 +652,12 @@ export function ElectiveReport() {
                 ))}
               </CustomTextField>
             </Grid>
-            <Grid item xs={12} sm={2} md={1.3}>
+            <Grid item xs={12} sm={12} md={2}>
               <Button
                 disabled={!classLevel || !subject}
                 variant="contained"
                 fullWidth
+                size="small"
                 sx={{
                   backgroundColor:
                     classLevel && subject ? "green" : "#adacaccc !important",
@@ -665,9 +668,10 @@ export function ElectiveReport() {
                     pointerEvents: "auto",
                   },
                   alignItems: "center",
-                  height: "2.3rem",
+                  height: { xs: "2.5rem", sm: "2.65rem", md: "2.75rem" },
                   textTransform: "capitalize",
                   fontSize: ".7em",
+                  mb: 1,
                 }}
                 onClick={(e) => {
                   e?.preventDefault();
@@ -828,7 +832,7 @@ export function ElectiveReport() {
                   mt={2}
                   fontSize={".9em"}
                 >
-                  Select Form and Subject to begin...
+                  Select form and subject to begin...
                 </Typography>
               </Box>
             )}

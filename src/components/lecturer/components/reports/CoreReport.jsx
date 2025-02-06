@@ -474,7 +474,7 @@ export function CoreReport() {
             to take report for your elective subjects.
           </p>
           <Grid container spacing={1}>
-            <Grid item xs={12} sm={2}>
+            <Grid item xs={12} sm={6} md={2.5}>
               <CustomTextField
                 select
                 fullWidth
@@ -488,13 +488,15 @@ export function CoreReport() {
                 }}
                 sx={{
                   "& .MuiInputBase-input": {
-                    height: "1.3rem",
+                    // height: "2.4rem",
+                    height: { xs: "1.3rem", sm: "1.7rem" },
                     fontSize: ".7em",
                   },
                   "& .MuiInputLabel-root": {
                     fontSize: ".7em", // Default label size
                     transition: "font-size 0.2s, color 0.2s",
                   },
+                  mb: 1,
                 }}
               >
                 {allClassLevels?.map((cLevel) => (
@@ -506,7 +508,7 @@ export function CoreReport() {
                 ))}
               </CustomTextField>
             </Grid>
-            <Grid item xs={12} sm={2}>
+            <Grid item xs={12} sm={6} md={2.5}>
               <CustomTextField
                 select
                 fullWidth
@@ -527,13 +529,15 @@ export function CoreReport() {
                 //   }}
                 sx={{
                   "& .MuiInputBase-input": {
-                    height: "1.3rem",
+                    // height: "1.27rem",
+                    height: { xs: "1.3rem", sm: "1.7rem" },
                     fontSize: ".7em",
                   },
                   "& .MuiInputLabel-root": {
                     fontSize: ".7em", // Default label size
                     transition: "font-size 0.2s, color 0.2s",
                   },
+                  mb: 1,
                 }}
               >
                 {/* <MenuItem>M</MenuItem> */}
@@ -544,7 +548,7 @@ export function CoreReport() {
                 ))}
               </CustomTextField>
             </Grid>
-            <Grid item xs={12} sm={5}>
+            <Grid item xs={12} sm={6} md={5}>
               <Autocomplete
                 multiple
                 options={allFlattenedProgrammes}
@@ -573,19 +577,21 @@ export function CoreReport() {
                     //   }}
                     sx={{
                       "& .MuiInputBase-input": {
-                        height: "1.3rem",
+                        // height: "1.3rem",
+                        height: { xs: "1.4rem", sm: "1.55rem", md: "1.7rem" },
                         fontSize: ".7em",
                       },
                       "& .MuiInputLabel-root": {
                         fontSize: ".7em", // Default label size
                         transition: "font-size 0.2s, color 0.2s",
                       },
+                      mb: 1,
                     }}
                   ></CustomTextField>
                 )}
               />
             </Grid>
-            <Grid item xs={12} sm={1.7} md={1.3}>
+            <Grid item xs={12} sm={6} md={2}>
               <Button
                 disabled={
                   !coreClassLevel ||
@@ -606,8 +612,10 @@ export function CoreReport() {
                     pointerEvents: "auto",
                   },
                   alignItems: "center",
-                  height: "2.35rem",
+                  // height: "2.35rem",
+                  height: { xs: "2.5rem", sm: "2.65rem", md: "2.75rem" },
                   textTransform: "capitalize",
+                  mb: 1,
                 }}
                 onClick={(e) => {
                   e?.preventDefault();
@@ -615,7 +623,7 @@ export function CoreReport() {
                   const formattedProgrammes = selectedProgrammes.map(
                     (program) => ({
                       _id: program._id || null, // Map _id to id
-                      program: program._id || null, // Map _id to id
+                      programId: program._id || null, // Map _id to id
                       name: program.name
                         ? program?.name
                         : program?.divisionName, // Map _id to id
@@ -772,7 +780,7 @@ export function CoreReport() {
                   mt={2}
                   fontSize={".9em"}
                 >
-                  Select Form and Subject to begin...
+                  Select form and subject to begin...
                 </Typography>
               </Box>
             )}
@@ -788,7 +796,23 @@ export function CoreReport() {
                   mt={2}
                   fontSize={".9em"}
                 >
-                  No data found!
+                  No data fetched!
+                </Typography>
+              </Box>
+            )}
+          {coreClassLevel &&
+            coreSubject &&
+            draftReportInfo &&
+            fetchingCoreLoadingComplete === null && (
+              <Box>
+                <Typography
+                  variant="h6"
+                  color="#fff"
+                  textAlign={"center"}
+                  mt={2}
+                  fontSize={".9em"}
+                >
+                  No student data found!
                 </Typography>
               </Box>
             )}
