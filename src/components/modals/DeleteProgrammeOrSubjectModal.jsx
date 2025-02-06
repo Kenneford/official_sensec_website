@@ -71,13 +71,22 @@ export default function DeleteProgrammeOrSubjectModal({
               >
                 Are you sure you would like to{" "}
                 <span style={{ color: "#c00909" }}>delete</span>{" "}
-                <span style={{ fontWeight: 500 }}>
-                  &quot;{subjectToDelete?.subjectName}&quot;
-                </span>{" "}
+                {subjectToDelete?.subjectInfo?.isElectiveSubject && (
+                  <span style={{ fontWeight: 500 }}>
+                    &quot;{subjectToDelete?.subjectName}&quot;
+                  </span>
+                )}
+                {!subjectToDelete?.subjectInfo?.isElectiveSubject && (
+                  <span style={{ fontWeight: 500 }}>
+                    &quot;{subjectToDelete?.subjectName}&quot;
+                  </span>
+                )}{" "}
                 under{" "}
-                <span style={{ fontWeight: 500 }}>
-                  &quot;{subjectProgram}&quot;
-                </span>{" "}
+                {subjectToDelete?.subjectInfo?.isElectiveSubject && (
+                  <span style={{ fontWeight: 500 }}>
+                    &quot;{subjectProgram}&quot;
+                  </span>
+                )}{" "}
                 {subjectToDelete?.subjectInfo?.isElectiveSubject
                   ? "elective subjects"
                   : "core subjects"}

@@ -8,6 +8,7 @@ import {
   Avatar,
   Divider,
   Stack,
+  Grid,
 } from "@mui/material";
 import PropTypes from "prop-types";
 import {
@@ -121,8 +122,8 @@ export default function RemoveSubjectLecturerModal({
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: { xs: "75%", sm: { minWidth: "40rem" } }, // Responsive width based on screen size
-          maxWidth: { md: "40rem", lg: "40rem" }, // Responsive width based on screen size
+          width: { xs: "95%", sm: { minWidth: "40rem" } }, // Responsive width based on screen size
+          maxWidth: { md: "50rem", lg: "50rem" }, // Responsive width based on screen size
           bgcolor: "background.paper",
           borderRadius: 2,
           //   boxShadow: 24,
@@ -222,23 +223,27 @@ export default function RemoveSubjectLecturerModal({
                 filteredLecturers?.map((lecturer) => (
                   <Box key={lecturer?.uniqueId}>
                     <Box
-                      display={"flex"}
-                      flexWrap={"wrap"}
+                      // display={"flex"}
+                      // flexWrap={"wrap"}
                       alignItems={"center"}
                       gap={".5rem"}
                       mt={".5rem"}
                       mb={".5rem"}
                       sx={{
                         cursor: "pointer",
-                        "&:hover": { backgroundColor: "#e6e4e4cc" },
-                        padding: ".5rem",
+                        "&:hover": { backgroundColor: "#e3f8ffcc" },
+                        // "&:hover": { backgroundColor: "#e6e4e4cc" },
+                        padding: "1rem .5rem",
                         borderRadius: ".5rem",
                         // position: "relative",
                         minWidth: "27rem",
                       }}
                       className="removeLSubjectLecturerWrap"
                     >
-                      <Box className="lecturerAssignedInfos">
+                      <Box
+                        className="lecturerAssignedInfos"
+                        sx={{ paddingLeft: ".5rem", mb: ".5rem" }}
+                      >
                         {/* <Box className="lecturerAssignedItem"></Box> */}
                         <Avatar
                           sx={{
@@ -263,6 +268,7 @@ export default function RemoveSubjectLecturerModal({
                               color: "#383838",
                               fontWeight: "500",
                               letterSpacing: "1px",
+                              paddingLeft: ".5rem",
                             }}
                           >
                             Name:
@@ -276,167 +282,379 @@ export default function RemoveSubjectLecturerModal({
                             {lecturer?.name}
                           </p>
                         </Box>
-                        <Box display={"flex"} gap={".5rem"}>
-                          {lecturer?.electives?.map((electiveData) => (
-                            <Box key={electiveData?._id} position={"relative"}>
-                              <Box>
+                        {lecturer?.electives && (
+                          <Grid container spacing={0.5}>
+                            {lecturer?.electives?.map((electiveData) => (
+                              <Grid item xs={12} sm={6} key={electiveData?._id}>
                                 <Box
-                                  className="lecturerAssignedItem"
-                                  fontSize={".8em"}
-                                  display={"flex"}
-                                  gap={".5rem"}
+                                  position={"relative"}
+                                  sx={{
+                                    padding: ".5rem",
+                                    border: "1px solid #a2e7fecc",
+                                    borderRadius: ".4rem",
+                                    "&:hover": {
+                                      padding: ".5rem",
+                                      backgroundColor: "#fff",
+                                      borderRadius: ".4rem",
+                                      border: "1px solid #a83b3b",
+                                    },
+                                  }}
                                 >
-                                  <span
-                                    style={{
-                                      color: "#383838",
-                                      fontWeight: "500",
-                                      letterSpacing: "1px",
-                                    }}
-                                  >
-                                    Subject:
-                                  </span>{" "}
-                                  <p>{electiveData?.subject}</p>
-                                </Box>
-                                <Box
-                                  className="lecturerAssignedItem"
-                                  fontSize={".8em"}
-                                  display={"flex"}
-                                  gap={".5rem"}
-                                >
-                                  <span
-                                    style={{
-                                      color: "#383838",
-                                      fontWeight: "500",
-                                      letterSpacing: "1px",
-                                    }}
-                                  >
-                                    Form:
-                                  </span>{" "}
-                                  <p>
-                                    {electiveData?.classLevel === "Level 100" &&
-                                      "Form 1"}
-                                    {electiveData?.classLevel === "Level 200" &&
-                                      "Form 2"}
-                                    {electiveData?.classLevel === "Level 300" &&
-                                      "Form 3"}
-                                  </p>
-                                </Box>
-                                <Box
-                                  className="lecturerAssignedItem"
-                                  fontSize={".8em"}
-                                  display={"flex"}
-                                  gap={".5rem"}
-                                >
-                                  <span
-                                    style={{
-                                      color: "#383838",
-                                      fontWeight: "500",
-                                      letterSpacing: "1px",
-                                    }}
-                                  >
-                                    Programme:
-                                  </span>{" "}
-                                  <p>{electiveData?.program}</p>
-                                </Box>
-                                <Box
-                                  className="lecturerAssignedItem"
-                                  fontSize={".8em"}
-                                  display={"flex"}
-                                  gap={".5rem"}
-                                >
-                                  <span
-                                    style={{
-                                      color: "#383838",
-                                      fontWeight: "500",
-                                      letterSpacing: "1px",
-                                    }}
-                                  >
-                                    Elective:
-                                  </span>{" "}
                                   <Box>
-                                    {electiveData?.isElectiveSubject ? (
-                                      <p style={{ color: "green" }}>Yes</p>
-                                    ) : (
-                                      <p style={{ color: "red" }}>No</p>
-                                    )}
-                                  </Box>
-                                </Box>
-                              </Box>
-                              <Button
-                                sx={{
-                                  // position: "absolute",
-                                  right: "0",
-                                  cursor: "pointer",
-                                  bottom: 0,
-                                  textTransform: "capitalize",
-                                  textAlign: "left",
-                                  paddingX: "unset",
-                                  color: "#d20606",
-                                  height: "2rem",
-                                  ":hover": {
-                                    backgroundColor: "transparent",
-                                  },
-                                  justifyContent: "unset",
-                                }}
-                                onClick={() => {
-                                  if (
-                                    !removingInProgress &&
-                                    removeLecturerStatus !== "success"
-                                  ) {
-                                    setRemovingInProgress(true);
-                                    setSubjectToRemove(electiveData?._id);
-                                    const data = {
-                                      subjectId: subject?._id,
-                                      classLevel: electiveData?.classLevel,
-                                      program:
-                                        subject?.subjectInfo?.program
-                                          ?.programId,
-                                      currentTeacher: lecturer?.uniqueId,
-                                      lastUpdatedBy: authAdmin?.id,
-                                    };
-                                    dispatch(removeSubjectLecturer(data));
-                                  }
-                                }}
-                              >
-                                {subjectToRemove === electiveData?._id && (
-                                  <>
-                                    {removingComplete === false && (
-                                      <Box
-                                        className="promotionSpinner"
-                                        sx={{
-                                          fontSize: "1em",
+                                    <Box
+                                      className="lecturerAssignedItem"
+                                      fontSize={".8em"}
+                                      display={"flex"}
+                                      gap={".5rem"}
+                                    >
+                                      <span
+                                        style={{
+                                          color: "#383838",
+                                          fontWeight: "500",
+                                          letterSpacing: "1px",
                                         }}
                                       >
-                                        <p>Removing</p>
-                                        <span
-                                          className="dot-ellipsis"
-                                          style={{ marginTop: 0 }}
-                                        >
-                                          <span className="dot">.</span>
-                                          <span className="dot">.</span>
-                                          <span className="dot">.</span>
-                                        </span>
+                                        Subject:
+                                      </span>{" "}
+                                      <p>{electiveData?.subject}</p>
+                                    </Box>
+                                    <Box
+                                      className="lecturerAssignedItem"
+                                      fontSize={".8em"}
+                                      display={"flex"}
+                                      gap={".5rem"}
+                                    >
+                                      <span
+                                        style={{
+                                          color: "#383838",
+                                          fontWeight: "500",
+                                          letterSpacing: "1px",
+                                        }}
+                                      >
+                                        Form:
+                                      </span>{" "}
+                                      <p>
+                                        {electiveData?.classLevel ===
+                                          "Level 100" && "Form 1"}
+                                        {electiveData?.classLevel ===
+                                          "Level 200" && "Form 2"}
+                                        {electiveData?.classLevel ===
+                                          "Level 300" && "Form 3"}
+                                      </p>
+                                    </Box>
+                                    <Box
+                                      className="lecturerAssignedItem"
+                                      fontSize={".8em"}
+                                      display={"flex"}
+                                      gap={".5rem"}
+                                    >
+                                      <span
+                                        style={{
+                                          color: "#383838",
+                                          fontWeight: "500",
+                                          letterSpacing: "1px",
+                                        }}
+                                      >
+                                        Programme:
+                                      </span>{" "}
+                                      <p>{electiveData?.program}</p>
+                                    </Box>
+                                    <Box
+                                      className="lecturerAssignedItem"
+                                      fontSize={".8em"}
+                                      display={"flex"}
+                                      gap={".5rem"}
+                                    >
+                                      <span
+                                        style={{
+                                          color: "#383838",
+                                          fontWeight: "500",
+                                          letterSpacing: "1px",
+                                        }}
+                                      >
+                                        Elective:
+                                      </span>{" "}
+                                      <Box>
+                                        {electiveData?.isElectiveSubject ? (
+                                          <p style={{ color: "green" }}>Yes</p>
+                                        ) : (
+                                          <p style={{ color: "red" }}>No</p>
+                                        )}
                                       </Box>
+                                    </Box>
+                                  </Box>
+                                  <Button
+                                    sx={{
+                                      // position: "absolute",
+                                      right: "0",
+                                      cursor: "pointer",
+                                      bottom: 0,
+                                      textTransform: "capitalize",
+                                      textAlign: "left",
+                                      paddingX: "unset",
+                                      color: "#d20606",
+                                      height: "2rem",
+                                      ":hover": {
+                                        backgroundColor: "transparent",
+                                      },
+                                      justifyContent: "unset",
+                                    }}
+                                    onClick={() => {
+                                      if (
+                                        !removingInProgress &&
+                                        removeLecturerStatus !== "success"
+                                      ) {
+                                        setRemovingInProgress(true);
+                                        setSubjectToRemove(electiveData?._id);
+                                        const data = {
+                                          subjectId: subject?._id,
+                                          classLevel: electiveData?.classLevel,
+                                          program:
+                                            subject?.subjectInfo?.program
+                                              ?.programId,
+                                          currentTeacher: lecturer?.uniqueId,
+                                          lastUpdatedBy: authAdmin?.id,
+                                        };
+                                        dispatch(removeSubjectLecturer(data));
+                                      }
+                                    }}
+                                  >
+                                    {subjectToRemove === electiveData?._id && (
+                                      <>
+                                        {removingComplete === false && (
+                                          <Box
+                                            className="promotionSpinner"
+                                            sx={{
+                                              fontSize: "1em",
+                                            }}
+                                          >
+                                            <p>Removing</p>
+                                            <span
+                                              className="dot-ellipsis"
+                                              style={{ marginTop: 0 }}
+                                            >
+                                              <span className="dot">.</span>
+                                              <span className="dot">.</span>
+                                              <span className="dot">.</span>
+                                            </span>
+                                          </Box>
+                                        )}
+                                        {removingComplete &&
+                                          removeLecturerStatus ===
+                                            "success" && (
+                                            <>
+                                              <span>Removed</span>{" "}
+                                              <TaskAlt
+                                                style={{ fontSize: "1.3em" }}
+                                              />
+                                            </>
+                                          )}
+                                      </>
                                     )}
-                                    {removingComplete &&
-                                      removeLecturerStatus === "success" && (
-                                        <>
-                                          <span>Removed</span>{" "}
-                                          <TaskAlt
-                                            style={{ fontSize: "1.3em" }}
-                                          />
-                                        </>
-                                      )}
-                                  </>
-                                )}
-                                {removingComplete === null && "Remove"}
-                                {removingComplete !== null &&
-                                  subjectToRemove !== electiveData?._id &&
-                                  "Remove"}
-                              </Button>
-                            </Box>
-                          ))}
-                        </Box>
+                                    {removingComplete === null && "Remove"}
+                                    {removingComplete !== null &&
+                                      subjectToRemove !== electiveData?._id &&
+                                      "Remove"}
+                                  </Button>
+                                </Box>
+                              </Grid>
+                            ))}
+                          </Grid>
+                        )}
+                        {lecturer?.cores && (
+                          <Grid
+                            container
+                            spacing={0.5}
+                            // display={"flex"}
+                            // flexWrap={"wrap"}
+                            // gap={".3rem"}
+                          >
+                            {lecturer?.cores?.map((coreData) => (
+                              <Grid item xs={12} sm={6} key={coreData?._id}>
+                                <Box
+                                  position={"relative"}
+                                  sx={{
+                                    padding: ".5rem",
+                                    border: "1px solid #a2e7fecc",
+                                    borderRadius: ".4rem",
+                                    "&:hover": {
+                                      padding: ".5rem",
+                                      backgroundColor: "#fff",
+                                      borderRadius: ".4rem",
+                                      border: "1px solid #a83b3b",
+                                    },
+                                  }}
+                                >
+                                  <Box>
+                                    <Box
+                                      className="lecturerAssignedItem"
+                                      fontSize={".8em"}
+                                      display={"flex"}
+                                      gap={".5rem"}
+                                    >
+                                      <span
+                                        style={{
+                                          color: "#383838",
+                                          fontWeight: "500",
+                                          letterSpacing: "1px",
+                                        }}
+                                      >
+                                        Subject:
+                                      </span>{" "}
+                                      <p>{coreData?.subject}</p>
+                                    </Box>
+                                    <Box
+                                      className="lecturerAssignedItem"
+                                      fontSize={".8em"}
+                                      display={"flex"}
+                                      gap={".5rem"}
+                                    >
+                                      <span
+                                        style={{
+                                          color: "#383838",
+                                          fontWeight: "500",
+                                          letterSpacing: "1px",
+                                        }}
+                                      >
+                                        Form:
+                                      </span>{" "}
+                                      <p>
+                                        {coreData?.classLevel === "Level 100" &&
+                                          "Form 1"}
+                                        {coreData?.classLevel === "Level 200" &&
+                                          "Form 2"}
+                                        {coreData?.classLevel === "Level 300" &&
+                                          "Form 3"}
+                                      </p>
+                                    </Box>
+                                    <Box
+                                      className="lecturerAssignedItem"
+                                      fontSize={".8em"}
+                                      display={"flex"}
+                                      gap={".5rem"}
+                                    >
+                                      <span
+                                        style={{
+                                          color: "#383838",
+                                          fontWeight: "500",
+                                          letterSpacing: "1px",
+                                        }}
+                                      >
+                                        Programmes:
+                                      </span>{" "}
+                                      <Box>
+                                        {coreData?.programmes?.map(
+                                          (program) => (
+                                            <p key={program?.nameOfProgram}>
+                                              {program?.nameOfProgram}
+                                            </p>
+                                          )
+                                        )}
+                                      </Box>
+                                    </Box>
+                                    <Box
+                                      className="lecturerAssignedItem"
+                                      fontSize={".8em"}
+                                      display={"flex"}
+                                      gap={".5rem"}
+                                    >
+                                      <span
+                                        style={{
+                                          color: "#383838",
+                                          fontWeight: "500",
+                                          letterSpacing: "1px",
+                                        }}
+                                      >
+                                        Core:
+                                      </span>{" "}
+                                      <Box>
+                                        {coreData?.isCoreSubject ? (
+                                          <p style={{ color: "green" }}>Yes</p>
+                                        ) : (
+                                          <p style={{ color: "red" }}>No</p>
+                                        )}
+                                      </Box>
+                                    </Box>
+                                  </Box>
+                                  <Button
+                                    sx={{
+                                      // position: "absolute",
+                                      right: "0",
+                                      cursor: "pointer",
+                                      bottom: 0,
+                                      textTransform: "capitalize",
+                                      textAlign: "left",
+                                      paddingX: "unset",
+                                      color: "#d20606",
+                                      height: "2rem",
+                                      ":hover": {
+                                        backgroundColor: "transparent",
+                                      },
+                                      justifyContent: "unset",
+                                    }}
+                                    onClick={() => {
+                                      if (
+                                        !removingInProgress &&
+                                        removeLecturerStatus !== "success"
+                                      ) {
+                                        setRemovingInProgress(true);
+                                        setSubjectToRemove(coreData?._id);
+                                        const data = {
+                                          subjectId: subject?._id,
+                                          classLevel: coreData?.classLevel,
+                                          program:
+                                            subject?.subjectInfo?.program
+                                              ?.programId,
+                                          programmes: coreData?.programmes,
+                                          currentTeacher: lecturer?.uniqueId,
+                                          lastUpdatedBy: authAdmin?.id,
+                                        };
+                                        dispatch(removeSubjectLecturer(data));
+                                      }
+                                    }}
+                                  >
+                                    {subjectToRemove === coreData?._id && (
+                                      <>
+                                        {removingComplete === false && (
+                                          <Box
+                                            className="promotionSpinner"
+                                            sx={{
+                                              fontSize: "1em",
+                                            }}
+                                          >
+                                            <p>Removing</p>
+                                            <span
+                                              className="dot-ellipsis"
+                                              style={{ marginTop: 0 }}
+                                            >
+                                              <span className="dot">.</span>
+                                              <span className="dot">.</span>
+                                              <span className="dot">.</span>
+                                            </span>
+                                          </Box>
+                                        )}
+                                        {removingComplete &&
+                                          removeLecturerStatus ===
+                                            "success" && (
+                                            <>
+                                              <span>Removed</span>{" "}
+                                              <TaskAlt
+                                                style={{ fontSize: "1.3em" }}
+                                              />
+                                            </>
+                                          )}
+                                      </>
+                                    )}
+                                    {removingComplete === null && "Remove"}
+                                    {removingComplete !== null &&
+                                      subjectToRemove !== coreData?._id &&
+                                      "Remove"}
+                                  </Button>
+                                </Box>
+                              </Grid>
+                            ))}
+                          </Grid>
+                        )}
                       </Box>
                     </Box>
                     <Divider />
