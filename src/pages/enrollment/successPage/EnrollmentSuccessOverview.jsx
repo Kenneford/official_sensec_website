@@ -102,7 +102,9 @@ export function EnrollmentSuccessOverview({
   //   programId: stdProgram?._id,
   // });
   // const allDivisionProgrammes = useSelector(getAllDivisionProgrammes);
-  const [studentProgramme, setStudentProgramme] = useState({});
+  const [studentProgramme, setStudentProgramme] = useState(null);
+  console.log(studentProgramme);
+
   const [programId, setProgramId] = useState({});
   // console.log(allDivisionProgrammes);
 
@@ -137,6 +139,7 @@ export function EnrollmentSuccessOverview({
   );
   useEffect(() => {
     if (allFlattenedProgrammes) {
+      console.log(allFlattenedProgrammes);
       const studentProgramme = allFlattenedProgrammes?.find(
         (programme) =>
           programme?._id ===
@@ -598,7 +601,6 @@ export function EnrollmentSuccessOverview({
                 isMobile={isMobile}
                 allCoreSubjects={memoizedCoreSubjects}
                 allProgrammes={allProgrammes}
-                allDivisionProgrammes={allDivisionProgrammes}
               />
               {isMobile && (
                 <Box

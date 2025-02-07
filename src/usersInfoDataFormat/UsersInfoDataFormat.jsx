@@ -49,13 +49,19 @@ const adminsColumn = (authAdmin) => {
             }/admin_info#studentInfo`}
             title="View Admin Info"
           >
-            <img
-              className="studentImg"
+            <Avatar
+              // className="studentImg"
               src={
                 row?.personalInfo
                   ? row?.personalInfo?.profilePicture?.url
                   : row?.personalInfo?.profilePicture
               }
+              sx={{
+                width: "1.5em",
+                height: "1.5em",
+                borderRadius: ".4rem",
+                objectFit: "cover",
+              }}
               alt=""
             />
           </HashLink>
@@ -141,7 +147,7 @@ const adminsColumn = (authAdmin) => {
               className="editLink"
               to={`/sensec/users/${authAdmin.uniqueId}/admin/Admins/${row.uniqueId}/admin_update`}
             >
-              <Edit />
+              <Edit style={{ fontSize: "1.5em" }} />
             </Link>
           )}
         </>
@@ -165,13 +171,19 @@ const pendingAdminsColumn = (columnObjData) => {
             }/admin_info#studentInfo`}
             title="View Admin Info"
           >
-            <img
-              className="studentImg"
+            <Avatar
+              // className="studentImg"
               src={
                 row?.personalInfo
                   ? row?.personalInfo?.profilePicture?.url
                   : row?.personalInfo?.profilePicture
               }
+              sx={{
+                width: "1.5em",
+                height: "1.5em",
+                borderRadius: ".4rem",
+                objectFit: "cover",
+              }}
               alt=""
             />
           </HashLink>
@@ -262,7 +274,7 @@ const pendingAdminsColumn = (columnObjData) => {
           className="editLink"
           to={`/sensec/users/${columnObjData?.authAdmin.uniqueId}/admin/Admins/${row.uniqueId}/admin_update`}
         >
-          <Edit />
+          <Edit style={{ fontSize: "1.5em" }} />
         </Link>
       ),
     },
@@ -432,7 +444,7 @@ const studentsColumn = (columnData) => {
       name: "Image",
       selector: (row) =>
         row?.personalInfo?.profilePicture ? (
-          <Box fontSize={"calc(0.7rem + 1vmin)"}>
+          <Box>
             <HashLink
               to={`/sensec/admin/${columnData?.adminCurrentAction}/${
                 columnData?.adminCurrentLink
@@ -494,8 +506,8 @@ const studentsColumn = (columnData) => {
     {
       name: "Full Name",
       selector: (row) => (
-        <Box fontSize={"calc(0.7rem + 1vmin)"}>
-          <p style={{ fontSize: ".7em" }}>{row?.personalInfo?.fullName}</p>
+        <Box>
+          <p>{row?.personalInfo?.fullName}</p>
         </Box>
       ),
       sortable: true,
@@ -510,11 +522,8 @@ const studentsColumn = (columnData) => {
           date.getTime() + date.getTimezoneOffset() * 60000
         );
         return (
-          <Box fontSize={"calc(0.7rem + 1vmin)"}>
-            <p
-              style={{ fontSize: ".7em" }}
-              title={dateFormatter.format(utcDate)}
-            >
+          <Box>
+            <p title={dateFormatter.format(utcDate)}>
               {dateFormatter.format(utcDate)}
             </p>
           </Box>
@@ -531,9 +540,8 @@ const studentsColumn = (columnData) => {
         );
         if (studentProgramFound) {
           return (
-            <Box fontSize={"calc(0.7rem + 1vmin)"}>
+            <Box>
               <p
-                style={{ fontSize: ".7em" }}
                 title={
                   studentProgramFound?.name
                     ? studentProgramFound?.name
@@ -553,8 +561,8 @@ const studentsColumn = (columnData) => {
     {
       name: "Student-ID",
       selector: (row) => (
-        <Box fontSize={"calc(0.7rem + 1vmin)"}>
-          <p style={{ fontSize: ".7em" }}>{row?.uniqueId}</p>
+        <Box>
+          <p>{row?.uniqueId}</p>
         </Box>
       ),
       sortable: true,
@@ -572,8 +580,8 @@ const studentsColumn = (columnData) => {
     {
       name: "Batch",
       selector: (row) => (
-        <Box fontSize={"calc(0.7rem + 1vmin)"}>
-          <p style={{ fontSize: ".7em" }}>
+        <Box>
+          <p>
             {row.studentSchoolData?.batch?.yearRange
               ? `${row?.studentSchoolData?.batch?.yearRange.replace(/-/g, "/")}`
               : "---"}
@@ -585,7 +593,7 @@ const studentsColumn = (columnData) => {
       name: "Level",
       selector: (row) =>
         row.studentSchoolData?.currentClassLevel && (
-          <Box fontSize={"calc(0.7rem + 1vmin)"} className="tableClassLevel">
+          <Box className="tableClassLevel">
             {row.studentSchoolData?.currentClassLevel?.name === "Level 100" && (
               <p
                 // style={{
@@ -607,21 +615,13 @@ const studentsColumn = (columnData) => {
               </p>
             )}
             {row.studentSchoolData?.currentClassLevel?.name === "Level 200" && (
-              <p
-                style={{ fontSize: ".7em" }}
-                className="secondYearTag"
-                title="2nd Year"
-              >
+              <p className="secondYearTag" title="2nd Year">
                 2
               </p>
             )}
             {row.studentSchoolData?.currentClassLevel?.name === "Level 300" &&
               !row.isGraduated && (
-                <p
-                  style={{ fontSize: ".7em" }}
-                  className="thirdYearTag"
-                  title="3rd Year"
-                >
+                <p className="thirdYearTag" title="3rd Year">
                   3
                 </p>
               )}
@@ -639,7 +639,7 @@ const studentsColumn = (columnData) => {
         const disableBtn = Boolean(columnData?.isProgramStudents);
         if (row?.studentSchoolData?.currentClassLevel) {
           return (
-            <Box fontSize={"calc(0.7rem + 1vmin)"}>
+            <Box>
               {row?.studentSchoolData?.currentClassLevel?.name ===
                 "Level 100" && (
                 <>
@@ -647,7 +647,7 @@ const studentsColumn = (columnData) => {
                     disabled={!disableBtn}
                     // size="small"
                     sx={{
-                      fontSize: ".7em",
+                      fontSize: ".9em",
                       textTransform: "capitalize",
                       ":hover": {
                         backgroundColor: "transparent",
@@ -730,7 +730,7 @@ const studentsColumn = (columnData) => {
                     disabled={!disableBtn}
                     // size="small"
                     sx={{
-                      fontSize: ".7em",
+                      fontSize: ".9em",
                       textTransform: "capitalize",
                       ":hover": {
                         backgroundColor: "transparent",
@@ -812,7 +812,7 @@ const studentsColumn = (columnData) => {
                     disabled={!disableBtn}
                     // size="small"
                     sx={{
-                      fontSize: ".7em",
+                      fontSize: ".9em",
                       textTransform: "capitalize",
                       ":hover": {
                         backgroundColor: "transparent",
@@ -1101,8 +1101,8 @@ const studentsColumn = (columnData) => {
           className="editLink"
           to={`/sensec/users/${columnData?.authAdmin?.uniqueId}/admin/Students/${row.uniqueId}/student_update`}
         >
-          <Box fontSize={"calc(0.7rem + 1vmin)"}>
-            <Edit style={{ fontSize: "1.1em" }} />
+          <Box>
+            <Edit style={{ fontSize: "1.5em" }} />
           </Box>
         </Link>
       ),
@@ -1126,9 +1126,19 @@ const studentsReportColumn = (columnData) => {
             // }/${row?.uniqueId}/student_info#studentInfo`}
             title="View Student Info"
           >
-            <img
-              className="studentImg"
-              src={row?.personalInfo?.profilePicture?.url}
+            <Avatar
+              // className="studentImg"
+              src={
+                row?.personalInfo
+                  ? row?.personalInfo?.profilePicture?.url
+                  : row?.personalInfo?.profilePicture
+              }
+              sx={{
+                width: "1.5em",
+                height: "1.5em",
+                borderRadius: ".4rem",
+                objectFit: "cover",
+              }}
               alt=""
             />
           </HashLink>
@@ -1481,11 +1491,19 @@ const studentsReportOverviewColumn = (columnData) => {
             // }/${row?.uniqueId}/student_info#studentInfo`}
             title="View Student Info"
           >
-            <img
-              className="studentImg"
+            <Avatar
+              // className="studentImg"
               src={
-                row?.profilePicture ? row?.profilePicture : row?.profilePicture
+                row?.personalInfo
+                  ? row?.personalInfo?.profilePicture?.url
+                  : row?.personalInfo?.profilePicture
               }
+              sx={{
+                width: "1.5em",
+                height: "1.5em",
+                borderRadius: ".4rem",
+                objectFit: "cover",
+              }}
               alt=""
             />
           </HashLink>
@@ -1666,28 +1684,40 @@ const pendingStudentsColumn = (columnData) => {
       name: "Image",
       selector: (row) =>
         row?.personalInfo?.profilePicture ? (
+          <Box>
+            <HashLink
+              to={`/sensec/admin/${columnData?.adminCurrentAction}/${
+                columnData?.adminCurrentLink
+              }/${row?.personalInfo?.firstName?.replace(/ /g, "_")}_${
+                row?.personalInfo?.lastName
+              }/${row?.uniqueId}/student_info#studentInfo`}
+              title="View Student Info"
+            >
+              <Avatar
+                // className="studentImg"
+                src={
+                  row?.personalInfo?.profilePicture?.url
+                    ? row?.personalInfo?.profilePicture?.url
+                    : row?.personalInfo?.profilePicture
+                }
+                sx={{
+                  width: "1.5em",
+                  height: "1.5em",
+                  borderRadius: ".4rem",
+                  objectFit: "cover",
+                }}
+                alt=""
+              />
+            </HashLink>
+          </Box>
+        ) : (
           <HashLink
+            className="noImgLink"
             to={`/sensec/admin/${columnData?.adminCurrentAction}/${
               columnData?.adminCurrentLink
             }/${row?.personalInfo?.firstName?.replace(/ /g, "_")}_${
               row?.personalInfo?.lastName
-            }/${row?.uniqueId}/student_info#studentInfo`}
-            title="View Student Info"
-          >
-            <img
-              className="studentImg"
-              src={
-                row?.personalInfo
-                  ? row?.personalInfo?.profilePicture?.url
-                  : row?.personalInfo?.profilePicture
-              }
-              alt=""
-            />
-          </HashLink>
-        ) : (
-          <HashLink
-            className="noImgLink"
-            to={`/sensec/admin/Students/student_info/${row?.personalInfo?.firstName}_${row?.personalInfo?.lastName}/${row?.personalInfo?.uniqueId}#studentInfo`}
+            }/${row?.personalInfo?.uniqueId}/student_info#studentInfo`}
             title="View Student Info"
           >
             {row?.personalInfo?.gender === "Male" && (
@@ -1715,27 +1745,33 @@ const pendingStudentsColumn = (columnData) => {
     },
     {
       name: "Full Name",
-      selector: (row) => row?.personalInfo?.fullName,
+      selector: (row) => (
+        <Box>
+          <p>{row?.personalInfo?.fullName}</p>
+        </Box>
+      ),
       sortable: true,
     },
     {
       name: "Date Of Birth",
       selector: (row) => {
-        if (!row?.personalInfo?.dateOfBirth) return <p>---</p>;
+        if (!row?.personalInfo?.dateOfBirth) return "---";
         const date = new Date(row?.personalInfo?.dateOfBirth);
         // Adjust for timezones explicitly if needed
         const utcDate = new Date(
           date.getTime() + date.getTimezoneOffset() * 60000
         );
         return (
-          <p title={dateFormatter.format(utcDate)}>
-            {dateFormatter.format(utcDate)}
-          </p>
+          <Box>
+            <p title={dateFormatter.format(utcDate)}>
+              {dateFormatter.format(utcDate)}
+            </p>
+          </Box>
         );
       },
     },
     {
-      name: "Program",
+      name: "Programme",
       selector: (row) => {
         const allFlattenedProgrammes = FetchAllFlattenedProgrammes();
         const studentProgramFound = allFlattenedProgrammes?.find(
@@ -1744,25 +1780,31 @@ const pendingStudentsColumn = (columnData) => {
         );
         if (studentProgramFound) {
           return (
-            <p
-              title={
-                studentProgramFound?.name
+            <Box>
+              <p
+                title={
+                  studentProgramFound?.name
+                    ? studentProgramFound?.name
+                    : studentProgramFound?.divisionName
+                }
+              >
+                {studentProgramFound?.name
                   ? studentProgramFound?.name
-                  : studentProgramFound?.divisionName
-              }
-            >
-              {studentProgramFound?.name
-                ? studentProgramFound?.name
-                : studentProgramFound?.divisionName}
-            </p>
+                  : studentProgramFound?.divisionName}
+              </p>
+            </Box>
           );
         }
         return "---";
       },
     },
     {
-      name: "Unique-ID",
-      selector: (row) => (row?.uniqueId ? row?.uniqueId : "---"),
+      name: "Student-ID",
+      selector: (row) => (
+        <Box>
+          <p>{row?.uniqueId}</p>
+        </Box>
+      ),
       sortable: true,
     },
     // {
@@ -1781,38 +1823,58 @@ const pendingStudentsColumn = (columnData) => {
     // },
     {
       name: "Batch",
-      selector: (row) =>
-        row.studentSchoolData?.batch?.yearRange
-          ? `${row?.studentSchoolData?.batch?.yearRange.replace(/-/g, "/")}`
-          : "---",
+      selector: (row) => (
+        <Box>
+          <p>
+            {row.studentSchoolData?.batch?.yearRange
+              ? `${row?.studentSchoolData?.batch?.yearRange.replace(/-/g, "/")}`
+              : "---"}
+          </p>
+        </Box>
+      ),
     },
     {
       name: "Level",
       selector: (row) =>
         row.studentSchoolData?.currentClassLevel && (
-          <div className="tableClassLevel">
+          <Box className="tableClassLevel">
             {row.studentSchoolData?.currentClassLevel?.name === "Level 100" && (
-              <div className="firstYearTag" title="1st Year">
+              <p
+                // style={{
+                //   fontSize: ".7em",
+                //   backgroundColor: "#da076d",
+                //   width: "1em",
+                //   height: "1em",
+                //   display: "flex",
+                //   justifyContent: "center",
+                //   alignItems: "center",
+                //   padding: ".7em",
+                //   borderRadius: "50%",
+                //   color: "#fff",
+                // }}
+                className="firstYearTag"
+                title="1st Year"
+              >
                 1
-              </div>
+              </p>
             )}
             {row.studentSchoolData?.currentClassLevel?.name === "Level 200" && (
-              <div className="secondYearTag" title="2nd Year">
+              <p className="secondYearTag" title="2nd Year">
                 2
-              </div>
+              </p>
             )}
             {row.studentSchoolData?.currentClassLevel?.name === "Level 300" &&
               !row.isGraduated && (
-                <div className="thirdYearTag" title="3rd Year">
+                <p className="thirdYearTag" title="3rd Year">
                   3
-                </div>
+                </p>
               )}
             {row.isGraduated && (
-              <div className="isGraduated" title="Graduated">
+              <p className="isGraduated" title="Graduated">
                 <SchoolOutlined />
-              </div>
+              </p>
             )}
-          </div>
+          </Box>
         ),
     },
     {
@@ -1865,14 +1927,14 @@ const pendingStudentsColumn = (columnData) => {
                 {columnData?.loadingComplete === null && (
                   <HowToReg
                     titleAccess="Approve Enrollment"
-                    style={{ fontSize: "2rem" }}
+                    style={{ fontSize: "1.5em" }}
                   />
                 )}
                 {row?._id !== columnData?.foundStudent?._id &&
                   columnData?.loadingComplete !== null && (
                     <HowToReg
                       titleAccess="Approve Enrollment"
-                      style={{ fontSize: "2rem" }}
+                      style={{ fontSize: "1.5em" }}
                     />
                   )}
               </>
@@ -1920,14 +1982,14 @@ const pendingStudentsColumn = (columnData) => {
             {columnData?.rejectLoadingComplete === null && (
               <PersonRemove
                 titleAccess="Reject Employment"
-                style={{ fontSize: "2rem" }}
+                style={{ fontSize: "1.5em" }}
               />
             )}
             {row?._id !== columnData?.studentToReject?._id &&
               columnData?.rejectLoadingComplete !== null && (
                 <PersonRemove
                   titleAccess="Reject Employment"
-                  style={{ fontSize: "2rem" }}
+                  style={{ fontSize: "1.5em" }}
                 />
               )}
             {columnData?.studentToReject &&
@@ -1977,9 +2039,11 @@ const pendingStudentsColumn = (columnData) => {
       selector: (row) => (
         <Link
           className="editLink"
-          to={`/sensec/users/${columnData?.authAdmin?.uniqueId}/admin/Students/${row?.uniqueId}/student_update`}
+          to={`/sensec/users/${columnData?.authAdmin?.uniqueId}/admin/Students/${row.uniqueId}/student_update`}
         >
-          <Edit />
+          <Box>
+            <Edit style={{ fontSize: "1.5em" }} />
+          </Box>
         </Link>
       ),
     },
@@ -2091,6 +2155,7 @@ const pendingStudentsColumn = (columnData) => {
 //   ];
 //   return studentColumn;
 // };
+
 const teachersColumn = (columnData) => {
   const teachersDataFormat = [
     {
@@ -2106,20 +2171,21 @@ const teachersColumn = (columnData) => {
             }/lecturer_info#teacherInfo`}
             title="View Lecturer Info"
           >
-            {!row?.personalInfo?.profilePicture?.url && (
-              <img
-                className="studentImg"
-                src={row?.personalInfo?.profilePicture}
-                alt=""
-              />
-            )}
-            {row?.personalInfo?.profilePicture?.url && (
-              <img
-                className="studentImg"
-                src={row?.personalInfo?.profilePicture?.url}
-                alt=""
-              />
-            )}
+            <Avatar
+              // className="studentImg"
+              src={
+                row?.personalInfo
+                  ? row?.personalInfo?.profilePicture?.url
+                  : row?.personalInfo?.profilePicture
+              }
+              sx={{
+                width: "1.5em",
+                height: "1.5em",
+                borderRadius: ".4rem",
+                objectFit: "cover",
+              }}
+              alt=""
+            />
           </HashLink>
         ) : (
           <HashLink
@@ -2418,7 +2484,7 @@ const teachersColumn = (columnData) => {
           className="editLink"
           to={`/sensec/users/${columnData?.authAdmin.uniqueId}/admin/Lecturers/${row.uniqueId}/lecturer_update`}
         >
-          <Edit />
+          <Edit style={{ fontSize: "1.5em" }} />
         </Link>
       ),
     },
@@ -2440,20 +2506,21 @@ const pendingTeachersColumn = (columnObjData) => {
             }/lecturer_info#teacherInfo`}
             title="View Lecturer Info"
           >
-            {!row?.personalInfo?.profilePicture?.url && (
-              <img
-                className="studentImg"
-                src={row?.personalInfo?.profilePicture}
-                alt=""
-              />
-            )}
-            {row?.personalInfo?.profilePicture?.url && (
-              <img
-                className="studentImg"
-                src={row?.personalInfo?.profilePicture?.url}
-                alt=""
-              />
-            )}
+            <Avatar
+              // className="studentImg"
+              src={
+                row?.personalInfo
+                  ? row?.personalInfo?.profilePicture?.url
+                  : row?.personalInfo?.profilePicture
+              }
+              sx={{
+                width: "1.5em",
+                height: "1.5em",
+                borderRadius: ".4rem",
+                objectFit: "cover",
+              }}
+              alt=""
+            />
           </HashLink>
         ) : (
           <HashLink
@@ -2544,7 +2611,7 @@ const pendingTeachersColumn = (columnObjData) => {
               className="editLink"
               to={`/sensec/users/${columnObjData?.authAdmin.uniqueId}/admin/Lecturers/${row.uniqueId}/lecturer_update`}
             >
-              <Edit />
+              <Edit style={{ fontSize: "1.5em" }} />
             </Link>
           )}
         </>
@@ -2713,20 +2780,21 @@ const nTStaffsColumn = (adminCurrentLink, authAdmin) => {
             )}_${row?.personalInfo?.lastName}/${row?.uniqueId}/nt_staff_info`}
             title="View NT-Staff Info"
           >
-            {!row?.personalInfo?.profilePicture?.url && (
-              <img
-                className="studentImg"
-                src={row?.personalInfo?.profilePicture}
-                alt=""
-              />
-            )}
-            {row?.personalInfo?.profilePicture?.url && (
-              <img
-                className="studentImg"
-                src={row?.personalInfo?.profilePicture?.url}
-                alt=""
-              />
-            )}
+            <Avatar
+              // className="studentImg"
+              src={
+                row?.personalInfo
+                  ? row?.personalInfo?.profilePicture?.url
+                  : row?.personalInfo?.profilePicture
+              }
+              sx={{
+                width: "1.5em",
+                height: "1.5em",
+                borderRadius: ".4rem",
+                objectFit: "cover",
+              }}
+              alt=""
+            />
           </HashLink>
         ) : (
           <HashLink
@@ -2808,7 +2876,7 @@ const nTStaffsColumn = (adminCurrentLink, authAdmin) => {
           className="editLink"
           to={`/sensec/users/${authAdmin?.uniqueId}/admin/NT-Staff/${row?.uniqueId}/nt-staff_update`}
         >
-          <Edit />
+          <Edit style={{ fontSize: "1.5em" }} />
         </Link>
       ),
     },
@@ -2830,20 +2898,21 @@ const pendingNTStaffsColumn = (columnObjData) => {
             }/lecturer_info#teacherInfo`}
             title="View Student Info"
           >
-            {!row?.personalInfo?.profilePicture?.url && (
-              <img
-                className="studentImg"
-                src={row?.personalInfo?.profilePicture}
-                alt=""
-              />
-            )}
-            {row?.personalInfo?.profilePicture?.url && (
-              <img
-                className="studentImg"
-                src={row?.personalInfo?.profilePicture?.url}
-                alt=""
-              />
-            )}
+            <Avatar
+              // className="studentImg"
+              src={
+                row?.personalInfo
+                  ? row?.personalInfo?.profilePicture?.url
+                  : row?.personalInfo?.profilePicture
+              }
+              sx={{
+                width: "1.5em",
+                height: "1.5em",
+                borderRadius: ".4rem",
+                objectFit: "cover",
+              }}
+              alt=""
+            />
           </HashLink>
         ) : (
           <HashLink
@@ -2934,7 +3003,7 @@ const pendingNTStaffsColumn = (columnObjData) => {
               className="editLink"
               to={`/sensec/users/${columnObjData?.authAdmin?.uniqueId}/admin/NT-Staff/${row?.uniqueId}/nt-staff_update`}
             >
-              <Edit />
+              <Edit style={{ fontSize: "1.5em" }} />
             </Link>
           )}
         </>
@@ -3103,13 +3172,19 @@ const graduatesColumn = () => {
             )}_${row?.personalInfo?.lastName}/${row?.uniqueId}#studentInfo`}
             title="View Student Info"
           >
-            <img
-              className="studentImg"
+            <Avatar
+              // className="studentImg"
               src={
-                row?.personalInfo?.profilePicture
-                  ? row?.personalInfo?.profilePicture.url
+                row?.personalInfo
+                  ? row?.personalInfo?.profilePicture?.url
                   : "/assets/noAvatar.png"
               }
+              sx={{
+                width: "1.5em",
+                height: "1.5em",
+                borderRadius: ".4rem",
+                objectFit: "cover",
+              }}
               alt=""
             />
           </HashLink>
@@ -3218,13 +3293,19 @@ const classHandlingStudentsColumn = (columnData) => {
             }/${row?.uniqueId}/student_info#studentInfo`}
             title="View Student Info"
           >
-            <img
-              className="studentImg"
+            <Avatar
+              // className="studentImg"
               src={
-                row?.personalInfo?.profilePicture?.url
+                row?.personalInfo
                   ? row?.personalInfo?.profilePicture?.url
                   : row?.personalInfo?.profilePicture
               }
+              sx={{
+                width: "1.5em",
+                height: "1.5em",
+                borderRadius: ".4rem",
+                objectFit: "cover",
+              }}
               alt=""
             />
           </HashLink>

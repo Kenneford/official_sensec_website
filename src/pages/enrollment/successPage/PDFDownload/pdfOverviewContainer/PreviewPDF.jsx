@@ -14,6 +14,7 @@ import ProgrammesPdfViewer from "../view/ProgrammesPdfViewer";
 import { FetchAllCoreSubjects } from "../../../../../data/subjects/FetchSubjects";
 import {
   FetchAllCreatedDivisionProgrammes,
+  FetchAllFlattenedProgrammes,
   FetchAllProgrammes,
 } from "../../../../../data/programme/FetchProgrammeData";
 import Cookies from "js-cookie";
@@ -27,6 +28,7 @@ export function PreviewPDF() {
     (std) => std?.uniqueId === maskedStudentId
   );
   const allProgrammes = FetchAllProgrammes();
+  const allFlattenedProgrammes = FetchAllFlattenedProgrammes();
   const allDivisionProgrammes = FetchAllCreatedDivisionProgrammes();
 
   const [studentProgramme, setStudentProgramme] = useState({});
@@ -39,21 +41,22 @@ export function PreviewPDF() {
 
   // Set student's programme
   useEffect(() => {
-    if (enrolledStudent?.studentSchoolData?.divisionProgram) {
-      const studentProgramme = allDivisionProgrammes?.find(
+    if (allFlattenedProgrammes) {
+      console.log(allFlattenedProgrammes);
+      const studentProgramme = allFlattenedProgrammes?.find(
         (programme) =>
           programme?._id ===
-          enrolledStudent?.studentSchoolData?.divisionProgram?._id
+          enrolledStudent?.studentSchoolData?.program?.programId
       );
       setStudentProgramme(studentProgramme);
-    } else {
-      const studentProgramme = allProgrammes?.find(
-        (programme) =>
-          programme?._id === enrolledStudent?.studentSchoolData?.program?._id
-      );
-      setStudentProgramme(studentProgramme);
+      // setProgramId(studentProgramme?._id);
     }
-  }, [enrolledStudent, allProgrammes, allDivisionProgrammes]);
+  }, [
+    enrolledStudent,
+    // allProgrammes,
+    // allDivisionProgrammes,
+    allFlattenedProgrammes,
+  ]);
 
   const memoizedCoreSubjects = useMemo(
     () => allCoreSubjects,
