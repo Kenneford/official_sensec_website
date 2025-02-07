@@ -24,7 +24,7 @@ import { FetchAllClassLevels } from "../../../../data/class/FetchClassLevel";
 import {
   createMultiStudentsReport,
   //   fetchDraftReport,
-  getDraftReportInfo,
+  getCoreDraftReportInfo,
   resetCreateMultiReportState,
   resetCreateReportState,
   saveDraftReport,
@@ -41,7 +41,7 @@ export function SearchReport() {
   const reportSubject = localStorage.getItem("reportSubject");
   const authUser = useSelector(getAuthUser);
   const currentYear = new Date().getFullYear();
-  const draftReportInfo = useSelector(getDraftReportInfo);
+  const draftReportInfo = useSelector(getCoreDraftReportInfo);
   console.log(draftReportInfo);
 
   const { lecturerCurrentAction, lecturerCurrentLink } = useParams();

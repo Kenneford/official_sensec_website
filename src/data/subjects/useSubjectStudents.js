@@ -16,7 +16,7 @@ import {
   fetchElectiveDraftReport,
   getAllReports,
   getAllStudentReports,
-  getDraftReportInfo,
+  getCoreDraftReportInfo,
 } from "../../features/reports/reportSlice";
 import { FetchCurrentAcademicTerms } from "../term.year/FetchAcademicTerms";
 
@@ -28,7 +28,7 @@ const useSubjectStudents = ({ classLevel, subject }) => {
   const authUser = useSelector(getAuthUser);
   const allUsers = useSelector(getAllUsers);
   const allReports = useSelector(getAllStudentReports);
-  const draftReportInfo = useSelector(getDraftReportInfo);
+  const draftReportInfo = useSelector(getCoreDraftReportInfo);
   const allElectiveSubjects = FetchAllElectiveSubjects();
   const currentAcademicTerms = FetchCurrentAcademicTerms();
   const currentYear = new Date().getFullYear();

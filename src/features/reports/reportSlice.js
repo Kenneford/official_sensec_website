@@ -8,9 +8,11 @@ const initialState = {
   allGrades: [],
   reportInfo: "",
   multiStudentsReportInfo: "",
-  draftReportInfo: "",
+  electiveDraftReportInfo: "",
+  coreDraftReportInfo: "",
   allReports: [],
-  subjectMultiStudentsReports: "",
+  electiveSubjectMultiStudentsReports: "",
+  coreSubjectMultiStudentsReports: "",
   allStudentReports: [],
   successMessage: "",
   error: "",
@@ -69,12 +71,27 @@ export const createMultiStudentsReport = createAsyncThunk(
     }
   }
 );
-export const fetchSubjectMultiStudentsReport = createAsyncThunk(
-  "Report/fetchSubjectMultiStudentsReport",
+export const fetchElectiveSubjectMultiStudentsReport = createAsyncThunk(
+  "Report/fetchElectiveSubjectMultiStudentsReport",
   async (data, { rejectWithValue }) => {
     try {
       const res = await tokenInterceptor.put(
-        `/academics/report/subject/fetch_all`,
+        `/academics/report/elective_subject/multi_students/fetch_all`,
+        data
+      );
+      return res.data;
+    } catch (error) {
+      console.log(error.response.data);
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const fetchCoreSubjectMultiStudentsReport = createAsyncThunk(
+  "Report/fetchCoreSubjectMultiStudentsReport",
+  async (data, { rejectWithValue }) => {
+    try {
+      const res = await tokenInterceptor.put(
+        `/academics/report/core_subject/multi_students/fetch_all`,
         data
       );
       return res.data;
@@ -217,10 +234,28 @@ const reportSlice = createSlice({
         successMessage: "",
       };
     },
-    resetSubjectMultiStudentsState(state) {
+    resetCoreReportStudentsState(state) {
       return {
         ...state,
-        subjectMultiStudentsReports: "",
+        coreDraftReportInfo: "",
+      };
+    },
+    resetElectiveReportStudentsState(state) {
+      return {
+        ...state,
+        electiveDraftReportInfo: "",
+      };
+    },
+    resetCoreSubjectMultiStudentsState(state) {
+      return {
+        ...state,
+        coreSubjectMultiStudentsReports: "",
+      };
+    },
+    resetElectiveSubjectMultiStudentsState(state) {
+      return {
+        ...state,
+        electiveSubjectMultiStudentsReports: "",
       };
     },
   },
@@ -295,7 +330,7 @@ const reportSlice = createSlice({
       if (action.payload) {
         return {
           ...state,
-          draftReportInfo: action.payload.foundDraftReport,
+          electiveDraftReportInfo: action.payload.foundDraftReport,
           successMessage: action.payload.successMessage,
           fetchElectiveDraftStatus: "success",
         };
@@ -316,7 +351,7 @@ const reportSlice = createSlice({
       if (action.payload) {
         return {
           ...state,
-          draftReportInfo: action.payload.foundDraftReport,
+          coreDraftReportInfo: action.payload.foundDraftReport,
           successMessage: action.payload.successMessage,
           fetchCoreDraftStatus: "success",
         };
@@ -350,17 +385,20 @@ const reportSlice = createSlice({
         error: action.payload,
       };
     });
-    // Fetch Subject MultiStudents Report
-    builder.addCase(fetchSubjectMultiStudentsReport.pending, (state) => {
-      return { ...state, fetchStatus: "pending" };
-    });
+    // Fetch Elective Subject MultiStudents Report
     builder.addCase(
-      fetchSubjectMultiStudentsReport.fulfilled,
+      fetchElectiveSubjectMultiStudentsReport.pending,
+      (state) => {
+        return { ...state, fetchStatus: "pending" };
+      }
+    );
+    builder.addCase(
+      fetchElectiveSubjectMultiStudentsReport.fulfilled,
       (state, action) => {
         if (action.payload) {
           return {
             ...state,
-            subjectMultiStudentsReports: action.payload.foundReports,
+            electiveSubjectMultiStudentsReports: action.payload.foundReports,
             successMessage: action.payload.successMessage,
             fetchStatus: "success",
           };
@@ -368,7 +406,34 @@ const reportSlice = createSlice({
       }
     );
     builder.addCase(
-      fetchSubjectMultiStudentsReport.rejected,
+      fetchElectiveSubjectMultiStudentsReport.rejected,
+      (state, action) => {
+        return {
+          ...state,
+          fetchStatus: "rejected",
+          error: action.payload,
+        };
+      }
+    );
+    // Fetch Subject MultiStudents Report
+    builder.addCase(fetchCoreSubjectMultiStudentsReport.pending, (state) => {
+      return { ...state, fetchStatus: "pending" };
+    });
+    builder.addCase(
+      fetchCoreSubjectMultiStudentsReport.fulfilled,
+      (state, action) => {
+        if (action.payload) {
+          return {
+            ...state,
+            coreSubjectMultiStudentsReports: action.payload.foundReports,
+            successMessage: action.payload.successMessage,
+            fetchStatus: "success",
+          };
+        } else return state;
+      }
+    );
+    builder.addCase(
+      fetchCoreSubjectMultiStudentsReport.rejected,
       (state, action) => {
         return {
           ...state,
@@ -406,13 +471,21 @@ export const {
   resetCreateMultiReportState,
   resetFetchReportState,
   resetFetchElectiveReportState,
+  resetElectiveReportStudentsState,
   resetFetchCoreReportState,
-  resetSubjectMultiStudentsState,
+  resetCoreSubjectMultiStudentsState,
+  resetCoreReportStudentsState,
+  resetElectiveSubjectMultiStudentsState,
 } = reportSlice.actions;
 export const getAllReports = (state) => state.report.allReports;
-export const getSubjectMultiStudentsReports = (state) =>
-  state.report.subjectMultiStudentsReports;
+export const getElectiveSubjectMultiStudentsReports = (state) =>
+  state.report.electiveSubjectMultiStudentsReports;
+export const getCoreSubjectMultiStudentsReports = (state) =>
+  state.report.coreSubjectMultiStudentsReports;
 export const getAllStudentReports = (state) => state.report.allStudentReports;
-export const getDraftReportInfo = (state) => state.report.draftReportInfo;
+export const getElectiveDraftReportInfo = (state) =>
+  state.report.electiveDraftReportInfo;
+export const getCoreDraftReportInfo = (state) =>
+  state.report.coreDraftReportInfo;
 
 export default reportSlice.reducer;

@@ -18,7 +18,7 @@ import {
   resetAssignSubjectLecturerState,
 } from "../../features/academics/subjectsSlice";
 import { useEffect, useRef, useState } from "react";
-import { CustomTextField } from "../../muiStyling/muiStyling";
+import { CustomMenuProps, CustomTextField } from "../../muiStyling/muiStyling";
 import { Close, Search, TaskAlt } from "@mui/icons-material";
 import { FetchAllLecturers } from "../../data/lecturers/FetchLecturers";
 import { FetchAllFlattenedProgrammes } from "../../data/programme/FetchProgrammeData";
@@ -372,6 +372,36 @@ export default function AssignSubjectLecturerModal({
                               }}
                             ></CustomTextField>
                           )}
+                          slotProps={{
+                            popper: {
+                              modifiers: [
+                                {
+                                  name: "preventOverflow",
+                                  options: {
+                                    boundary: "window",
+                                  },
+                                },
+                              ],
+                            },
+                            paper: {
+                              sx: {
+                                maxHeight: 200, // Set max height for dropdown
+                                "&::-webkit-scrollbar": {
+                                  width: "6px", // Scrollbar width
+                                },
+                                "&::-webkit-scrollbar-thumb": {
+                                  backgroundColor: "#9a9a9a", // Scrollbar thumb color
+                                  borderRadius: "4px",
+                                },
+                                "&::-webkit-scrollbar-thumb:hover": {
+                                  backgroundColor: "#8d8c8c", // Scrollbar thumb hover effect
+                                },
+                                "&::-webkit-scrollbar-track": {
+                                  backgroundColor: "#fff", // Scrollbar track color
+                                },
+                              },
+                            },
+                          }}
                         />
                       </Box>
                     )}
@@ -384,7 +414,7 @@ export default function AssignSubjectLecturerModal({
                           value={subject?.subjectInfo?.program?.programId || ""}
                           size="small"
                           slotProps={{
-                            input: { readOnly: true },
+                            select: { MenuProps: CustomMenuProps },
                           }}
                           sx={{
                             "& .MuiInputBase-input": {

@@ -231,3 +231,23 @@ export const StickyBox = styled(Box)(({ theme }) => ({
   backgroundColor: "lightblue",
   padding: theme.spacing(2),
 }));
+export const CustomMenuProps = {
+  PaperProps: {
+    sx: {
+      maxHeight: 250, // Custom dropdown height
+      "&::-webkit-scrollbar": {
+        width: "6px", // Scrollbar width
+      },
+      "&::-webkit-scrollbar-thumb": {
+        backgroundColor: "#9a9a9a", // Thumb color
+        borderRadius: "4px",
+      },
+      "&::-webkit-scrollbar-thumb:hover": {
+        backgroundColor: "#8d8c8c", // Thumb hover color
+      },
+      "&::-webkit-scrollbar-track": {
+        backgroundColor: "#fff", // Track color
+      },
+    },
+  },
+};

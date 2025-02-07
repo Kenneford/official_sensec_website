@@ -3,6 +3,7 @@ import "./studentEnrollment.scss";
 import "./enrollmentUpdate.scss";
 import {
   ContainerBox,
+  CustomMenuProps,
   CustomMobileDatePicker,
   CustomTextField,
 } from "../../../muiStyling/muiStyling";
@@ -452,6 +453,9 @@ export function StudentDataUpdateForm() {
                 <Grid item xs={12} sm={6} md={4} lg={4}>
                   <CustomTextField
                     select
+                    slotProps={{
+                      select: { MenuProps: CustomMenuProps },
+                    }}
                     fullWidth
                     label="Mother Tongue"
                     name="status.motherTongue"
@@ -479,6 +483,9 @@ export function StudentDataUpdateForm() {
                 <Grid item xs={12} sm={6} md={4} lg={4}>
                   <CustomTextField
                     select
+                    slotProps={{
+                      select: { MenuProps: CustomMenuProps },
+                    }}
                     fullWidth
                     label="Other Tongue"
                     name="status.otherTongue"
@@ -498,6 +505,9 @@ export function StudentDataUpdateForm() {
                 <Grid item xs={12} sm={6} md={4} lg={4}>
                   <CustomTextField
                     select
+                    slotProps={{
+                      select: { MenuProps: CustomMenuProps },
+                    }}
                     fullWidth
                     label="Complexion"
                     name="status.complexion"
@@ -551,6 +561,9 @@ export function StudentDataUpdateForm() {
                   <CustomTextField
                     fullWidth
                     select
+                    slotProps={{
+                      select: { MenuProps: CustomMenuProps },
+                    }}
                     label="Region"
                     name="contactAddress.region"
                     value={student?.contactAddress?.region || ""}
@@ -845,12 +858,15 @@ export function StudentDataUpdateForm() {
                 <Grid item xs={12} sm={6} md={4} lg={4}>
                   <CustomTextField
                     select
+                    // slotProps={{
+                    // }}
                     fullWidth
                     label="Select Programme"
                     name="programId"
                     value={student?.programId || ""}
                     onChange={handleChange}
                     slotProps={{
+                      select: { MenuProps: CustomMenuProps },
                       input: {
                         readOnly: !authUser?.roles?.includes("Admin")
                           ? true
@@ -905,6 +921,9 @@ export function StudentDataUpdateForm() {
                 <Grid item xs={12} sm={6} md={4} lg={4}>
                   <CustomTextField
                     select
+                    slotProps={{
+                      select: { MenuProps: CustomMenuProps },
+                    }}
                     fullWidth
                     label="Class Level"
                     name="classLevelId"
@@ -928,6 +947,9 @@ export function StudentDataUpdateForm() {
                 <Grid item xs={12} sm={6} md={4} lg={4}>
                   <CustomTextField
                     select
+                    slotProps={{
+                      select: { MenuProps: CustomMenuProps },
+                    }}
                     fullWidth
                     label="Batch"
                     name="batchId"
@@ -951,6 +973,9 @@ export function StudentDataUpdateForm() {
                 <Grid item xs={12} sm={6} md={4} lg={4}>
                   <CustomTextField
                     select
+                    slotProps={{
+                      select: { MenuProps: CustomMenuProps },
+                    }}
                     fullWidth
                     label="Residential Status"
                     name="status.residentialStatus"

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import {
   ContainerBox,
+  CustomMenuProps,
   CustomMobileDatePicker,
   CustomTextField,
 } from "../../muiStyling/muiStyling";
@@ -37,6 +38,7 @@ import {
   userRoleOptions,
 } from "../../options/options";
 import { TaskAlt } from "@mui/icons-material";
+import { useNavigate, useParams } from "react-router-dom";
 
 export function EmploymentForm() {
   const dispatch = useDispatch();
@@ -537,6 +539,9 @@ export function EmploymentForm() {
                 <CustomTextField
                   select
                   fullWidth
+                  slotProps={{
+                    select: { MenuProps: CustomMenuProps },
+                  }}
                   label="Mother Tongue"
                   name="motherTongue"
                   value={newEmployment?.motherTongue}
@@ -555,6 +560,9 @@ export function EmploymentForm() {
                 <CustomTextField
                   select
                   fullWidth
+                  slotProps={{
+                    select: { MenuProps: CustomMenuProps },
+                  }}
                   label="Other Tongue"
                   name="otherTongue"
                   value={newEmployment?.otherTongue}
@@ -572,6 +580,9 @@ export function EmploymentForm() {
                 <CustomTextField
                   select
                   fullWidth
+                  slotProps={{
+                    select: { MenuProps: CustomMenuProps },
+                  }}
                   label="Complexion"
                   name="complexion"
                   value={newEmployment?.complexion}
@@ -626,6 +637,9 @@ export function EmploymentForm() {
                 <CustomTextField
                   fullWidth
                   select
+                  slotProps={{
+                    select: { MenuProps: CustomMenuProps },
+                  }}
                   label="Region"
                   name="region"
                   value={newEmployment?.region}
@@ -721,6 +735,9 @@ export function EmploymentForm() {
                 <CustomTextField
                   select
                   fullWidth
+                  slotProps={{
+                    select: { MenuProps: CustomMenuProps },
+                  }}
                   label="Employment Type"
                   name="typeOfEmployment"
                   value={newEmployment?.typeOfEmployment}
@@ -740,6 +757,9 @@ export function EmploymentForm() {
                   <CustomTextField
                     select
                     fullWidth
+                    slotProps={{
+                      select: { MenuProps: CustomMenuProps },
+                    }}
                     label="Select Programme"
                     name="program"
                     value={newEmployment?.program}
@@ -759,6 +779,9 @@ export function EmploymentForm() {
                 <CustomTextField
                   select
                   fullWidth
+                  slotProps={{
+                    select: { MenuProps: CustomMenuProps },
+                  }}
                   label="Residential Status"
                   name="residentialStatus"
                   value={newEmployment?.residentialStatus}
