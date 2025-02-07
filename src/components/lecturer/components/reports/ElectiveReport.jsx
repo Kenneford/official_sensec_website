@@ -480,45 +480,18 @@ export function ElectiveReport() {
       }`
     ) : (
       <Box fontSize={"calc( 0.7rem + 1vmin)"}>
-        {/* {isVisible && ( */}
-        {/* <BlinkingText
-          shouldBlink={shouldBlink}
-          sx={{
-            color: "#de1f1f",
-            fontSize: ".9em",
-            fontWeight: 100,
-            textAlign: "center",
-          }}
-        >
-          Report for {foundClassLevel?.name === "Level 100" && "Form 1"}
-          {foundClassLevel?.name === "Level 200" && "Form 2"}
-          {foundClassLevel?.name === "Level 300" && "Form 3"}{" "}
-          {foundSubject?.subject?.subjectName} already taking!
-        </BlinkingText> */}
         {shouldBlink && (
           <Typography
             variant="h6"
             color="#de1f1f"
-            textAlign={"center"}
+            // textAlign={"center"}
             mt={0}
             fontSize={".9em"}
             fontWeight={100}
-            sx={{
-              animation: shouldBlink ? "blink 1s step-start infinite" : "none",
-              "@keyframes blink": {
-                "5%": {
-                  visibility: "hidden",
-                },
-              },
-            }}
           >
-            Report for {foundClassLevel?.name === "Level 100" && "Form 1"}
-            {foundClassLevel?.name === "Level 200" && "Form 2"}
-            {foundClassLevel?.name === "Level 300" && "Form 3"}{" "}
-            {foundSubject?.subject?.subjectName} already taken!
+            Cannot take new report!
           </Typography>
         )}
-        {/* )} */}
       </Box>
     );
 
@@ -539,6 +512,47 @@ export function ElectiveReport() {
           <span>{lecturerCurrentLink?.replace(/_/g, " Elective ")}</span>
         </h1>
       </Box>
+      {subjectMultiStudentsReports &&
+        subjectMultiStudentsReports?.students?.length > 0 &&
+        subjectMultiStudentsReports?.subject === subject &&
+        subjectMultiStudentsReports?.classLevel === classLevel &&
+        fetchingElectiveLoadingComplete === null && (
+          <Box
+            fontSize={"calc( 0.7rem + 1vmin)"}
+            sx={{
+              backgroundColor: "#d31515",
+              color: "#fff",
+              zIndex: 99,
+              width: "inherit",
+            }}
+          >
+            {shouldBlink && (
+              <Typography
+                variant="h6"
+                // color="#de1f1f"
+                textAlign={"center"}
+                mt={0}
+                fontSize={".9em"}
+                fontWeight={100}
+                sx={{
+                  animation: shouldBlink
+                    ? "blink 1s step-start infinite"
+                    : "none",
+                  "@keyframes blink": {
+                    "5%": {
+                      visibility: "hidden",
+                    },
+                  },
+                }}
+              >
+                Report for {foundClassLevel?.name === "Level 100" && "Form 1"}
+                {foundClassLevel?.name === "Level 200" && "Form 2"}
+                {foundClassLevel?.name === "Level 300" && "Form 3"}{" "}
+                {foundSubject?.subject?.subjectName} already taken!
+              </Typography>
+            )}
+          </Box>
+        )}
       <Box
         padding={{ xs: 1, sm: 2 }}
         bgcolor={"#383838"}
@@ -784,22 +798,20 @@ export function ElectiveReport() {
                         "Save All Reports"}
                     </Button>
                   </Box>
-                  <>
-                    <DataTable
-                      title={allStd}
-                      columns={studentDataFormat}
-                      data={allElectiveSubjectStudents || []}
-                      customStyles={customUserTableStyle}
-                      pagination
-                      selectableRows
-                      fixedHeader
-                      selectableRowsHighlight
-                      highlightOnHover
-                      responsive
-                      onSelectedRowsChange={handleMultiSelect}
-                      clearSelectedRows={toggleClearRows}
-                    />
-                  </>
+                  <DataTable
+                    title={allStd}
+                    columns={studentDataFormat}
+                    data={allElectiveSubjectStudents || []}
+                    customStyles={customUserTableStyle}
+                    pagination
+                    selectableRows
+                    fixedHeader
+                    selectableRowsHighlight
+                    highlightOnHover
+                    responsive
+                    onSelectedRowsChange={handleMultiSelect}
+                    clearSelectedRows={toggleClearRows}
+                  />
                   <StudentReportRemarkModal
                     open={openRemarkModal}
                     onClose={() => setOpenRemarkModal(false)}
@@ -807,6 +819,7 @@ export function ElectiveReport() {
                     remark={remark}
                     handleScoreChange={handleScoreChange}
                     studentId={studentId}
+                    allSubjectStudents={allElectiveSubjectStudents}
                     setLoadingComplete={setSavingRemarkComplete}
                     loadingComplete={savingRemarkComplete}
                     fetchDraft={fetchElectiveDraftReport({
