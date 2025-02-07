@@ -10,7 +10,7 @@ import PropTypes from "prop-types";
 import "./modals.scss";
 import { Editor } from "@tinymce/tinymce-react";
 import { ExpandableTitleTextField } from "../../muiStyling/muiStyling";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Close, TaskAlt } from "@mui/icons-material";
 import LoadingProgress from "../pageLoading/LoadingProgress";
 
@@ -23,6 +23,7 @@ export default function StudentReportRemarkModal({
   loadingComplete,
   setLoadingComplete,
   studentId,
+  allCoreSubjectStudents,
   fetchDraft,
   dispatch,
 }) {
@@ -33,9 +34,19 @@ export default function StudentReportRemarkModal({
     title: "",
     text: "",
   });
+  const [studentRemark, setStudentRemark] = useState("");
   const canAssign = Boolean(remark);
   const tinyMCEKey = import.meta.env.VITE_APP_TINYMCE_KEY;
   const editorRef = useRef(null);
+  useEffect(() => {
+    const foundStudent = allCoreSubjectStudents?.find(
+      (std) => std?.uniqueId === studentId
+    );
+    console.log(foundStudent);
+    if (foundStudent) {
+      setStudentRemark(foundStudent?.remark);
+    }
+  }, [allCoreSubjectStudents, studentId]);
   if (!open) return null;
   return (
     <Box className="employmentModalOverlay">
@@ -157,7 +168,7 @@ export default function StudentReportRemarkModal({
                           apiKey={tinyMCEKey}
                           onInit={(evt, editor) => (editorRef.current = editor)}
                           // initialValue={localStorage.getItem("myContentText")}
-                          value={remark || ""}
+                          value={remark || studentRemark}
                           onEditorChange={(newText) => {
                             setRemark(newText);
                             // localStorage.setItem("remarkText", newText);
@@ -242,7 +253,7 @@ export default function StudentReportRemarkModal({
                         setTimeout(() => {
                           setLoadingComplete(null);
                           setRemark("");
-                          dispatch(fetchDraft);
+                          // dispatch(fetchDraft);
                           onClose();
                         }, 5000);
                         // localStorage.setItem("remarkText", remark);
@@ -304,4 +315,5 @@ StudentReportRemarkModal.propTypes = {
   lecturerDataToAssign: PropTypes.object,
   lecturerDataToRemove: PropTypes.object,
   dispatch: PropTypes.func,
+  allCoreSubjectStudents: PropTypes.array,
 };

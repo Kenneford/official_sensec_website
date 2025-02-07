@@ -217,6 +217,12 @@ const reportSlice = createSlice({
         successMessage: "",
       };
     },
+    resetSubjectMultiStudentsState(state) {
+      return {
+        ...state,
+        subjectMultiStudentsReports: "",
+      };
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(addGrade.pending, (state) => {
@@ -401,6 +407,7 @@ export const {
   resetFetchReportState,
   resetFetchElectiveReportState,
   resetFetchCoreReportState,
+  resetSubjectMultiStudentsState,
 } = reportSlice.actions;
 export const getAllReports = (state) => state.report.allReports;
 export const getSubjectMultiStudentsReports = (state) =>

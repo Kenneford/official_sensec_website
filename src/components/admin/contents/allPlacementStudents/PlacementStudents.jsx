@@ -9,7 +9,14 @@ import { Link } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
 import { toast } from "react-toastify";
 import UploadPlacementExcelData from "./placementExcelDataUpload/PlacementDataUpload";
-import { Avatar, Box, Grid, MenuItem, TextField } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Grid,
+  MenuItem,
+  TextField,
+  Typography,
+} from "@mui/material";
 import ActionModal from "../../../modals/NewEmploymentModal";
 import {
   FetchAllPlacementSBatches,
@@ -146,7 +153,12 @@ export function PlacementStudents() {
                 <Avatar
                   // className="studentImg"
                   src={foundStudent?.personalInfo?.profilePicture?.url}
-                  sx={{ borderRadius: ".4rem" }}
+                  sx={{
+                    width: "1.5em",
+                    height: "1.5em",
+                    borderRadius: ".4rem",
+                    objectFit: "cover",
+                  }}
                   alt=""
                 />
               </HashLink>
@@ -166,7 +178,12 @@ export function PlacementStudents() {
                 <Avatar
                   // className="studentImg"
                   src={foundGraduate?.personalInfo?.profilePicture?.url}
-                  sx={{ borderRadius: ".4rem" }}
+                  sx={{
+                    width: "1.5em",
+                    height: "1.5em",
+                    borderRadius: ".4rem",
+                    objectFit: "cover",
+                  }}
                   alt=""
                 />
               </HashLink>
@@ -183,7 +200,15 @@ export function PlacementStudents() {
                 )}/${row?.jhsIndexNo}/overview#studentInfo`}
                 title="View Student Info"
               >
-                <Avatar sx={{ borderRadius: ".4rem" }} alt="" />
+                <Avatar
+                  sx={{
+                    width: "1.5em",
+                    height: "1.5em",
+                    borderRadius: ".4rem",
+                    objectFit: "cover",
+                  }}
+                  alt=""
+                />
               </HashLink>
             );
           }
@@ -302,25 +327,44 @@ export function PlacementStudents() {
       },
       {
         name: "Verified",
-        selector: (row) => (row?.placementVerified ? "Yes" : "No"),
+        selector: (row) => (
+          <p
+            style={{
+              color:
+                row?.placementVerified && row?.enrolled
+                  ? "#f9e82f"
+                  : row?.placementVerified && !row?.enrolled
+                  ? "green"
+                  : "#af0f0f",
+            }}
+          >
+            {row?.placementVerified ? "Yes" : "No"}
+          </p>
+        ),
       },
       {
         name: "Enrolled",
-        selector: (row) => (row?.enrolled ? "Yes" : "No"),
-      },
-      {
-        name: "Edit",
         selector: (row) => (
-          <Link
-            className="editLink"
-            to={`/sensec/admin/Students/${row?.fullName?.replace(/ /g, "_")}/${
-              row?.jhsIndexNo
-            }/edit`}
-          >
-            <EditIcon sx={{ color: "#fff" }} />
-          </Link>
+          <p style={{ color: row?.enrolled ? "#f9e82f" : "#af0f0f" }}>
+            {row?.enrolled ? "Yes" : "No"}
+          </p>
         ),
       },
+      // {
+      //   name: "Edit",
+      //   selector: (row) => (
+      //     <Link
+      //       className="editLink"
+      //       to={`/sensec/admin/Students/${row?.fullName?.replace(/ /g, "_")}/${
+      //         row?.jhsIndexNo
+      //       }/edit`}
+      //     >
+      //       <EditIcon
+      //       // sx={{ color: "#fff" }}
+      //       />
+      //     </Link>
+      //   ),
+      // },
     ];
     return baseColumn;
   };
@@ -438,11 +482,14 @@ export function PlacementStudents() {
           )}
           {!searchStudent && (
             <p className="searchInfo">
-              Total Placement Students = {placementDataToDisplay?.length}
+              Total Placement Students ={" "}
+              {placementDataToDisplay?.length > 0
+                ? placementDataToDisplay?.length
+                : 0}
             </p>
           )}
         </Box>
-        <Box className="studentDataTable">
+        <Box className="studentDataTable" fontSize={"calc(0.7rem + 1vmin)"}>
           <DataTable
             title={allStd}
             columns={placementStudentColumn(placementDataToDisplay)}

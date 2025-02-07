@@ -29,13 +29,22 @@ const FetchPlacementStudentsByYear = (year) => {
   return allStudents;
 };
 const FetchAllPlacementSBatches = () => {
+  // Placement status check
+  const { verifyStatus } = useSelector((state) => state.placement);
   const { uploadExcelFileStatus } = useSelector((state) => state.placement);
   const dispatch = useDispatch();
   const allPlacementBatches = useSelector(getAllPlacementBatches);
 
   useEffect(() => {
-    dispatch(fetchAllPlacementSBatches());
-  }, [dispatch]);
+    if (verifyStatus === "success") {
+      setTimeout(() => {
+        dispatch(fetchAllPlacementSBatches());
+      }, 6000);
+    }
+    {
+      dispatch(fetchAllPlacementSBatches());
+    }
+  }, [dispatch, verifyStatus]);
 
   return allPlacementBatches;
 };

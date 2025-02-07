@@ -24,9 +24,12 @@ import {
 } from "../../../../data/class/FetchClassLevel";
 import {
   createMultiStudentsReport,
+  fetchSubjectMultiStudentsReport,
   getDraftReportInfo,
+  getSubjectMultiStudentsReports,
   resetCreateReportState,
   resetFetchCoreReportState,
+  resetSubjectMultiStudentsState,
   saveDraftReport,
 } from "../../../../features/reports/reportSlice";
 import { toast } from "react-toastify";
@@ -40,6 +43,7 @@ import PropTypes from "prop-types";
 import { fetchCoreDraftReport } from "../../../../features/reports/reportSlice";
 import PageLoading from "../../../pageLoading/PageLoading";
 import { FetchAllFlattenedProgrammes } from "../../../../data/programme/FetchProgrammeData";
+import StudentReportRemarkModal from "../../../modals/StudentReportRemarkModal";
 
 export function CoreReport() {
   const {
@@ -72,6 +76,7 @@ export function CoreReport() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   console.log(takeCoreSubjectReport);
+  const [openRemarkModal, setOpenRemarkModal] = useState(false);
   const lecturerSubjects = FetchAllLecturerSubjects(isCore);
   const allFlattenedProgrammes = FetchAllFlattenedProgrammes();
   const allClassLevels = useSelector(getLecturerClassLevels);
@@ -84,7 +89,15 @@ export function CoreReport() {
   const [loadingComplete, setLoadingComplete] = useState(null);
   const [fetchingCoreLoadingComplete, setFetchingCoreLoadingComplete] =
     useState(null);
+  const [savingRemarkComplete, setSavingRemarkComplete] = useState(null);
   const [saveDataInProgress, setSaveDataInProgress] = useState(false);
+  const [noDataFetched, setNoDataFetched] = useState(true);
+  const [studentId, setStudentId] = useState("");
+  const [remark, setRemark] = useState("");
+  const subjectMultiStudentsReports = useSelector(
+    getSubjectMultiStudentsReports
+  );
+  console.log(subjectMultiStudentsReports);
 
   // Multi select state
   const [multiStudents, setMultiStudents] = useState([]);
@@ -104,6 +117,14 @@ export function CoreReport() {
   //   );
   console.log(selectedProgrammes);
 
+  // Formatting the selected items into a desired structure
+  const formattedProgrammes = selectedProgrammes.map((program) => ({
+    programId: program?._id, // Map _id to id
+    type: program?.hasDivision ? "ProgramDivision" : "Program", // Map label to name
+    nameOfProgram: program?.name ? program?.name : program?.divisionName,
+  }));
+  console.log(formattedProgrammes);
+
   // Handle score values ✅
   const handleScoreChange = (id, field, value) => {
     // All Students records
@@ -117,15 +138,11 @@ export function CoreReport() {
           Number(updatedStudent.classScore || 0) +
           Number(updatedStudent.examScore || 0); // Recalculate totalScore
         updatedStudent.grade = calculateGrade(updatedStudent.totalScore || 0);
+        updatedStudent.remark = remark;
         return updatedStudent;
       }
       return student;
     });
-    // Format the selected items into the desired structure
-    const formattedProgrammes = selectedProgrammes.map((program) => ({
-      program: program._id, // Map _id to id
-      type: program.hasDivision ? "ProgramDivision" : "Program", // Map label to name
-    }));
     const reportObj = {
       semester: currentAcademicTerm?.name,
       classLevel: coreClassLevel,
@@ -140,7 +157,6 @@ export function CoreReport() {
     dispatch(saveDraftReport(reportObj));
 
     setAllCoreSubjectStudents(reportObj?.students); // Update the correct state
-    setAllElectiveSubjectStudents([]);
   };
   // Grade calculator
   const calculateGrade = (totalScore) => {
@@ -169,8 +185,17 @@ export function CoreReport() {
   const foundStudent = allCoreSubjectStudents?.find(
     (std) => std._id === currentStudent
   );
+  // Find class level
+  const foundClassLevel = allClassLevels?.find(
+    (cLevel) => cLevel?._id === coreClassLevel
+  );
+  // Find subject
+  const foundSubject = lecturerSubjects?.find(
+    (data) => data?.subject?._id === coreSubject
+  );
   // Table column data
   const columnData = {
+    subjectMultiStudentsReports,
     authUser,
     handleScoreChange,
     calculateGrade,
@@ -186,6 +211,9 @@ export function CoreReport() {
     setSaveDataInProgress,
     saveDataInProgress,
     createStatus,
+    setOpenRemarkModal,
+    setStudentId,
+    draftReportInfo,
   };
   const studentDataFormat = studentsReportColumn(columnData);
 
@@ -306,11 +334,6 @@ export function CoreReport() {
         localStorage.removeItem("savedSelectedProgrammes");
         setMultiStudents([]);
         dispatch(resetCreateMultiReportState());
-        // Format the selected items into the desired structure
-        const formattedProgrammes = selectedProgrammes.map((program) => ({
-          program: program._id, // Map _id to id
-          type: program.hasDivision ? "ProgramDivision" : "Program", // Map label to name
-        }));
         const data = {
           classLevel:
             localStorage.getItem("coreReportClassLevel") || coreClassLevel,
@@ -318,8 +341,10 @@ export function CoreReport() {
           subject: localStorage.getItem("coreReportSubject") || coreSubject,
           programmes: formattedProgrammes || [],
           lecturer: authUser?.id,
+          year: new Date().getFullYear(),
         };
         dispatch(fetchCoreDraftReport(data));
+        dispatch(fetchSubjectMultiStudentsReport(data));
       }, 6000);
     }
   }, [
@@ -331,7 +356,7 @@ export function CoreReport() {
     coreSubject,
     currentAcademicTerm,
     dispatch,
-    selectedProgrammes,
+    formattedProgrammes,
   ]);
   // Single data create status
   useEffect(() => {
@@ -353,14 +378,6 @@ export function CoreReport() {
               toastId: "createStudentReportError",
             })
           );
-          const data = {
-            classLevel:
-              localStorage.getItem("coreReportClassLevel") || coreClassLevel,
-            semester: currentAcademicTerm?.name,
-            subject: localStorage.getItem("coreReportSubject") || coreSubject,
-            lecturer: authUser?.id,
-          };
-          dispatch(fetchCoreDraftReport(data));
         }, 2000);
         return;
       }
@@ -413,13 +430,39 @@ export function CoreReport() {
       setTimeout(() => {
         setFetchingCoreLoadingComplete(null);
         dispatch(resetFetchCoreReportState());
+        setNoDataFetched(false);
       }, 6000);
     }
   }, [fetchCoreDraftStatus, error, dispatch]);
 
-  const allStd = `Students / Total = ${
-    allCoreSubjectStudents?.length > 0 ? allCoreSubjectStudents?.length : 0
-  }`;
+  const [shouldBlink, setShouldBlink] = useState(false);
+
+  useEffect(() => {
+    if (subjectMultiStudentsReports) {
+      setShouldBlink(true);
+    }
+  }, [subjectMultiStudentsReports]);
+
+  const allStd = !subjectMultiStudentsReports ? (
+    `Students / Total = ${
+      allElectiveSubjectStudents?.length > 0
+        ? allElectiveSubjectStudents?.length
+        : 0
+    }`
+  ) : (
+    <Box fontSize={"calc( 0.7rem + 1vmin)"}>
+      <Typography
+        variant="h6"
+        color="#de1f1f"
+        // textAlign={"center"}
+        mt={0}
+        fontSize={".9em"}
+        fontWeight={100}
+      >
+        Cannot take new report!
+      </Typography>
+    </Box>
+  );
 
   return (
     <>
@@ -438,6 +481,82 @@ export function CoreReport() {
           <span>{lecturerCurrentLink?.replace(/_/g, ` Core `)}</span>
         </h1>
       </Box>
+      {subjectMultiStudentsReports &&
+        subjectMultiStudentsReports?.students?.length > 0 &&
+        subjectMultiStudentsReports?.subject === coreSubject &&
+        subjectMultiStudentsReports?.classLevel === coreClassLevel &&
+        fetchingCoreLoadingComplete === null && (
+          <Box
+            fontSize={"calc( 0.7rem + 1vmin)"}
+            sx={{
+              backgroundColor: "#d31515",
+              color: "#fff",
+              zIndex: 99,
+              width: "inherit",
+              padding: ".5rem",
+            }}
+          >
+            {shouldBlink && (
+              <Typography
+                variant="h6"
+                // color="#de1f1f"
+                textAlign={"center"}
+                mt={0}
+                fontSize={".9em"}
+                fontWeight={100}
+                sx={{
+                  animation: shouldBlink
+                    ? "blink 1s step-start infinite"
+                    : "none",
+                  "@keyframes blink": {
+                    "5%": {
+                      visibility: "hidden",
+                    },
+                  },
+                  // flexWrap: "wrap",
+                  // width: "20rem",
+                }}
+              >
+                Report for {foundClassLevel?.name === "Level 100" && "Form 1"}
+                {foundClassLevel?.name === "Level 200" && "Form 2"}
+                {foundClassLevel?.name === "Level 300" && "Form 3"}{" "}
+                {foundSubject?.subject?.subjectName} ({" "}
+                <span
+                  style={{
+                    // color: "#b40a0a",
+                    letterSpacing: "1px",
+                  }}
+                >
+                  {`
+                          ${
+                            subjectMultiStudentsReports?.programmes?.length > 1
+                              ? subjectMultiStudentsReports?.programmes
+                                  ?.slice(0, -1)
+                                  ?.map((program) => program?.nameOfProgram)
+                                  .join(", ")
+                              : subjectMultiStudentsReports?.programmes
+                                  ?.map((program) => program?.nameOfProgram)
+                                  .join(", ")
+                          },
+                          ${
+                            subjectMultiStudentsReports?.programmes?.length > 1
+                              ? "and"
+                              : ""
+                          }
+                          ${
+                            subjectMultiStudentsReports?.programmes?.length > 1
+                              ? subjectMultiStudentsReports?.programmes
+                                  ?.slice(-1)
+                                  ?.map((program) => program?.nameOfProgram)
+                                  .join(", ")
+                              : ""
+                          }${" "}`}
+                </span>{" "}
+                ) already taken!
+              </Typography>
+            )}
+          </Box>
+        )}
       <Box
         padding={{ xs: 1, sm: 2 }}
         bgcolor={"#383838"}
@@ -641,13 +760,16 @@ export function CoreReport() {
                       localStorage.getItem("coreReportSubject") || coreSubject,
                     programmes: formattedProgrammes || savedSelectedProgrammes,
                     lecturer: authUser?.id,
+                    year: new Date().getFullYear(),
                   };
                   if (selectedProgrammes?.length > 0) {
                     localStorage?.setItem(
                       "savedSelectedProgrammes",
                       JSON.stringify(formattedProgrammes)
                     );
+                    dispatch(resetSubjectMultiStudentsState());
                     dispatch(fetchCoreDraftReport(data));
+                    dispatch(fetchSubjectMultiStudentsReport(data));
                   }
                 }}
               >
@@ -702,14 +824,15 @@ export function CoreReport() {
                       }}
                       onClick={() => {
                         // Format the selected items into the desired structure
-                        const formattedProgrammes = selectedProgrammes.map(
-                          (program) => ({
-                            program: program._id, // Map _id to id
-                            type: program.isDivisionProgram
-                              ? "ProgramDivision"
-                              : "Program", // Map label to name
-                          })
-                        );
+                        // const formattedProgrammes = selectedProgrammes.map(
+                        //   (program) => ({
+                        //     program: program._id,
+                        //     nameOfProgram: program.nameOfProgram,
+                        //     type: program.isDivisionProgram
+                        //       ? "ProgramDivision"
+                        //       : "Program",
+                        //   })
+                        // );
                         const data = {
                           semester: currentAcademicTerm?.name,
                           classLevel: coreClassLevel,
@@ -719,13 +842,12 @@ export function CoreReport() {
                           programmes: formattedProgrammes || [],
                           year: currentYear,
                         };
-                        if (isCore && multiStudents?.length > 0) {
+                        if (multiStudents?.length > 0) {
                           dispatch(createMultiStudentsReport(data));
                         }
                       }}
                     >
-                      {isCore &&
-                        multiStudents?.length > 0 &&
+                      {multiStudents?.length > 0 &&
                         multiLoadingComplete === false && (
                           <Box className="promotionSpinner">
                             <p>Saving</p>
@@ -739,17 +861,14 @@ export function CoreReport() {
                             </span>
                           </Box>
                         )}
-                      {isCore &&
-                        multiStudents?.length > 0 &&
+                      {multiStudents?.length > 0 &&
                         multiLoadingComplete &&
                         createMultiStatus === "success" && (
                           <>
                             <span>All Saved</span> <TaskAlt />
                           </>
                         )}
-                      {isCore &&
-                        multiLoadingComplete === null &&
-                        "Save All Reports"}
+                      {multiLoadingComplete === null && "Save All Reports"}
                     </Button>
                   </Box>
                   <DataTable
@@ -765,6 +884,29 @@ export function CoreReport() {
                     responsive
                     onSelectedRowsChange={handleMultiSelect}
                     clearSelectedRows={toggleClearRows}
+                  />
+                  <StudentReportRemarkModal
+                    open={openRemarkModal}
+                    onClose={() => setOpenRemarkModal(false)}
+                    setRemark={setRemark}
+                    remark={remark}
+                    handleScoreChange={handleScoreChange}
+                    studentId={studentId}
+                    allCoreSubjectStudents={allCoreSubjectStudents}
+                    setLoadingComplete={setSavingRemarkComplete}
+                    loadingComplete={savingRemarkComplete}
+                    fetchDraft={fetchCoreDraftReport({
+                      classLevel:
+                        localStorage.getItem("coreReportClassLevel") ||
+                        coreClassLevel,
+                      semester: currentAcademicTerm?.name,
+                      subject:
+                        localStorage.getItem("coreReportSubject") ||
+                        coreSubject,
+                      programmes: formattedProgrammes || [],
+                      lecturer: authUser?.id,
+                    })}
+                    dispatch={dispatch}
                   />
                 </Box>
               </Box>
@@ -784,37 +926,37 @@ export function CoreReport() {
                 </Typography>
               </Box>
             )}
-          {coreClassLevel &&
-            coreSubject &&
-            !draftReportInfo &&
-            fetchingCoreLoadingComplete === null && (
-              <Box>
-                <Typography
-                  variant="h6"
-                  color="#fff"
-                  textAlign={"center"}
-                  mt={2}
-                  fontSize={".9em"}
-                >
-                  No data fetched!
-                </Typography>
-              </Box>
-            )}
-          {coreClassLevel &&
-            coreSubject &&
-            draftReportInfo &&
-            fetchingCoreLoadingComplete === null && (
-              <Box>
-                <Typography
-                  variant="h6"
-                  color="#fff"
-                  textAlign={"center"}
-                  mt={2}
-                  fontSize={".9em"}
-                >
-                  No student data found!
-                </Typography>
-              </Box>
+          {fetchingCoreLoadingComplete === null &&
+            coreClassLevel &&
+            coreSubject && (
+              <>
+                {noDataFetched && (
+                  <Box>
+                    <Typography
+                      variant="h6"
+                      color="#fff"
+                      textAlign={"center"}
+                      mt={2}
+                      fontSize={".9em"}
+                    >
+                      No data fetched!
+                    </Typography>
+                  </Box>
+                )}
+                {!draftReportInfo?.students?.length > 0 &&
+                  !subjectMultiStudentsReports &&
+                  !noDataFetched && (
+                    <Typography
+                      variant="h6"
+                      color="#fff"
+                      textAlign={"center"}
+                      mt={2}
+                      fontSize={".9em"}
+                    >
+                      No student data found!
+                    </Typography>
+                  )}
+              </>
             )}
         </>
       </Box>
