@@ -198,7 +198,7 @@ export default function AdmissionPDF({
   const monthInWords = monthNames[currentMonth];
 
   return (
-    <Document title={"Admission.pdf"}>
+    <Document title={"Admission_Letter.pdf"}>
       <Page style={styles.body}>
         <Image style={styles.image} src={"/assets/sensec-logo1.png"} />
         <View style={styles.headerTitleWrap}>
