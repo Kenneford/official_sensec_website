@@ -143,7 +143,7 @@ export function EmployeeDataUpdateForm() {
       gender: employee?.personalInfo?.gender,
       profilePicture: imagePreview
         ? imagePreview
-        : employee?.personalInfo?.profilePicture?.url,
+        : employee?.personalInfo?.profilePicture,
       // Status
       height: employee?.status?.height,
       weight: employee?.status?.weight,
