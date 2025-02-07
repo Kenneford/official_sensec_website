@@ -31,7 +31,7 @@ export function NTStaffsData() {
       tch?.personalInfo?.lastName?.includes(searchTeacher)
   );
 
-  const [redirecting, setRedirecting] = useState("");
+  const [redirecting, setRedirecting] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [uncompletedEmploymentTask, setUncompletedEmploymentTask] =
     useState("");
