@@ -1,9 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
-// import "./studentEnrollment.scss";
+import { useEffect, useState } from "react";
 import {
   ContainerBox,
   CustomMobileDatePicker,
-  // CustomMobileDatePicker,
   CustomTextField,
 } from "../../muiStyling/muiStyling";
 import {
@@ -14,28 +12,14 @@ import {
   Avatar,
   InputAdornment,
   Typography,
-  TextField,
 } from "@mui/material";
-import {
-  resetEnrolmentState,
-  studentEnrollment,
-} from "../../features/students/studentsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { FetchAllProgrammes } from "../../data/programme/FetchProgrammeData";
-import {
-  fetchAllDivisionProgrammes,
-  getAllDivisionProgrammes,
-} from "../../features/academics/programmeSlice";
+import { getAllDivisionProgrammes } from "../../features/academics/programmeSlice";
 import { FetchAllBatches } from "../../data/batch/FetchBatch";
-import {
-  fetchAllPlacementStudents,
-  getAllPlacementStudents,
-} from "../../features/academics/placementSlice";
+import { getAllPlacementStudents } from "../../features/academics/placementSlice";
 import { toast } from "react-toastify";
 import LoadingProgress from "../../components/pageLoading/LoadingProgress";
-import { TaskAlt } from "@mui/icons-material";
-import Redirection from "../../components/pageLoading/Redirection";
-import { useNavigate, useParams } from "react-router-dom";
 import { getAuthUser } from "../../features/auth/authSlice";
 import {
   newEmployee,
@@ -43,8 +27,6 @@ import {
 } from "../../features/employments/employmentSlice";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
-import dayjs from "dayjs";
 import {
   complexionOptions,
   genderOptions,
@@ -54,6 +36,7 @@ import {
   residentialStatusOptions,
   userRoleOptions,
 } from "../../options/options";
+import { TaskAlt } from "@mui/icons-material";
 
 export function EmploymentForm() {
   const dispatch = useDispatch();

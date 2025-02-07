@@ -12,7 +12,7 @@ const customUserTableStyle = {
   },
   headCells: {
     style: {
-      fontSize: "1.2rem",
+      fontSize: "1.2em",
       justifyContent: "center",
       // borderLeft: ".2rem solid red",
       // backgroundColor: "blue",
@@ -22,13 +22,22 @@ const customUserTableStyle = {
   cells: {
     style: {
       // backgroundColor: "#cccc",
-      // color: "#fff",
-      paddingTop: ".5rem",
-      paddingBottom: ".5rem",
-      fontSize: "1rem",
+      // color: "#696969",
+      // paddingTop: ".5rem",
+      // paddingBottom: ".5rem",
+      fontSize: "1em",
       justifyContent: "center",
       // marginTop: ".5rem",
       // marginBottom: ".5rem",
+      when: (row) => row.enrolled,
+      style: {
+        // backgroundColor: "#2c852c",
+        color: "#fff",
+        "&:hover": {
+          // backgroundColor: "#227e22",
+          color: "#fff",
+        },
+      },
     },
   },
 };
@@ -87,24 +96,22 @@ const conditionalRowStyles = [
     },
   },
   {
-    when: (row) => row.isGraduated,
+    when: (row) => !row.enrolled,
     style: {
-      backgroundColor: "#616261",
-      color: "#fff",
+      color: "#696969",
       "&:hover": {
-        backgroundColor: "#4d4e4d",
-        color: "#fff",
+        color: "#696969",
       },
     },
   },
   {
-    when: (row) => !row.enrolled, // Optional: Styling for unenrolled
+    when: (row) => row.isGraduated,
     style: {
-      backgroundColor: "#f46c6c",
-      color: "white",
+      backgroundColor: "#9d9d9d",
+      color: "#fff",
       "&:hover": {
-        backgroundColor: "#f35959",
-        color: "white",
+        backgroundColor: "#adaaaa",
+        color: "#fff",
       },
     },
   },
