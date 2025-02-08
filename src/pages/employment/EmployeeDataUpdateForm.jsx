@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "./assignLecturer.scss";
 import {
   ContainerBox,
+  CustomMenuProps,
   CustomMobileDatePicker,
   CustomTextField,
 } from "../../muiStyling/muiStyling";
@@ -429,6 +430,9 @@ export function EmployeeDataUpdateForm() {
                   <CustomTextField
                     select
                     fullWidth
+                    slotProps={{
+                      select: { MenuProps: CustomMenuProps },
+                    }}
                     label="Mother Tongue"
                     name="status.motherTongue"
                     value={employee?.status?.motherTongue || ""}
@@ -456,6 +460,9 @@ export function EmployeeDataUpdateForm() {
                   <CustomTextField
                     select
                     fullWidth
+                    slotProps={{
+                      select: { MenuProps: CustomMenuProps },
+                    }}
                     label="Other Tongue"
                     name="status.otherTongue"
                     value={employee?.status?.otherTongue || ""}
@@ -475,6 +482,9 @@ export function EmployeeDataUpdateForm() {
                   <CustomTextField
                     select
                     fullWidth
+                    slotProps={{
+                      select: { MenuProps: CustomMenuProps },
+                    }}
                     label="Complexion"
                     name="status.complexion"
                     value={employee?.status?.complexion || ""}
@@ -527,6 +537,10 @@ export function EmployeeDataUpdateForm() {
                   <CustomTextField
                     fullWidth
                     select
+                    // SelectProps={{ MenuProps: CustomMenuProps }}
+                    slotProps={{
+                      select: { MenuProps: CustomMenuProps },
+                    }}
                     label="Region"
                     name="contactAddress.region"
                     value={employee?.contactAddress?.region || ""}
@@ -625,6 +639,9 @@ export function EmployeeDataUpdateForm() {
                   <CustomTextField
                     select
                     fullWidth
+                    slotProps={{
+                      select: { MenuProps: CustomMenuProps },
+                    }}
                     label="Employment Type"
                     name="employment.employmentType"
                     value={employee?.employment?.employmentType || ""}
@@ -643,6 +660,9 @@ export function EmployeeDataUpdateForm() {
                     <CustomTextField
                       select
                       fullWidth
+                      slotProps={{
+                        select: { MenuProps: CustomMenuProps },
+                      }}
                       label="Select Programme"
                       name="programId"
                       value={
@@ -692,6 +712,9 @@ export function EmployeeDataUpdateForm() {
                   <CustomTextField
                     select
                     fullWidth
+                    slotProps={{
+                      select: { MenuProps: CustomMenuProps },
+                    }}
                     label="Residential Status"
                     name="residentialStatus"
                     value={employee?.status?.residentialStatus || ""}

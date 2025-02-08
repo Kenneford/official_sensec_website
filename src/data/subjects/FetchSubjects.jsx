@@ -96,6 +96,65 @@ const FetchAllLecturerSubjects = (isCore) => {
 
   // return allLecturerSubjects;
 };
+const FetchLecturerElectiveSubjects = () => {
+  const authUser = useSelector(getAuthUser);
+  const [subjects, setSubjects] = useState([]);
+
+  const allUsers = useSelector(getAllUsers);
+  const dispatch = useDispatch();
+
+  const lecturerFound = allUsers?.find(
+    (lecturer) => lecturer?.uniqueId === authUser?.uniqueId
+  );
+  useEffect(() => {
+    dispatch(fetchAllUsers());
+  }, [dispatch]);
+
+  useEffect(() => {
+    const subjects =
+      lecturerFound?.lecturerSchoolData?.teachingSubjects?.electives;
+    setSubjects(subjects);
+  }, [lecturerFound]);
+
+  if (!subjects) {
+    return [];
+  }
+  // Filter out duplicates based on the _id property
+  const uniqueSubjects = Array.from(
+    new Map(subjects.map((subj) => [subj?.subject?._id, subj])).values()
+  );
+
+  return uniqueSubjects;
+};
+const FetchLecturerCoreSubjects = () => {
+  const authUser = useSelector(getAuthUser);
+  const [subjects, setSubjects] = useState([]);
+
+  const allUsers = useSelector(getAllUsers);
+  const dispatch = useDispatch();
+
+  const lecturerFound = allUsers?.find(
+    (lecturer) => lecturer?.uniqueId === authUser?.uniqueId
+  );
+  useEffect(() => {
+    dispatch(fetchAllUsers());
+  }, [dispatch]);
+
+  useEffect(() => {
+    const subjects = lecturerFound?.lecturerSchoolData?.teachingSubjects?.cores;
+    setSubjects(subjects);
+  }, [lecturerFound]);
+
+  if (!subjects) {
+    return [];
+  }
+  // Filter out duplicates based on the _id property
+  const uniqueSubjects = Array?.from(
+    new Map(subjects?.map((subj) => [subj?.subject?._id, subj]))?.values()
+  );
+
+  return uniqueSubjects;
+};
 const FetchAllSubjectStudents = (selectedSubject) => {
   const dispatch = useDispatch();
   const allUsers = useSelector(getAllUsers);
@@ -128,4 +187,6 @@ export {
   FetchAllCoreSubjects,
   FetchAllLecturerSubjects,
   FetchAllSubjectStudents,
+  FetchLecturerElectiveSubjects,
+  FetchLecturerCoreSubjects,
 };

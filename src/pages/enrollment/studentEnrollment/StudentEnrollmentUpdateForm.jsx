@@ -3,6 +3,7 @@ import "./studentEnrollment.scss";
 import "./enrollmentUpdate.scss";
 import {
   ContainerBox,
+  CustomMenuProps,
   CustomMobileDatePicker,
   CustomTextField,
 } from "../../../muiStyling/muiStyling";
@@ -427,6 +428,9 @@ export function StudentEnrollmentUpdateForm() {
                 <Grid item xs={12} sm={6} md={4} lg={4}>
                   <CustomTextField
                     select
+                    slotProps={{
+                      select: { MenuProps: CustomMenuProps },
+                    }}
                     fullWidth
                     label="Mother Tongue"
                     name="status.motherTongue"
@@ -454,6 +458,9 @@ export function StudentEnrollmentUpdateForm() {
                 <Grid item xs={12} sm={6} md={4} lg={4}>
                   <CustomTextField
                     select
+                    slotProps={{
+                      select: { MenuProps: CustomMenuProps },
+                    }}
                     fullWidth
                     label="Other Tongue"
                     name="status.otherTongue"
@@ -473,6 +480,9 @@ export function StudentEnrollmentUpdateForm() {
                 <Grid item xs={12} sm={6} md={4} lg={4}>
                   <CustomTextField
                     select
+                    slotProps={{
+                      select: { MenuProps: CustomMenuProps },
+                    }}
                     fullWidth
                     label="Complexion"
                     name="status.complexion"
@@ -526,6 +536,9 @@ export function StudentEnrollmentUpdateForm() {
                   <CustomTextField
                     fullWidth
                     select
+                    slotProps={{
+                      select: { MenuProps: CustomMenuProps },
+                    }}
                     label="Region"
                     name="contactAddress.region"
                     value={student?.contactAddress?.region || ""}
@@ -842,6 +855,7 @@ export function StudentEnrollmentUpdateForm() {
                     value={student?.programId || ""}
                     onChange={handleChange}
                     slotProps={{
+                      select: { MenuProps: CustomMenuProps },
                       input: {
                         readOnly: !authUser?.roles?.includes("Admin")
                           ? true
@@ -910,6 +924,7 @@ export function StudentEnrollmentUpdateForm() {
                     }
                     onChange={handleChange}
                     slotProps={{
+                      select: { MenuProps: CustomMenuProps },
                       input: {
                         readOnly: !authUser?.roles?.includes("Admin")
                           ? true
@@ -940,6 +955,7 @@ export function StudentEnrollmentUpdateForm() {
                     }
                     onChange={handleChange}
                     slotProps={{
+                      select: { MenuProps: CustomMenuProps },
                       input: {
                         readOnly: !authUser?.roles?.includes("Admin")
                           ? true
@@ -964,6 +980,7 @@ export function StudentEnrollmentUpdateForm() {
                     value={student?.status?.residentialStatus || ""}
                     onChange={handleChange}
                     slotProps={{
+                      select: { MenuProps: CustomMenuProps },
                       input: {
                         readOnly: !authUser?.roles?.includes("Admin")
                           ? true

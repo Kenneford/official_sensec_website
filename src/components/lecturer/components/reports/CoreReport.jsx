@@ -3,34 +3,32 @@ import {
   Box,
   Button,
   Grid,
-  InputAdornment,
   MenuItem,
   Typography,
 } from "@mui/material";
-import { useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { FetchAllLecturerSubjects } from "../../../../data/subjects/FetchSubjects";
+import { FetchLecturerCoreSubjects } from "../../../../data/subjects/FetchSubjects";
 import { getAuthUser } from "../../../../features/auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import DataTable from "react-data-table-component";
 import { customUserTableStyle } from "../../../../usersInfoDataFormat/usersInfoTableStyle";
 import { studentsReportColumn } from "../../../../usersInfoDataFormat/UsersInfoDataFormat";
-import useSubjectStudents from "../../../../data/subjects/useSubjectStudents";
 import { FetchCurrentAcademicTerms } from "../../../../data/term.year/FetchAcademicTerms";
-import { CustomTextField } from "../../../../muiStyling/muiStyling";
 import {
-  FetchAllClassLevels,
-  FetchLecturerClassLevels,
-} from "../../../../data/class/FetchClassLevel";
+  CustomMenuProps,
+  CustomTextField,
+} from "../../../../muiStyling/muiStyling";
 import {
   createMultiStudentsReport,
-  fetchSubjectMultiStudentsReport,
-  getDraftReportInfo,
-  getSubjectMultiStudentsReports,
+  fetchCoreSubjectMultiStudentsReport,
+  getCoreSubjectMultiStudentsReports,
   resetCreateReportState,
   resetFetchCoreReportState,
-  resetSubjectMultiStudentsState,
+  resetCoreSubjectMultiStudentsState,
   saveDraftReport,
+  getCoreDraftReportInfo,
+  resetCoreReportStudentsState,
 } from "../../../../features/reports/reportSlice";
 import { toast } from "react-toastify";
 import { TaskAlt } from "@mui/icons-material";
@@ -39,51 +37,37 @@ import {
   fetchLecturerClassLevels,
   getLecturerClassLevels,
 } from "../../../../features/academics/classLevelsSlice";
-import PropTypes from "prop-types";
+// import PropTypes from "prop-types";
 import { fetchCoreDraftReport } from "../../../../features/reports/reportSlice";
-import PageLoading from "../../../pageLoading/PageLoading";
 import { FetchAllFlattenedProgrammes } from "../../../../data/programme/FetchProgrammeData";
 import StudentReportRemarkModal from "../../../modals/StudentReportRemarkModal";
 
 export function CoreReport() {
-  const {
-    createStatus,
-    createMultiStatus,
-    error,
-    successMessage,
-    fetchCoreDraftStatus,
-  } = useSelector((state) => state.report);
-  const reportClassLevel = localStorage.getItem("reportClassLevel");
-  const reportSubject = localStorage.getItem("reportSubject");
+  const currentYear = new Date().getFullYear();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { lecturerCurrentAction, lecturerCurrentLink } = useParams();
+  const authUser = useSelector(getAuthUser);
+  // Redux state management
+  const { createStatus, createMultiStatus, error, fetchCoreDraftStatus } =
+    useSelector((state) => state.report);
+  // Get selected programmes from local-storage
   const savedSelectedProgrammes = JSON.parse(
     localStorage?.getItem("savedSelectedProgrammes")
   );
-  console.log(savedSelectedProgrammes);
-
-  const authUser = useSelector(getAuthUser);
-  console.log(authUser?.id);
-  const currentYear = new Date().getFullYear();
-  const draftReportInfo = useSelector(getDraftReportInfo);
-  console.log(draftReportInfo);
-
-  const { lecturerCurrentAction, lecturerCurrentLink } = useParams();
-  const [takeCoreSubjectReport, setTakeCoreSubjectReport] = useState(false);
-  const [allCoreSubjectStudents, setAllCoreSubjectStudents] = useState([]);
-  const [allElectiveSubjectStudents, setAllElectiveSubjectStudents] = useState(
-    []
+  // Getting data from Redux State
+  const draftReportInfo = useSelector(getCoreDraftReportInfo);
+  const subjectMultiStudentsReports = useSelector(
+    getCoreSubjectMultiStudentsReports
   );
-  const [isCore, setIsCore] = useState(true);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  console.log(takeCoreSubjectReport);
-  const [openRemarkModal, setOpenRemarkModal] = useState(false);
-  const lecturerSubjects = FetchAllLecturerSubjects(isCore);
-  const allFlattenedProgrammes = FetchAllFlattenedProgrammes();
   const allClassLevels = useSelector(getLecturerClassLevels);
-  // const allClassLevels = FetchAllClassLevels();
-  console.log(allCoreSubjectStudents);
-
+  const lecturerSubjects = FetchLecturerCoreSubjects();
+  const allFlattenedProgrammes = FetchAllFlattenedProgrammes();
   const currentAcademicTerm = FetchCurrentAcademicTerms();
+
+  const [allCoreSubjectStudents, setAllCoreSubjectStudents] = useState([]);
+  const [openRemarkModal, setOpenRemarkModal] = useState(false);
+
   // Report saving state
   const [multiLoadingComplete, setMultiLoadingComplete] = useState(null);
   const [loadingComplete, setLoadingComplete] = useState(null);
@@ -92,12 +76,7 @@ export function CoreReport() {
   const [savingRemarkComplete, setSavingRemarkComplete] = useState(null);
   const [saveDataInProgress, setSaveDataInProgress] = useState(false);
   const [noDataFetched, setNoDataFetched] = useState(true);
-  const [studentId, setStudentId] = useState("");
-  const [remark, setRemark] = useState("");
-  const subjectMultiStudentsReports = useSelector(
-    getSubjectMultiStudentsReports
-  );
-  console.log(subjectMultiStudentsReports);
+  const [shouldBlink, setShouldBlink] = useState(false);
 
   // Multi select state
   const [multiStudents, setMultiStudents] = useState([]);
@@ -106,24 +85,26 @@ export function CoreReport() {
 
   // Report State
   const [coreClassLevel, setCoreClassLevel] = useState(
+    // Class Level
     localStorage.getItem("coreReportClassLevel") || null
   );
   const [coreSubject, setCoreSubject] = useState(
+    // Subject
     localStorage.getItem("coreReportSubject") || null
   );
-  const [selectedProgrammes, setSelectedProgrammes] = useState([]);
-  //   const [allCoreSubjectStudents, setAllCoreSubjectStudents] = useState(
-  //     draftReportInfo?.students ? draftReportInfo?.students : []
-  //   );
-  console.log(selectedProgrammes);
+  const [selectedProgrammes, setSelectedProgrammes] = useState(
+    // Selected Programmes
+    savedSelectedProgrammes || []
+  );
+  const [studentId, setStudentId] = useState("");
+  const [remark, setRemark] = useState("");
 
   // Formatting the selected items into a desired structure
-  const formattedProgrammes = selectedProgrammes.map((program) => ({
+  const formattedProgrammes = selectedProgrammes?.map((program) => ({
     programId: program?._id, // Map _id to id
     type: program?.hasDivision ? "ProgramDivision" : "Program", // Map label to name
     nameOfProgram: program?.name ? program?.name : program?.divisionName,
   }));
-  console.log(formattedProgrammes);
 
   // Handle score values ✅
   const handleScoreChange = (id, field, value) => {
@@ -182,6 +163,7 @@ export function CoreReport() {
     if (userData === "E8") return "#763c3c";
     return "#c30505"; // For scores below 40
   };
+  // Find a student
   const foundStudent = allCoreSubjectStudents?.find(
     (std) => std._id === currentStudent
   );
@@ -193,6 +175,27 @@ export function CoreReport() {
   const foundSubject = lecturerSubjects?.find(
     (data) => data?.subject?._id === coreSubject
   );
+  // handle multi approval or rejection
+  const handleMultiSelect = (state) => {
+    if (!subjectMultiStudentsReports) {
+      if (state) {
+        const studentObj = state?.selectedRows?.map((user) => {
+          const userObject = {
+            studentId: user?.uniqueId,
+            classScore: user?.classScore,
+            examScore: user?.examScore,
+            totalScore: user?.totalScore,
+            remark: user?.remark,
+            grade: user?.grade,
+          };
+          return userObject;
+        });
+        setMultiStudents(studentObj);
+      } else {
+        setMultiStudents([]);
+      }
+    }
+  };
   // Table column data
   const columnData = {
     subjectMultiStudentsReports,
@@ -217,41 +220,20 @@ export function CoreReport() {
   };
   const studentDataFormat = studentsReportColumn(columnData);
 
+  // Sync localStorage with state
+  useEffect(() => {
+    localStorage.setItem("coreReportClassLevel", coreClassLevel || "");
+  }, [coreClassLevel]);
+  useEffect(() => {
+    localStorage.setItem("coreReportSubject", coreSubject || "");
+  }, [coreSubject]);
+
   // Fetch Draft Data
   useEffect(() => {
     if (!selectedProgrammes?.length > 0) {
       setAllCoreSubjectStudents([]);
     }
-    // if (takeCoreSubjectReport && selectedProgrammes?.length > 0) {
-    //   // Format the selected items into the desired structure
-    //   const formattedProgrammes = selectedProgrammes.map((program) => ({
-    //     program: program._id, // Map _id to id
-    //     type: program.hasDivision ? "ProgramDivision" : "Program", // Map label to name
-    //   }));
-    //   const data = {
-    //     classLevel:
-    //       localStorage.getItem("coreReportClassLevel") || coreClassLevel,
-    //     semester: currentAcademicTerm?.name,
-    //     subject: localStorage.getItem("coreReportSubject") || coreSubject,
-    //     lecturer: authUser?.id,
-    //     programmes: formattedProgrammes || [],
-    //   };
-    //   dispatch(fetchCoreDraftReport(data));
-    //   setAllElectiveSubjectStudents([]);
-    // } else {
-    //   setAllCoreSubjectStudents([]);
-    // }
-  }, [
-    // takeCoreSubjectReport,
-    // coreClassLevel,
-    // coreSubject,
-    // currentAcademicTerm,
-    // authUser,
-    // dispatch,
-    // setAllElectiveSubjectStudents,
-    setAllCoreSubjectStudents,
-    selectedProgrammes,
-  ]);
+  }, [selectedProgrammes]);
   // Retrieve and set students on page render
   useEffect(() => {
     if (draftReportInfo?.students?.length > 0) {
@@ -259,39 +241,13 @@ export function CoreReport() {
     } else {
       setAllCoreSubjectStudents([]);
     }
-  }, [
-    draftReportInfo,
-    takeCoreSubjectReport,
-    setAllElectiveSubjectStudents,
-    setAllCoreSubjectStudents,
-  ]);
+  }, [draftReportInfo, setAllCoreSubjectStudents]);
 
   useEffect(() => {
-    setIsCore(true);
     if (authUser) {
       dispatch(fetchLecturerClassLevels({ lecturerId: authUser?.id }));
     }
   }, [authUser, dispatch]);
-
-  // handle multi approval or rejection
-  const handleMultiSelect = (state) => {
-    if (state) {
-      const studentObj = state?.selectedRows?.map((user) => {
-        const userObject = {
-          studentId: user?.uniqueId,
-          classScore: user?.classScore,
-          examScore: user?.examScore,
-          totalScore: user?.totalScore,
-          grade: user?.grade,
-        };
-        return userObject;
-      });
-      setMultiStudents(studentObj);
-    } else {
-      setMultiStudents([]);
-    }
-  };
-  //   console.log(multiStudents);
 
   // Multi data create status
   useEffect(() => {
@@ -344,7 +300,7 @@ export function CoreReport() {
           year: new Date().getFullYear(),
         };
         dispatch(fetchCoreDraftReport(data));
-        dispatch(fetchSubjectMultiStudentsReport(data));
+        dispatch(fetchCoreSubjectMultiStudentsReport(data));
       }, 6000);
     }
   }, [
@@ -435,8 +391,6 @@ export function CoreReport() {
     }
   }, [fetchCoreDraftStatus, error, dispatch]);
 
-  const [shouldBlink, setShouldBlink] = useState(false);
-
   useEffect(() => {
     if (subjectMultiStudentsReports) {
       setShouldBlink(true);
@@ -445,18 +399,15 @@ export function CoreReport() {
 
   const allStd = !subjectMultiStudentsReports ? (
     `Students / Total = ${
-      allElectiveSubjectStudents?.length > 0
-        ? allElectiveSubjectStudents?.length
-        : 0
+      allCoreSubjectStudents?.length > 0 ? allCoreSubjectStudents?.length : 0
     }`
   ) : (
     <Box fontSize={"calc( 0.7rem + 1vmin)"}>
       <Typography
         variant="h6"
         color="#de1f1f"
-        // textAlign={"center"}
         mt={0}
-        fontSize={".9em"}
+        fontSize={".9rem"}
         fontWeight={100}
       >
         Cannot take new report!
@@ -473,7 +424,6 @@ export function CoreReport() {
           top: 0,
           backgroundColor: "#fff",
           padding: 0,
-          // zIndex: 1,
         }}
       >
         <h1 className="dashAction">
@@ -487,7 +437,6 @@ export function CoreReport() {
         subjectMultiStudentsReports?.classLevel === coreClassLevel &&
         fetchingCoreLoadingComplete === null && (
           <Box
-            fontSize={"calc( 0.7rem + 1vmin)"}
             sx={{
               backgroundColor: "#d31515",
               color: "#fff",
@@ -499,11 +448,11 @@ export function CoreReport() {
             {shouldBlink && (
               <Typography
                 variant="h6"
-                // color="#de1f1f"
                 textAlign={"center"}
                 mt={0}
-                fontSize={".9em"}
+                fontSize={".9rem"}
                 fontWeight={100}
+                lineHeight={1}
                 sx={{
                   animation: shouldBlink
                     ? "blink 1s step-start infinite"
@@ -513,8 +462,6 @@ export function CoreReport() {
                       visibility: "hidden",
                     },
                   },
-                  // flexWrap: "wrap",
-                  // width: "20rem",
                 }}
               >
                 Report for {foundClassLevel?.name === "Level 100" && "Form 1"}
@@ -596,20 +543,27 @@ export function CoreReport() {
             <Grid item xs={12} sm={6} md={2.5}>
               <CustomTextField
                 select
+                slotProps={{
+                  select: { MenuProps: CustomMenuProps },
+                }}
                 fullWidth
                 name="coreClassLevel"
                 label="Form"
-                value={coreClassLevel || ""}
+                value={
+                  allClassLevels?.some((c) => c?._id === coreClassLevel)
+                    ? coreClassLevel
+                    : ""
+                }
                 size="small"
                 onChange={(e) => {
                   setCoreClassLevel(e.target.value);
-                  localStorage.setItem("coreReportClassLevel", e.target.value);
+                  // localStorage.setItem("coreReportClassLevel", e.target.value);
                 }}
                 sx={{
                   "& .MuiInputBase-input": {
                     // height: "2.4rem",
                     height: { xs: "1.3rem", sm: "1.7rem" },
-                    fontSize: ".7em",
+                    fontSize: ".8rem",
                   },
                   "& .MuiInputLabel-root": {
                     fontSize: ".7em", // Default label size
@@ -630,27 +584,26 @@ export function CoreReport() {
             <Grid item xs={12} sm={6} md={2.5}>
               <CustomTextField
                 select
+                slotProps={{
+                  select: { MenuProps: CustomMenuProps },
+                }}
                 fullWidth
                 name="coreSubject"
                 label="Subject"
-                value={coreSubject || ""}
+                value={
+                  lecturerSubjects?.some((c) => c?.subject?._id === coreSubject)
+                    ? coreSubject
+                    : ""
+                }
                 size="small"
                 onChange={(e) => {
                   setCoreSubject(e.target.value);
-                  localStorage.setItem("coreReportSubject", e.target.value);
+                  // localStorage.setItem("coreReportSubject", e.target.value);
                 }}
-                //   onChange={(e) => {
-                //     setReportData({
-                //       ...reportData,
-                //       subject: e.target.value,
-                //     });
-                //     localStorage.setItem("reportSubject", e.target.value);
-                //   }}
                 sx={{
                   "& .MuiInputBase-input": {
-                    // height: "1.27rem",
                     height: { xs: "1.3rem", sm: "1.7rem" },
-                    fontSize: ".7em",
+                    fontSize: ".8rem",
                   },
                   "& .MuiInputLabel-root": {
                     fontSize: ".7em", // Default label size
@@ -659,7 +612,6 @@ export function CoreReport() {
                   mb: 1,
                 }}
               >
-                {/* <MenuItem>M</MenuItem> */}
                 {lecturerSubjects?.map((subj) => (
                   <MenuItem key={subj?.subject?._id} value={subj?.subject?._id}>
                     {subj?.subject?.subjectName}
@@ -684,16 +636,8 @@ export function CoreReport() {
                   <CustomTextField
                     {...params}
                     variant="outlined"
-                    //   label="Select Options"
                     placeholder="Choose Programmes"
                     size="small"
-                    //   onChange={(e) => {
-                    //     setReportData({
-                    //       ...reportData,
-                    //       subject: e.target.value,
-                    //     });
-                    //     localStorage.setItem("reportSubject", e.target.value);
-                    //   }}
                     sx={{
                       "& .MuiInputBase-input": {
                         // height: "1.3rem",
@@ -708,6 +652,36 @@ export function CoreReport() {
                     }}
                   ></CustomTextField>
                 )}
+                slotProps={{
+                  popper: {
+                    modifiers: [
+                      {
+                        name: "preventOverflow",
+                        options: {
+                          boundary: "window",
+                        },
+                      },
+                    ],
+                  },
+                  paper: {
+                    sx: {
+                      maxHeight: 200, // Set max height for dropdown
+                      "&::-webkit-scrollbar": {
+                        width: "6px", // Scrollbar width
+                      },
+                      "&::-webkit-scrollbar-thumb": {
+                        backgroundColor: "#9a9a9a", // Scrollbar thumb color
+                        borderRadius: "4px",
+                      },
+                      "&::-webkit-scrollbar-thumb:hover": {
+                        backgroundColor: "#8d8c8c", // Scrollbar thumb hover effect
+                      },
+                      "&::-webkit-scrollbar-track": {
+                        backgroundColor: "#fff", // Scrollbar track color
+                      },
+                    },
+                  },
+                }}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={2}>
@@ -767,9 +741,10 @@ export function CoreReport() {
                       "savedSelectedProgrammes",
                       JSON.stringify(formattedProgrammes)
                     );
-                    dispatch(resetSubjectMultiStudentsState());
+                    dispatch(resetCoreSubjectMultiStudentsState());
+                    dispatch(resetCoreReportStudentsState());
                     dispatch(fetchCoreDraftReport(data));
-                    dispatch(fetchSubjectMultiStudentsReport(data));
+                    dispatch(fetchCoreSubjectMultiStudentsReport(data));
                   }
                 }}
               >
@@ -788,9 +763,16 @@ export function CoreReport() {
                 )}
                 {fetchingCoreLoadingComplete &&
                   fetchCoreDraftStatus === "success" && (
-                    <>
-                      <span>Fetched</span> <TaskAlt />
-                    </>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <span>Fetched</span>{" "}
+                      <TaskAlt style={{ fontSize: "1rem" }} />
+                    </Box>
                   )}
                 {fetchingCoreLoadingComplete === null && "Fetch"}
               </Button>
@@ -823,16 +805,6 @@ export function CoreReport() {
                         alignItems: "center",
                       }}
                       onClick={() => {
-                        // Format the selected items into the desired structure
-                        // const formattedProgrammes = selectedProgrammes.map(
-                        //   (program) => ({
-                        //     program: program._id,
-                        //     nameOfProgram: program.nameOfProgram,
-                        //     type: program.isDivisionProgram
-                        //       ? "ProgramDivision"
-                        //       : "Program",
-                        //   })
-                        // );
                         const data = {
                           semester: currentAcademicTerm?.name,
                           classLevel: coreClassLevel,
@@ -920,7 +892,7 @@ export function CoreReport() {
                   color="#fff"
                   textAlign={"center"}
                   mt={2}
-                  fontSize={".9em"}
+                  fontSize={".8rem"}
                 >
                   Select form and subject to begin...
                 </Typography>
@@ -930,14 +902,14 @@ export function CoreReport() {
             coreClassLevel &&
             coreSubject && (
               <>
-                {noDataFetched && (
+                {noDataFetched && !allCoreSubjectStudents?.length > 0 && (
                   <Box>
                     <Typography
                       variant="h6"
                       color="#fff"
                       textAlign={"center"}
                       mt={2}
-                      fontSize={".9em"}
+                      fontSize={".8rem"}
                     >
                       No data fetched!
                     </Typography>
@@ -951,7 +923,7 @@ export function CoreReport() {
                       color="#fff"
                       textAlign={"center"}
                       mt={2}
-                      fontSize={".9em"}
+                      fontSize={".8rem"}
                     >
                       No student data found!
                     </Typography>
@@ -964,11 +936,11 @@ export function CoreReport() {
   );
 }
 
-CoreReport.propTypes = {
-  setTakeCoreSubjectReport: PropTypes.func,
-  takeCoreSubjectReport: PropTypes.bool,
-  allCoreSubjectStudents: PropTypes.array,
-  setAllCoreSubjectStudents: PropTypes.func,
-  allElectiveSubjectStudents: PropTypes.array,
-  setAllElectiveSubjectStudents: PropTypes.func,
-};
+// CoreReport.propTypes = {
+//   setTakeCoreSubjectReport: PropTypes.func,
+//   takeCoreSubjectReport: PropTypes.bool,
+//   allCoreSubjectStudents: PropTypes.array,
+//   setAllCoreSubjectStudents: PropTypes.func,
+//   allElectiveSubjectStudents: PropTypes.array,
+//   setAllElectiveSubjectStudents: PropTypes.func,
+// };

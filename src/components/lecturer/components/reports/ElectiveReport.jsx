@@ -1,34 +1,27 @@
-import {
-  Box,
-  Button,
-  Grid,
-  InputAdornment,
-  MenuItem,
-  Typography,
-} from "@mui/material";
-import { useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { Box, Button, Grid, MenuItem, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { FetchAllLecturerSubjects } from "../../../../data/subjects/FetchSubjects";
+import { FetchLecturerElectiveSubjects } from "../../../../data/subjects/FetchSubjects";
 import { getAuthUser } from "../../../../features/auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import DataTable from "react-data-table-component";
 import { customUserTableStyle } from "../../../../usersInfoDataFormat/usersInfoTableStyle";
 import { studentsReportColumn } from "../../../../usersInfoDataFormat/UsersInfoDataFormat";
-import useSubjectStudents from "../../../../data/subjects/useSubjectStudents";
 import { FetchCurrentAcademicTerms } from "../../../../data/term.year/FetchAcademicTerms";
-import { CustomTextField } from "../../../../muiStyling/muiStyling";
 import {
-  FetchAllClassLevels,
-  FetchLecturerClassLevels,
-} from "../../../../data/class/FetchClassLevel";
+  CustomMenuProps,
+  CustomTextField,
+} from "../../../../muiStyling/muiStyling";
 import {
   createMultiStudentsReport,
-  fetchSubjectMultiStudentsReport,
-  getDraftReportInfo,
-  getSubjectMultiStudentsReports,
+  fetchElectiveSubjectMultiStudentsReport,
   resetCreateReportState,
   resetFetchElectiveReportState,
   saveDraftReport,
+  getElectiveDraftReportInfo,
+  getElectiveSubjectMultiStudentsReports,
+  resetElectiveReportStudentsState,
+  resetElectiveSubjectMultiStudentsState,
 } from "../../../../features/reports/reportSlice";
 import { toast } from "react-toastify";
 import { TaskAlt } from "@mui/icons-material";
@@ -39,52 +32,30 @@ import {
 } from "../../../../features/academics/classLevelsSlice";
 import PropTypes from "prop-types";
 import { fetchElectiveDraftReport } from "../../../../features/reports/reportSlice";
-import AssignClassLecturerModal from "../../../modals/AssignClassLecturerModal";
 import StudentReportRemarkModal from "../../../modals/StudentReportRemarkModal";
-import { styled } from "@mui/system";
 
 export function ElectiveReport() {
-  const {
-    createStatus,
-    createMultiStatus,
-    error,
-    fetchElectiveDraftStatus,
-    fetchCoreDraftStatus,
-  } = useSelector((state) => state.report);
-  const reportClassLevel = localStorage.getItem("reportClassLevel");
-  const reportSubject = localStorage.getItem("reportSubject");
-  const authUser = useSelector(getAuthUser);
-  console.log(authUser?.id);
   const currentYear = new Date().getFullYear();
-  const draftReportInfo = useSelector(getDraftReportInfo);
-  const subjectMultiStudentsReports = useSelector(
-    getSubjectMultiStudentsReports
-  );
-  console.log("Fetched Reports in Redux:", draftReportInfo);
-  console.log("subjectMultiStudentsReports: ", subjectMultiStudentsReports);
-
   const { lecturerCurrentAction, lecturerCurrentLink } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  // Redux state management
+  const { createStatus, createMultiStatus, error, fetchElectiveDraftStatus } =
+    useSelector((state) => state.report);
+  // Getting data from Redux State
+  const authUser = useSelector(getAuthUser);
+  const draftReportInfo = useSelector(getElectiveDraftReportInfo);
+  const subjectMultiStudentsReports = useSelector(
+    getElectiveSubjectMultiStudentsReports
+  );
   const allClassLevels = useSelector(getLecturerClassLevels);
-  // const allClassLevels = FetchAllClassLevels();
-  // console.log(lecturerSubjects);
+  const lecturerSubjects = FetchLecturerElectiveSubjects();
+  const currentAcademicTerm = FetchCurrentAcademicTerms();
 
   const [openRemarkModal, setOpenRemarkModal] = useState(false);
-  const [takeCoreSubjectReport, setTakeCoreSubjectReport] = useState(false);
-  const [allCoreSubjectStudents, setAllCoreSubjectStudents] = useState([]);
   const [allElectiveSubjectStudents, setAllElectiveSubjectStudents] = useState(
     []
   );
-  console.log("allElectiveSubjectStudents: ", allElectiveSubjectStudents);
-
-  const [isElective, setIsElective] = useState(true);
-  const [fetchingElectiveLoadingComplete, setFetchingElectiveLoadingComplete] =
-    useState(null);
-
-  const lecturerSubjects = FetchAllLecturerSubjects(takeCoreSubjectReport);
-  const currentAcademicTerm = FetchCurrentAcademicTerms();
-  console.log(currentAcademicTerm);
 
   // Report saving state
   const [multiLoadingComplete, setMultiLoadingComplete] = useState(null);
@@ -106,7 +77,32 @@ export function ElectiveReport() {
     localStorage.getItem("reportSubject") || ""
   );
   const [remark, setRemark] = useState("");
+  const [noDataFetched, setNoDataFetched] = useState(true);
+  const [fetchingElectiveLoadingComplete, setFetchingElectiveLoadingComplete] =
+    useState(null);
+  const [shouldBlink, setShouldBlink] = useState(false);
 
+  // handle multi approval or rejection
+  const handleMultiSelect = (state) => {
+    if (!subjectMultiStudentsReports) {
+      if (state) {
+        const studentObj = state?.selectedRows?.map((user) => {
+          const userObject = {
+            studentId: user?.uniqueId,
+            classScore: user?.classScore,
+            examScore: user?.examScore,
+            totalScore: user?.totalScore,
+            remark: user?.remark,
+            grade: user?.grade,
+          };
+          return userObject;
+        });
+        setMultiStudents(studentObj);
+      } else {
+        setMultiStudents([]);
+      }
+    }
+  };
   // Find class level
   const foundClassLevel = allClassLevels?.find(
     (cLevel) => cLevel?._id === classLevel
@@ -115,7 +111,6 @@ export function ElectiveReport() {
   const foundSubject = lecturerSubjects?.find(
     (data) => data?.subject?._id === subject
   );
-  console.log(foundSubject);
 
   // Handle score values ✅
   const handleScoreChange = (id, field, value) => {
@@ -143,14 +138,10 @@ export function ElectiveReport() {
       // remark: remark,
       year: new Date().getFullYear(),
     };
-    console.log(reportObj);
-
     // Save to localStorage whenever allSubjectStudents changes
     localStorage.setItem("allSubjectStudents", JSON.stringify(reportObj));
     dispatch(saveDraftReport(reportObj));
-
     setAllElectiveSubjectStudents(reportObj?.students); // Update the correct state
-    setAllCoreSubjectStudents([]);
   };
   // Grade calculator
   const calculateGrade = (totalScore) => {
@@ -203,47 +194,6 @@ export function ElectiveReport() {
   };
   const studentDataFormat = studentsReportColumn(columnData);
 
-  // Fetch Draft Data
-  // useEffect(() => {
-  //   if (!takeCoreSubjectReport) {
-  //     const data = {
-  //       classLevel: localStorage.getItem("reportClassLevel") || classLevel,
-  //       semester: currentAcademicTerm?.name,
-  //       subject: localStorage.getItem("reportSubject") || subject,
-  //       lecturer: authUser?.id,
-  //       year: new Date().getFullYear(),
-  //     };
-  //     dispatch(fetchElectiveDraftReport(data));
-  //     dispatch(fetchSubjectMultiStudentsReport(data));
-  //     setAllCoreSubjectStudents([]);
-  //   } else {
-  //     setAllElectiveSubjectStudents([]);
-  //   }
-  // }, [
-  //   takeCoreSubjectReport,
-  //   classLevel,
-  //   subject,
-  //   currentAcademicTerm,
-  //   authUser,
-  //   dispatch,
-  //   setAllElectiveSubjectStudents,
-  //   setAllCoreSubjectStudents,
-  // ]);
-  // Retrieve and set students on page render
-  // useEffect(() => {
-  //   if (takeCoreSubjectReport) {
-  //     setAllElectiveSubjectStudents([]);
-  //   } else {
-  //     setAllElectiveSubjectStudents(draftReportInfo?.students);
-  //     setAllCoreSubjectStudents([]);
-  //   }
-  // }, [
-  //   draftReportInfo,
-  //   takeCoreSubjectReport,
-  //   setAllElectiveSubjectStudents,
-  //   setAllCoreSubjectStudents,
-  // ]);
-
   // Sync localStorage with state
   useEffect(() => {
     localStorage.setItem("reportClassLevel", classLevel || "");
@@ -252,56 +202,16 @@ export function ElectiveReport() {
   useEffect(() => {
     localStorage.setItem("reportSubject", subject || "");
   }, [subject]);
+
   useEffect(() => {
     setAllElectiveSubjectStudents(draftReportInfo?.students || []);
   }, [draftReportInfo]);
 
-  // Fetch data when inputs change
-  // useEffect(() => {
-  //   if (classLevel && subject) {
-  //     const data = {
-  //       classLevel,
-  //       semester: currentAcademicTerm?.name,
-  //       subject,
-  //       lecturer: authUser?.id,
-  //       year: new Date().getFullYear(),
-  //     };
-  //     console.log(data);
-
-  //     dispatch(fetchElectiveDraftReport(data));
-  //     dispatch(fetchSubjectMultiStudentsReport(data));
-  //   }
-  // }, [classLevel, subject, currentAcademicTerm, authUser, dispatch]);
-
   useEffect(() => {
-    setIsElective(true);
     if (authUser) {
       dispatch(fetchLecturerClassLevels({ lecturerId: authUser?.id }));
     }
   }, [authUser, dispatch]);
-
-  // handle multi approval or rejection
-  const handleMultiSelect = (state) => {
-    if (!subjectMultiStudentsReports) {
-      if (state) {
-        const studentObj = state?.selectedRows?.map((user) => {
-          const userObject = {
-            studentId: user?.uniqueId,
-            classScore: user?.classScore,
-            examScore: user?.examScore,
-            totalScore: user?.totalScore,
-            remark: user?.remark,
-            grade: user?.grade,
-          };
-          return userObject;
-        });
-        setMultiStudents(studentObj);
-      } else {
-        setMultiStudents([]);
-      }
-    }
-  };
-  //   console.log(multiStudents);
 
   // Multi data create status
   useEffect(() => {
@@ -346,7 +256,7 @@ export function ElectiveReport() {
           lecturer: authUser?.id,
         };
         dispatch(fetchElectiveDraftReport(data));
-        dispatch(fetchSubjectMultiStudentsReport(data));
+        dispatch(fetchElectiveSubjectMultiStudentsReport(data));
         localStorage.removeItem("allSubjectStudents");
         localStorage.removeItem("reportClassLevel");
         localStorage.removeItem("reportSubject");
@@ -390,7 +300,7 @@ export function ElectiveReport() {
             year: new Date().getFullYear(),
           };
           dispatch(fetchElectiveDraftReport(data));
-          dispatch(fetchSubjectMultiStudentsReport(data));
+          dispatch(fetchElectiveSubjectMultiStudentsReport(data));
         }, 2000);
         return;
       }
@@ -410,7 +320,7 @@ export function ElectiveReport() {
           setSaveDataInProgress(false);
           dispatch(resetCreateReportState());
           dispatch(fetchElectiveDraftReport(data));
-          dispatch(fetchSubjectMultiStudentsReport(data));
+          dispatch(fetchElectiveSubjectMultiStudentsReport(data));
         }, 6000);
       }
     }
@@ -425,16 +335,9 @@ export function ElectiveReport() {
     dispatch,
   ]);
 
-  // const [isVisible, setIsVisible] = useState(true);
-  const [shouldBlink, setShouldBlink] = useState(false);
-
   useEffect(() => {
     if (subjectMultiStudentsReports) {
       setShouldBlink(true);
-      // const interval = setInterval(() => {
-      //   setIsVisible((prev) => !prev);
-      // }, 500); // Toggle visibility every 500ms
-      // return () => clearInterval(interval); // Cleanup on unmount
     }
   }, [subjectMultiStudentsReports]);
 
@@ -466,6 +369,7 @@ export function ElectiveReport() {
       setTimeout(() => {
         setFetchingElectiveLoadingComplete(null);
         dispatch(resetFetchElectiveReportState());
+        setNoDataFetched(false);
       }, 6000);
     }
   }, [fetchElectiveDraftStatus, error, dispatch]);
@@ -572,7 +476,6 @@ export function ElectiveReport() {
             Click{" "}
             <button
               onClick={() => {
-                // setTakeCoreSubjectReport(!takeCoreSubjectReport);
                 navigate(
                   `/sensec/users/${authUser?.uniqueId}/lecturer/academic_report/create_report/core`
                 );
@@ -592,24 +495,23 @@ export function ElectiveReport() {
             <Grid item xs={12} sm={6} md={3}>
               <CustomTextField
                 select
+                slotProps={{
+                  select: { MenuProps: CustomMenuProps },
+                }}
                 fullWidth
                 name="classLevel"
                 label="Form"
-                value={classLevel || ""}
+                value={
+                  allClassLevels?.some((c) => c?._id === classLevel)
+                    ? classLevel
+                    : ""
+                }
                 size="small"
                 onChange={(e) => {
                   setClassLevel(e.target.value);
                 }}
-                //   onChange={(e) => {
-                //     setReportData({
-                //       ...reportData,
-                //       classLevel: e.target.value,
-                //     });
-                //     localStorage.setItem("reportClassLevel", e.target.value);
-                //   }}
                 sx={{
                   "& .MuiInputBase-input": {
-                    // height: "1.3rem",
                     fontSize: ".7em",
                   },
                   "& .MuiInputLabel-root": {
@@ -631,24 +533,23 @@ export function ElectiveReport() {
             <Grid item xs={12} sm={6} md={3}>
               <CustomTextField
                 select
+                slotProps={{
+                  select: { MenuProps: CustomMenuProps },
+                }}
                 fullWidth
                 name="subject"
                 label="Subject"
-                value={subject || ""}
+                value={
+                  lecturerSubjects?.some((c) => c?.subject?._id === subject)
+                    ? subject
+                    : ""
+                }
                 size="small"
                 onChange={(e) => {
                   setSubject(e.target.value);
                 }}
-                //   onChange={(e) => {
-                //     setReportData({
-                //       ...reportData,
-                //       subject: e.target.value,
-                //     });
-                //     localStorage.setItem("reportSubject", e.target.value);
-                //   }}
                 sx={{
                   "& .MuiInputBase-input": {
-                    // height: "1.3rem",
                     fontSize: ".7em",
                   },
                   "& .MuiInputLabel-root": {
@@ -658,7 +559,6 @@ export function ElectiveReport() {
                   mb: 1,
                 }}
               >
-                {/* <MenuItem>M</MenuItem> */}
                 {lecturerSubjects?.map((subj) => (
                   <MenuItem key={subj?.subject?._id} value={subj?.subject?._id}>
                     {subj?.subject?.subjectName}
@@ -697,8 +597,10 @@ export function ElectiveReport() {
                     year: new Date().getFullYear(),
                   };
                   if (classLevel && subject) {
+                    dispatch(resetElectiveSubjectMultiStudentsState());
+                    dispatch(resetElectiveReportStudentsState());
                     dispatch(fetchElectiveDraftReport(data));
-                    dispatch(fetchSubjectMultiStudentsReport(data));
+                    dispatch(fetchElectiveSubjectMultiStudentsReport(data));
                   }
                 }}
               >
@@ -717,10 +619,16 @@ export function ElectiveReport() {
                 )}
                 {fetchingElectiveLoadingComplete &&
                   fetchElectiveDraftStatus === "success" && (
-                    <>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
                       <span>Fetched</span>{" "}
                       <TaskAlt style={{ fontSize: "1.1rem" }} />
-                    </>
+                    </Box>
                   )}
                 {fetchingElectiveLoadingComplete === null && "Fetch"}
               </Button>
@@ -770,8 +678,7 @@ export function ElectiveReport() {
                         }
                       }}
                     >
-                      {isElective &&
-                        multiStudents?.length > 0 &&
+                      {multiStudents?.length > 0 &&
                         multiLoadingComplete === false && (
                           <Box className="promotionSpinner">
                             <p>Saving</p>
@@ -785,17 +692,14 @@ export function ElectiveReport() {
                             </span>
                           </Box>
                         )}
-                      {isElective &&
-                        multiStudents?.length > 0 &&
+                      {multiStudents?.length > 0 &&
                         multiLoadingComplete &&
                         createMultiStatus === "success" && (
                           <>
                             <span>All Saved</span> <TaskAlt />
                           </>
                         )}
-                      {isElective &&
-                        multiLoadingComplete === null &&
-                        "Save All Reports"}
+                      {multiLoadingComplete === null && "Save All Reports"}
                     </Button>
                   </Box>
                   <DataTable
@@ -843,7 +747,7 @@ export function ElectiveReport() {
                   color="#fff"
                   textAlign={"center"}
                   mt={2}
-                  fontSize={".9em"}
+                  fontSize={".8rem"}
                 >
                   Select form and subject to begin...
                 </Typography>
@@ -851,35 +755,37 @@ export function ElectiveReport() {
             )}
           {classLevel &&
             subject &&
-            !draftReportInfo &&
             fetchingElectiveLoadingComplete === null && (
-              <Box>
-                <Typography
-                  variant="h6"
-                  color="#fff"
-                  textAlign={"center"}
-                  mt={2}
-                  fontSize={".9em"}
-                >
-                  No data fetched!
-                </Typography>
-              </Box>
-            )}
-          {classLevel &&
-            subject &&
-            draftReportInfo?.students?.length === 0 &&
-            fetchingElectiveLoadingComplete === null && (
-              <Box>
-                <Typography
-                  variant="h6"
-                  color="#fff"
-                  textAlign={"center"}
-                  mt={2}
-                  fontSize={".9em"}
-                >
-                  No student data found!
-                </Typography>
-              </Box>
+              <>
+                {noDataFetched && !allElectiveSubjectStudents?.length > 0 && (
+                  <Box>
+                    <Typography
+                      variant="h6"
+                      color="#fff"
+                      textAlign={"center"}
+                      mt={2}
+                      fontSize={".8rem"}
+                    >
+                      No data fetched!
+                    </Typography>
+                  </Box>
+                )}
+                {!subjectMultiStudentsReports &&
+                  !draftReportInfo?.students?.length > 0 &&
+                  !noDataFetched && (
+                    <Box>
+                      <Typography
+                        variant="h6"
+                        color="#fff"
+                        textAlign={"center"}
+                        mt={2}
+                        fontSize={".8rem"}
+                      >
+                        No student data found!
+                      </Typography>
+                    </Box>
+                  )}
+              </>
             )}
         </>
       </Box>

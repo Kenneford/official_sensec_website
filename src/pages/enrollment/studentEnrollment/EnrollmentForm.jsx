@@ -2,6 +2,7 @@ import React, { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import "./studentEnrollment.scss";
 import {
   ContainerBox,
+  CustomMenuProps,
   CustomMobileDatePicker,
   CustomTextField,
 } from "../../../muiStyling/muiStyling";
@@ -769,6 +770,9 @@ export function EnrollmentForm() {
               <Grid item xs={12} sm={6} md={4} lg={4}>
                 <CustomTextField
                   select
+                  slotProps={{
+                    select: { MenuProps: CustomMenuProps },
+                  }}
                   fullWidth
                   label="Mother Tongue"
                   name="motherTongue"
@@ -802,6 +806,9 @@ export function EnrollmentForm() {
               <Grid item xs={12} sm={6} md={4} lg={4}>
                 <CustomTextField
                   select
+                  slotProps={{
+                    select: { MenuProps: CustomMenuProps },
+                  }}
                   fullWidth
                   label="Other Tongue"
                   name="otherTongue"
@@ -826,6 +833,9 @@ export function EnrollmentForm() {
               <Grid item xs={12} sm={6} md={4} lg={4}>
                 <CustomTextField
                   select
+                  slotProps={{
+                    select: { MenuProps: CustomMenuProps },
+                  }}
                   fullWidth
                   label="Complexion"
                   name="complexion"
@@ -897,6 +907,9 @@ export function EnrollmentForm() {
                 <CustomTextField
                   fullWidth
                   select
+                  slotProps={{
+                    select: { MenuProps: CustomMenuProps },
+                  }}
                   label="Region"
                   name="region"
                   value={newStudent?.region || ""}
@@ -1079,6 +1092,9 @@ export function EnrollmentForm() {
               <Grid item xs={12} sm={6} md={4} lg={4}>
                 <CustomTextField
                   select
+                  slotProps={{
+                    select: { MenuProps: CustomMenuProps },
+                  }}
                   fullWidth
                   label="Select Programme"
                   name="program"
@@ -1166,6 +1182,9 @@ export function EnrollmentForm() {
                   <Grid item xs={12} sm={6} md={4} lg={4}>
                     <CustomTextField
                       select
+                      slotProps={{
+                        select: { MenuProps: CustomMenuProps },
+                      }}
                       fullWidth
                       label="Optional Elective Subject"
                       name="optionalElectiveSubject"
@@ -1193,6 +1212,9 @@ export function EnrollmentForm() {
                 <CustomTextField
                   select
                   fullWidth
+                  slotProps={{
+                    select: { MenuProps: CustomMenuProps },
+                  }}
                   label="Class Level"
                   name="currentClassLevel"
                   value={newStudent?.currentClassLevel || ""}
@@ -1215,6 +1237,9 @@ export function EnrollmentForm() {
               <Grid item xs={12} sm={6} md={4} lg={4}>
                 <CustomTextField
                   select
+                  slotProps={{
+                    select: { MenuProps: CustomMenuProps },
+                  }}
                   fullWidth
                   label="Batch"
                   name="batch"
@@ -1241,6 +1266,9 @@ export function EnrollmentForm() {
               <Grid item xs={12} sm={6} md={4} lg={4}>
                 <CustomTextField
                   select
+                  slotProps={{
+                    select: { MenuProps: CustomMenuProps },
+                  }}
                   fullWidth
                   label="Academic Year"
                   name="currentAcademicYear"
@@ -1265,14 +1293,17 @@ export function EnrollmentForm() {
               <Grid item xs={12} sm={6} md={4} lg={4}>
                 <CustomTextField
                   select
+                  slotProps={{
+                    select: { MenuProps: CustomMenuProps },
+                    input: { readOnly: true },
+                  }}
                   fullWidth
                   label="Residential Status"
                   name="residentialStatus"
                   value={memoizedPlacementStudentData?.boardingStatus || ""}
                   onChange={handleChange}
-                  slotProps={{
-                    input: { readOnly: true },
-                  }}
+                  // slotProps={{
+                  // }}
                 >
                   <MenuItem value="Day">Day</MenuItem>
                   <MenuItem value="Boarding">Boarding</MenuItem>
