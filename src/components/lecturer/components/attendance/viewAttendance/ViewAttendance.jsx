@@ -21,7 +21,7 @@ import {
   fetchWeeklyClassAttendances,
   getCurrentClassAttendance,
   getWeeklyClassAttendance,
-} from "../../../../../features/academics/attedanceSlice";
+} from "../../../../../features/academics/attendanceSlice";
 import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import CustomPieChartLegend from "../../../../custom/CustomPieChartLegend";

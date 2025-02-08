@@ -18,7 +18,7 @@ import { FetchClassSectionStudents } from "../../../../../data/students/FetchAll
 import {
   createClassAttendance,
   resetCreateAttendanceState,
-} from "../../../../../features/academics/attedanceSlice";
+} from "../../../../../features/academics/attendanceSlice";
 import { FetchCurrentAcademicTerms } from "../../../../../data/term.year/FetchAcademicTerms";
 import { toast } from "react-toastify";
 import LoadingProgress from "../../../../pageLoading/LoadingProgress";
@@ -52,8 +52,6 @@ export default function TakeAttendance() {
   );
   // Handle Process State
   const [loadingComplete, setLoadingComplete] = useState(null);
-  //   const students = [];
-  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [allStudents, setAllStudents] = useState(sectionStudents);
   const [markedStudents, setMarkedStudents] = useState([]);
   const [toggleClearRows, setToggleClearRows] = useState(false);
@@ -61,34 +59,6 @@ export default function TakeAttendance() {
   const [screenWidth, setScreenWidth] = useState(window.innerWidth);
   const isSmallScreen = screenWidth && screenWidth < 1024;
   console.log(isSmallScreen);
-
-  const markAttendance = async (status) => {
-    try {
-      const attendanceData = students?.map((student) => ({
-        id: student._id,
-        status,
-      }));
-      await axios.put("/api/students/attendance", {
-        date,
-        students: attendanceData,
-      });
-      //   fetchStudents();
-    } catch (error) {
-      console.error("Error marking attendance:", error);
-    }
-  };
-
-  const markWeekends = async () => {
-    try {
-      await axios.post("/api/students/mark-weekends", {
-        startDate: "2023-01-01",
-        endDate: "2023-12-31", // Example: marking weekends for a full year
-      });
-      //   fetchStudents();
-    } catch (error) {
-      console.error("Error marking weekends:", error);
-    }
-  };
 
   //Attendance status Value
   const handleStatusValues = (studentId, value) => {
@@ -416,22 +386,6 @@ export default function TakeAttendance() {
               {loadingComplete === null && "Save"}
             </Button>
           </Grid>
-          {/* <Grid item xs={12} sm={3}>
-            <Button
-              fullWidth
-              variant="contained"
-              // onClick={markWeekends}
-              onClick={() => markAllStudents("Holiday")}
-              color="secondary"
-              sx={{
-                textTransform: "capitalize",
-                paddingX: ".2rem",
-                fontSize: ".8em",
-              }}
-            >
-              Mark All Holiday
-            </Button>
-          </Grid> */}
         </Grid>
         <Box fontSize={"calc(0.7rem + 1vmin)"}>
           <DataTable

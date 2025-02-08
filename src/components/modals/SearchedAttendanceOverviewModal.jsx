@@ -1,24 +1,7 @@
 import "./modals.scss";
-import {
-  Box,
-  Button,
-  Modal,
-  Typography,
-  Stack,
-  InputAdornment,
-  Avatar,
-  MenuItem,
-  Grid,
-} from "@mui/material";
+import { Box, Button, Modal, Typography, Stack, Avatar } from "@mui/material";
 import PropTypes from "prop-types";
-import { assignSubjectLecturer } from "../../features/academics/subjectsSlice";
-import { useEffect, useState } from "react";
-import { CustomTextField } from "../../muiStyling/muiStyling";
-import { Close, Search, TaskAlt } from "@mui/icons-material";
-import { FetchAllLecturers } from "../../data/lecturers/FetchLecturers";
-import { FetchAllFlattenedProgrammes } from "../../data/programme/FetchProgrammeData";
-import { FetchAllClassLevels } from "../../data/class/FetchClassLevel";
-import { useDispatch } from "react-redux";
+import { Close } from "@mui/icons-material";
 import DataTable from "react-data-table-component";
 import { customAttendanceTableStyle } from "../../usersInfoDataFormat/usersInfoTableStyle";
 import { dateFormatter } from "../../dateFormatter/DateFormatter";
@@ -28,32 +11,6 @@ export default function SearchedAttendanceOverviewModal({
   onClose,
   data,
 }) {
-  const allLecturers = FetchAllLecturers();
-  const allClassLevels = FetchAllClassLevels();
-  const allFlattenedProgrammes = FetchAllFlattenedProgrammes();
-  console.log(allLecturers);
-  const [confirmed, setConfirmed] = useState(false);
-  const [selectedLecturerInfo, setSelectedLecturerInfo] = useState("");
-  const [selectedLecturer, setSelectedLecturer] = useState("");
-  const [searchTeacher, setSearchTeacher] = useState("");
-  const [programme, setProgramme] = useState("");
-  const [classLevel, setClassLevel] = useState("");
-  const dispatch = useDispatch();
-  console.log(classLevel);
-  console.log(programme);
-
-  const filteredLecturers = searchTeacher
-    ? allLecturers.filter(
-        (lecturer) =>
-          lecturer?.personalInfo?.firstName
-            ?.toLowerCase()
-            ?.includes(searchTeacher.toLowerCase()) ||
-          lecturer?.personalInfo?.lastName
-            ?.toLowerCase()
-            ?.includes(searchTeacher.toLowerCase())
-      )
-    : [];
-
   // Calculate attendance statistics
   const totalStudents = data?.students?.length || 0;
   const presentCount =
@@ -195,9 +152,6 @@ export default function SearchedAttendanceOverviewModal({
               <Close
                 titleAccess="Close"
                 onClick={() => {
-                  setConfirmed(false);
-                  setSearchTeacher("");
-                  setProgramme("");
                   onClose();
                 }}
                 style={{
@@ -240,8 +194,8 @@ export default function SearchedAttendanceOverviewModal({
                   fontSize={".8em"}
                   color="#292929"
                 >
-                  Day Of Week:{" "}
-                  <span style={{ color: "#696969" }}>{data?.dayOfTheWeek}</span>
+                  Semester:{" "}
+                  <span style={{ color: "#696969" }}>{data?.semester}</span>
                 </Typography>
                 <Typography
                   id="responsive-modal-title"
@@ -252,8 +206,8 @@ export default function SearchedAttendanceOverviewModal({
                 >
                   Date:{" "}
                   <span style={{ color: "#696969" }}>
-                    {data?.date
-                      ? dateFormatter?.format(new Date(data?.date))
+                    {data?.createdAt
+                      ? dateFormatter?.format(new Date(data?.createdAt))
                       : "---"}
                   </span>
                 </Typography>
@@ -318,9 +272,6 @@ export default function SearchedAttendanceOverviewModal({
                 color="error"
                 size="small"
                 onClick={() => {
-                  setConfirmed(false);
-                  setSearchTeacher("");
-                  setProgramme("");
                   onClose();
                 }}
                 sx={{
