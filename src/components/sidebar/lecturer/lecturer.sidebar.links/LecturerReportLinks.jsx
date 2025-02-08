@@ -16,10 +16,7 @@ import { Box } from "@mui/material";
 import { useSelector } from "react-redux";
 import { getAuthUser } from "../../../../features/auth/authSlice";
 
-const quickLinks = [
-  { name: "Create Report" },
-  // { name: "Search" }
-];
+const quickLinks = [{ name: "Create Report" }, { name: "Search" }];
 
 export function LecturerReportLinks({ hovered }) {
   const authUser = useSelector(getAuthUser);
@@ -86,14 +83,13 @@ export function LecturerReportLinks({ hovered }) {
             >
               <HashLink
                 to={
-                  `/sensec/users/${authUser?.uniqueId}/lecturer/academic_report/create_report/elective`
-                  // Qlink.name === "Create Report"
-                  //   ? "#"
-                  //   : `/sensec/users/${
-                  //       authUser?.uniqueId
-                  //     }/lecturer/Academic_Report/${Qlink.name
-                  //       .replace(/ /g, "_")
-                  //       .toLocaleLowerCase()}`
+                  Qlink.name === "Create Report"
+                    ? `/sensec/users/${authUser?.uniqueId}/lecturer/academic_report/create_report/elective`
+                    : `/sensec/users/${
+                        authUser?.uniqueId
+                      }/lecturer/Academic_Report/${Qlink.name
+                        .replace(/ /g, "_")
+                        .toLocaleLowerCase()}`
                 }
                 // className="links"
                 className={

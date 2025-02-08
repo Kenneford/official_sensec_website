@@ -33,7 +33,7 @@ import { toast } from "react-toastify";
 import {
   fetchCurrentClassAttendance,
   getCurrentClassAttendance,
-} from "../../../../features/academics/attedanceSlice";
+} from "../../../../features/academics/attendanceSlice";
 import SearchFilter from "../../../searchForm/SearchFilter";
 
 // Mock data for students and attendance

@@ -27,7 +27,7 @@ import Cookies from "js-cookie";
 import {
   fetchWeeklyClassAttendances,
   getWeeklyClassAttendance,
-} from "../../../../features/academics/attedanceSlice";
+} from "../../../../features/academics/attendanceSlice";
 
 export function TeacherDashboardOverview() {
   const allStudents = [];

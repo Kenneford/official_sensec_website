@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { API_ENDPOINT, SENSEC_API_ENDPOINT } from "../../apiEndPoint/api";
+import { SENSEC_API_ENDPOINT } from "../../apiEndPoint/api";
 import tokenInterceptor from "../../apiEndPoint/interceptors";
 
 const initialState = {
@@ -243,7 +243,7 @@ const attendancesSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(createClassAttendance.pending, (state, action) => {
+    builder.addCase(createClassAttendance.pending, (state) => {
       return { ...state, createStatus: "pending" };
     });
     builder.addCase(createClassAttendance.fulfilled, (state, action) => {
@@ -263,7 +263,7 @@ const attendancesSlice = createSlice({
         error: action.payload,
       };
     });
-    builder.addCase(handleWeekendAttendance.pending, (state, action) => {
+    builder.addCase(handleWeekendAttendance.pending, (state) => {
       return { ...state, takeWeekendAttendanceStatus: "pending" };
     });
     builder.addCase(handleWeekendAttendance.fulfilled, (state, action) => {
@@ -283,7 +283,7 @@ const attendancesSlice = createSlice({
         takeWeekendAttendanceError: action.payload,
       };
     });
-    builder.addCase(handleStudentAttendance.pending, (state, action) => {
+    builder.addCase(handleStudentAttendance.pending, (state) => {
       return { ...state, addStatus: "pending" };
     });
     builder.addCase(handleStudentAttendance.fulfilled, (state, action) => {
@@ -304,7 +304,7 @@ const attendancesSlice = createSlice({
       };
     });
 
-    builder.addCase(fetchClassAttendances.pending, (state, action) => {
+    builder.addCase(fetchClassAttendances.pending, (state) => {
       return { ...state, fetchingStatus: "pending" };
     });
     builder.addCase(fetchClassAttendances.fulfilled, (state, action) => {
@@ -324,7 +324,7 @@ const attendancesSlice = createSlice({
         teacherError: action.payload,
       };
     });
-    builder.addCase(fetchCurrentClassAttendance.pending, (state, action) => {
+    builder.addCase(fetchCurrentClassAttendance.pending, (state) => {
       return { ...state, fetchingStatus: "pending" };
     });
     builder.addCase(fetchCurrentClassAttendance.fulfilled, (state, action) => {
@@ -344,7 +344,7 @@ const attendancesSlice = createSlice({
         teacherError: action.payload,
       };
     });
-    builder.addCase(fetchWeeklyClassAttendances.pending, (state, action) => {
+    builder.addCase(fetchWeeklyClassAttendances.pending, (state) => {
       return { ...state, fetchingStatus: "pending" };
     });
     builder.addCase(fetchWeeklyClassAttendances.fulfilled, (state, action) => {
@@ -365,7 +365,7 @@ const attendancesSlice = createSlice({
       };
     });
 
-    builder.addCase(fetchSingleClassAttendance.pending, (state, action) => {
+    builder.addCase(fetchSingleClassAttendance.pending, (state) => {
       return { ...state, fetchingStatus: "pending" };
     });
     builder.addCase(fetchSingleClassAttendance.fulfilled, (state, action) => {

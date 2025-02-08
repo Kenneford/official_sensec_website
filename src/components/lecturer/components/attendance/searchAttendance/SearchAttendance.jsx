@@ -1,56 +1,25 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import "../lecturerAttendance.scss";
+import { FileOpen, TaskAlt } from "@mui/icons-material";
+import { Box, Button, Grid, MenuItem } from "@mui/material";
 import {
-  AccessTimeFilled,
-  CalendarMonth,
-  FileOpen,
-  Search,
-  TaskAlt,
-} from "@mui/icons-material";
-import {
-  Box,
-  Button,
-  Grid,
-  Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  TextField,
-  InputAdornment,
-  MenuItem,
-  Avatar,
-} from "@mui/material";
-import { Calendar } from "react-date-range";
-import { format } from "date-fns";
-import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
-import SearchForm from "../../../../searchForm/SearchForm";
-import {
+  CustomMenuProps,
   CustomMobileDatePicker,
-  CustomSearchField,
   CustomTextField,
 } from "../../../../../muiStyling/muiStyling";
 import { useParams } from "react-router-dom";
 import SmallFooter from "../../../../footer/SmallFooter";
-import { ViewAttendance } from "../viewAttendance/ViewAttendance";
 import { FetchAllLecturers } from "../../../../../data/lecturers/FetchLecturers";
 import { useDispatch, useSelector } from "react-redux";
 import { getAuthUser } from "../../../../../features/auth/authSlice";
-import TakeAttendance from "../takeAttendance/TakeAttendance";
-import NotAuthorized from "../../../../notAuthorized/NotAuthorized";
 import { toast } from "react-toastify";
 import {
   fetchCurrentClassAttendance,
-  getCurrentClassAttendance,
   getSearchedClassAttendance,
   resetSearchState,
   searchClassAttendance,
-} from "../../../../../features/academics/attedanceSlice";
+} from "../../../../../features/academics/attendanceSlice";
 import SearchFilter from "../../../../searchForm/SearchFilter";
-import { FetchAllClassLevels } from "../../../../../data/class/FetchClassLevel";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import Cookies from "js-cookie";
@@ -66,39 +35,12 @@ import {
   getLastNWeeksData,
 } from "../../../../../dateFormatter/DateFormatter";
 
-// Mock data for students and attendance
-const students = [
-  { id: 1, name: "John Doe", rollNo: "A101", status: "Present" },
-  { id: 2, name: "Jane Smith", rollNo: "A102", status: "Absent" },
-  { id: 3, name: "Sam Wilson", rollNo: "A103", status: "Present" },
-  { id: 4, name: "Kate Johnson", rollNo: "A104", status: "Absent" },
-  { id: 5, name: "Chris Evans", rollNo: "A105", status: "Present" },
-];
-
-// Calculate attendance statistics
-const totalStudents = students.length;
-const presentCount = students.filter(
-  (student) => student.status === "Present"
-).length;
-const absentCount = totalStudents - presentCount;
-
-// Data for Pie Chart
-const attendanceData = [
-  { name: "Present", value: presentCount },
-  { name: "Absent", value: absentCount },
-];
-
-const COLORS = ["#0088FE", "#FF8042"];
-
 export function SearchAttendance() {
   const currentAttendanceSearch = Cookies?.get("currentAttendanceSearch");
   console.log(currentAttendanceSearch);
 
-  const date = new Date().toDateString();
   const { lecturerCurrentLink, lecturerCurrentAction } = useParams();
-  const { searchingStatus, error, successMessage } = useSelector(
-    (state) => state.attendance
-  );
+  const { searchingStatus, error } = useSelector((state) => state.attendance);
   // State to track the selected month
   const [selectedMonth, setSelectedMonth] = useState("");
   // State to track the selected week
@@ -106,7 +48,6 @@ export function SearchAttendance() {
 
   // Handle Process State
   const [loadingComplete, setLoadingComplete] = useState(null);
-  const [searchAttendance, setSearchAttendance] = useState(false);
   const [dataFetched, setDataFetched] = useState(false);
   const [overviewStudents, setOverviewStudents] = useState({});
   const [openAttendanceOverviewModal, setOpenAttendanceOverviewModal] =
@@ -122,27 +63,20 @@ export function SearchAttendance() {
   const [searchForAttendance, setSearchForAttendance] = useState({
     by: "",
   });
-  console.log(searchForAttendance);
-  console.log(selectedMonth);
 
   const authLecturer = useSelector(getAuthUser);
   const searchedClassAttendance = useSelector(getSearchedClassAttendance);
-  console.log(searchedClassAttendance);
 
-  const classLevels = FetchAllClassLevels();
   const allSemesters = FetchAllAcademicTerms();
   const dispatch = useDispatch();
-  const currentClassAttendance = useSelector(getCurrentClassAttendance);
 
   const allLecturers = FetchAllLecturers();
-  const allClassLevelSections = [];
 
   const lecturerFound = allLecturers?.find(
     (lect) => lect?.uniqueId === authLecturer?.uniqueId
   );
   const classLevelSection =
     lecturerFound?.lecturerSchoolData?.classLevelHandling;
-  console.log(searchedClassAttendance);
 
   const filteredAttendance =
     searchedClassAttendance &&
@@ -198,7 +132,6 @@ export function SearchAttendance() {
   console.log(formattedToDate);
 
   const handleSearchAttendance = () => {
-    setSearchAttendance(true);
     if (dataFetched) {
       setDataFetched(false);
     }
@@ -219,6 +152,16 @@ export function SearchAttendance() {
     if (searchForAttendance?.by === "Month") {
       data = {
         monthRange: { start: selectedMonth?.start, end: selectedMonth?.end },
+        lecturer: authLecturer?.id,
+        classLevel:
+          lecturerFound?.lecturerSchoolData?.classLevelHandling?.classLevelId ||
+          "",
+        classSection: classLevelSection?._id,
+      };
+    }
+    if (searchForAttendance?.by === "Week") {
+      data = {
+        weekRange: { start: selectedWeek?.start, end: selectedWeek?.end },
         lecturer: authLecturer?.id,
         classLevel:
           lecturerFound?.lecturerSchoolData?.classLevelHandling?.classLevelId ||
@@ -309,7 +252,11 @@ export function SearchAttendance() {
         </Box>
       ),
       selector: (row) => (
-        <>{row?.date ? dateFormatter?.format(new Date(row?.date)) : "---"}</>
+        <>
+          {row?.createdAt
+            ? dateFormatter?.format(new Date(row?.createdAt))
+            : "---"}
+        </>
       ),
       // sortable: true,
     },
@@ -537,6 +484,9 @@ export function SearchAttendance() {
                         <CustomTextField
                           fullWidth
                           select
+                          slotProps={{
+                            select: { MenuProps: CustomMenuProps },
+                          }}
                           // label="Search By"
                           size="small"
                           value={searchForAttendance?.by || ""}
@@ -561,9 +511,9 @@ export function SearchAttendance() {
                           <MenuItem value={"Month"} sx={{ fontSize: ".8em" }}>
                             Month
                           </MenuItem>
-                          {/* <MenuItem value={"Week"} sx={{ fontSize: ".8em" }}>
+                          <MenuItem value={"Week"} sx={{ fontSize: ".8em" }}>
                             Week
-                          </MenuItem> */}
+                          </MenuItem>
                           <MenuItem value={"Date"} sx={{ fontSize: ".8em" }}>
                             Date
                           </MenuItem>
@@ -635,6 +585,9 @@ export function SearchAttendance() {
                         <CustomTextField
                           fullWidth
                           select
+                          slotProps={{
+                            select: { MenuProps: CustomMenuProps },
+                          }}
                           size="small"
                           name="selectedMonth"
                           value={selectedMonth?.label || ""}
@@ -658,7 +611,7 @@ export function SearchAttendance() {
                     </Grid>
                   </>
                 )}
-                {/* {searchForAttendance?.by === "Week" && (
+                {searchForAttendance?.by === "Week" && (
                   <>
                     <Grid
                       item
@@ -672,6 +625,9 @@ export function SearchAttendance() {
                         <CustomTextField
                           fullWidth
                           select
+                          slotProps={{
+                            select: { MenuProps: CustomMenuProps },
+                          }}
                           size="small"
                           name="selectedWeek"
                           value={selectedWeek?.label || ""}
@@ -694,7 +650,7 @@ export function SearchAttendance() {
                       </Box>
                     </Grid>
                   </>
-                )} */}
+                )}
                 {searchForAttendance?.by === "Semester" && (
                   <Grid
                     item
@@ -708,6 +664,9 @@ export function SearchAttendance() {
                       <CustomTextField
                         fullWidth
                         select
+                        slotProps={{
+                          select: { MenuProps: CustomMenuProps },
+                        }}
                         size="small"
                         name="semester"
                         value={attendanceData?.semester || ""}
@@ -935,11 +894,7 @@ export function SearchAttendance() {
                   data={filteredAttendance}
                   customStyles={customAttendanceTableStyle}
                   pagination
-                  // selectableRows
-                  // selectableRowsHighlight
                   highlightOnHover
-                  // onSelectedRowsChange={handleMultiSelect}
-                  // clearSelectedRows={toggleClearRows}
                 />
                 <SearchedAttendanceOverviewModal
                   open={openAttendanceOverviewModal}
