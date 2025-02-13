@@ -7,6 +7,8 @@ import { customAttendanceTableStyle } from "../../usersInfoDataFormat/usersInfoT
 import { dateFormatter } from "../../dateFormatter/DateFormatter";
 
 export default function SearchedReportOverviewModal({ open, onClose, data }) {
+  console.log(data);
+
   // Calculate attendance statistics
   const totalStudents = data?.students?.length || 0;
   const presentCount =
@@ -38,22 +40,44 @@ export default function SearchedReportOverviewModal({ open, onClose, data }) {
           </Box>
         ) : (
           <Box className="noImgLink" title="View Student Info">
-            {row?.personalInfo?.gender === "Male" && (
-              <img
-                className="studentImg"
+            {row?.student?.personalInfo?.gender === "Male" && (
+              <Avatar
+                // className="studentImg"
                 src={"/assets/maleAvatar.png"}
+                sx={{
+                  width: "1.5em",
+                  height: "1.5em",
+                  borderRadius: ".4rem",
+                  objectFit: "cover",
+                }}
                 alt=""
               />
             )}
-            {row?.personalInfo?.gender === "Female" && (
-              <img
-                className="studentImg"
+            {row?.student?.personalInfo?.gender === "Female" && (
+              <Avatar
+                // className="studentImg"
                 src={"/assets/femaleAvatar.png"}
+                sx={{
+                  width: "1.5em",
+                  height: "1.5em",
+                  borderRadius: ".4rem",
+                  objectFit: "cover",
+                }}
                 alt=""
               />
             )}
-            {!row?.personalInfo?.gender && (
-              <img className="studentImg" src={"/assets/noAvatar.png"} alt="" />
+            {!row?.student?.personalInfo?.gender && (
+              <Avatar
+                // className="studentImg"
+                src={"/assets/noAvatar.png"}
+                sx={{
+                  width: "1.5em",
+                  height: "1.5em",
+                  borderRadius: ".4rem",
+                  objectFit: "cover",
+                }}
+                alt=""
+              />
             )}
           </Box>
         ),
