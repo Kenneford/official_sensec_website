@@ -155,6 +155,18 @@ export function ElectiveReport() {
     if (totalScore >= 40) return "E8";
     return "F9"; // For scores below 40
   };
+  // Grade remark
+  const gradeRemark = (totalScore) => {
+    if (totalScore >= 80) return "Excellent";
+    if (totalScore >= 70) return "Very Good";
+    if (totalScore >= 65) return "Good";
+    if (totalScore >= 60) return "Average";
+    if (totalScore >= 55) return "Below Average";
+    if (totalScore >= 50) return "Credit";
+    if (totalScore >= 45) return "Pass";
+    if (totalScore >= 40) return "Weak Pass";
+    return "Fail"; // For scores below 40
+  };
   // Grade background color checker
   const gradeBgColor = (userData) => {
     if (userData === "A1") return "green";
@@ -176,6 +188,7 @@ export function ElectiveReport() {
     authUser,
     handleScoreChange,
     calculateGrade,
+    gradeRemark,
     gradeBgColor,
     dispatch,
     selectedSubject: subject,

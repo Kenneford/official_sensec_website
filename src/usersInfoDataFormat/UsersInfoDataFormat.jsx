@@ -1313,38 +1313,52 @@ const studentsReportColumn = (columnData) => {
     {
       name: "Remark",
       selector: (row) => {
+        const getGrade = columnData?.calculateGrade(row?.totalScore || 0);
         return (
-          <>
-            {!columnData?.subjectMultiStudentsReports ? (
-              <Button
-                size="small"
-                sx={{
-                  padding: ".2rem",
-                  borderRadius: ".4rem",
-                  color: "#0ab312",
-                  fontSize: ".9em",
-                  textTransform: "capitalize",
-                  ":hover": {
-                    backgroundColor: "transparent",
-                  },
-                }}
-                onClick={() => {
-                  columnData?.setStudentId(row?.uniqueId);
-                  columnData?.setOpenRemarkModal(true);
-                }}
-              >
-                {!row?.remark ? (
-                  <>
-                    Add <Add fontSize=".8em" />
-                  </>
-                ) : (
-                  <Edit style={{ color: "#696969" }} />
-                )}
-              </Button>
-            ) : (
-              "---"
-            )}
-          </>
+          <Box
+            sx={{
+              padding: ".2rem",
+              borderRadius: ".4rem",
+              // color: "#fff",
+              fontSize: ".9em",
+              fontWeight: "bold",
+              letterSpacing: 1,
+              color: columnData?.gradeBgColor(getGrade),
+            }}
+          >
+            {columnData?.gradeRemark(row.totalScore || 0)}
+          </Box>
+          // <>
+          //   {!columnData?.subjectMultiStudentsReports ? (
+          //     <Button
+          //       size="small"
+          //       sx={{
+          //         padding: ".2rem",
+          //         borderRadius: ".4rem",
+          //         color: "#0ab312",
+          //         fontSize: ".9em",
+          //         textTransform: "capitalize",
+          //         ":hover": {
+          //           backgroundColor: "transparent",
+          //         },
+          //       }}
+          //       onClick={() => {
+          //         columnData?.setStudentId(row?.uniqueId);
+          //         columnData?.setOpenRemarkModal(true);
+          //       }}
+          //     >
+          //       {!row?.remark ? (
+          //         <>
+          //           Add <Add fontSize=".8em" />
+          //         </>
+          //       ) : (
+          //         <Edit style={{ color: "#696969" }} />
+          //       )}
+          //     </Button>
+          //   ) : (
+          //     "---"
+          //   )}
+          // </>
         );
       },
     },
