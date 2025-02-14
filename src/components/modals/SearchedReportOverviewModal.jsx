@@ -19,6 +19,43 @@ export default function SearchedReportOverviewModal({ open, onClose, data }) {
   const presentPercentage = ((presentCount / totalStudents) * 100).toFixed(1);
   const absentPercentage = ((absentCount / totalStudents) * 100).toFixed(1);
 
+  // Grade calculator
+  const calculateGrade = (totalScore) => {
+    if (totalScore >= 80) return "A1";
+    if (totalScore >= 70) return "B2";
+    if (totalScore >= 65) return "B3";
+    if (totalScore >= 60) return "C4";
+    if (totalScore >= 55) return "C5";
+    if (totalScore >= 50) return "C6";
+    if (totalScore >= 45) return "D7";
+    if (totalScore >= 40) return "E8";
+    return "F9"; // For scores below 40
+  };
+  // Grade remark
+  const gradeRemark = (totalScore) => {
+    if (totalScore >= 80) return "Excellent";
+    if (totalScore >= 70) return "Very Good";
+    if (totalScore >= 65) return "Good";
+    if (totalScore >= 60) return "Average";
+    if (totalScore >= 55) return "Below Average";
+    if (totalScore >= 50) return "Credit";
+    if (totalScore >= 45) return "Pass";
+    if (totalScore >= 40) return "Weak Pass";
+    return "Fail"; // For scores below 40
+  };
+  // Grade background color checker
+  const gradeBgColor = (userData) => {
+    if (userData === "A1") return "green";
+    if (userData === "B2") return "#12b207";
+    if (userData === "B3") return "#b9b10d";
+    if (userData === "C4") return "#b6ba6a";
+    if (userData === "C5") return "#0689a7";
+    if (userData === "C6") return "#0e596a";
+    if (userData === "D7") return "#584646";
+    if (userData === "E8") return "#763c3c";
+    return "#c30505"; // For scores below 40
+  };
+
   // Define columns for the data table
   const reportOverviewColumn = [
     {
@@ -179,26 +216,24 @@ export default function SearchedReportOverviewModal({ open, onClose, data }) {
           <p style={{ fontSize: ".8em" }}>Remark</p>
         </Box>
       ),
-      selector: (row) => (
-        <Box fontSize={"calc(0.7rem + 1vmin)"}>
-          <p
-            // style={{ fontSize: ".8em" }}
-            title={""}
+      selector: (row) => {
+        const getGrade = calculateGrade(row?.totalScore || 0);
+        return (
+          <Box
+            sx={{
+              padding: ".2rem",
+              borderRadius: ".4rem",
+              // color: "#fff",
+              fontSize: ".9em",
+              fontWeight: "bold",
+              color: gradeBgColor(getGrade),
+              letterSpacing: 1,
+            }}
           >
-            <FileOpen
-              sx={{ fontSize: "1em", color: "#0aa30a", cursor: "pointer" }}
-              titleAccess="View Data"
-              //   onClick={() => {
-              //     setOverviewStudents(row);
-              //     // if (!row?.currentTeacher) {
-              //     setOpenAttendanceOverviewModal(true);
-              //     // }
-              //   }}
-            />
-          </p>
-        </Box>
-      ),
-      // sortable: true,
+            {gradeRemark(row.totalScore || 0)}
+          </Box>
+        );
+      },
     },
     // {
     //   name: "Remark",
@@ -219,7 +254,7 @@ export default function SearchedReportOverviewModal({ open, onClose, data }) {
     //               },
     //             }}
     //             onClick={() => {
-    //               columnData?.setStudentId(row?.uniqueId);
+    //              setStudentId(row?.uniqueId);
     //               columnData?.setOpenRemarkModal(true);
     //             }}
     //           >
