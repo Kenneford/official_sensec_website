@@ -4,10 +4,16 @@ import { Box, Typography } from "@mui/material";
 // import { useDispatch, useSelector } from "react-redux";
 import PropType from "prop-types";
 
-export default function SearchFilter({ value, onChange, placeholder }) {
+export default function SearchFilter({
+  value,
+  onChange,
+  placeholder,
+  handleDataFetch,
+}) {
   // const dispatch = useDispatch();
   const handleSearch = (e) => {
     e.preventDefault();
+    handleDataFetch();
     // dispatch(studentSearch({ student_name: value }));
   };
   return (
@@ -22,7 +28,7 @@ export default function SearchFilter({ value, onChange, placeholder }) {
           id="search"
         />
         <button type="submit">
-          <SearchIcon className="searchIcon" />
+          <SearchIcon className="searchIcon" titleAccess="Search" />
         </button>
       </form>
     </Box>
@@ -31,5 +37,6 @@ export default function SearchFilter({ value, onChange, placeholder }) {
 SearchFilter.propTypes = {
   value: PropType.string,
   onChange: PropType.func,
+  handleDataFetch: PropType.func,
   placeholder: PropType.string,
 };

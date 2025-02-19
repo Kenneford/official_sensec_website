@@ -204,3 +204,19 @@
     }
   }
 }
+#reportSearchList {
+  max-height: 15rem;
+  overflow-y: scroll;
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+  &::-webkit-scrollbar-track {
+    background-color: #383838;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: #696969;
+  }
+  &::-webkit-scrollbar-track-piece {
+    width: 5px;
+  }
+}

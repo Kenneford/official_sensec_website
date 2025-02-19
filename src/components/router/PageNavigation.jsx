@@ -58,6 +58,8 @@ import {
 } from "../lazyLoading/lecturer/LecturerLazyComponents";
 import { ElectiveReport } from "../lecturer/components/reports/ElectiveReport";
 import { CoreReport } from "../lecturer/components/reports/CoreReport";
+import ForgotPassword from "../../pages/auth/resetPassword/ForgotPassword";
+import ResetPassword from "../../pages/auth/resetPassword/ResetPassword";
 
 export default function PageNavigation() {
   const authUser = useSelector(getAuthUser);
@@ -107,6 +109,14 @@ export default function PageNavigation() {
         {
           path: "/sensec/blogs",
           element: <Blogs />,
+        },
+        {
+          path: "/sensec/forgot_password",
+          element: <ForgotPassword />,
+        },
+        {
+          path: "/sensec/password/:userUniqueId/:userIdString/:token/reset",
+          element: <ResetPassword />,
         },
         {
           path: "/sensec/sign_up/:signUpAction/:uniqueId/successful",
