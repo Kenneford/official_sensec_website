@@ -7,13 +7,13 @@ import PageLoading from "../../components/pageLoading/PageLoading";
 
 export function Courses() {
   const allProgrammes = FetchAllProgrammes();
-  if (!allProgrammes) {
-    return (
-      <Box fontSize={"calc( 0.7rem + 1vmin)"}>
-        <PageLoading />
-      </Box>
-    );
-  }
+  // if (!allProgrammes) {
+  //   return (
+  //     <Box fontSize={"calc( 0.7rem + 1vmin)"}>
+  //       <PageLoading />
+  //     </Box>
+  //   );
+  // }
   return (
     <Box id="allProgrammes">
       <CoursesBanner />

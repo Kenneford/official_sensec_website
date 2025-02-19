@@ -14,13 +14,13 @@ import PageLoading from "../../components/pageLoading/PageLoading";
 
 export function Home() {
   const allProgrammes = FetchAllProgrammes();
-  if (!allProgrammes) {
-    return (
-      <Box fontSize={"calc( 0.7rem + 1vmin)"}>
-        <PageLoading />
-      </Box>
-    );
-  }
+  // if (!allProgrammes) {
+  //   return (
+  //     <Box fontSize={"calc( 0.7rem + 1vmin)"}>
+  //       <PageLoading />
+  //     </Box>
+  //   );
+  // }
   return (
     <Box id="homePage">
       <Box sx={{ overflow: "hidden" }}>

@@ -22,6 +22,7 @@ const initialState = {
   allUsers: [],
   authUser: "",
   userInfo: "",
+  passwordReset: "",
   userVerificationData: "",
   refreshTokenInfo: "",
   signUpStatus: "",
@@ -37,6 +38,12 @@ const initialState = {
   token: localStorage.getItem("userToken") || null,
   isRefreshing: false,
   sessionExpired: false,
+  forgotPasswordStatus: "",
+  forgotPasswordSuccessMessage: "",
+  forgotPasswordError: "",
+  resetPasswordStatus: "",
+  resetPasswordSuccessMessage: "",
+  resetPasswordError: "",
 };
 
 // Decode user token
@@ -94,7 +101,7 @@ export const fetchVerificationData = createAsyncThunk(
 export const verifyUser = createAsyncThunk(
   "Auth/verifyUser",
   async ({ userId, emailToken }, { rejectWithValue }) => {
-      localStorage.setItem("signUpId", userId);
+    localStorage.setItem("signUpId", userId);
     try {
       const res = await axios.post(
         `${SENSEC_API_ENDPOINT}/users/${userId}/${emailToken}/verify`
@@ -146,6 +153,47 @@ export const fetchAllUsers = createAsyncThunk(
       const res = await axios.get(`${SENSEC_API_ENDPOINT}/users/fetch_all`);
       return res.data;
     } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const forgotPassword = createAsyncThunk(
+  "User/forgotPassword",
+  async (email, { rejectWithValue }) => {
+    try {
+      const res = await axios.post(
+        `${SENSEC_API_ENDPOINT}/users/request_password_reset`,
+        email
+      );
+      console.log("User", res.data);
+      if (res.data.token !== "" && res.data.secret !== "") {
+        localStorage.setItem("verifiedUser", "change_your_password");
+        return res.data;
+      }
+    } catch (error) {
+      console.log(error.response);
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const resetPassword = createAsyncThunk(
+  "User/resetPassword",
+  async (
+    { token, uniqueId, password, confirmPassword },
+    { rejectWithValue }
+  ) => {
+    console.log(password);
+    try {
+      const res = await axios.post(
+        `${SENSEC_API_ENDPOINT}/users/${uniqueId}/password/${token}/reset`,
+        { password, confirmPassword }
+      );
+      localStorage.setItem("userToken", res?.data?.token);
+      return res.data;
+    } catch (error) {
+      console.log(error);
+      console.log(error.response);
       return rejectWithValue(error.response.data);
     }
   }
@@ -329,6 +377,50 @@ const authSlice = createSlice({
         ...state,
         fetchStatus: "rejected",
         fetchError: action.payload,
+      };
+    });
+    // forgotPassword
+    builder.addCase(forgotPassword.pending, (state) => {
+      return { ...state, forgotPasswordStatus: "pending" };
+    });
+    builder.addCase(forgotPassword.fulfilled, (state, action) => {
+      if (action.payload) {
+        return {
+          ...state,
+          // userInfo: action.payload.token,
+          forgotPasswordSuccessMessage: action.payload.successMessage,
+          forgotPasswordStatus: "success",
+        };
+      } else return state;
+    });
+    builder.addCase(forgotPassword.rejected, (state, action) => {
+      return {
+        ...state,
+        forgotPasswordStatus: "rejected",
+        forgotPasswordError: action.payload,
+      };
+    });
+    // resetPassword
+    builder.addCase(resetPassword.pending, (state) => {
+      return { ...state, resetPasswordStatus: "pending" };
+    });
+    builder.addCase(resetPassword.fulfilled, (state, action) => {
+      if (action.payload) {
+        const user = tokenDecoded(action.payload.token);
+        return {
+          ...state,
+          authUser: user,
+          // passwordReset: action.payload.user,
+          resetPasswordSuccessMessage: action.payload.successMessage,
+          resetPasswordStatus: "success",
+        };
+      } else return state;
+    });
+    builder.addCase(resetPassword.rejected, (state, action) => {
+      return {
+        ...state,
+        resetPasswordStatus: "rejected",
+        resetPasswordError: action.payload,
       };
     });
   },
