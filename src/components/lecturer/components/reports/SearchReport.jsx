@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./reports.scss";
 import { FileOpen, TaskAlt } from "@mui/icons-material";
-import { Box, Button, Grid, MenuItem, Avatar } from "@mui/material";
+import { Box, Button, Grid, MenuItem, Avatar, Typography } from "@mui/material";
 import {
   CustomMenuProps,
   CustomMobileDatePicker,
@@ -28,10 +28,15 @@ import { FetchAllAcademicTerms } from "../../../../data/term.year/FetchAcademicT
 import SearchFilter from "../../../searchForm/SearchFilter";
 import {
   getSearchedClassReportInfo,
+  getSearchedStudentReportInfo,
+  resetClassReportData,
   resetClassReportSearchState,
+  resetStudentReportSearchState,
   searchClassReport,
+  searchSingleStudentReport,
 } from "../../../../features/reports/reportSlice";
 import SearchedReportOverviewModal from "../../../modals/SearchedReportOverviewModal";
+import { FetchAllStudents } from "../../../../data/students/FetchAllStudents";
 
 export function SearchReport() {
   const currentReportSearch = Cookies?.get("currentReportSearch");
@@ -52,6 +57,7 @@ export function SearchReport() {
   const [openAttendanceOverviewModal, setOpenAttendanceOverviewModal] =
     useState(false);
   const [searchStudent, setSearchStudent] = useState("");
+  const [student, setStudent] = useState("");
   const [attendanceData, setAttendanceData] = useState({
     classLevel: "",
     date: "",
@@ -65,7 +71,10 @@ export function SearchReport() {
 
   const authLecturer = useSelector(getAuthUser);
   const searchedClassReportInfo = useSelector(getSearchedClassReportInfo);
+  const searchedStudentReportInfo = useSelector(getSearchedStudentReportInfo);
+  console.log("searchedStudentReportInfo: ", searchedStudentReportInfo);
 
+  const allStudents = FetchAllStudents();
   const allSemesters = FetchAllAcademicTerms();
   const dispatch = useDispatch();
 
@@ -78,7 +87,69 @@ export function SearchReport() {
           ?.includes(searchStudent.toLowerCase()) ||
         studentData?.year?.toLowerCase()?.includes(searchStudent.toLowerCase())
     );
+  const filteredStudents =
+    allStudents &&
+    allStudents?.filter(
+      (studentData) =>
+        studentData?.personalInfo?.fullName
+          ?.toLowerCase()
+          ?.includes(searchStudent.toLowerCase()) ||
+        studentData?.uniqueId
+          ?.toLowerCase()
+          ?.includes(searchStudent.toLowerCase())
+    );
+  console.log(filteredStudents);
 
+  // Calculate attendance statistics
+  const totalStudents = filteredReports?.students?.length || 0;
+  const passCount =
+    filteredReports?.students?.filter((student) => student?.grade !== "F9")
+      .length || 0;
+  const failCount = totalStudents - passCount;
+
+  const passPercentage = ((passCount / totalStudents) * 100).toFixed(1);
+  const failPercentage = ((failCount / totalStudents) * 100).toFixed(1);
+
+  console.log("totalStudents: ", totalStudents);
+  console.log("passPercentage: ", passPercentage);
+  console.log("failPercentage: ", failPercentage);
+
+  // Grade calculator
+  const calculateGrade = (totalScore) => {
+    if (totalScore >= 80) return "A1";
+    if (totalScore >= 70) return "B2";
+    if (totalScore >= 65) return "B3";
+    if (totalScore >= 60) return "C4";
+    if (totalScore >= 55) return "C5";
+    if (totalScore >= 50) return "C6";
+    if (totalScore >= 45) return "D7";
+    if (totalScore >= 40) return "E8";
+    return "F9"; // For scores below 40
+  };
+  // Grade remark
+  const gradeRemark = (totalScore) => {
+    if (totalScore >= 80) return "Excellent";
+    if (totalScore >= 70) return "Very Good";
+    if (totalScore >= 65) return "Good";
+    if (totalScore >= 60) return "Average";
+    if (totalScore >= 55) return "Below Average";
+    if (totalScore >= 50) return "Credit";
+    if (totalScore >= 45) return "Pass";
+    if (totalScore >= 40) return "Weak Pass";
+    return "Fail"; // For scores below 40
+  };
+  // Grade background color checker
+  const gradeBgColor = (userData) => {
+    if (userData === "A1") return "green";
+    if (userData === "B2") return "#12b207";
+    if (userData === "B3") return "#b9b10d";
+    if (userData === "C4") return "#b6ba6a";
+    if (userData === "C5") return "#0689a7";
+    if (userData === "C6") return "#0e596a";
+    if (userData === "D7") return "#584646";
+    if (userData === "E8") return "#763c3c";
+    return "#c30505"; // For scores below 40
+  };
   // Handle selection change
   const handleMonthChange = (event) => {
     const selected = monthData.find(
@@ -121,6 +192,9 @@ export function SearchReport() {
   const formattedToDate = `${toDay}/${toMonth}/${toYear}`;
 
   const handleSearchAttendance = () => {
+    if (searchedStudentReportInfo) {
+      dispatch(resetStudentReportSearchState());
+    }
     if (dataFetched) {
       setDataFetched(false);
     }
@@ -168,6 +242,12 @@ export function SearchReport() {
     dispatch(searchClassReport(data));
   };
 
+  const handleStudentReportFetch = () => {
+    if (student) {
+      dispatch(resetClassReportData());
+      dispatch(searchSingleStudentReport(student));
+    }
+  };
   const handleDateChange = (date) => {
     if (dayjs(date).isValid()) {
       setAttendanceData((prev) => ({
@@ -316,21 +396,18 @@ export function SearchReport() {
       selector: (row) => {
         // Calculate attendance statistics
         const totalStudents = row?.students?.length || 0;
-        const presentCount =
-          row?.students?.filter((student) => student.status === "Present")
-            .length || 0;
+        const passCount =
+          row?.students?.filter((student) => student.grade !== "F9").length ||
+          0;
 
-        const presentPercentage = (
-          (presentCount / totalStudents) *
-          100
-        ).toFixed(1);
+        const passPercentage = ((passCount / totalStudents) * 100).toFixed(1);
         return (
           <Box fontSize={"calc(0.7rem + 1vmin)"}>
             <p
               style={{ fontSize: ".8em" }}
-              title={row?.student?.personalInfo?.fullName}
+              title={`${passCount} student(s) passed!`}
             >
-              {presentPercentage}
+              {passPercentage}
             </p>
           </Box>
         );
@@ -346,19 +423,17 @@ export function SearchReport() {
       cell: (row) => {
         // Calculate attendance statistics
         const totalStudents = row?.students?.length || 0;
-        const absentCount =
-          row?.students?.filter((student) => student.status === "Absent")
-            .length || 0;
-        const absentPercentage = ((absentCount / totalStudents) * 100).toFixed(
-          1
-        );
+        const failCount =
+          row?.students?.filter((student) => student.grade === "F9").length ||
+          0;
+        const failPercentage = ((failCount / totalStudents) * 100).toFixed(1);
         return (
           <Box fontSize={"calc(0.7rem + 1vmin)"}>
             <p
               style={{ fontSize: ".8em" }}
-              title={row?.student?.personalInfo?.fullName}
+              title={`${failCount} student(s) failed!`}
             >
-              {absentPercentage}
+              {failPercentage}
             </p>
           </Box>
         );
@@ -391,6 +466,402 @@ export function SearchReport() {
       ),
       // sortable: true,
     },
+  ];
+  const reportOverviewColumn = [
+    {
+      name: (
+        <Box fontSize={"calc(0.7rem + 1vmin)"}>
+          <p style={{ fontSize: ".8em" }}>Date</p>
+        </Box>
+      ),
+      selector: (row) => (
+        <p
+          title={
+            row?.createdAt
+              ? dateFormatter?.format(new Date(row?.createdAt))
+              : "---"
+          }
+        >
+          {row?.createdAt
+            ? dateFormatter?.format(new Date(row?.createdAt))
+            : "---"}
+        </p>
+      ),
+      // sortable: true,
+    },
+    // {
+    //   name: "Image",
+    //   selector: (row) =>
+    //     row?.student?.personalInfo?.profilePicture?.url ? (
+    //       <Box>
+    //         <Avatar
+    //           // className="studentImg"
+    //           src={row?.student?.personalInfo?.profilePicture?.url}
+    //           sx={{
+    //             width: "1.5em",
+    //             height: "1.5em",
+    //             borderRadius: ".4rem",
+    //             objectFit: "cover",
+    //           }}
+    //           alt=""
+    //         />
+    //       </Box>
+    //     ) : (
+    //       <Box className="noImgLink" title="View Student Info">
+    //         {row?.student?.personalInfo?.gender === "Male" && (
+    //           <Avatar
+    //             // className="studentImg"
+    //             src={"/assets/maleAvatar.png"}
+    //             sx={{
+    //               width: "1.5em",
+    //               height: "1.5em",
+    //               borderRadius: ".4rem",
+    //               objectFit: "cover",
+    //             }}
+    //             alt=""
+    //           />
+    //         )}
+    //         {row?.student?.personalInfo?.gender === "Female" && (
+    //           <Avatar
+    //             // className="studentImg"
+    //             src={"/assets/femaleAvatar.png"}
+    //             sx={{
+    //               width: "1.5em",
+    //               height: "1.5em",
+    //               borderRadius: ".4rem",
+    //               objectFit: "cover",
+    //             }}
+    //             alt=""
+    //           />
+    //         )}
+    //         {!row?.student?.personalInfo?.gender && (
+    //           <Avatar
+    //             // className="studentImg"
+    //             src={"/assets/noAvatar.png"}
+    //             sx={{
+    //               width: "1.5em",
+    //               height: "1.5em",
+    //               borderRadius: ".4rem",
+    //               objectFit: "cover",
+    //             }}
+    //             alt=""
+    //           />
+    //         )}
+    //       </Box>
+    //     ),
+    // },
+    {
+      name: (
+        <Box fontSize={"calc(0.7rem + 1vmin)"}>
+          <p style={{ fontSize: ".8em" }}>Name</p>
+        </Box>
+      ),
+      selector: (row) => <Box>{row?.student?.personalInfo?.fullName}</Box>,
+      sortable: true,
+    },
+    {
+      name: (
+        <Box fontSize={"calc(0.7rem + 1vmin)"}>
+          <p style={{ fontSize: ".8em" }}>Semester</p>
+        </Box>
+      ),
+      selector: (row) => (
+        <Box fontSize={"calc(0.7rem + 1vmin)"}>
+          <p style={{ fontSize: ".8rem" }} title={row?.semester}>
+            {row?.semester}
+          </p>
+        </Box>
+      ),
+      // sortable: true,
+    },
+    {
+      name: (
+        <Box fontSize={"calc(0.7rem + 1vmin)"}>
+          <p style={{ fontSize: ".8em" }}>Subject</p>
+        </Box>
+      ),
+      selector: (row) => (
+        <Box fontSize={"calc(0.7rem + 1vmin)"}>
+          <p style={{ fontSize: ".8rem" }} title={row?.subject?.subjectName}>
+            {row?.subject?.subjectName}
+          </p>
+        </Box>
+      ),
+      // sortable: true,
+    },
+    {
+      name: (
+        <Box fontSize={"calc(0.7rem + 1vmin)"}>
+          <p style={{ fontSize: ".8em" }}>Class Score</p>
+        </Box>
+      ),
+      selector: (row) => (
+        <Box display={"flex"} sx={{ alignItems: "center" }}>
+          <Typography
+            sx={{
+              //   width: ".5rem",
+              fontSize: ".75rem", // Adjust font size of the adornment
+              //   marginLeft: "0.2rem", // Prevent overlap with input
+              color: "#555",
+            }}
+          >
+            {row.classScore}
+            {/* <span style={{}}>/30</span> */}
+          </Typography>
+          <Typography
+            sx={{ fontSize: "0.75rem", color: "#af0bd8", ml: ".5rem" }}
+          >
+            /30
+          </Typography>
+        </Box>
+      ),
+    },
+    {
+      name: (
+        <Box fontSize={"calc(0.7rem + 1vmin)"}>
+          <p style={{ fontSize: ".8em" }}>Exam Score</p>
+        </Box>
+      ),
+      selector: (row) => (
+        <Box display={"flex"} sx={{ alignItems: "center" }}>
+          <Typography
+            sx={{
+              //   width: ".5rem",
+              fontSize: ".75rem", // Adjust font size of the adornment
+              //   marginLeft: "0.2rem", // Prevent overlap with input
+              color: "#555",
+            }}
+          >
+            {row.examScore}
+            {/* <span style={{}}>/30</span> */}
+          </Typography>
+          <Typography
+            sx={{ fontSize: "0.75rem", color: "#0b94d8", ml: ".5rem" }}
+          >
+            /70
+          </Typography>
+        </Box>
+      ),
+    },
+    {
+      name: (
+        <Box fontSize={"calc(0.7rem + 1vmin)"}>
+          <p style={{ fontSize: ".8em" }}>Total Score</p>
+        </Box>
+      ),
+      selector: (row) => <Box fontSize={".9em"}>{row.totalScore || 0}</Box>,
+      // sortable: true,
+    },
+    {
+      name: (
+        <Box fontSize={"calc(0.7rem + 1vmin)"}>
+          <p style={{ fontSize: ".8em" }}>Grade</p>
+        </Box>
+      ),
+      selector: (row) => {
+        const getGrade = row?.grade || 0;
+        return (
+          <Box
+            bgcolor={gradeBgColor(getGrade)}
+            sx={{
+              padding: ".2rem",
+              borderRadius: ".4rem",
+              color: "#fff",
+              fontSize: ".9em",
+            }}
+          >
+            {getGrade || 0}
+          </Box>
+        );
+      },
+    },
+    {
+      name: (
+        <Box fontSize={"calc(0.7rem + 1vmin)"}>
+          <p style={{ fontSize: ".8em" }}>Remark</p>
+        </Box>
+      ),
+      selector: (row) => {
+        const getGrade = calculateGrade(row?.totalScore || 0);
+        return (
+          <Box
+            sx={{
+              padding: ".2rem",
+              borderRadius: ".4rem",
+              // color: "#fff",
+              fontSize: ".9em",
+              fontWeight: "bold",
+              color: gradeBgColor(getGrade),
+              letterSpacing: 1,
+            }}
+          >
+            {gradeRemark(row.totalScore || 0)}
+          </Box>
+        );
+      },
+    },
+    // {
+    //   name: "Remark",
+    //   selector: (row) => {
+    //     return (
+    //       <>
+    //         {/* {!columnData?.subjectMultiStudentsReports ? (
+    //           <Button
+    //             size="small"
+    //             sx={{
+    //               padding: ".2rem",
+    //               borderRadius: ".4rem",
+    //               color: "#0ab312",
+    //               fontSize: ".9em",
+    //               textTransform: "capitalize",
+    //               ":hover": {
+    //                 backgroundColor: "transparent",
+    //               },
+    //             }}
+    //             onClick={() => {
+    //              setStudentId(row?.uniqueId);
+    //               columnData?.setOpenRemarkModal(true);
+    //             }}
+    //           >
+    //             {!row?.remark ? (
+    //               <>
+    //                 Add <Add fontSize=".8em" />
+    //               </>
+    //             ) : (
+    //               <Edit style={{ color: "#696969" }} />
+    //             )}
+    //           </Button>
+    //         ) : (
+    //           "---"
+    //         )} */}
+    //       </>
+    //     );
+    //   },
+    // },
+    // {
+    //   name: "Save",
+    //   selector: (row) => {
+    //     const disableBtn = Boolean(
+    //       columnData?.subjectMultiStudentsReports &&
+    //         columnData?.subjectMultiStudentsReports?.subject ===
+    //           columnData?.draftReportInfo?.subject
+    //     );
+    //     return (
+    //       <Button
+    //         disabled={disableBtn}
+    //         // sx={{
+    //         //   // color: "#fff !important",
+    //         //   "&.Mui-disabled": {
+    //         //     cursor: "not-allowed", // Show not-allowed cursor
+    //         //     pointerEvents: "auto",
+    //         //   },
+    //         // }}
+    //         sx={{
+    //           textTransform: "capitalize",
+    //           ":hover": {
+    //             backgroundColor: "transparent",
+    //           },
+    //           color:
+    //             columnData?.subjectMultiStudentsReports &&
+    //             columnData?.subjectMultiStudentsReports?.subject ===
+    //               columnData?.draftReportInfo?.subject
+    //               ? ""
+    //               : "#03950a !important",
+    //           "&.Mui-disabled": {
+    //             cursor: "not-allowed", // Show not-allowed cursor
+    //             pointerEvents: "auto",
+    //           },
+    //         }}
+    //         // className="editLink"
+    //         onClick={async () => {
+    //           // Only set current student if data saving is not in progress
+    //           if (!columnData?.saveDataInProgress) {
+    //             columnData?.setCurrentStudent(row._id);
+    //           }
+    //         }}
+    //       >
+    //         {columnData?.foundStudent &&
+    //           columnData?.foundStudent._id === row._id && (
+    //             <>
+    //               {columnData?.loadingComplete === false && (
+    //                 <Box
+    //                   className="promotionSpinner"
+    //                   sx={{
+    //                     // marginTop: ".8rem",
+    //                     fontSize: "calc( 0.7rem 1vmin)",
+    //                   }}
+    //                 >
+    //                   <span style={{ fontSize: "1em" }}>Saving</span>
+    //                   <span className="dot-ellipsis">
+    //                     <span className="dot">.</span>
+    //                     <span className="dot">.</span>
+    //                     <span className="dot">.</span>
+    //                   </span>
+    //                 </Box>
+    //               )}
+    //               {columnData?.loadingComplete &&
+    //                 columnData?.createStatus === "success" && (
+    //                   <Box
+    //                     sx={{ display: "flex", alignItems: "center" }}
+    //                     fontSize={".8em"}
+    //                   >
+    //                     <span>Saved</span> <TaskAlt />
+    //                   </Box>
+    //                 )}
+    //             </>
+    //           )}
+    //         <>
+    //           {columnData?.loadingComplete === null && (
+    //             <Save
+    //               titleAccess="Save"
+    //               onClick={() => {
+    //                 const data = {
+    //                   studentId: row?.uniqueId,
+    //                   classScore: row?.classScore,
+    //                   examScore: row?.examScore,
+    //                   totalScore: row?.totalScore,
+    //                   remark: row?.remark,
+    //                   semester: columnData?.currentAcademicTerm?.name,
+    //                   classLevel: columnData?.classLevel,
+    //                   subject: columnData?.selectedSubject,
+    //                   lecturer: columnData?.authUser?.id,
+    //                   year: new Date().getFullYear(),
+    //                   isDraftSave: true,
+    //                 };
+    //                 if (!disableBtn) {
+    //                   columnData?.dispatch(createStudentReport(data));
+    //                 }
+    //               }}
+    //             />
+    //           )}
+    //           {row?._id !== columnData?.foundStudent?._id &&
+    //             columnData?.loadingComplete !== null && (
+    //               <Save
+    //                 titleAccess="Save"
+    //                 onClick={() => {
+    //                   const data = {
+    //                     studentId: row?.uniqueId,
+    //                     classScore: row?.classScore,
+    //                     examScore: row?.examScore,
+    //                     totalScore: row?.totalScore,
+    //                     semester: columnData?.currentAcademicTerm?.name,
+    //                     classLevel: columnData?.classLevel,
+    //                     subject: columnData?.selectedSubject,
+    //                     lecturer: columnData?.authUser?.id,
+    //                     year: new Date().getFullYear(),
+    //                     isDraftSave: true,
+    //                   };
+    //                   if (!disableBtn) {
+    //                     columnData?.dispatch(createStudentReport(data));
+    //                   }
+    //                 }}
+    //               />
+    //             )}
+    //         </>
+    //       </Button>
+    //     );
+    //   },
+    // },
   ];
 
   // Handle attendance status check
@@ -446,12 +917,65 @@ export function SearchReport() {
           <span>{lecturerCurrentLink?.replace(/_/g, " ")}</span>
         </h1>
         {/* Main search bar */}
-        <Box sx={{ display: { xs: "none", sm: "block" } }}>
+        <Box
+          sx={{ display: { xs: "none", sm: "flex" }, flexDirection: "column" }}
+          position={"absolute"}
+          top={".5rem"}
+          right={"2rem"}
+        >
           <SearchFilter
             value={searchStudent}
             onChange={setSearchStudent}
             placeholder={"Search student by name or ID"}
+            // ToDo ===>>> Dispatch function to fetch student report
+            handleDataFetch={handleStudentReportFetch}
           />
+          {searchStudent && filteredStudents && (
+            <Box
+              sx={{
+                marginTop: 1,
+                bgcolor: "#7f7e7e",
+                padding: "0 .5rem",
+                borderRadius: ".4rem",
+              }}
+              id="reportSearchList"
+            >
+              {filteredStudents?.map((std) => (
+                <Box
+                  key={std?.uniqueId}
+                  onClick={() => {
+                    setSearchStudent(std?.personalInfo?.fullName);
+                    setStudent(std?.uniqueId);
+                  }}
+                  sx={{
+                    display: "flex",
+                    gap: 1,
+                    alignItems: "center",
+                    margin: ".5rem 0",
+                    cursor: "pointer",
+                  }}
+                >
+                  <Avatar
+                    // className="studentImg"
+                    src={std?.personalInfo?.profilePicture?.url}
+                    sx={{
+                      width: "1.5em",
+                      height: "1.5em",
+                      borderRadius: ".4rem",
+                      objectFit: "cover",
+                    }}
+                    alt=""
+                  />
+                  <Typography
+                    variant="h6"
+                    sx={{ fontSize: ".9rem", color: "#fff" }}
+                  >
+                    {std?.personalInfo?.fullName}
+                  </Typography>
+                </Box>
+              ))}
+            </Box>
+          )}
         </Box>
       </Box>
       {/* Report content */}
@@ -850,7 +1374,7 @@ export function SearchReport() {
             }}
             margin={"auto"}
           >
-            {dataFetched && searchedClassReportInfo && (
+            {/* {dataFetched && searchedClassReportInfo && (
               <Box className="searchDetails" justifyItems={"flex-start"}>
                 {filteredReports?.length === 0 && searchStudent !== "" && (
                   <p style={{ fontSize: ".8em" }} className="searchInfo">
@@ -886,38 +1410,71 @@ export function SearchReport() {
                   </p>
                 )}
               </Box>
+            )} */}
+            {dataFetched && (
+              <>
+                {searchedClassReportInfo?.length > 0 &&
+                  !searchedStudentReportInfo && (
+                    <Box
+                      fontSize={"calc(0.7rem + 1vmin)"}
+                      // sx={{ border: "1px solid #ccc" }}
+                    >
+                      <Box fontSize={"calc(0.7rem + 1vmin)"} mb={1}>
+                        <p style={{ fontSize: ".8em", color: "#696969" }}>
+                          <span style={{ color: "#292929" }}>
+                            Searched By:{" "}
+                          </span>
+                          {currentReportSearch}
+                        </p>
+                      </Box>
+                      <DataTable
+                        className="my-data-table"
+                        columns={columns}
+                        data={searchedClassReportInfo}
+                        customStyles={customAttendanceTableStyle}
+                        pagination
+                        highlightOnHover
+                      />
+                      <SearchedReportOverviewModal
+                        open={openAttendanceOverviewModal}
+                        onClose={() => setOpenAttendanceOverviewModal(false)}
+                        data={overviewStudents}
+                      />
+                    </Box>
+                  )}
+                {!searchedClassReportInfo &&
+                  searchedStudentReportInfo?.length > 0 && (
+                    <Box
+                      fontSize={"calc(0.7rem + 1vmin)"}
+                      // sx={{ border: "1px solid #ccc" }}
+                    >
+                      <Box fontSize={"calc(0.7rem + 1vmin)"} mb={1}>
+                        <p style={{ fontSize: ".8em", color: "#696969" }}>
+                          <span style={{ color: "#292929" }}>
+                            Searched By:{" "}
+                          </span>
+                          Student&apos;s Data
+                        </p>
+                      </Box>
+                      <DataTable
+                        className="my-data-table"
+                        columns={reportOverviewColumn}
+                        data={searchedStudentReportInfo}
+                        customStyles={customAttendanceTableStyle}
+                        pagination
+                        highlightOnHover
+                      />
+                    </Box>
+                  )}
+              </>
             )}
-            {dataFetched && searchedClassReportInfo?.length > 0 && (
-              <Box
-                fontSize={"calc(0.7rem + 1vmin)"}
-                // sx={{ border: "1px solid #ccc" }}
-              >
-                <Box fontSize={"calc(0.7rem + 1vmin)"} mb={1}>
-                  <p style={{ fontSize: ".8em", color: "#696969" }}>
-                    <span style={{ color: "#292929" }}>Searched By: </span>
-                    {currentReportSearch}
-                  </p>
+            {dataFetched &&
+              !searchedClassReportInfo?.length > 0 &&
+              !searchedStudentReportInfo?.length > 0 && (
+                <Box className="noAttendanceRecord">
+                  <p style={{ fontSize: ".8em" }}>No Report Record Found!</p>
                 </Box>
-                <DataTable
-                  className="my-data-table"
-                  columns={columns}
-                  data={filteredReports}
-                  customStyles={customAttendanceTableStyle}
-                  pagination
-                  highlightOnHover
-                />
-                <SearchedReportOverviewModal
-                  open={openAttendanceOverviewModal}
-                  onClose={() => setOpenAttendanceOverviewModal(false)}
-                  data={overviewStudents}
-                />
-              </Box>
-            )}
-            {dataFetched && !searchedClassReportInfo?.length > 0 && (
-              <Box className="noAttendanceRecord">
-                <p style={{ fontSize: ".8em" }}>No Report Record Found!</p>
-              </Box>
-            )}
+              )}
           </Box>
         </Box>
         <SmallFooter />

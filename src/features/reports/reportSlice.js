@@ -11,6 +11,7 @@ const initialState = {
   electiveDraftReportInfo: "",
   coreDraftReportInfo: "",
   searchedClassReportInfo: "",
+  searchedStudentReportInfo: "",
   allReports: [],
   electiveSubjectMultiStudentsReports: "",
   coreSubjectMultiStudentsReports: "",
@@ -209,6 +210,24 @@ export const searchClassReport = createAsyncThunk(
     }
   }
 );
+export const searchSingleStudentReport = createAsyncThunk(
+  "Report/searchSingleStudentReport",
+  async (data, { rejectWithValue }) => {
+    console.log(data);
+
+    try {
+      const response = await tokenInterceptor.get(
+        `/academics/student/${data}/report/search`
+        // data
+      );
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.log(error.response.data);
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 
 const reportSlice = createSlice({
   name: "Report",
@@ -281,6 +300,20 @@ const reportSlice = createSlice({
     resetClassReportSearchState(state) {
       return {
         ...state,
+        searchingStatus: "",
+        searchClassReportError: "",
+      };
+    },
+    resetClassReportData(state) {
+      return {
+        ...state,
+        searchedClassReportInfo: "",
+      };
+    },
+    resetStudentReportSearchState(state) {
+      return {
+        ...state,
+        searchedStudentReportInfo: "",
         searchingStatus: "",
         searchClassReportError: "",
       };
@@ -511,6 +544,27 @@ const reportSlice = createSlice({
         searchClassReportError: action.payload,
       };
     });
+    // Search Single Student Report
+    builder.addCase(searchSingleStudentReport.pending, (state) => {
+      return { ...state, searchingStatus: "pending" };
+    });
+    builder.addCase(searchSingleStudentReport.fulfilled, (state, action) => {
+      if (action.payload) {
+        return {
+          ...state,
+          searchedStudentReportInfo: action.payload.allStudentReports,
+          successMessage: action.payload.successMessage,
+          searchingStatus: "success",
+        };
+      } else return state;
+    });
+    builder.addCase(searchSingleStudentReport.rejected, (state, action) => {
+      return {
+        ...state,
+        searchingStatus: "rejected",
+        searchClassReportError: action.payload,
+      };
+    });
   },
 });
 
@@ -525,6 +579,8 @@ export const {
   resetCoreReportStudentsState,
   resetElectiveSubjectMultiStudentsState,
   resetClassReportSearchState,
+  resetClassReportData,
+  resetStudentReportSearchState,
 } = reportSlice.actions;
 export const getAllReports = (state) => state.report.allReports;
 export const getElectiveSubjectMultiStudentsReports = (state) =>
@@ -538,5 +594,7 @@ export const getCoreDraftReportInfo = (state) =>
   state.report.coreDraftReportInfo;
 export const getSearchedClassReportInfo = (state) =>
   state.report.searchedClassReportInfo;
+export const getSearchedStudentReportInfo = (state) =>
+  state.report.searchedStudentReportInfo;
 
 export default reportSlice.reducer;

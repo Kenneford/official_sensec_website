@@ -11,13 +11,12 @@ export default function SearchedReportOverviewModal({ open, onClose, data }) {
 
   // Calculate attendance statistics
   const totalStudents = data?.students?.length || 0;
-  const presentCount =
-    data?.students?.filter((student) => student.status === "Present").length ||
-    0;
-  const absentCount = totalStudents - presentCount;
+  const passCount =
+    data?.students?.filter((student) => student.grade !== "F9").length || 0;
+  const failCount = totalStudents - passCount;
 
-  const presentPercentage = ((presentCount / totalStudents) * 100).toFixed(1);
-  const absentPercentage = ((absentCount / totalStudents) * 100).toFixed(1);
+  const passPercentage = ((passCount / totalStudents) * 100).toFixed(1);
+  const failPercentage = ((failCount / totalStudents) * 100).toFixed(1);
 
   // Grade calculator
   const calculateGrade = (totalScore) => {
@@ -475,7 +474,7 @@ export default function SearchedReportOverviewModal({ open, onClose, data }) {
               textAlign={{ xs: "center", sm: "left" }}
               mb={2}
             >
-              Attendance Overview
+              Class Report Overview
             </Typography>
             <Box
               fontSize={"calc(0.7rem + 1vmin)"}
@@ -487,94 +486,101 @@ export default function SearchedReportOverviewModal({ open, onClose, data }) {
                 sx={{
                   border: "1px solid #ccc",
                   borderRadius: ".4rem .4rem 0 0",
+                  // display: "flex",
+                  // flexWrap: { xs: "wrap", md: "nowrap" },
+                  // gap: { xs: "0", md: "1rem" },
                 }}
               >
-                <Typography
-                  id="responsive-modal-title"
-                  variant="h6"
-                  fontWeight={400}
-                  fontSize={".8em"}
-                  color="#292929"
-                >
-                  Semester:{" "}
-                  <span style={{ color: "#696969" }}>{data?.semester}</span>
-                </Typography>
-                <Typography
-                  id="responsive-modal-title"
-                  variant="h6"
-                  fontWeight={400}
-                  fontSize={".8em"}
-                  color="#292929"
-                >
-                  Date:{" "}
-                  <span style={{ color: "#696969" }}>
-                    {data?.createdAt
-                      ? dateFormatter?.format(new Date(data?.createdAt))
-                      : "---"}
-                  </span>
-                </Typography>
-                <Typography
-                  id="responsive-modal-title"
-                  variant="h6"
-                  fontWeight={400}
-                  fontSize={".8em"}
-                  color="#292929"
-                >
-                  Class Level:{" "}
-                  <span style={{ color: "#696969" }}>
-                    {data?.classLevel?.name ? data?.classLevel?.name : "---"}
-                  </span>
-                </Typography>
-                <Typography
-                  id="responsive-modal-title"
-                  variant="h6"
-                  fontWeight={400}
-                  fontSize={".8em"}
-                  color="#292929"
-                >
-                  Subject:{" "}
-                  <span style={{ color: "#696969" }}>
-                    {data?.subject?.subjectName
-                      ? data?.subject?.subjectName
-                      : "---"}
-                  </span>
-                </Typography>
-                <Typography
-                  id="responsive-modal-title"
-                  variant="h6"
-                  fontWeight={400}
-                  fontSize={".8em"}
-                  color="#292929"
-                >
-                  Student Count:{" "}
-                  <span style={{ color: "#696969" }}>
-                    {data?.students?.length > 0 ? data?.students?.length : 0}
-                  </span>
-                </Typography>
-                <Typography
-                  id="responsive-modal-title"
-                  variant="h6"
-                  fontWeight={400}
-                  fontSize={".8em"}
-                  color="#292929"
-                >
-                  Present Count:{" "}
-                  <span style={{ color: "#696969" }}>
-                    {presentCount} / {presentPercentage}%
-                  </span>
-                </Typography>
-                <Typography
-                  id="responsive-modal-title"
-                  variant="h6"
-                  fontWeight={400}
-                  fontSize={".8em"}
-                  color="#292929"
-                >
-                  Absent Count:{" "}
-                  <span style={{ color: "#696969" }}>
-                    {absentCount} / {absentPercentage}%
-                  </span>
-                </Typography>
+                <Box>
+                  <Typography
+                    id="responsive-modal-title"
+                    variant="h6"
+                    fontWeight={400}
+                    fontSize={".8em"}
+                    color="#292929"
+                  >
+                    Semester:{" "}
+                    <span style={{ color: "#696969" }}>{data?.semester}</span>
+                  </Typography>
+                  <Typography
+                    id="responsive-modal-title"
+                    variant="h6"
+                    fontWeight={400}
+                    fontSize={".8em"}
+                    color="#292929"
+                  >
+                    Date:{" "}
+                    <span style={{ color: "#696969" }}>
+                      {data?.createdAt
+                        ? dateFormatter?.format(new Date(data?.createdAt))
+                        : "---"}
+                    </span>
+                  </Typography>
+                  <Typography
+                    id="responsive-modal-title"
+                    variant="h6"
+                    fontWeight={400}
+                    fontSize={".8em"}
+                    color="#292929"
+                  >
+                    Class Level:{" "}
+                    <span style={{ color: "#696969" }}>
+                      {data?.classLevel?.name ? data?.classLevel?.name : "---"}
+                    </span>
+                  </Typography>
+                  <Typography
+                    id="responsive-modal-title"
+                    variant="h6"
+                    fontWeight={400}
+                    fontSize={".8em"}
+                    color="#292929"
+                  >
+                    Subject:{" "}
+                    <span style={{ color: "#696969" }}>
+                      {data?.subject?.subjectName
+                        ? data?.subject?.subjectName
+                        : "---"}
+                    </span>
+                  </Typography>
+                </Box>
+                <Box>
+                  <Typography
+                    id="responsive-modal-title"
+                    variant="h6"
+                    fontWeight={400}
+                    fontSize={".8em"}
+                    color="#292929"
+                  >
+                    Student Count:{" "}
+                    <span style={{ color: "#696969" }}>
+                      {data?.students?.length > 0 ? data?.students?.length : 0}
+                    </span>
+                  </Typography>
+                  <Typography
+                    id="responsive-modal-title"
+                    variant="h6"
+                    fontWeight={400}
+                    fontSize={".8em"}
+                    color="#292929"
+                  >
+                    Pass Count:{" "}
+                    <span style={{ color: "#696969" }}>
+                      {passCount} / {passPercentage}%
+                    </span>
+                  </Typography>
+                  <Typography
+                    id="responsive-modal-title"
+                    variant="h6"
+                    fontWeight={400}
+                    fontSize={".8em"}
+                    color="#292929"
+                  >
+                    Fail Count:{" "}
+                    <span style={{ color: "#696969" }}>
+                      {failCount} / {failPercentage}%
+                    </span>
+                  </Typography>
+                </Box>
               </Box>
               <DataTable
                 className="my-data-table"
