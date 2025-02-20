@@ -167,6 +167,7 @@ export const forgotPassword = createAsyncThunk(
       );
       return res.data;
     } catch (error) {
+      console.log(error);
       console.log(error.response);
       return rejectWithValue(error.response.data);
     }
