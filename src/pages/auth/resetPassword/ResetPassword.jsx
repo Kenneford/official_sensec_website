@@ -410,7 +410,7 @@ export default function ResetPassword() {
                 <Grid item xs={12} position={"relative"}>
                   <CustomTextField
                     fullWidth
-                    label={"Password"}
+                    label={"New Password"}
                     name="password"
                     size="small"
                     value={user?.password}
