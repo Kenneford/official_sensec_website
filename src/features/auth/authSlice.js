@@ -165,11 +165,7 @@ export const forgotPassword = createAsyncThunk(
         `${SENSEC_API_ENDPOINT}/users/request_password_reset`,
         email
       );
-      console.log("User", res.data);
-      if (res.data.token !== "" && res.data.secret !== "") {
-        localStorage.setItem("verifiedUser", "change_your_password");
-        return res.data;
-      }
+      return res.data;
     } catch (error) {
       console.log(error.response);
       return rejectWithValue(error.response.data);
