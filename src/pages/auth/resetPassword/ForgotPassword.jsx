@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./forgotPassword.scss";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { toast } from "react-toastify";
-import validator from "validator";
 import { forgotPassword } from "../../../features/auth/authSlice";
 import LoadingProgress from "../../../components/pageLoading/LoadingProgress";
 import {
@@ -14,7 +13,7 @@ import {
   Twitter,
 } from "@mui/icons-material";
 import { NavigationBar } from "../../../components/navbar/NavigationBar";
-import { Avatar, Box, Button, Divider, Typography } from "@mui/material";
+import { Avatar, Box, Button, Typography } from "@mui/material";
 import { CustomTextField } from "../../../muiStyling/muiStyling";
 import Redirection from "../../../components/pageLoading/Redirection";
 import { FetchAllUsers } from "../../../data/allUsers/FetchAllUsers";
@@ -48,17 +47,15 @@ export default function ForgotPassword() {
   const [loadingComplete, setLoadingComplete] = useState(null);
   const [goToSignUpLoadingComplete, setGoToSignUpLoadingComplete] =
     useState(null);
-  const [emailError, setEmailError] = useState("");
   const [signedUpUserFound, setSignedUpUserFound] = useState("");
-  const [emailInvalid, setEmailInvalid] = useState(false);
   const [requestSuccessful, setRequestSuccessful] = useState(false);
   const [user, setUser] = useState({
     email: "",
   });
   console.log(user);
 
-  const validateEmail = validator?.isEmail(user?.email);
-  console.log(validateEmail);
+  // const validateEmail = validator?.isEmail(user?.email);
+  // console.log(validateEmail);
   const handleInputValues = (e) => {
     setUser({
       ...user,
@@ -76,34 +73,18 @@ export default function ForgotPassword() {
   };
   const handleResetRequest = (e) => {
     e.preventDefault();
-    setLoadingComplete(false);
-    if (user?.email && !validateEmail) {
-      setEmailInvalid(true);
-      setEmailError("Please provide a valid email!");
-      setTimeout(() => {
-        setLoadingComplete(null);
-      }, 3000);
-    }
-    if (emailInvalid) {
-      setTimeout(() => {
-        toast?.error("Invalid Email Provided!", {
-          position: "top-right",
-          theme: "light",
-          // toastId: successId,
-        });
-      }, 2000);
-      return;
-    } else {
-      dispatch(forgotPassword({ email: user?.email }));
+    const data = { email: user?.email };
+    if (data) {
+      dispatch(forgotPassword(data));
     }
   };
-  const canRequest = Boolean(user?.email) && Boolean(validateEmail);
+  const canRequest = Boolean(user?.email);
 
   useEffect(() => {
     const email = user?.email;
-    const userFound = allUsers?.find(
-      (user) => user?.contactAddress?.email === email
-    );
+    const userFound =
+      allUsers &&
+      allUsers?.find((user) => user?.contactAddress?.email === email);
     if (userFound) {
       setSignedUpUserFound(userFound);
     } else {
@@ -112,14 +93,8 @@ export default function ForgotPassword() {
   }, [allUsers, user]);
 
   useEffect(() => {
-    if (user?.email && validateEmail) {
-      setEmailError("");
-    }
     if (forgotPasswordStatus === "pending") {
       setLoadingComplete(false);
-      setTimeout(() => {
-        setLoadingComplete(true);
-      }, 3000);
     }
     if (forgotPasswordStatus === "rejected") {
       setTimeout(() => {
@@ -157,70 +132,9 @@ export default function ForgotPassword() {
     forgotPasswordError,
     forgotPasswordSuccessMessage,
     navigate,
-    user,
-    validateEmail,
   ]);
-  useEffect(() => {
-    if (user?.email && !validateEmail) {
-      setEmailError("Please provide a valid email!");
-    }
-    if (user?.email && validateEmail) {
-      setEmailError("");
-    }
-  }, [user?.email, validateEmail]);
-
-  //   useEffect(() => {
-  //     setEmailError("Please provide a valid email!");
-  //   }, []);
 
   return (
-    // <div className="forgotPasswordWrap">
-    //   <form onSubmit={handleResetRequest}>
-    //     <h1>Forgot Password</h1>
-    //     <div className="inputCont">
-    //       <label htmlFor="password">
-    //         Your Email<span>*</span>
-    //       </label>
-    //       <input
-    //         className="emailInput"
-    //         type="email"
-    //         // placeholder="Please enter your email..."
-    //         onChange={handleInputValues}
-    //         name="email"
-    //         value={user.email}
-    //       />
-    //       {user?.email && emailError && (
-    //         <p
-    //           style={{
-    //             color: "red",
-    //             position: "absolute",
-    //             top: "3.6rem",
-    //             // marginBottom: ".5rem",
-    //             fontSize: ".9rem",
-    //             fontWeight: "400",
-    //             fontStyle: "italic",
-    //           }}
-    //         >
-    //           {emailError}
-    //         </p>
-    //       )}
-    //     </div>
-    //     <button type="submit" disabled={!canRequest || !validateEmail}>
-    //       {loadingComplete === false && (
-    //         <LoadingProgress color={"#fff"} size={"1.5rem"} />
-    //       )}
-    //       {loadingComplete === true && forgotPasswordStatus === "success" && (
-    //         <>
-    //           <span>Request Successful</span> <TaskAlt />
-    //         </>
-    //       )}
-    //       {loadingComplete === null && "Request Password Reset"}
-    //       {/* {redirecting && <Redirection color={"#fff"} size={"1.3rem"} />} */}
-    //     </button>
-    //     <p>Having trouble? Contact our support team here.</p>
-    //   </form>
-    // </div>
-
     <Box>
       {/* School Logo */}
       <Box
@@ -337,6 +251,7 @@ export default function ForgotPassword() {
                   name="email"
                   value={user?.email}
                   size="small"
+                  required
                 />
               </Box>
               <Box display={"flex"} justifyContent={"center"} mb={2}>
