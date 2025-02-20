@@ -159,11 +159,11 @@ export const fetchAllUsers = createAsyncThunk(
 );
 export const forgotPassword = createAsyncThunk(
   "User/forgotPassword",
-  async (email, { rejectWithValue }) => {
+  async (data, { rejectWithValue }) => {
     try {
       const res = await axios.post(
         `${SENSEC_API_ENDPOINT}/users/request_password_reset`,
-        email
+        data
       );
       return res.data;
     } catch (error) {
