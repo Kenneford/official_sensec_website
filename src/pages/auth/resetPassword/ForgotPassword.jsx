@@ -57,12 +57,12 @@ export default function ForgotPassword() {
   });
   console.log(user);
 
-  const validateEmail = validator.isEmail(user.email);
+  const validateEmail = validator?.isEmail(user?.email);
   console.log(validateEmail);
   const handleInputValues = (e) => {
     setUser({
       ...user,
-      [e.target.name]: e.target.value,
+      [e?.target?.name]: e?.target?.value,
     });
   };
   const goToHome = () => {
@@ -86,7 +86,7 @@ export default function ForgotPassword() {
     }
     if (emailInvalid) {
       setTimeout(() => {
-        toast.error("Invalid Email Provided!", {
+        toast?.error("Invalid Email Provided!", {
           position: "top-right",
           theme: "light",
           // toastId: successId,
@@ -97,7 +97,7 @@ export default function ForgotPassword() {
       dispatch(forgotPassword({ email: user?.email }));
     }
   };
-  const canRequest = Boolean(user.email) && Boolean(validateEmail);
+  const canRequest = Boolean(user?.email) && Boolean(validateEmail);
 
   useEffect(() => {
     const email = user?.email;
@@ -126,7 +126,7 @@ export default function ForgotPassword() {
         setLoadingComplete(null);
       }, 3000);
       forgotPasswordError?.errorMessage?.message?.map((err) =>
-        toast.error(err, {
+        toast?.error(err, {
           position: "top-right",
           theme: "light",
           // toastId: successId,
@@ -136,7 +136,7 @@ export default function ForgotPassword() {
     }
     if (forgotPasswordStatus === "success") {
       setTimeout(() => {
-        toast.success(forgotPasswordSuccessMessage, {
+        toast?.success(forgotPasswordSuccessMessage, {
           position: "top-right",
           theme: "dark",
           // toastId: successId,
@@ -157,7 +157,7 @@ export default function ForgotPassword() {
     forgotPasswordError,
     forgotPasswordSuccessMessage,
     navigate,
-    user?.email,
+    user,
     validateEmail,
   ]);
   useEffect(() => {
