@@ -62,8 +62,8 @@ export const createDivisionProgramme = createAsyncThunk(
 export const fetchAllProgrammes = createAsyncThunk(
   "Programme/fetchAllProgrammes",
   async () => {
-    const response = await tokenInterceptor.get(
-      `/academics/programmes/fetch_all`
+    const response = await axios.get(
+      `${SENSEC_API_ENDPOINT}/academics/programmes/fetch_all`
     );
     return response.data;
   }
@@ -73,8 +73,8 @@ export const fetchAllFlattenedProgrammes = createAsyncThunk(
   "Programme/fetchAllFlattenedProgrammes",
   async (rejectWithValue) => {
     try {
-      const response = await tokenInterceptor.get(
-        `/academics/programmes_and_divisions/fetch_all`
+      const response = await axios.get(
+        `${SENSEC_API_ENDPOINT}/academics/programmes_and_divisions/fetch_all`
       );
       // const students = response.data;
       console.log(response.data);
@@ -90,8 +90,8 @@ export const fetchAllDivisionProgrammes = createAsyncThunk(
     console.log(programId);
 
     try {
-      const response = await tokenInterceptor.get(
-        `/academics/programs/${programId}/divisions/fetch_all`
+      const response = await axios.get(
+        `${SENSEC_API_ENDPOINT}/academics/programs/${programId}/divisions/fetch_all`
       );
       return response.data;
     } catch (error) {
@@ -118,8 +118,8 @@ export const fetchCreatedDivisionProgrammes = createAsyncThunk(
   "Programme/fetchCreatedDivisionProgrammes",
   async (rejectWithValue) => {
     try {
-      const response = await tokenInterceptor.get(
-        `/academics/programs/divisions/fetch_all`
+      const response = await axios.get(
+        `${SENSEC_API_ENDPOINT}/academics/programs/divisions/fetch_all`
       );
       return response.data;
     } catch (error) {
