@@ -122,10 +122,8 @@ export default function ForgotPassword() {
       }, 3000);
       setTimeout(() => {
         setLoadingComplete(null);
-      }, 5000);
-      setTimeout(() => {
         setRequestSuccessful(true);
-      }, 6000);
+      }, 5000);
     }
   }, [
     forgotPasswordStatus,
