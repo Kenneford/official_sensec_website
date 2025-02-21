@@ -11,6 +11,7 @@ import { QuestionsSection } from "../../components/forHomePage/questionsSection/
 import { Box } from "@mui/material";
 import { FetchAllProgrammes } from "../../data/programme/FetchProgrammeData";
 import PageLoading from "../../components/pageLoading/PageLoading";
+import { Helmet } from "react-helmet-async";
 
 export function Home() {
   const allProgrammes = FetchAllProgrammes();
@@ -23,6 +24,22 @@ export function Home() {
   // }
   return (
     <Box id="homePage">
+      <Helmet>
+        <title>Senya SHS Homepage</title>
+        <meta
+          name="description"
+          content="In the heart of Senya Beraku, a coastal community nestled along the serene shores of the Central Region of Ghana, Senya Senior High School stands as a citadel of education. Founded on 7th February 1991, Senya Senior High School, affectionately called Great SENSEC, has not only been a source of academic excellence but has also played a pivotal role in shaping the minds and future of countless students. During its early years, the school faced numerous challenges, from inadequate infrastructure to limited resources. However, the determination and dedication of the founding team, along with support from the local community, ensured that SENSEC continued to grow and flourish."
+        />
+        <meta
+          name="keywords"
+          content="Senya SHS, Ghana Education, Sensec, Sensec Official Website"
+        />
+        <meta property="og:title" content="Senya SHS" />
+        <meta
+          property="og:description"
+          content="In the heart of Senya Beraku, a coastal community nestled along the serene shores of the Central Region of Ghana, Senya Senior High School stands as a citadel of education. Founded on 7th February 1991, Senya Senior High School, affectionately called Great SENSEC, has not only been a source of academic excellence but has also played a pivotal role in shaping the minds and future of countless students. During its early years, the school faced numerous challenges, from inadequate infrastructure to limited resources. However, the determination and dedication of the founding team, along with support from the local community, ensured that SENSEC continued to grow and flourish."
+        />
+      </Helmet>
       <Box sx={{ overflow: "hidden" }}>
         <ImageSlider />
       </Box>
