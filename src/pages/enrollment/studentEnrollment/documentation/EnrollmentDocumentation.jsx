@@ -109,9 +109,10 @@ export function EnrollmentDocumentation() {
       </Box>
       <ContainerBox
         sx={{
-          width: { xs: "100%", sm: "85%", md: "75%" },
-          margin: "1rem auto",
-          padding: { xs: "1rem .5rem", sm: "2rem 1rem" },
+          width: { xs: "95%", sm: { minWidth: "50rem" } }, // Responsive width based on screen size
+          maxWidth: { md: "90rem", lg: "90rem" },
+          margin: "auto",
+          padding: { xs: "0", sm: "1rem .5rem" },
           fontSize: "calc(0.7rem + 1vmin)",
           letterSpacing: "1px",
         }}
@@ -165,11 +166,18 @@ export function EnrollmentDocumentation() {
                 <Typography sx={{ fontSize: ".9em" }}>
                   Students can visit our website at{" "}
                   <a
-                    href="https://official-sensec-website.onrender.com/sensec/students/enrollment/placement_check"
+                    href="https://www.senyashs.com/sensec/students/enrollment/placement_check"
                     target="blank"
-                    style={{ color: "#0794bf", textDecoration: "underline" }}
+                    style={{
+                      color: "#0794bf",
+                      textDecoration: "underline",
+                      flexWrap: "wrap",
+                      wordBreak: "break-word", // Allows breaking long words
+                      overflowWrap: "break-word", // Ensures proper wrapping
+                      whiteSpace: "normal", // Allows wrapping instead of keeping in one line
+                    }}
                   >
-                    official-sensec-website.onrender.com
+                    www.senyashs.com/sensec/students/enrollment/placement_check
                   </a>{" "}
                   to check their placement.
                 </Typography>
@@ -316,13 +324,21 @@ export function EnrollmentDocumentation() {
                 <Typography sx={{ fontSize: ".9em" }}>
                   Visit the Senya SHS Enrollment Portal via{" "}
                   <a
-                    href="https://official-sensec-website.onrender.com/sensec/students/enrollment/placement_verification"
+                    href="https://www.senyashs.com/sensec/students/enrollment/placement_verification"
                     target="blank"
-                    style={{ color: "#0794bf", textDecoration: "underline" }}
+                    style={{
+                      color: "#0794bf",
+                      textDecoration: "underline",
+                      flexWrap: "wrap",
+                      wordBreak: "break-word", // Allows breaking long words
+                      overflowWrap: "break-word", // Ensures proper wrapping
+                      whiteSpace: "normal", // Allows wrapping instead of keeping in one line
+                    }}
                   >
-                    official-sensec-website.onrender.com
+                    www.senyashs.com/sensec/students/enrollment/placement_verification
                   </a>{" "}
-                  or report to the school&apos;s admissions office.
+                  to verify your placement or report to the school&apos;s
+                  admissions office.
                 </Typography>
               </ListItem>
               <ListItem style={{ alignItems: "flex-start" }}>

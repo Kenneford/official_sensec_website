@@ -16,19 +16,22 @@ const faqs = [
   },
   {
     question: "Where can I get the school form to buy?",
-    answer: `Forms are not for sale! After GES placement scheme, students can visit our website at <a href="https://official-sensec-website.onrender.com/sensec/students/enrollment/placement_check" target="blank" style="color: #0794bf; text-decoration: underline;">official-sensec-website.onrender.com</a> to check their placement and begin our online enrollment process.`,
+    answer: `Forms are not for sale! After GES placement scheme, students can visit our website at <a href="https://www.senyashs.com/sensec/students/enrollment/placement_check" target="blank" style="color: #0794bf; text-decoration: underline;">www.senyashs.com</a> or <a href="https://senyashs.com/sensec/students/enrollment/placement_check" target="blank" style="color: #0794bf; text-decoration: underline;">senyashs.com</a> to check their placement and begin our online enrollment process.`,
+    link: "/sensec/students/enrollment/documentation",
   },
   {
     question: "Does the school have a laboratory?",
     answer:
       "Sure, our school has a standard science laboratory which helps promotes scientific literacy among students by helping them develop among other competencies, problem solving skills, critical thinking, and appreciation of the importance of technology.",
-    link: "/sensec/science_laboratory#science_laboratory",
+    link: "#",
+    // link: "/sensec/science_laboratory#science_laboratory",
   },
   {
     question: "How much is the boarding fees per semester?",
     answer:
-      "Since the arrival of the free SHS system, student enrolled in our school do not pay any fees. Nevertheless, student are required to pay for basic stuffs the will need in the school for academics.",
-    link: "/sensec/book_shop#book_shop",
+      "Since the arrival of the free SHS system, student enrolled in our school do not pay any fees. Nevertheless, student are required to pay for basic stuffs they will need in the school for academics.",
+    link: "#",
+    // link: "/sensec/book_shop#book_shop",
   },
 ];
 
