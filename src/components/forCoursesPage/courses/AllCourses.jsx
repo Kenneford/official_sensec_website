@@ -1,7 +1,7 @@
 import React from "react";
 import "./allCourses.scss";
 import { Link } from "react-router-dom";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Divider, Grid, Typography } from "@mui/material";
 import { FetchAllProgrammes } from "../../../data/programme/FetchProgrammeData";
 import { ContainerBox } from "../../../muiStyling/muiStyling";
 import PropTypes from "prop-types";
@@ -137,10 +137,16 @@ export function AllCourses({ allProgrammes }) {
                         Mathematics and Physics.
                       </p>
                     )}
-                    <Link to={"#"}>
-                      <button className="programmeBtn">Learn More</button>
-                    </Link>
+                    {/* <Link to={"#"}>
+                      <button
+                        style={{ marginBottom: "1rem" }}
+                        className="programmeBtn"
+                      >
+                        Learn More
+                      </button>
+                    </Link> */}
                   </Box>
+                  <Divider />
                 </Box>
               </Box>
             </Box>
@@ -253,10 +259,16 @@ export function AllCourses({ allProgrammes }) {
                         world of work.
                       </p>
                     )}
-                    <Link to={"#"}>
-                      <button className="programmeBtn">Learn More</button>
-                    </Link>
+                    {/* <Link to={"#"}>
+                      <button
+                        style={{ marginBottom: "1rem" }}
+                        className="programmeBtn"
+                      >
+                        Learn More
+                      </button>
+                    </Link> */}
                   </Box>
+                  <Divider />
                 </Box>
               </Box>
             </Box>
