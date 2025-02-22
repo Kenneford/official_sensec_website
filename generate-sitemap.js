@@ -5,6 +5,7 @@ const websiteUrl = "https://senyashs.com"; // Your live website URL
 // Define your static pages
 const pages = [
   "/",
+  "/sensec/homepage",
   "/sensec/about",
   "/sensec/contact",
   "/sensec/blogs",
