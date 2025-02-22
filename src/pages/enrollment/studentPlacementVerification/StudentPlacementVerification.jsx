@@ -18,6 +18,7 @@ import LoadingProgress from "../../../components/pageLoading/LoadingProgress";
 import { getAuthUser } from "../../../features/auth/authSlice";
 import { NavigationBar } from "../../../components/navbar/NavigationBar";
 import Cookies from "js-cookie";
+import { Helmet } from "react-helmet-async";
 
 export function StudentPlacementVerification() {
   const {
@@ -405,6 +406,29 @@ export function StudentPlacementVerification() {
 
   return (
     <>
+      <Helmet>
+        <title>Senya SHS Placement Verification</title>
+        <meta
+          name="description"
+          content="Students must verify their placement before being allowed to proceed with filling out the enrollment form."
+        />
+        <meta
+          name="keywords"
+          content="Senya SHS Placement Verification, Sensec Placement Verification, Placement Verification, Sensec Official Website Placement Verification"
+        />
+        <meta
+          property="og:title"
+          content="Placement Verification | Senya SHS"
+        />
+        <meta
+          property="og:description"
+          content="Students must verify their placement before being allowed to proceed with filling out the enrollment form."
+        />
+        <link
+          rel="canonical"
+          href="https://www.senyashs.com/sensec/students/enrollment/placement_verification"
+        />
+      </Helmet>
       {/* School Logo */}
       <Box
         direction="column"

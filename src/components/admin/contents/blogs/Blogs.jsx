@@ -23,6 +23,7 @@ import { resetDeleteBlogState } from "../../../../features/blogs/blogSlice";
 import Footer from "../../../footer/Footer";
 import SmallFooter from "../../../footer/SmallFooter";
 import PageLoading from "../../../pageLoading/PageLoading";
+import { Helmet } from "react-helmet-async";
 
 export function Blogs() {
   const {
@@ -50,27 +51,6 @@ export function Blogs() {
   const dispatch = useDispatch();
   const allBlogs = FetchAllBlogs();
   console.log(allBlogs);
-
-  const posts = [
-    {
-      title: "Blog Post 1",
-      content: "This is the first blog post.",
-      image:
-        "https://images.unsplash.com/photo-1503235930437-8c6293ba41f5?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      title: "Blog Post 2",
-      content: "This is the second blog post.",
-      image:
-        "https://images.unsplash.com/photo-1521341957697-b93449760f30?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      title: "Blog Post 3",
-      content: "This is the third blog post.",
-      image:
-        "https://images.unsplash.com/photo-1536084006720-6c105926e135?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-  ];
 
   const [loadingComplete, setLoadingComplete] = useState(null);
   const [searchedBlog, setSearchedBlog] = useState("");
@@ -148,6 +128,23 @@ export function Blogs() {
 
   return (
     <Box id="blogsPage">
+      <Helmet>
+        <title>Senya SHS Blogs</title>
+        <meta
+          name="description"
+          content="Explore Senya Senior High School's blogs which tells our stories from the beginning of our journey!"
+        />
+        <meta
+          name="keywords"
+          content="Senya SHS Blogs, Sensec Blogs, Sensec Official Website Blogs"
+        />
+        <meta property="og:title" content="Blogs | Senya SHS" />
+        <meta
+          property="og:description"
+          content="Explore Senya Senior High School's blogs which tells our stories from the beginning of our journey!"
+        />
+        <link rel="canonical" href="https://www.senyashs.com/sensec/blogs" />
+      </Helmet>
       {/* Navbar */}
       {!adminCurrentAction && (
         <Stack

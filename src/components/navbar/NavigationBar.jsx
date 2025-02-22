@@ -121,10 +121,10 @@ export function NavigationBar({
       name: "Check Placement",
       path: "/sensec/students/enrollment/placement_check",
     },
-    {
-      name: "Apply",
-      path: "/sensec/students/application",
-    },
+    // {
+    //   name: "Apply",
+    //   path: "/sensec/students/application",
+    // },
     {
       name: "Enrollment",
       path: "/sensec/students/enrollment",
@@ -146,11 +146,11 @@ export function NavigationBar({
         student: `/sensec/users/${authUser?.uniqueId}/student#student`,
       },
     },
-    {
-      name: "Join Sensosa",
-      path: "/sensec/users/Dashboard",
-      // path: "/sensec/sensosa/application_process",
-    },
+    // {
+    //   name: "Join Sensosa",
+    //   path: "/sensec/users/Dashboard",
+    //   // path: "/sensec/sensosa/application_process",
+    // },
   ];
   const menuLinks = [
     {
@@ -177,10 +177,10 @@ export function NavigationBar({
       name: "Check Placement",
       path: "/sensec/students/enrollment/placement_check",
     },
-    {
-      name: "Apply",
-      path: "/sensec/students/application",
-    },
+    // {
+    //   name: "Apply",
+    //   path: "/sensec/students/application",
+    // },
     {
       name: "Enrollment",
       path: "/sensec/students/enrollment",
@@ -201,10 +201,10 @@ export function NavigationBar({
         student: `/sensec/users/${authUser?.uniqueId}/student#student`,
       },
     },
-    {
-      name: "Join Sensosa",
-      path: "/sensec/sensosa/application_process",
-    },
+    // {
+    //   name: "Join Sensosa",
+    //   path: "/sensec/sensosa/application_process",
+    // },
   ];
   const isDashboard =
     location.pathname?.includes("Dashboard") ||

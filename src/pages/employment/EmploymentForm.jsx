@@ -39,6 +39,7 @@ import {
 } from "../../options/options";
 import { TaskAlt } from "@mui/icons-material";
 import { useNavigate, useParams } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 
 export function EmploymentForm() {
   const dispatch = useDispatch();
@@ -345,6 +346,26 @@ export function EmploymentForm() {
 
   return (
     <>
+      <Helmet>
+        <title>Senya SHS Employment</title>
+        <meta
+          name="description"
+          content="Employment opportunities at Senya SHS may include teaching, administrative, and support staff roles, contributing to the school's mission of shaping future leaders."
+        />
+        <meta
+          name="keywords"
+          content="Senya SHS Employment, Sensec Employment, Sensec Official Website Employment"
+        />
+        <meta property="og:title" content="Employment | Senya SHS" />
+        <meta
+          property="og:description"
+          content="Employment opportunities at Senya SHS may include teaching, administrative, and support staff roles, contributing to the school's mission of shaping future leaders."
+        />
+        <link
+          rel="canonical"
+          href="https://www.senyashs.com/sensec/new_employment"
+        />
+      </Helmet>
       {/* Current dashboard title */}
       {adminCurrentAction && adminCurrentLink && (
         <Box
