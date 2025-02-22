@@ -1,7 +1,8 @@
 import fs from "fs";
 
-const websiteUrl = "https://senyashs.com"; // Your live website URL
-
+const www = "https://www.senyashs.com";
+const raw = "https://senyashs.com";
+const websiteUrl = www || raw;
 // Define your static pages
 const pages = [
   "/",
