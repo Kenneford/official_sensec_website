@@ -27,7 +27,7 @@ export function Courses() {
           name="keywords"
           content="Senya SHS, Ghana Education, Sensec, Sensec Official Website, Programmes, Courses"
         />
-        <meta property="og:title" content="Senya SHS Programmes" />
+        <meta property="og:title" content="Programmes | Senya SHS" />
         <meta
           property="og:description"
           content="SENSEC offers six programmes. These are, Business, General Arts, Home Economics, General Science, Agricultural Science and Visual Arts"
