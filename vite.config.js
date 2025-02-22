@@ -25,6 +25,7 @@ export default defineConfig(({ mode }) => {
       outDir: "dist",
       rollupOptions: {
         input: "/index.html",
+        external: ["react-helmet-async"], // Add the external dependency here
       },
     },
     server: {
