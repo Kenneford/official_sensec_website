@@ -8,7 +8,7 @@ import EmailIcon from "@mui/icons-material/Email";
 import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import DraftsIcon from "@mui/icons-material/Drafts";
-import { CircularProgress } from "@mui/material";
+import { Button, CircularProgress } from "@mui/material";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import Footer from "../../footer/Footer";
 // import { receiveMail, sendMail } from "../../../store/actions/authActions";
@@ -16,20 +16,28 @@ import { useDispatch, useSelector } from "react-redux";
 // import { render as EmailRender } from "@react-email/render";
 // import { receiveEmail } from "../../../features/email/emailSlice";
 import { toast } from "react-toastify";
+import {
+  resetSentEmailState,
+  sendSupportEmail,
+} from "../../../features/supportCenter/supportEmailSlice";
+import LoadingProgress from "../../pageLoading/LoadingProgress";
+import { TaskAlt } from "@mui/icons-material";
 // import EmailTemplate from "../../emailTemplate/EmailTemplate";
 
 export default function ContactContent() {
   const dispatch = useDispatch();
-  const emailStatus = "";
-  // const { emailStatus, error, success } = useSelector((state) => state.email);
+  const { sendSupportEmailStatus, error, success } = useSelector(
+    (state) => state.supportEmail
+  );
+  // Send message loading state
+  const [loadingComplete, setLoadingComplete] = useState(null);
+
+  // Email state
   const [email, setEmail] = useState({
     userName: "",
     userEmail: "",
     subject: "",
     message: "",
-    //   EmailRender(<EmailTemplate />, {
-    //   pretty: true,
-    // }),
   });
 
   function handleStateChange(e) {
@@ -41,46 +49,53 @@ export default function ContactContent() {
 
   const sendEmail = (e) => {
     e.preventDefault();
-    const { userName, userEmail, subject, message } = email;
-    console.log({ email });
-
-    // dispatch(
-    //   receiveEmail({
-    //     userName,
-    //     userEmail,
-    //     message,
-    //     subject,
-    //   })
-    // );
+    const data = {
+      userName: email?.userName,
+      userEmail: email?.userEmail,
+      subject: email?.subject,
+      message: email?.message,
+    };
+    if (data) {
+      console.log(data);
+      dispatch(sendSupportEmail(data));
+    }
   };
-  // useEffect(() => {
-  //   if (emailStatus === "rejected") {
-  //     error?.errorMessage?.message?.map((err) =>
-  //       toast.error(err, {
-  //         position: "top-right",
-  //         theme: "light",
-  //         // toastId: successId,
-  //       })
-  //     );
-  //     return;
-  //   }
-  //   if (emailStatus === "success") {
-  //     toast.success(success, {
-  //       position: "top-right",
-  //       theme: "light",
-  //       // toastId: successId,
-  //     });
-  //     setEmail({
-  //       userName: "",
-  //       userEmail: "",
-  //       subject: "",
-  //       message: "",
-  //     });
-  //     // setTimeout(() => {
-  //     //   window.location.reload();
-  //     // }, 3000);
-  //   }
-  // }, [emailStatus, error, success]);
+  useEffect(() => {
+    if (sendSupportEmailStatus === "pending") {
+      setLoadingComplete(false);
+    }
+    if (sendSupportEmailStatus === "rejected") {
+      error?.errorMessage?.message?.map((err) =>
+        toast.error(err, {
+          position: "top-right",
+          theme: "light",
+          toastId: err,
+        })
+      );
+      dispatch(resetSentEmailState());
+      return;
+    }
+    if (sendSupportEmailStatus === "success") {
+      setTimeout(() => {
+        toast.success(success, {
+          position: "top-right",
+          theme: "dark",
+          toastId: success,
+        });
+        setLoadingComplete(true);
+      }, 3000);
+      setTimeout(() => {
+        setLoadingComplete(null);
+        setEmail({
+          userName: "",
+          userEmail: "",
+          subject: "",
+          message: "",
+        });
+        dispatch(resetSentEmailState());
+      }, 5000);
+    }
+  }, [sendSupportEmailStatus, error, success, dispatch]);
 
   return (
     <div className="contactWrap">
@@ -89,12 +104,9 @@ export default function ContactContent() {
           <div className="title">
             <h2>Get in touch</h2>
             <p>
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry. Lorem Ipsum has been the industry&apos;s standard dummy
-              text ever since the 1500s, when an unknown printer took a galley
-              of type and scrambled it to make a type specimen book. It has
-              survived not only five centuries, but also the leap into
-              electronic typesetting, remaining essentially unchanged.
+              Have questions or need assistance? We&apos;re here to help!
+              Contact Senya Senior High School for inquiries, admissions, or
+              support. We look forward to hearing from you!
             </p>
             <div className="contactsDetails">
               <div className="address">
@@ -152,10 +164,10 @@ export default function ContactContent() {
           </div>
           <div className="messageBox">
             <h2>Email Us</h2>
-            <p>
+            {/* <p>
               It has survived not only five centuries, but also the leap into
               electronic typesetting, remaining essentially unchanged.
-            </p>
+            </p> */}
             <form onSubmit={sendEmail}>
               <div className="emailSender">
                 <div className="userLeft">
@@ -165,7 +177,7 @@ export default function ContactContent() {
                     name="userName"
                     className="input"
                     onChange={handleStateChange}
-                    value={email.userName}
+                    value={email?.userName}
                     // placeholder="Enter your name here..."
                   />
                 </div>
@@ -176,7 +188,7 @@ export default function ContactContent() {
                     name="userEmail"
                     className="input"
                     onChange={handleStateChange}
-                    value={email.userEmail}
+                    value={email?.userEmail}
                     // placeholder="Enter your email here..."
                   />
                 </div>
@@ -188,7 +200,7 @@ export default function ContactContent() {
                   name="subject"
                   className="input"
                   onChange={handleStateChange}
-                  value={email.subject}
+                  value={email?.subject}
                   // placeholder="Enter your subject here..."
                 />
               </div>
@@ -199,17 +211,26 @@ export default function ContactContent() {
                   type="text"
                   name="message"
                   onChange={handleStateChange}
-                  value={email.message}
+                  value={email?.message}
                   // placeholder="How can we help?"
                 />
               </div>
-              <button type="submit" className="sendMessageBtn">
-                {emailStatus === "pending" ? (
-                  <CircularProgress style={{ color: "white", size: "15px" }} />
-                ) : (
-                  "Send Message"
+              <Button
+                sx={{ display: "flex", alignItems: "center" }}
+                type="submit"
+                className="sendMessageBtn"
+              >
+                {loadingComplete === false && (
+                  <LoadingProgress color={"#fff"} size={"1.5rem"} />
                 )}
-              </button>
+                {loadingComplete === true &&
+                  sendSupportEmailStatus === "success" && (
+                    <>
+                      <span>Message Sent</span> <TaskAlt />
+                    </>
+                  )}
+                {loadingComplete === null && "Send Message"}
+              </Button>
             </form>
           </div>
           <div className="locationMap">

@@ -17,6 +17,7 @@ import SubjectReducer from "../features/academics/subjectsSlice";
 import BlogReducer from "../features/blogs/blogSlice";
 import ReportReducer from "../features/reports/reportSlice";
 import AttendanceReducer from "../features/academics/attendanceSlice";
+import supportEmailReducer from "../features/supportCenter/supportEmailSlice";
 
 export const store = configureStore({
   reducer: {
@@ -38,5 +39,6 @@ export const store = configureStore({
     blog: BlogReducer,
     report: ReportReducer,
     attendance: AttendanceReducer,
+    supportEmail: supportEmailReducer,
   },
 });
