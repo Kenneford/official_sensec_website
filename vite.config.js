@@ -1,21 +1,21 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import ViteSitemap from "vite-plugin-sitemap";
+// import ViteSitemap from "vite-plugin-sitemap";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  const isProduction = mode === "production";
+  // const isProduction = mode === "production";
 
   return {
     plugins: [
       react(),
-      ViteSitemap({
-        siteUrl: isProduction
-          ? "https://senyashs.com"
-          : "http://192.168.178.22:2025/",
-        changefreq: "daily",
-        priority: 0.7,
-      }),
+      // ViteSitemap({
+      //   siteUrl: isProduction
+      //     ? "https://senyashs.com"
+      //     : "http://192.168.178.22:2025/",
+      //   changefreq: "daily",
+      //   priority: 0.7,
+      // }),
     ],
     base: "/",
     optimizeDeps: {
