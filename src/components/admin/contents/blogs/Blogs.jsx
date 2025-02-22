@@ -144,6 +144,7 @@ export function Blogs() {
           content="Explore Senya Senior High School's blogs which tells our stories from the beginning of our journey!"
         />
         <link rel="canonical" href="https://www.senyashs.com/sensec/blogs" />
+        <link rel="icon" type="image/png" href="/assets/sensec-logo1.png" />
       </Helmet>
       {/* Navbar */}
       {!adminCurrentAction && (

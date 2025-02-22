@@ -34,6 +34,7 @@ import {
 } from "../../../../features/academics/classSectionSlice";
 import { FetchAllProgrammes } from "../../../../data/programme/FetchProgrammeData";
 import { FetchAllUsers } from "../../../../data/allUsers/FetchAllUsers";
+import { Helmet } from "react-helmet-async";
 
 export function UserSignUp() {
   const dispatch = useDispatch();
@@ -218,290 +219,313 @@ export function UserSignUp() {
   ]);
 
   return (
-    <Box
-      sx={{
-        width: { xs: "95%", sm: "36rem" },
-      }}
-      margin={"auto"}
-      mt={5}
-      mb={2}
-      // height={"70vh"}
-      display={"flex"}
-      flexDirection={"column"}
-      justifyContent={"center"}
-      alignItems={"center"}
-      fontSize={"calc(.7rem + 1vmin)"}
-      // height={"100%"}
-    >
+    <>
+      <Helmet>
+        <title>Senya SHS Staff Signup</title>
+        <meta
+          name="description"
+          content="The Great Sensec is glad to have you here. Kindly fill all required fields to create a new account."
+        />
+        <meta
+          name="keywords"
+          content="Senya SHS Staff Signup, Sensec Staff Signup, Sensec Official Website Staff Signup"
+        />
+        <meta property="og:title" content="Staff Signup | Senya SHS" />
+        <meta
+          property="og:description"
+          content="The Great Sensec is glad to have you here. Kindly fill all required fields to create a new account."
+        />
+        <link
+          rel="canonical"
+          href="https://www.senyashs.com/sensec/sign_up/partners"
+        />
+        <link rel="icon" type="image/png" href="/assets/sensec-logo1.png" />
+      </Helmet>
       <Box
-        color={"#696969"}
         sx={{
-          filter: "drop-shadow(0 0 0.3em rgb(255, 255, 255, 0.68))",
-          boxShadow: "0px 1px 9px 1px #454343ad",
-          borderRadius: ".4rem",
-          display: { xs: "block", sm: "flex" },
+          width: { xs: "95%", sm: "36rem" },
         }}
-        p={1}
-        width={"100%"}
+        margin={"auto"}
+        mt={5}
+        mb={2}
+        // height={"70vh"}
+        display={"flex"}
+        flexDirection={"column"}
+        justifyContent={"center"}
+        alignItems={"center"}
+        fontSize={"calc(.7rem + 1vmin)"}
+        // height={"100%"}
       >
-        <Box width={"15rem"} sx={{ display: { xs: "none", sm: "block" } }}>
-          <Box className="left">
-            <h1>Welcome, Cherished Partner.</h1>
-            <p>
-              The Great Sensec is glad to have you here. Kindly fill all
-              required fields to create a new account.
-            </p>
-          </Box>
-        </Box>
         <Box
-          component={"form"}
-          onSubmit={handleSignUp}
-          ml={{ xs: 0, sm: 1 }}
-          width={{ xs: "100%", sm: "60%" }}
+          color={"#696969"}
+          sx={{
+            filter: "drop-shadow(0 0 0.3em rgb(255, 255, 255, 0.68))",
+            boxShadow: "0px 1px 9px 1px #454343ad",
+            borderRadius: ".4rem",
+            display: { xs: "block", sm: "flex" },
+          }}
+          p={1}
+          width={"100%"}
         >
-          <Box>
-            <Box
-              mt={1}
-              mb={2}
-              display={"flex"}
-              flexDirection={"column"}
-              justifyContent={"center"}
-              alignItems={"center"}
-            >
-              <VpnKey style={{ color: "#767474", fontSize: "2rem" }} />
-              <Typography
-                variant="h5"
-                component={"h1"}
+          <Box width={"15rem"} sx={{ display: { xs: "none", sm: "block" } }}>
+            <Box className="left">
+              <h1>Welcome, Cherished Staff.</h1>
+              <p>
+                The Great Sensec is glad to have you here. Kindly fill all
+                required fields to create a new account.
+              </p>
+            </Box>
+          </Box>
+          <Box
+            component={"form"}
+            onSubmit={handleSignUp}
+            ml={{ xs: 0, sm: 1 }}
+            width={{ xs: "100%", sm: "60%" }}
+          >
+            <Box>
+              <Box
+                mt={1}
                 mb={2}
-                sx={{ fontSize: "1.7rem" }}
+                display={"flex"}
+                flexDirection={"column"}
+                justifyContent={"center"}
+                alignItems={"center"}
               >
-                Partners Sign-Up
-              </Typography>
-              <Box className="profilePictureWrap">
-                <Box className="profilePictureCont">
-                  <img
-                    className="profileImg"
-                    src={
-                      userFound
-                        ? userFound?.personalInfo?.profilePicture?.url
-                        : "/assets/noAvatar.png"
-                    }
-                    alt=""
-                  />
+                <VpnKey style={{ color: "#767474", fontSize: "2rem" }} />
+                <Typography
+                  variant="h5"
+                  component={"h1"}
+                  mb={2}
+                  sx={{ fontSize: "1.7rem" }}
+                >
+                  Staffs Sign-Up
+                </Typography>
+                <Box className="profilePictureWrap">
+                  <Box className="profilePictureCont">
+                    <img
+                      className="profileImg"
+                      src={
+                        userFound
+                          ? userFound?.personalInfo?.profilePicture?.url
+                          : "/assets/noAvatar.png"
+                      }
+                      alt=""
+                    />
+                  </Box>
                 </Box>
               </Box>
-            </Box>
-            <Grid container spacing={2}>
-              {/* Unique ID */}
-              <Grid item xs={12}>
-                <CustomTextField
-                  fullWidth
-                  label={"Unique ID"}
-                  name="uniqueId"
-                  value={newUser?.uniqueId}
-                  onChange={handleInputValue}
-                  required
-                  error={uniqueIDInputError}
-                  helperText={uniqueIDInputError ? "Invalid user-ID!" : ""}
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color:
-                        newUser?.uniqueId && !uniqueIDInputError
-                          ? "green"
-                          : "red", // Change the asterisk color to red
-                    },
-                  }}
-                />
-              </Grid>
-              {/* Username */}
-              <Grid item xs={12}>
-                <CustomTextField
-                  fullWidth
-                  label={"Username"}
-                  name="userName"
-                  value={newUser?.userName}
-                  onChange={handleInputValue}
-                  required
-                  error={userNameInputError}
-                  // helperText={
-                  //   userNameInputError ? "Username already in use!" : ""
-                  // }
-                  // sx={{
-                  //   "& .MuiInputLabel-asterisk": {
-                  //     color:
-                  //       newUser?.userName && !userNameInputError
-                  //         ? "green"
-                  //         : "red", // Change the asterisk color to red
-                  //   },
-                  // }}
-                />
-              </Grid>
-              {/* Password */}
-              <Grid item xs={12}>
-                <CustomTextField
-                  fullWidth
-                  label={"Password"}
-                  name="password"
-                  value={newUser?.password}
-                  onChange={handleInputValue}
-                  required
-                  type={showPass ? "text" : "password"}
-                  slotProps={{
-                    input: {
-                      endAdornment: (
-                        <Box
-                          component={"button"}
-                          onClick={showPassword}
-                          bgcolor={"transparent"}
-                        >
-                          {showPass ? (
-                            <Visibility sx={{ color: "#696969" }} />
-                          ) : (
-                            <VisibilityOff sx={{ color: "#696969" }} />
-                          )}
-                        </Box>
-                      ),
-                    },
-                  }}
-                  error={passwordInputError}
-                  helperText={
-                    passwordInputError &&
-                    newUser?.password?.length > 0 &&
-                    newUser?.password?.length < 6
-                      ? "Password must be at least 6 characters long!"
-                      : ""
-                  }
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color:
-                        newUser?.password && !passwordInputError
-                          ? "green"
-                          : "red", // Change the asterisk color to red
-                    },
-                  }}
-                />
-              </Grid>
-              {/* Confirm Password */}
-              <Grid item xs={12}>
-                <CustomTextField
-                  fullWidth
-                  label={"Confirm Password"}
-                  name="confirmPassword"
-                  value={newUser?.confirmPassword}
-                  onChange={handleInputValue}
-                  required
-                  type={showConfirmPass ? "text" : "password"}
-                  slotProps={{
-                    input: {
-                      endAdornment: (
-                        <Box
-                          component={"button"}
-                          onClick={showConfirmPassword}
-                          bgcolor={"transparent"}
-                        >
-                          {showConfirmPass ? (
-                            <Visibility sx={{ color: "#696969" }} />
-                          ) : (
-                            <VisibilityOff sx={{ color: "#696969" }} />
-                          )}
-                        </Box>
-                      ),
-                    },
-                  }}
-                  error={confirmPasswordInputError}
-                  helperText={
-                    confirmPasswordInputError
-                      ? "Confirm password must be same as password!"
-                      : ""
-                  }
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color:
-                        newUser?.confirmPassword && !confirmPasswordInputError
-                          ? "green"
-                          : "red", // Change the asterisk color to red
-                    },
-                  }}
-                />
-              </Grid>
-            </Grid>
-            <Box>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={checked}
-                    onChange={handleTermsAcceptance}
-                    inputProps={{ "aria-label": "controlled" }}
-                    color="success"
+              <Grid container spacing={2}>
+                {/* Unique ID */}
+                <Grid item xs={12}>
+                  <CustomTextField
+                    fullWidth
+                    label={"Unique ID"}
+                    name="uniqueId"
+                    value={newUser?.uniqueId}
+                    onChange={handleInputValue}
+                    required
+                    error={uniqueIDInputError}
+                    helperText={uniqueIDInputError ? "Invalid user-ID!" : ""}
+                    sx={{
+                      "& .MuiInputLabel-asterisk": {
+                        color:
+                          newUser?.uniqueId && !uniqueIDInputError
+                            ? "green"
+                            : "red", // Change the asterisk color to red
+                      },
+                    }}
                   />
-                }
-                label="Accept terms and conditions"
-                required
-                sx={{
-                  "& .MuiFormControlLabel-asterisk": {
-                    color: `${!checked ? "red" : "green"}`, // Change the color of the asterisk to red
-                  },
-                }}
-              />
-            </Box>
-            <Box mt={1}>
-              <Typography>
-                Already have an account?{" "}
-                <Typography
-                  component={"span"}
-                  onClick={() =>
-                    signUpAction
-                      ? navigate("/sensec/login_options")
-                      : navigate("/")
+                </Grid>
+                {/* Username */}
+                <Grid item xs={12}>
+                  <CustomTextField
+                    fullWidth
+                    label={"Username"}
+                    name="userName"
+                    value={newUser?.userName}
+                    onChange={handleInputValue}
+                    required
+                    error={userNameInputError}
+                    // helperText={
+                    //   userNameInputError ? "Username already in use!" : ""
+                    // }
+                    // sx={{
+                    //   "& .MuiInputLabel-asterisk": {
+                    //     color:
+                    //       newUser?.userName && !userNameInputError
+                    //         ? "green"
+                    //         : "red", // Change the asterisk color to red
+                    //   },
+                    // }}
+                  />
+                </Grid>
+                {/* Password */}
+                <Grid item xs={12}>
+                  <CustomTextField
+                    fullWidth
+                    label={"Password"}
+                    name="password"
+                    value={newUser?.password}
+                    onChange={handleInputValue}
+                    required
+                    type={showPass ? "text" : "password"}
+                    slotProps={{
+                      input: {
+                        endAdornment: (
+                          <Box
+                            component={"button"}
+                            onClick={showPassword}
+                            bgcolor={"transparent"}
+                          >
+                            {showPass ? (
+                              <Visibility sx={{ color: "#696969" }} />
+                            ) : (
+                              <VisibilityOff sx={{ color: "#696969" }} />
+                            )}
+                          </Box>
+                        ),
+                      },
+                    }}
+                    error={passwordInputError}
+                    helperText={
+                      passwordInputError &&
+                      newUser?.password?.length > 0 &&
+                      newUser?.password?.length < 6
+                        ? "Password must be at least 6 characters long!"
+                        : ""
+                    }
+                    sx={{
+                      "& .MuiInputLabel-asterisk": {
+                        color:
+                          newUser?.password && !passwordInputError
+                            ? "green"
+                            : "red", // Change the asterisk color to red
+                      },
+                    }}
+                  />
+                </Grid>
+                {/* Confirm Password */}
+                <Grid item xs={12}>
+                  <CustomTextField
+                    fullWidth
+                    label={"Confirm Password"}
+                    name="confirmPassword"
+                    value={newUser?.confirmPassword}
+                    onChange={handleInputValue}
+                    required
+                    type={showConfirmPass ? "text" : "password"}
+                    slotProps={{
+                      input: {
+                        endAdornment: (
+                          <Box
+                            component={"button"}
+                            onClick={showConfirmPassword}
+                            bgcolor={"transparent"}
+                          >
+                            {showConfirmPass ? (
+                              <Visibility sx={{ color: "#696969" }} />
+                            ) : (
+                              <VisibilityOff sx={{ color: "#696969" }} />
+                            )}
+                          </Box>
+                        ),
+                      },
+                    }}
+                    error={confirmPasswordInputError}
+                    helperText={
+                      confirmPasswordInputError
+                        ? "Confirm password must be same as password!"
+                        : ""
+                    }
+                    sx={{
+                      "& .MuiInputLabel-asterisk": {
+                        color:
+                          newUser?.confirmPassword && !confirmPasswordInputError
+                            ? "green"
+                            : "red", // Change the asterisk color to red
+                      },
+                    }}
+                  />
+                </Grid>
+              </Grid>
+              <Box>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={checked}
+                      onChange={handleTermsAcceptance}
+                      inputProps={{ "aria-label": "controlled" }}
+                      color="success"
+                    />
                   }
-                  sx={{ cursor: "pointer", color: "green" }}
-                >
-                  Login
+                  label="Accept terms and conditions"
+                  required
+                  sx={{
+                    "& .MuiFormControlLabel-asterisk": {
+                      color: `${!checked ? "red" : "green"}`, // Change the color of the asterisk to red
+                    },
+                  }}
+                />
+              </Box>
+              <Box mt={1}>
+                <Typography>
+                  Already have an account?{" "}
+                  <Typography
+                    component={"span"}
+                    onClick={() =>
+                      signUpAction
+                        ? navigate("/sensec/login_options")
+                        : navigate("/")
+                    }
+                    sx={{ cursor: "pointer", color: "green" }}
+                  >
+                    Login
+                  </Typography>
                 </Typography>
-              </Typography>
-            </Box>
-            <Button
-              type="submit"
-              variant="contained"
-              fullWidth
-              sx={{
-                backgroundColor: "green",
-                margin: "1rem 0",
-                padding: ".5rem",
-                letterSpacing: "1px",
-                textTransform: "capitalize",
-                fontSize: "1em",
-                minHeight: "3.7rem",
-              }}
-            >
-              {loadingComplete === false && (
-                <LoadingProgress color={"#fff"} size={"1.3rem"} />
-              )}
-              {loadingComplete === null && (
-                <>
-                  Sign Up{" "}
-                  <PersonAddAlt
-                    className="signupIcon"
-                    sx={{ marginLeft: ".5rem" }}
-                  />
-                </>
-              )}
-              {loadingComplete === true &&
-                signUpStatus === "success" &&
-                !redirecting && (
+              </Box>
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth
+                sx={{
+                  backgroundColor: "green",
+                  margin: "1rem 0",
+                  padding: ".5rem",
+                  letterSpacing: "1px",
+                  textTransform: "capitalize",
+                  fontSize: "1em",
+                  minHeight: "3.7rem",
+                }}
+              >
+                {loadingComplete === false && (
+                  <LoadingProgress color={"#fff"} size={"1.3rem"} />
+                )}
+                {loadingComplete === null && (
                   <>
-                    Success{" "}
-                    <TaskAlt
+                    Sign Up{" "}
+                    <PersonAddAlt
                       className="signupIcon"
                       sx={{ marginLeft: ".5rem" }}
                     />
                   </>
                 )}
-              {redirecting && <Redirection color={"#fff"} size={"1.3rem"} />}
-            </Button>
+                {loadingComplete === true &&
+                  signUpStatus === "success" &&
+                  !redirecting && (
+                    <>
+                      Success{" "}
+                      <TaskAlt
+                        className="signupIcon"
+                        sx={{ marginLeft: ".5rem" }}
+                      />
+                    </>
+                  )}
+                {redirecting && <Redirection color={"#fff"} size={"1.3rem"} />}
+              </Button>
+            </Box>
           </Box>
         </Box>
       </Box>
-    </Box>
+    </>
   );
 }

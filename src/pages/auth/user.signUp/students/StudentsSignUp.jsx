@@ -35,6 +35,7 @@ import {
 import { FetchAllProgrammes } from "../../../../data/programme/FetchProgrammeData";
 import { FetchAllUsers } from "../../../../data/allUsers/FetchAllUsers";
 import SmallFooter from "../../../../components/footer/SmallFooter";
+import { Helmet } from "react-helmet-async";
 
 export function StudentsSignUp() {
   const dispatch = useDispatch();
@@ -244,6 +245,27 @@ export function StudentsSignUp() {
 
   return (
     <>
+      <Helmet>
+        <title>Senya SHS Student Signup</title>
+        <meta
+          name="description"
+          content="The Great Sensec is glad to have you here. Kindly fill all required fields to create a new account."
+        />
+        <meta
+          name="keywords"
+          content="Senya SHS Student Signup, Sensec Student Signup, Sensec Official Website Student Signup"
+        />
+        <meta property="og:title" content="Student Signup | Senya SHS" />
+        <meta
+          property="og:description"
+          content="The Great Sensec is glad to have you here. Kindly fill all required fields to create a new account."
+        />
+        <link
+          rel="canonical"
+          href="https://www.senyashs.com/sensec/sign_up/students"
+        />
+        <link rel="icon" type="image/png" href="/assets/sensec-logo1.png" />
+      </Helmet>
       <Box
         sx={{
           width: { xs: "95%", sm: "36rem" },

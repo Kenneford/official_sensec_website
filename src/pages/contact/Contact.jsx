@@ -24,6 +24,7 @@ export function Contact() {
           content="For inquiries, admissions, or support, feel free to reach out to us. We're here to help!"
         />
         <link rel="canonical" href="https://www.senyashs.com/sensec/contact" />
+        <link rel="icon" type="image/png" href="/assets/sensec-logo1.png" />
       </Helmet>
       <ContactBanner />
       <ContactContent />

@@ -27,6 +27,7 @@ export function About() {
           content="A School that provides learners with excellent academics, skills development and strong ethical foundation for national development."
         />
         <link rel="canonical" href="https://www.senyashs.com/sensec/about" />
+        <link rel="icon" type="image/png" href="/assets/sensec-logo1.png" />
       </Helmet>
       <AboutBanner />
       <WhoWeAre />
