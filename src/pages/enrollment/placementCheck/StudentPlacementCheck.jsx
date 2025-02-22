@@ -216,6 +216,7 @@ export function StudentPlacementCheck() {
           rel="canonical"
           href="https://www.senyashs.com/sensec/students/enrollment/placement_check"
         />
+        <link rel="icon" type="image/png" href="/assets/sensec-logo1.png" />
       </Helmet>
       {/* School Logo */}
       <Box

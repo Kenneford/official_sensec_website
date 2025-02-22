@@ -76,6 +76,7 @@ export function GuestPageLayout() {
         >
           <Avatar
             src="/assets/sensec-logo1.png"
+            alt="Sensec Logo"
             sx={{ alignItems: "center" }}
           />
           <Box sx={{ display: "flex", height: "1.5rem" }}>

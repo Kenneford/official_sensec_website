@@ -531,6 +531,7 @@ export function EnrollmentForm() {
           rel="canonical"
           href="https://www.senyashs.com/sensec/students/enrollment/documentation"
         />
+        <link rel="icon" type="image/png" href="/assets/sensec-logo1.png" />
       </Helmet>
       {/* School Logo */}
       <Box

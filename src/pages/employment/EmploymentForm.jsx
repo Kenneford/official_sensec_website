@@ -365,6 +365,7 @@ export function EmploymentForm() {
           rel="canonical"
           href="https://www.senyashs.com/sensec/new_employment"
         />
+        <link rel="icon" type="image/png" href="/assets/sensec-logo1.png" />
       </Helmet>
       {/* Current dashboard title */}
       {adminCurrentAction && adminCurrentLink && (

@@ -33,6 +33,7 @@ export function Courses() {
           content="SENSEC offers six programmes. These are, Business, General Arts, Home Economics, General Science, Agricultural Science and Visual Arts"
         />
         <link rel="canonical" href="https://www.senyashs.com/sensec/courses" />
+        <link rel="icon" type="image/png" href="/assets/sensec-logo1.png" />
       </Helmet>
       <CoursesBanner />
       <AllCourses allProgrammes={allProgrammes} />

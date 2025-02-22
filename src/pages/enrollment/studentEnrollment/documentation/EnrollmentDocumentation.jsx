@@ -44,6 +44,7 @@ export function EnrollmentDocumentation() {
   return (
     <Box id="enrollmentDocumentation">
       <Helmet>
+        <link rel="icon" type="image/png" href="/assets/sensec-logo1.png" />
         <title>Senya SHS Enrollment</title>
         <meta
           name="description"
@@ -62,6 +63,7 @@ export function EnrollmentDocumentation() {
           rel="canonical"
           href="https://www.senyashs.com/sensec/students/enrollment/documentation"
         />
+        <link rel="icon" type="image/png" href="/assets/sensec-logo1.png" />
       </Helmet>
       {/* School Logo */}
       <Box

@@ -17,6 +17,7 @@ import { Avatar, Box, Button, Typography } from "@mui/material";
 import { CustomTextField } from "../../../muiStyling/muiStyling";
 import Redirection from "../../../components/pageLoading/Redirection";
 import { FetchAllUsers } from "../../../data/allUsers/FetchAllUsers";
+import { Helmet } from "react-helmet-async";
 
 export default function ForgotPassword() {
   const {
@@ -134,6 +135,27 @@ export default function ForgotPassword() {
 
   return (
     <Box>
+      <Helmet>
+        <title>Senya SHS Password Reset</title>
+        <meta
+          name="description"
+          content="If you have forgotten your password and need to reset it, kindly visit our forgot password page and request password reset with your email address."
+        />
+        <meta
+          name="keywords"
+          content="Senya SHS Password Reset, Sensec Password Reset, Sensec Official Website Password Reset"
+        />
+        <meta property="og:title" content="Password Reset | Senya SHS" />
+        <meta
+          property="og:description"
+          content="If you have forgotten your password and need to reset it, kindly visit our forgot password page and request password reset with your email address."
+        />
+        <link
+          rel="canonical"
+          href="https://www.senyashs.com/sensec/forgot_password"
+        />
+        <link rel="icon" type="image/png" href="/assets/sensec-logo1.png" />
+      </Helmet>
       {/* School Logo */}
       <Box
         direction="column"
