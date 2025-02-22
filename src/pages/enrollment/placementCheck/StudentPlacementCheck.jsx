@@ -20,6 +20,7 @@ import {
   FetchPlacementBatchByYear,
 } from "../../../data/students/FetchPlacementStudents";
 import Cookies from "js-cookie";
+import { Helmet } from "react-helmet-async";
 
 export function StudentPlacementCheck() {
   const {
@@ -196,6 +197,26 @@ export function StudentPlacementCheck() {
 
   return (
     <>
+      <Helmet>
+        <title>Senya SHS Placement Check</title>
+        <meta
+          name="description"
+          content="After the Ghana Education Service (GES) placement, students are required to check if they have been placed in Senya SHS."
+        />
+        <meta
+          name="keywords"
+          content="Senya SHS Placement Check, Sensec Placement Check, Placement Check, Sensec Official Website Placement Check"
+        />
+        <meta property="og:title" content="Placement Check | Senya SHS" />
+        <meta
+          property="og:description"
+          content="After the Ghana Education Service (GES) placement, students are required to check if they have been placed in Senya SHS."
+        />
+        <link
+          rel="canonical"
+          href="https://www.senyashs.com/sensec/students/enrollment/placement_check"
+        />
+      </Helmet>
       {/* School Logo */}
       <Box
         direction="column"

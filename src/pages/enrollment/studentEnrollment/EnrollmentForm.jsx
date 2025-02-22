@@ -54,6 +54,7 @@ import {
   getAllAcademicYears,
 } from "../../../features/academics/academicYearSlice";
 import Cookies from "js-cookie";
+import { Helmet } from "react-helmet-async";
 
 export function EnrollmentForm() {
   const {
@@ -511,6 +512,26 @@ export function EnrollmentForm() {
 
   return (
     <>
+      <Helmet>
+        <title>Senya SHS Enrollment</title>
+        <meta
+          name="description"
+          content="After the Ghana Education Service (GES) placement, students are required to check if they have been placed in Senya SHS. Follow these steps to check your placement:"
+        />
+        <meta
+          name="keywords"
+          content="Senya SHS Enrollment, Sensec Enrollment, Sensec Official Website Enrollment"
+        />
+        <meta property="og:title" content="Enrollment | Senya SHS" />
+        <meta
+          property="og:description"
+          content="After the Ghana Education Service (GES) placement, students are required to check if they have been placed in Senya SHS. Follow these steps to check your placement:"
+        />
+        <link
+          rel="canonical"
+          href="https://www.senyashs.com/sensec/students/enrollment/documentation"
+        />
+      </Helmet>
       {/* School Logo */}
       <Box
         direction="column"

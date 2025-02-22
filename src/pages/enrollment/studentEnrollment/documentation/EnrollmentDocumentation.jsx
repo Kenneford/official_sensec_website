@@ -12,6 +12,7 @@ import { NavigationBar } from "../../../../components/navbar/NavigationBar";
 import { ContainerBox } from "../../../../muiStyling/muiStyling";
 import { HashLink } from "react-router-hash-link";
 import Footer from "../../../../components/footer/Footer";
+import { Helmet } from "react-helmet-async";
 
 export function EnrollmentDocumentation() {
   const {
@@ -42,6 +43,26 @@ export function EnrollmentDocumentation() {
 
   return (
     <Box id="enrollmentDocumentation">
+      <Helmet>
+        <title>Senya SHS Enrollment</title>
+        <meta
+          name="description"
+          content="After the Ghana Education Service (GES) placement, students are required to check if they have been placed in Senya SHS. Follow these steps to check your placement:"
+        />
+        <meta
+          name="keywords"
+          content="Senya SHS Enrollment, Sensec Enrollment, Sensec Official Website Enrollment"
+        />
+        <meta property="og:title" content="Enrollment | Senya SHS" />
+        <meta
+          property="og:description"
+          content="After the Ghana Education Service (GES) placement, students are required to check if they have been placed in Senya SHS. Follow these steps to check your placement:"
+        />
+        <link
+          rel="canonical"
+          href="https://www.senyashs.com/sensec/students/enrollment/documentation"
+        />
+      </Helmet>
       {/* School Logo */}
       <Box
         direction="column"
