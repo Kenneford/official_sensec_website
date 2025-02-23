@@ -2,62 +2,86 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://senyashs.com/</loc>
-    <lastmod>2025-02-22T00:07:07.568Z</lastmod>
+    <loc>https://www.senyashs.com/</loc>
+    <lastmod>2025-02-23T04:33:13.903Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://senyashs.com/sensec/homepage</loc>
-    <lastmod>2025-02-22T00:07:07.569Z</lastmod>
+    <loc>https://www.senyashs.com/sensec/homepage</loc>
+    <lastmod>2025-02-23T04:33:13.904Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://senyashs.com/sensec/about</loc>
-    <lastmod>2025-02-22T00:07:07.569Z</lastmod>
+    <loc>https://www.senyashs.com/sensec/about</loc>
+    <lastmod>2025-02-23T04:33:13.904Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://senyashs.com/sensec/contact</loc>
-    <lastmod>2025-02-22T00:07:07.569Z</lastmod>
+    <loc>https://www.senyashs.com/sensec/contact</loc>
+    <lastmod>2025-02-23T04:33:13.904Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://senyashs.com/sensec/blogs</loc>
-    <lastmod>2025-02-22T00:07:07.569Z</lastmod>
+    <loc>https://www.senyashs.com/sensec/blogs</loc>
+    <lastmod>2025-02-23T04:33:13.904Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://senyashs.com/sensec/courses</loc>
-    <lastmod>2025-02-22T00:07:07.569Z</lastmod>
+    <loc>https://www.senyashs.com/sensec/courses</loc>
+    <lastmod>2025-02-23T04:33:13.904Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://senyashs.com/sensec/contact</loc>
-    <lastmod>2025-02-22T00:07:07.569Z</lastmod>
+    <loc>https://www.senyashs.com/sensec/contact</loc>
+    <lastmod>2025-02-23T04:33:13.904Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://senyashs.com/sensec/students/enrollment/placement_check</loc>
-    <lastmod>2025-02-22T00:07:07.569Z</lastmod>
+    <loc>https://www.senyashs.com/sensec/students/enrollment/placement_check</loc>
+    <lastmod>2025-02-23T04:33:13.904Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://senyashs.com/sensec/students/enrollment/documentation</loc>
-    <lastmod>2025-02-22T00:07:07.569Z</lastmod>
+    <loc>https://www.senyashs.com/sensec/students/enrollment/documentation</loc>
+    <lastmod>2025-02-23T04:33:13.904Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://senyashs.com/sensec/new_employment</loc>
-    <lastmod>2025-02-22T00:07:07.569Z</lastmod>
+    <loc>https://www.senyashs.com/sensec/new_employment</loc>
+    <lastmod>2025-02-23T04:33:13.904Z</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.senyashs.com/sensec/login_options</loc>
+    <lastmod>2025-02-23T04:33:13.904Z</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.senyashs.com/sensec/sign_up/staffs</loc>
+    <lastmod>2025-02-23T04:33:13.904Z</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.senyashs.com/sensec/sign_up/students</loc>
+    <lastmod>2025-02-23T04:33:13.904Z</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.senyashs.com/sensec/forgot_password</loc>
+    <lastmod>2025-02-23T04:33:13.904Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
