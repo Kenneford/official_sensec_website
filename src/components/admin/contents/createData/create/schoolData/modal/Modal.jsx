@@ -11,11 +11,17 @@ export default function Modal({
   missionText,
   coreValuesText,
   historyText,
+  whoWeAreText,
+  academicExcellenceText,
+  achievementText,
   anthem,
   vision,
   mission,
   coreValues,
   history,
+  whoWeAre,
+  academicExcellence,
+  achievements,
 }) {
   if (!open) return null;
   return (
@@ -41,6 +47,9 @@ export default function Modal({
             {mission && Parser(missionText)}
             {coreValues && Parser(coreValuesText)}
             {history && Parser(historyText)}
+            {whoWeAre && Parser(whoWeAreText)}
+            {academicExcellence && Parser(academicExcellenceText)}
+            {achievements && Parser(achievementText)}
           </div>
         </div>
       </div>

@@ -16,9 +16,9 @@ import { useSelector } from "react-redux";
 import { getAuthUser } from "../../../../features/auth/authSlice";
 
 const quickLinks = [
-  { name: "Register" },
+  // { name: "Register" },
   { name: "Create Data" },
-  { name: "Suspend & Withdraw" },
+  // { name: "Suspend & Withdraw" },
 ];
 
 export function ActionsLinks({ hovered }) {

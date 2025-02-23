@@ -2,7 +2,7 @@
   font-size: calc(0.7rem + 1vmin);
   .schoolDataWrap {
     // width: 50%;
-    margin: auto;
+    // margin: auto;
     h1 {
       padding-bottom: 2rem;
       // margin-top: -1.5rem;
@@ -32,24 +32,24 @@
           .logoUploadWrap {
             border: 1px solid #cccc;
             border-radius: 50%;
-            padding: 0.2rem;
+            padding: 0.1rem;
+            margin-bottom: 1rem;
           }
           .logoUpload {
+            // font-size: calc(0.7rem + 1vmin);
             cursor: pointer;
             img {
-              border-radius: 50%;
-              width: 7em;
-              height: 7em;
-              object-fit: cover;
-              margin-bottom: -0.3rem;
+              // border-radius: 50%;
+              // width: 7em;
+              // height: 7em;
+              // object-fit: cover;
+              // margin-bottom: -0.3rem;
             }
           }
         }
       }
     }
-    .anthemEditor,
-    .visionEditor,
-    .historyEditor {
+    .textEditorWrap {
       //style to hide tinyMCE logo on the editor
       .tox-statusbar {
         a,
@@ -102,30 +102,30 @@
         background-color: #292929;
       }
     }
-    .schDataBtn {
-      button {
-        height: 4rem;
-        padding: 1rem 0.5rem;
-        margin-top: 1rem;
-        width: 12rem;
-        background-color: green;
-        color: #fff;
-        font-size: 1.2rem;
-        border-radius: 0.4rem;
-        cursor: pointer;
-      }
-      button:disabled {
-        height: 4rem;
-        width: 12rem;
-        padding: 1rem 0.5rem;
-        margin-top: 1rem;
-        letter-spacing: 1px;
-        border-radius: 0.4rem;
-        background-color: #cccccc;
-        color: #fff;
-        transition: 0.4s ease;
-        cursor: not-allowed;
-      }
-    }
+    // .schDataBtn {
+    //   button {
+    //     // height: 4rem;
+    //     padding: 1rem 0.5rem;
+    //     margin-top: 1rem;
+    //     width: 12rem;
+    //     background-color: green;
+    //     color: #fff;
+    //     font-size: 1.2rem;
+    //     border-radius: 0.4rem;
+    //     cursor: pointer;
+    //   }
+    //   button:disabled {
+    //     // height: 4rem;
+    //     width: 12rem;
+    //     padding: 1rem 0.5rem;
+    //     margin-top: 1rem;
+    //     letter-spacing: 1px;
+    //     border-radius: 0.4rem;
+    //     background-color: #cccccc;
+    //     color: #fff;
+    //     transition: 0.4s ease;
+    //     cursor: not-allowed;
+    //   }
+    // }
   }
 }

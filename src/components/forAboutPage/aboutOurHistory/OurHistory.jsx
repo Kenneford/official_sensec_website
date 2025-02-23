@@ -33,31 +33,46 @@ export function OurHistory() {
               </Box>
               <Box className="historyLeft">
                 <p>
-                  SENSEC was established on 7th February, 1991, when a group of
-                  visionary educators and community leaders came together with a
-                  shared dream – to provide quality education to the youth of
-                  Senya Beraku and its catchment areas. These founders believed
-                  that “Knowledge is Light,” a belief that later became motto of
-                  the school and would come to define the essence of the school.
+                  In the heart of Senya Beraku, a coastal community nestled
+                  along the serene shores of the Central Region of Ghana, Senya
+                  Senior High School, affectionately called &quot;
+                  <span style={{ fontWeight: 500 }}>The Great Sensec</span>
+                  &quot;, was established on{" "}
+                  <spann style={{ fontWeight: 500 }}>7th February, 1991</spann>,
+                  when a group of visionary educators and community leaders came
+                  together with a shared dream – to provide quality education to
+                  the youth of Senya Beraku and its catchment areas. These
+                  founders believed that{" "}
+                  <spann style={{ fontWeight: 500 }}>
+                    “Knowledge is Light”
+                  </spann>
+                  , a belief that later became motto of the school and would
+                  come to define the essence of the school.
                 </p>
                 <p>
                   During its early years, the school faced numerous challenges,
                   from inadequate infrastructure to limited resources. However,
                   the determination and dedication of the founding team, along
-                  with support from the local community, ensured that SENSEC
+                  with support from the local community, ensured that{" "}
+                  <span style={{ fontWeight: 500 }}>The Great Sensec</span>{" "}
                   continued to grow and flourish.
                 </p>
                 <p>
-                  Great SENSEC started in a private residence with only four
-                  students and acting Headmaster Mr. George Mettle and Mr.
-                  E.N.Q. Sackey who was a national service personnel. Not long
-                  after this modest beginning, Mr. J.K Addo became the
-                  substantive headmaster of the school. The school was
+                  <span style={{ fontWeight: 500 }}>The Great Sensec</span>{" "}
+                  started in a private residence with only four students and
+                  acting Headmaster{" "}
+                  <span style={{ fontWeight: 500 }}>Mr. George Mettle</span> and{" "}
+                  <span style={{ fontWeight: 500 }}>Mr. E.N.Q. Sackey</span> who
+                  was a national service personnel. Not long after this modest
+                  beginning,{" "}
+                  <span style={{ fontWeight: 500 }}>Mr. J.K Addo</span> became
+                  the substantive headmaster of the school. The school was
                   originally meant to be a Community Day School, but due to
                   Ministry of Education&apos;s computerised School Selection and
-                  Placement System (CSSPS), Management of the school introduced
-                  the boarding and hostel systems to accommodate students who
-                  came from afar.
+                  Placement System{" "}
+                  <span style={{ fontWeight: 500 }}>(CSSPS)</span>, Management
+                  of the school introduced the boarding and hostel systems to
+                  accommodate students who came from afar.
                 </p>
                 {/* <Link to={"#"}>
                   <button className="historyBtn">Learn More</button>

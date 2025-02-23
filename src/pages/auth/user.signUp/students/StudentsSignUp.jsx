@@ -606,6 +606,10 @@ export function StudentsSignUp() {
                   fontSize: ".9em",
                   minHeight: "1.5rem",
                   marginTop: ".5rem",
+                  transition: ".5s ease",
+                  "&:hover": {
+                    backgroundColor: "#059d26",
+                  },
                 }}
               >
                 {loadingComplete === false && (
