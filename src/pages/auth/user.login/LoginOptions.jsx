@@ -13,6 +13,7 @@ import {
 } from "../../../features/auth/authSlice";
 import Redirection from "../../../components/pageLoading/Redirection";
 import LoadingProgress from "../../../components/pageLoading/LoadingProgress";
+import { Helmet } from "react-helmet-async";
 
 export function LoginOptions() {
   const dispatch = useDispatch();
@@ -180,270 +181,298 @@ export function LoginOptions() {
   ]);
 
   return (
-    <Box
-      sx={{
-        width: { xs: "95%", sm: "36rem" },
-      }}
-      margin={"auto"}
-      mt={5}
-      mb={5}
-      // height={"70vh"}
-      display={"flex"}
-      // flexDirection={"column"}
-      justifyContent={"center"}
-      alignItems={"center"}
-      fontSize={"calc(.7rem + 1vmin)"}
-      height={"100%"}
-    >
+    <>
+      <Helmet>
+        <title>User Login - Senya SHS</title>
+        <meta
+          name="description"
+          content="The Great Sensec is glad to have you here. Kindly fill all required fields to create a new account."
+        />
+        <meta
+          name="keywords"
+          content="Senya SHS User Login, Sensec User Login, Sensec Official Website User Login"
+        />
+        <meta property="og:title" content="User Login | Senya SHS" />
+        <meta
+          property="og:description"
+          content="The Great Sensec is glad to have you here. Kindly fill all required fields to create a new account."
+        />
+        <link
+          rel="canonical"
+          href="https://www.senyashs.com/sensec/login_options"
+        />
+        <link rel="icon" type="image/png" href="/assets/sensec-logo1.png" />
+      </Helmet>
       <Box
-        component={"form"}
-        onSubmit={handleLogin}
-        color={"#696969"}
         sx={{
-          filter: "drop-shadow(0 0 0.3em rgb(255, 255, 255, 0.68))",
-          boxShadow: "0px 1px 9px 1px #454343ad",
-          borderRadius: ".4rem",
-          display: { xs: "block", sm: "flex" },
+          width: { xs: "95%", sm: "36rem" },
         }}
-        p={1}
-        width={"100%"}
+        margin={"auto"}
+        mt={5}
+        mb={5}
+        // height={"70vh"}
+        display={"flex"}
+        // flexDirection={"column"}
+        justifyContent={"center"}
+        alignItems={"center"}
+        fontSize={"calc(.7rem + 1vmin)"}
+        height={"100%"}
       >
-        <Box width={"22rem"} sx={{ display: { xs: "none", sm: "block" } }}>
-          <Box className="left">
-            <h1>Welcome, Cherished User.</h1>
-            <p>Kindly select an option to proceed.</p>
+        <Box
+          component={"form"}
+          onSubmit={handleLogin}
+          color={"#696969"}
+          sx={{
+            filter: "drop-shadow(0 0 0.3em rgb(255, 255, 255, 0.68))",
+            boxShadow: "0px 1px 9px 1px #454343ad",
+            borderRadius: ".4rem",
+            display: { xs: "block", sm: "flex" },
+          }}
+          p={1}
+          width={"100%"}
+        >
+          <Box width={"22rem"} sx={{ display: { xs: "none", sm: "block" } }}>
+            <Box className="left">
+              <h1>Welcome, Cherished User.</h1>
+              <p>Kindly select an option to proceed.</p>
+            </Box>
           </Box>
-        </Box>
-        <Box ml={{ xs: 0, sm: 1 }} maxWidth={{ xs: "100%", sm: "19rem" }}>
-          <Box
-            mt={2}
-            mb={4}
-            display={"flex"}
-            flexDirection={"column"}
-            justifyContent={"center"}
-            alignItems={"center"}
-          >
-            <Lock style={{ color: "#767474", fontSize: "2rem" }} />
-            <Typography
-              variant="h5"
-              component={"h1"}
-              mb={2}
-              sx={{ fontSize: "1.7rem" }}
+          <Box ml={{ xs: 0, sm: 1 }} maxWidth={{ xs: "100%", sm: "19rem" }}>
+            <Box
+              mt={2}
+              mb={4}
+              display={"flex"}
+              flexDirection={"column"}
+              justifyContent={"center"}
+              alignItems={"center"}
             >
-              Login
-            </Typography>
-            {/* <Avatar
+              <Lock style={{ color: "#767474", fontSize: "2rem" }} />
+              <Typography
+                variant="h5"
+                component={"h1"}
+                mb={2}
+                sx={{ fontSize: "1.7rem" }}
+              >
+                Login
+              </Typography>
+              {/* <Avatar
             src="https://plus.unsplash.com/premium_photo-1689977927774-401b12d137d6?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             sx={{ width: "6rem", height: "6rem" }}
           /> */}
-            <Box className="profilePictureWrap">
-              {/* {userFound && ( */}
-              <Box className="profilePictureCont">
-                <img
-                  className="profileImg"
-                  src={
-                    userFound
-                      ? userFound?.personalInfo?.profilePicture?.url
-                      : "/assets/noAvatar.png"
-                  }
-                  alt=""
-                />
+              <Box className="profilePictureWrap">
+                {/* {userFound && ( */}
+                <Box className="profilePictureCont">
+                  <img
+                    className="profileImg"
+                    src={
+                      userFound
+                        ? userFound?.personalInfo?.profilePicture?.url
+                        : "/assets/noAvatar.png"
+                    }
+                    alt=""
+                  />
+                </Box>
+                {/* )} */}
               </Box>
-              {/* )} */}
             </Box>
+            <Grid container spacing={2} mb={2}>
+              {/* Admin */}
+              <Grid item xs={12}>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  fullWidth
+                  sx={{
+                    backgroundColor: "green",
+                    letterSpacing: "1px",
+                    textTransform: "capitalize",
+                    fontSize: ".9em",
+                    minHeight: "1.5rem",
+                  }}
+                  onClick={() => {
+                    localStorage.setItem("loginAction", "Admins Login");
+                    localStorage.removeItem("currentOtherNavLink");
+                    navigate("/sensec/login");
+                  }}
+                >
+                  {/* Sign-up */}
+                  {loadingComplete === false && (
+                    <LoadingProgress color={"#fff"} size={"1.3rem"} />
+                  )}
+                  {loadingComplete === null && (
+                    <>
+                      Admins Login
+                      <LoginOutlined
+                        className="signupIcon"
+                        sx={{ marginLeft: ".5rem" }}
+                      />
+                    </>
+                  )}
+                  {loadingComplete === true &&
+                    loginStatus === "success" &&
+                    !redirecting && (
+                      <>
+                        Success{" "}
+                        <TaskAlt
+                          className="signupIcon"
+                          sx={{ marginLeft: ".5rem" }}
+                        />
+                      </>
+                    )}
+                  {redirecting && (
+                    <Redirection color={"#fff"} size={"1.3rem"} />
+                  )}
+                </Button>
+              </Grid>
+              {/* Lecturer */}
+              <Grid item xs={12}>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  fullWidth
+                  sx={{
+                    backgroundColor: "green",
+                    letterSpacing: "1px",
+                    textTransform: "capitalize",
+                    fontSize: ".9em",
+                    minHeight: "1.5rem",
+                  }}
+                  onClick={() => {
+                    localStorage.setItem("loginAction", "Lecturers Login");
+                    localStorage.removeItem("currentOtherNavLink");
+                    navigate("/sensec/login");
+                  }}
+                >
+                  {/* Sign-up */}
+                  {loadingComplete === false && (
+                    <LoadingProgress color={"#fff"} size={"1.3rem"} />
+                  )}
+                  {loadingComplete === null && (
+                    <>
+                      Lecturers Login
+                      <LoginOutlined
+                        className="signupIcon"
+                        sx={{ marginLeft: ".5rem" }}
+                      />
+                    </>
+                  )}
+                  {loadingComplete === true &&
+                    loginStatus === "success" &&
+                    !redirecting && (
+                      <>
+                        Success{" "}
+                        <TaskAlt
+                          className="signupIcon"
+                          sx={{ marginLeft: ".5rem" }}
+                        />
+                      </>
+                    )}
+                  {redirecting && (
+                    <Redirection color={"#fff"} size={"1.3rem"} />
+                  )}
+                </Button>
+              </Grid>
+              {/* Student */}
+              <Grid item xs={12}>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  size="small"
+                  fullWidth
+                  sx={{
+                    backgroundColor: "green",
+                    letterSpacing: "1px",
+                    textTransform: "capitalize",
+                    fontSize: ".9em",
+                    minHeight: "1.5rem",
+                  }}
+                  onClick={() => {
+                    localStorage.setItem("loginAction", "Students Login");
+                    localStorage.removeItem("currentOtherNavLink");
+                    navigate("/sensec/login");
+                  }}
+                >
+                  {/* Sign-up */}
+                  {loadingComplete === false && (
+                    <LoadingProgress color={"#fff"} size={"1.3rem"} />
+                  )}
+                  {loadingComplete === null && (
+                    <>
+                      Students Login
+                      <LoginOutlined
+                        className="signupIcon"
+                        sx={{ marginLeft: ".5rem" }}
+                      />
+                    </>
+                  )}
+                  {loadingComplete === true &&
+                    loginStatus === "success" &&
+                    !redirecting && (
+                      <>
+                        Success{" "}
+                        <TaskAlt
+                          className="signupIcon"
+                          sx={{ marginLeft: ".5rem" }}
+                        />
+                      </>
+                    )}
+                  {redirecting && (
+                    <Redirection color={"#fff"} size={"1.3rem"} />
+                  )}
+                </Button>
+              </Grid>
+              {/* NT-Staff */}
+              <Grid item xs={12}>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  fullWidth
+                  sx={{
+                    backgroundColor: "green",
+                    letterSpacing: "1px",
+                    textTransform: "capitalize",
+                    fontSize: ".9em",
+                    minHeight: "1.5rem",
+                  }}
+                  onClick={() => {
+                    localStorage.setItem("loginAction", "NT-Staffs Login");
+                    localStorage.removeItem("currentOtherNavLink");
+                    navigate("/sensec/login");
+                  }}
+                >
+                  {/* Sign-up */}
+                  {loadingComplete === false && (
+                    <LoadingProgress color={"#fff"} size={"1.3rem"} />
+                  )}
+                  {loadingComplete === null && (
+                    <>
+                      NT-Staff Login
+                      <LoginOutlined
+                        className="signupIcon"
+                        sx={{ marginLeft: ".5rem" }}
+                      />
+                    </>
+                  )}
+                  {loadingComplete === true &&
+                    loginStatus === "success" &&
+                    !redirecting && (
+                      <>
+                        Success{" "}
+                        <TaskAlt
+                          className="signupIcon"
+                          sx={{ marginLeft: ".5rem" }}
+                        />
+                      </>
+                    )}
+                  {redirecting && (
+                    <Redirection color={"#fff"} size={"1.3rem"} />
+                  )}
+                </Button>
+              </Grid>
+            </Grid>
           </Box>
-          <Grid container spacing={2} mb={2}>
-            {/* Admin */}
-            <Grid item xs={12}>
-              <Button
-                type="submit"
-                variant="contained"
-                fullWidth
-                sx={{
-                  backgroundColor: "green",
-                  padding: ".5rem",
-                  letterSpacing: "1px",
-                  textTransform: "capitalize",
-                  fontSize: "1em",
-                  minHeight: "3.7rem",
-                }}
-                onClick={() => {
-                  localStorage.setItem("loginAction", "Admins Login");
-                  localStorage.removeItem("currentOtherNavLink");
-                  navigate("/sensec/login");
-                }}
-              >
-                {/* Sign-up */}
-                {loadingComplete === false && (
-                  <LoadingProgress color={"#fff"} size={"1.3rem"} />
-                )}
-                {loadingComplete === null && (
-                  <>
-                    Admins Login
-                    <LoginOutlined
-                      className="signupIcon"
-                      sx={{ marginLeft: ".5rem" }}
-                    />
-                  </>
-                )}
-                {loadingComplete === true &&
-                  loginStatus === "success" &&
-                  !redirecting && (
-                    <>
-                      Success{" "}
-                      <TaskAlt
-                        className="signupIcon"
-                        sx={{ marginLeft: ".5rem" }}
-                      />
-                    </>
-                  )}
-                {redirecting && <Redirection color={"#fff"} size={"1.3rem"} />}
-              </Button>
-            </Grid>
-            {/* Lecturer */}
-            <Grid item xs={12}>
-              <Button
-                type="submit"
-                variant="contained"
-                fullWidth
-                sx={{
-                  backgroundColor: "green",
-                  padding: ".5rem",
-                  letterSpacing: "1px",
-                  textTransform: "capitalize",
-                  fontSize: "1em",
-                  minHeight: "3.7rem",
-                }}
-                onClick={() => {
-                  localStorage.setItem("loginAction", "Lecturers Login");
-                  localStorage.removeItem("currentOtherNavLink");
-                  navigate("/sensec/login");
-                }}
-              >
-                {/* Sign-up */}
-                {loadingComplete === false && (
-                  <LoadingProgress color={"#fff"} size={"1.3rem"} />
-                )}
-                {loadingComplete === null && (
-                  <>
-                    Lecturers Login
-                    <LoginOutlined
-                      className="signupIcon"
-                      sx={{ marginLeft: ".5rem" }}
-                    />
-                  </>
-                )}
-                {loadingComplete === true &&
-                  loginStatus === "success" &&
-                  !redirecting && (
-                    <>
-                      Success{" "}
-                      <TaskAlt
-                        className="signupIcon"
-                        sx={{ marginLeft: ".5rem" }}
-                      />
-                    </>
-                  )}
-                {redirecting && <Redirection color={"#fff"} size={"1.3rem"} />}
-              </Button>
-            </Grid>
-            {/* Student */}
-            <Grid item xs={12}>
-              <Button
-                type="submit"
-                variant="contained"
-                fullWidth
-                sx={{
-                  backgroundColor: "green",
-                  padding: ".5rem",
-                  letterSpacing: "1px",
-                  textTransform: "capitalize",
-                  fontSize: "1em",
-                  minHeight: "3.7rem",
-                }}
-                onClick={() => {
-                  localStorage.setItem("loginAction", "Students Login");
-                  localStorage.removeItem("currentOtherNavLink");
-                  navigate("/sensec/login");
-                }}
-              >
-                {/* Sign-up */}
-                {loadingComplete === false && (
-                  <LoadingProgress color={"#fff"} size={"1.3rem"} />
-                )}
-                {loadingComplete === null && (
-                  <>
-                    Students Login
-                    <LoginOutlined
-                      className="signupIcon"
-                      sx={{ marginLeft: ".5rem" }}
-                    />
-                  </>
-                )}
-                {loadingComplete === true &&
-                  loginStatus === "success" &&
-                  !redirecting && (
-                    <>
-                      Success{" "}
-                      <TaskAlt
-                        className="signupIcon"
-                        sx={{ marginLeft: ".5rem" }}
-                      />
-                    </>
-                  )}
-                {redirecting && <Redirection color={"#fff"} size={"1.3rem"} />}
-              </Button>
-            </Grid>
-            {/* NT-Staff */}
-            <Grid item xs={12}>
-              <Button
-                type="submit"
-                variant="contained"
-                fullWidth
-                sx={{
-                  backgroundColor: "green",
-                  padding: ".5rem",
-                  letterSpacing: "1px",
-                  textTransform: "capitalize",
-                  fontSize: "1em",
-                  minHeight: "3.7rem",
-                }}
-                onClick={() => {
-                  localStorage.setItem("loginAction", "NT-Staffs Login");
-                  localStorage.removeItem("currentOtherNavLink");
-                  navigate("/sensec/login");
-                }}
-              >
-                {/* Sign-up */}
-                {loadingComplete === false && (
-                  <LoadingProgress color={"#fff"} size={"1.3rem"} />
-                )}
-                {loadingComplete === null && (
-                  <>
-                    NT-Staff Login
-                    <LoginOutlined
-                      className="signupIcon"
-                      sx={{ marginLeft: ".5rem" }}
-                    />
-                  </>
-                )}
-                {loadingComplete === true &&
-                  loginStatus === "success" &&
-                  !redirecting && (
-                    <>
-                      Success{" "}
-                      <TaskAlt
-                        className="signupIcon"
-                        sx={{ marginLeft: ".5rem" }}
-                      />
-                    </>
-                  )}
-                {redirecting && <Redirection color={"#fff"} size={"1.3rem"} />}
-              </Button>
-            </Grid>
-          </Grid>
         </Box>
       </Box>
-    </Box>
+    </>
   );
 }

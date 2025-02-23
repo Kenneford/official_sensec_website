@@ -9,7 +9,7 @@ export function Contact() {
   return (
     <Box id="contactPage">
       <Helmet>
-        <title>Senya SHS Contact</title>
+        <title>Contact Us - Senya SHS</title>
         <meta
           name="description"
           content="For inquiries, admissions, or support, feel free to reach out to us. We're here to help!"

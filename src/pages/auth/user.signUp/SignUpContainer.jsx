@@ -1,7 +1,5 @@
 import { Box } from "@mui/material";
-import React from "react";
 import {
-  SignUpSuccessPage,
   StudentsSignUp,
   UserSignUp,
 } from "../../../components/lazyLoading/auth/AuthLazyComponents";
@@ -13,8 +11,7 @@ export function SignUpContainer() {
   return (
     <Box>
       {signUpAction === "students" && !uniqueId && <StudentsSignUp />}
-      {signUpAction === "partners" && !uniqueId && <UserSignUp />}
-      {/* {signUpAction && uniqueId && <SignUpSuccessPage />} */}
+      {signUpAction === "staffs" && !uniqueId && <UserSignUp />}
     </Box>
   );
 }

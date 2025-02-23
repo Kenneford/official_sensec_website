@@ -170,10 +170,10 @@ export function UserSignUp() {
 
   // Check user sign up status
   useEffect(() => {
-    if (signUpAction === "partners" && signUpStatus === "pending") {
+    if (signUpAction === "staffs" && signUpStatus === "pending") {
       setLoadingComplete(false);
     }
-    if (signUpAction === "partners" && signUpStatus === "rejected") {
+    if (signUpAction === "staffs" && signUpStatus === "rejected") {
       error?.errorMessage?.message?.map((err) => {
         toast.error(err, {
           position: "top-right",
@@ -187,7 +187,7 @@ export function UserSignUp() {
       }, 3000);
       return;
     }
-    if (signUpAction === "partners" && signUpStatus === "success") {
+    if (signUpAction === "staffs" && signUpStatus === "success") {
       toast.success(successMessage, {
         position: "top-right",
         theme: "dark",
@@ -221,7 +221,7 @@ export function UserSignUp() {
   return (
     <>
       <Helmet>
-        <title>Senya SHS Staff Signup</title>
+        <title>Staff Signup - Senya SHS</title>
         <meta
           name="description"
           content="The Great Sensec is glad to have you here. Kindly fill all required fields to create a new account."
@@ -237,7 +237,7 @@ export function UserSignUp() {
         />
         <link
           rel="canonical"
-          href="https://www.senyashs.com/sensec/sign_up/partners"
+          href="https://www.senyashs.com/sensec/sign_up/staffs"
         />
         <link rel="icon" type="image/png" href="/assets/sensec-logo1.png" />
       </Helmet>
@@ -319,6 +319,7 @@ export function UserSignUp() {
                 <Grid item xs={12}>
                   <CustomTextField
                     fullWidth
+                    size="small"
                     label={"Unique ID"}
                     name="uniqueId"
                     value={newUser?.uniqueId}
@@ -333,6 +334,7 @@ export function UserSignUp() {
                             ? "green"
                             : "red", // Change the asterisk color to red
                       },
+                      fontSize: ".8em",
                     }}
                   />
                 </Grid>
@@ -340,29 +342,32 @@ export function UserSignUp() {
                 <Grid item xs={12}>
                   <CustomTextField
                     fullWidth
+                    size="small"
                     label={"Username"}
                     name="userName"
                     value={newUser?.userName}
                     onChange={handleInputValue}
                     required
                     error={userNameInputError}
-                    // helperText={
-                    //   userNameInputError ? "Username already in use!" : ""
-                    // }
-                    // sx={{
-                    //   "& .MuiInputLabel-asterisk": {
-                    //     color:
-                    //       newUser?.userName && !userNameInputError
-                    //         ? "green"
-                    //         : "red", // Change the asterisk color to red
-                    //   },
-                    // }}
+                    helperText={
+                      userNameInputError ? "Username already in use!" : ""
+                    }
+                    sx={{
+                      "& .MuiInputLabel-asterisk": {
+                        color:
+                          newUser?.userName && !userNameInputError
+                            ? "green"
+                            : "red", // Change the asterisk color to red
+                      },
+                      fontSize: ".8em",
+                    }}
                   />
                 </Grid>
                 {/* Password */}
                 <Grid item xs={12}>
                   <CustomTextField
                     fullWidth
+                    size="small"
                     label={"Password"}
                     name="password"
                     value={newUser?.password}
@@ -401,6 +406,7 @@ export function UserSignUp() {
                             ? "green"
                             : "red", // Change the asterisk color to red
                       },
+                      fontSize: ".8em",
                     }}
                   />
                 </Grid>
@@ -408,6 +414,7 @@ export function UserSignUp() {
                 <Grid item xs={12}>
                   <CustomTextField
                     fullWidth
+                    size="small"
                     label={"Confirm Password"}
                     name="confirmPassword"
                     value={newUser?.confirmPassword}
@@ -444,11 +451,12 @@ export function UserSignUp() {
                             ? "green"
                             : "red", // Change the asterisk color to red
                       },
+                      fontSize: ".8em",
                     }}
                   />
                 </Grid>
               </Grid>
-              <Box>
+              <Box textAlign={"center"}>
                 <FormControlLabel
                   control={
                     <Checkbox
@@ -461,16 +469,25 @@ export function UserSignUp() {
                   label="Accept terms and conditions"
                   required
                   sx={{
+                    transform: "scale(1)", // Scale the checkbox size
+                    "& .MuiSvgIcon-root": {
+                      fontSize: "1em", // Icon size inside the checkbox
+                    },
                     "& .MuiFormControlLabel-asterisk": {
                       color: `${!checked ? "red" : "green"}`, // Change the color of the asterisk to red
+                    },
+                    "& .MuiTypography-root": {
+                      fontSize: ".8em", // Apply font size to the label text
                     },
                   }}
                 />
               </Box>
               <Box mt={1}>
-                <Typography>
+                <Typography variant="h6" fontSize={".8em"} textAlign={"center"}>
                   Already have an account?{" "}
                   <Typography
+                    variant="h6"
+                    fontSize={".9em"}
                     component={"span"}
                     onClick={() =>
                       signUpAction
@@ -489,12 +506,11 @@ export function UserSignUp() {
                 fullWidth
                 sx={{
                   backgroundColor: "green",
-                  margin: "1rem 0",
-                  padding: ".5rem",
                   letterSpacing: "1px",
                   textTransform: "capitalize",
-                  fontSize: "1em",
-                  minHeight: "3.7rem",
+                  fontSize: ".9em",
+                  minHeight: "1.5rem",
+                  marginTop: ".5rem",
                 }}
               >
                 {loadingComplete === false && (

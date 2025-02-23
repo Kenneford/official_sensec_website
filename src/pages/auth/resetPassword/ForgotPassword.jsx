@@ -136,7 +136,7 @@ export default function ForgotPassword() {
   return (
     <Box>
       <Helmet>
-        <title>Senya SHS Password Reset</title>
+        <title>Password Reset - Senya SHS</title>
         <meta
           name="description"
           content="If you have forgotten your password and need to reset it, kindly visit our forgot password page and request password reset with your email address."

@@ -21,6 +21,7 @@ import {
 } from "../../../features/auth/authSlice";
 import Redirection from "../../../components/pageLoading/Redirection";
 import LoadingProgress from "../../../components/pageLoading/LoadingProgress";
+import SmallFooter from "../../../components/footer/SmallFooter";
 
 export function Login() {
   // Getting data from redux state
@@ -248,216 +249,237 @@ export function Login() {
   // }, [navigate, authUser]);
 
   return (
-    <Box
-      sx={{
-        width: { xs: "95%", sm: "36rem" },
-      }}
-      margin={"auto"}
-      mt={5}
-      mb={5}
-      display={"flex"}
-      justifyContent={"center"}
-      alignItems={"center"}
-      fontSize={"calc(.7rem + 1vmin)"}
-      height={"100%"}
-    >
+    <>
       <Box
-        component={"form"}
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleLogin();
-        }}
-        color={"#696969"}
         sx={{
-          filter: "drop-shadow(0 0 0.3em rgb(255, 255, 255, 0.68))",
-          boxShadow: "0px 1px 9px 1px #454343ad",
-          borderRadius: ".4rem",
-          display: { xs: "block", sm: "flex" },
+          width: { xs: "95%", sm: "36rem" },
         }}
-        p={1}
-        width={"100%"}
+        margin={"auto"}
+        mt={5}
+        mb={5}
+        display={"flex"}
+        justifyContent={"center"}
+        alignItems={"center"}
+        fontSize={"calc(.7rem + 1vmin)"}
+        height={"100%"}
       >
-        <Box width={"22rem"} sx={{ display: { xs: "none", sm: "block" } }}>
-          <Box className="left">
-            <h1>
-              Welcome, Cherished {loginAction === "Admins Login" && "Admin"}
-              {loginAction === "Lecturers Login" && "Lecturer"}
-              {loginAction === "NT-Staffs Login" && "NT-Staff"}
-              {loginAction === "Students Login" && "Student"}.
-            </h1>
-            <p>
-              The Great Sensec is glad to have you here. Kindly login to access
-              your dashboard.
-            </p>
-          </Box>
-        </Box>
-        <Box ml={{ xs: 0, sm: 1 }}>
-          <Box
-            mt={2}
-            mb={4}
-            display={"flex"}
-            flexDirection={"column"}
-            justifyContent={"center"}
-            alignItems={"center"}
-          >
-            <Lock style={{ color: "#767474", fontSize: "2rem" }} />
-            <Typography
-              variant="h5"
-              component={"h1"}
-              mb={2}
-              sx={{ fontSize: "1.7rem" }}
-            >
-              Login
-            </Typography>
-            <Box className="profilePictureWrap">
-              <Box className="profilePictureCont">
-                <img
-                  className="profileImg"
-                  src={
-                    userFound
-                      ? userFound?.personalInfo?.profilePicture?.url
-                      : "/assets/noAvatar.png"
-                  }
-                  alt=""
-                />
-              </Box>
+        <Box
+          component={"form"}
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleLogin();
+          }}
+          color={"#696969"}
+          sx={{
+            filter: "drop-shadow(0 0 0.3em rgb(255, 255, 255, 0.68))",
+            boxShadow: "0px 1px 9px 1px #454343ad",
+            borderRadius: ".4rem",
+            display: { xs: "block", sm: "flex" },
+          }}
+          p={1}
+          width={"100%"}
+        >
+          <Box width={"22rem"} sx={{ display: { xs: "none", sm: "block" } }}>
+            <Box className="left">
+              <h1>
+                Welcome, Cherished {loginAction === "Admins Login" && "Admin"}
+                {loginAction === "Lecturers Login" && "Lecturer"}
+                {loginAction === "NT-Staffs Login" && "NT-Staff"}
+                {loginAction === "Students Login" && "Student"}.
+              </h1>
+              <p>
+                The Great Sensec is glad to have you here. Kindly login to
+                access your dashboard.
+              </p>
             </Box>
           </Box>
-          <Grid container spacing={2}>
-            {/* Username */}
-            <Grid item xs={12}>
-              <CustomTextField
-                fullWidth
-                label={"Unique-ID"}
-                name="uniqueId"
-                value={newUser?.uniqueId}
-                onChange={handleInputValue}
-                required
-                onKeyDown={handleKeyDown}
-                error={uniqueIDInputError}
-                helperText={uniqueIDInputError ? "Invalid user-ID!" : ""}
-                sx={{
-                  "& .MuiInputLabel-asterisk": {
-                    color:
-                      newUser?.uniqueId && !uniqueIDInputError
-                        ? "green"
-                        : "red", // Change the asterisk color to red
-                  },
-                }}
-              />
-            </Grid>
-            {/* Password */}
-            <Grid item xs={12}>
-              <CustomTextField
-                fullWidth
-                label={"Password"}
-                name="password"
-                value={newUser?.password}
-                onChange={handleInputValue}
-                required
-                onKeyDown={handleKeyDown}
-                error={passwordInputError}
-                helperText={
-                  passwordInputError &&
-                  newUser?.password?.length > 0 &&
-                  newUser?.password?.length < 6
-                    ? "Password must be at least 6 characters long!"
-                    : ""
-                }
-                type={showPass ? "text" : "password"}
-                slotProps={{
-                  input: {
-                    endAdornment: (
-                      <Box
-                        component={"button"}
-                        onClick={showPassword}
-                        bgcolor={"transparent"}
-                      >
-                        {showPass ? (
-                          <Visibility sx={{ color: "#696969" }} />
-                        ) : (
-                          <VisibilityOff sx={{ color: "#696969" }} />
-                        )}
-                      </Box>
-                    ),
-                  },
-                }}
-                sx={{
-                  "& .MuiInputLabel-asterisk": {
-                    color:
-                      newUser?.password && !passwordInputError
-                        ? "green"
-                        : "red", // Change the asterisk color to red
-                  },
-                }}
-              />
-            </Grid>
-          </Grid>
-          <div className="forgotPassword">
-            <p onClick={() => navigate("/sensec/forgot_password")}>
-              Forgot Password
-            </p>
-          </div>
-          <Box mt={1}>
-            <Typography>
-              Don&apos;t have an account?{" "}
+          <Box ml={{ xs: 0, sm: 1 }}>
+            <Box
+              mt={2}
+              mb={4}
+              display={"flex"}
+              flexDirection={"column"}
+              justifyContent={"center"}
+              alignItems={"center"}
+            >
+              <Lock style={{ color: "#767474", fontSize: "1.2em" }} />
               <Typography
-                component={"span"}
-                onClick={() => {
-                  if (loginAction === "Students Login") {
-                    navigate("/sensec/sign_up/students");
-                  } else {
-                    navigate("/sensec/sign_up/partners");
-                  }
-                }}
-                sx={{ cursor: "pointer", color: "green" }}
+                variant="h5"
+                component={"h1"}
+                mb={2}
+                sx={{ fontSize: "1.3em" }}
               >
-                Sign-up
-              </Typography>
-            </Typography>
-          </Box>
-          <Button
-            type="submit"
-            variant="contained"
-            fullWidth
-            sx={{
-              backgroundColor: "green",
-              margin: "2rem 0",
-              padding: ".5rem",
-              letterSpacing: "1px",
-              textTransform: "capitalize",
-              fontSize: "1em",
-              minHeight: "3.7rem",
-            }}
-          >
-            {/* Sign-up */}
-            {loadingComplete === false && (
-              <LoadingProgress color={"#fff"} size={"1.3rem"} />
-            )}
-            {loadingComplete === null && (
-              <>
                 Login
-                <LoginOutlined
-                  className="signupIcon"
-                  sx={{ marginLeft: ".5rem" }}
+              </Typography>
+              <Box className="profilePictureWrap">
+                <Box className="profilePictureCont">
+                  <img
+                    className="profileImg"
+                    src={
+                      userFound
+                        ? userFound?.personalInfo?.profilePicture?.url
+                        : "/assets/noAvatar.png"
+                    }
+                    alt=""
+                  />
+                </Box>
+              </Box>
+            </Box>
+            <Grid container spacing={2}>
+              {/* Username */}
+              <Grid item xs={12}>
+                <CustomTextField
+                  fullWidth
+                  label={"Unique-ID"}
+                  name="uniqueId"
+                  size="small"
+                  value={newUser?.uniqueId}
+                  onChange={handleInputValue}
+                  required
+                  onKeyDown={handleKeyDown}
+                  error={uniqueIDInputError}
+                  helperText={uniqueIDInputError ? "Invalid user-ID!" : ""}
+                  sx={{
+                    "& .MuiInputLabel-asterisk": {
+                      color:
+                        newUser?.uniqueId && !uniqueIDInputError
+                          ? "green"
+                          : "red", // Change the asterisk color to red
+                    },
+                    fontSize: ".8em",
+                  }}
                 />
-              </>
-            )}
-            {loadingComplete === true &&
-              loginStatus === "success" &&
-              !redirecting && (
+              </Grid>
+              {/* Password */}
+              <Grid item xs={12}>
+                <CustomTextField
+                  fullWidth
+                  label={"Password"}
+                  name="password"
+                  size="small"
+                  value={newUser?.password}
+                  onChange={handleInputValue}
+                  required
+                  onKeyDown={handleKeyDown}
+                  error={passwordInputError}
+                  helperText={
+                    passwordInputError &&
+                    newUser?.password?.length > 0 &&
+                    newUser?.password?.length < 6
+                      ? "Password must be at least 6 characters long!"
+                      : ""
+                  }
+                  type={showPass ? "text" : "password"}
+                  slotProps={{
+                    input: {
+                      endAdornment: (
+                        <Box
+                          component={"button"}
+                          onClick={showPassword}
+                          bgcolor={"transparent"}
+                        >
+                          {showPass ? (
+                            <Visibility sx={{ color: "#696969" }} />
+                          ) : (
+                            <VisibilityOff sx={{ color: "#696969" }} />
+                          )}
+                        </Box>
+                      ),
+                    },
+                  }}
+                  sx={{
+                    "& .MuiInputLabel-asterisk": {
+                      color:
+                        newUser?.password && !passwordInputError
+                          ? "green"
+                          : "red", // Change the asterisk color to red
+                    },
+                    fontSize: ".8em",
+                  }}
+                />
+              </Grid>
+            </Grid>
+            {/* <Box fontSize={"calc(.7rem + 1vmin)"}> */}
+            <Typography
+              variant="h6"
+              sx={{
+                fontSize: ".8em",
+                textAlign: "right",
+                fontStyle: "italic",
+                marginTop: ".5rem",
+              }}
+              onClick={() => navigate("/sensec/forgot_password")}
+              // className="forgotPassword"
+            >
+              Forgot Password?
+            </Typography>
+            {/* </Box> */}
+            <Box mt={1}>
+              <Typography
+                variant="h6"
+                sx={{ fontSize: ".8em" }}
+                textAlign={"center"}
+              >
+                Don&apos;t have an account?{" "}
+                <Typography
+                  variant="h6"
+                  component={"span"}
+                  onClick={() => {
+                    if (loginAction === "Students Login") {
+                      navigate("/sensec/sign_up/students");
+                    } else {
+                      navigate("/sensec/sign_up/partners");
+                    }
+                  }}
+                  sx={{ cursor: "pointer", color: "green", fontSize: ".9em" }}
+                >
+                  Sign-up
+                </Typography>
+              </Typography>
+            </Box>
+            <Button
+              type="submit"
+              variant="contained"
+              fullWidth
+              sx={{
+                backgroundColor: "green",
+                letterSpacing: "1px",
+                textTransform: "capitalize",
+                fontSize: ".9em",
+                minHeight: "1.5rem",
+                marginTop: ".5rem",
+              }}
+            >
+              {/* Sign-up */}
+              {loadingComplete === false && (
+                <LoadingProgress color={"#fff"} size={"1.3rem"} />
+              )}
+              {loadingComplete === null && (
                 <>
-                  Success{" "}
-                  <TaskAlt
+                  Login
+                  <LoginOutlined
                     className="signupIcon"
                     sx={{ marginLeft: ".5rem" }}
                   />
                 </>
               )}
-            {redirecting && <Redirection color={"#fff"} size={"1.3rem"} />}
-          </Button>
+              {loadingComplete === true &&
+                loginStatus === "success" &&
+                !redirecting && (
+                  <>
+                    Success{" "}
+                    <TaskAlt
+                      className="signupIcon"
+                      sx={{ marginLeft: ".5rem" }}
+                    />
+                  </>
+                )}
+              {redirecting && <Redirection color={"#fff"} size={"1.3rem"} />}
+            </Button>
+          </Box>
         </Box>
       </Box>
-    </Box>
+      <SmallFooter />
+    </>
   );
 }

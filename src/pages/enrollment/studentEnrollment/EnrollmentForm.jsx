@@ -513,7 +513,7 @@ export function EnrollmentForm() {
   return (
     <>
       <Helmet>
-        <title>Senya SHS Enrollment</title>
+        <title>Enrollment - Senya SHS</title>
         <meta
           name="description"
           content="After the Ghana Education Service (GES) placement, students are required to check if they have been placed in Senya SHS. Follow these steps to check your placement:"

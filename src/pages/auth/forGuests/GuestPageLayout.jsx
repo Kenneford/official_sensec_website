@@ -121,7 +121,7 @@ export function GuestPageLayout() {
       {location?.pathname === "/sensec/about" && <About />}
       {location?.pathname === "/sensec/courses" && <Courses />}
       {location?.pathname === "/sensec/contact" && <Contact />}
-      {location?.pathname === "/sensec/sign_up/partners" && <SignUpContainer />}
+      {location?.pathname === "/sensec/sign_up/staffs" && <SignUpContainer />}
       {location?.pathname === "/sensec/sign_up/students" && <SignUpContainer />}
       {location?.pathname === "/sensec/login" && <Login />}
       {location?.pathname === "/sensec/login_options" && <LoginOptions />}
