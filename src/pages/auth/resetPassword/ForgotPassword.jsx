@@ -154,7 +154,11 @@ export default function ForgotPassword() {
           rel="canonical"
           href="https://www.senyashs.com/sensec/forgot_password"
         />
-        <link rel="icon" type="image/png" href="/assets/sensec-logo1.png" />
+        <link
+          rel="icon"
+          type="image/png"
+          href="https://www.senyashs.com/assets/sensec-logo1.png"
+        />
       </Helmet>
       {/* School Logo */}
       <Box

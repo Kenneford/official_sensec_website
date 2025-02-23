@@ -201,7 +201,11 @@ export function LoginOptions() {
           rel="canonical"
           href="https://www.senyashs.com/sensec/login_options"
         />
-        <link rel="icon" type="image/png" href="/assets/sensec-logo1.png" />
+        <link
+          rel="icon"
+          type="image/png"
+          href="https://www.senyashs.com/assets/sensec-logo1.png"
+        />
       </Helmet>
       <Box
         sx={{

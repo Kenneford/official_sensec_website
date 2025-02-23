@@ -263,7 +263,11 @@ export function StudentsSignUp() {
           rel="canonical"
           href="https://www.senyashs.com/sensec/sign_up/students"
         />
-        <link rel="icon" type="image/png" href="/assets/sensec-logo1.png" />
+        <link
+          rel="icon"
+          type="image/png"
+          href="https://www.senyashs.com/assets/sensec-logo1.png"
+        />
       </Helmet>
       <Box
         sx={{
