@@ -18,7 +18,7 @@ export function Courses() {
   return (
     <Box id="allProgrammes">
       <Helmet>
-        <title>Senya SHS Programmes</title>
+        <title>Programmes - Senya SHS</title>
         <meta
           name="description"
           content="SENSEC offers six programmes. These are, Business, General Arts, Home Economics, General Science, Agricultural Science and Visual Arts"

@@ -1,11 +1,4 @@
-import {
-  Avatar,
-  Box,
-  List,
-  ListItem,
-  ListItemText,
-  Typography,
-} from "@mui/material";
+import { Avatar, Box, List, ListItem, Typography } from "@mui/material";
 import "./enrollmentDocumentation.scss";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { NavigationBar } from "../../../../components/navbar/NavigationBar";
@@ -45,7 +38,7 @@ export function EnrollmentDocumentation() {
     <Box id="enrollmentDocumentation">
       <Helmet>
         <link rel="icon" type="image/png" href="/assets/sensec-logo1.png" />
-        <title>Senya SHS Enrollment</title>
+        <title>Enrollment - Senya SHS</title>
         <meta
           name="description"
           content="After the Ghana Education Service (GES) placement, students are required to check if they have been placed in Senya SHS. Follow these steps to check your placement:"

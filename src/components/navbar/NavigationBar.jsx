@@ -28,7 +28,7 @@ const signUpOptions = [
   },
   {
     name: "Others",
-    path: "/sensec/sign_up/partners",
+    path: "/sensec/sign_up/staffs",
   },
 ];
 const loginOptions = [

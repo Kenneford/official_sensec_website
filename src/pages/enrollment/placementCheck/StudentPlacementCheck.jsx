@@ -198,7 +198,7 @@ export function StudentPlacementCheck() {
   return (
     <>
       <Helmet>
-        <title>Senya SHS Placement Check</title>
+        <title>Placement Check - Senya SHS</title>
         <meta
           name="description"
           content="After the Ghana Education Service (GES) placement, students are required to check if they have been placed in Senya SHS."

@@ -347,7 +347,7 @@ export function EmploymentForm() {
   return (
     <>
       <Helmet>
-        <title>Senya SHS Employment</title>
+        <title>Employment - Senya SHS</title>
         <meta
           name="description"
           content="Employment opportunities at Senya SHS may include teaching, administrative, and support staff roles, contributing to the school's mission of shaping future leaders."

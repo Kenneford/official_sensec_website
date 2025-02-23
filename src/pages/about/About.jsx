@@ -12,14 +12,14 @@ export function About() {
   return (
     <Box id="aboutPage">
       <Helmet>
-        <title>Senya SHS About</title>
+        <title>About Us - Senya SHS</title>
         <meta
           name="description"
           content="A School that provides learners with excellent academics, skills development and strong ethical foundation for national development."
         />
         <meta
           name="keywords"
-          content="Senya SHS About Us, Sensec About Us, About Us"
+          content="Senya SHS About Us, Sensec About Us, About Us, Sensec Official Website About Us"
         />
         <meta property="og:title" content="About Us | Senya SHS" />
         <meta

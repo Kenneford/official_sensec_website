@@ -26,7 +26,7 @@
   padding: 0 0.5rem;
   h1 {
     position: relative;
-    font-size: 1.3rem;
+    font-size: 1em;
     color: #fff;
     margin-bottom: 2rem;
     letter-spacing: 1px;
@@ -34,7 +34,7 @@
   }
   p {
     position: relative;
-    font-size: 1.1rem;
+    font-size: 0.8em;
     color: #fff;
     letter-spacing: 1px;
     top: 10rem;
@@ -47,12 +47,12 @@
 .forgotPassword {
   display: flex;
   justify-content: flex-end;
-  font-size: 1rem;
   font-style: italic;
   margin: 0.5rem 0.5rem 0 0;
   color: #696969;
   p {
     cursor: pointer;
+    font-size: 0.8em;
   }
 }
 .css-1dcp0mw-MuiGrid-root > .MuiGrid-item {

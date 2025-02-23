@@ -129,7 +129,7 @@ export function Blogs() {
   return (
     <Box id="blogsPage">
       <Helmet>
-        <title>Senya SHS Blogs</title>
+        <title>Blogs - Senya SHS</title>
         <meta
           name="description"
           content="Explore Senya Senior High School's blogs which tells our stories from the beginning of our journey!"

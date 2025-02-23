@@ -22,7 +22,6 @@ import {
 import { CustomTextField } from "../../../../muiStyling/muiStyling";
 import {
   fetchAllUsers,
-  getAllUsers,
   resetSignUpState,
   userSignUp,
 } from "../../../../features/auth/authSlice";
@@ -246,7 +245,7 @@ export function StudentsSignUp() {
   return (
     <>
       <Helmet>
-        <title>Senya SHS Student Signup</title>
+        <title>Student Signup - Senya SHS</title>
         <meta
           name="description"
           content="The Great Sensec is glad to have you here. Kindly fill all required fields to create a new account."
@@ -350,6 +349,7 @@ export function StudentsSignUp() {
                 <Grid item xs={12}>
                   <CustomTextField
                     fullWidth
+                    size="small"
                     label={"Unique ID"}
                     name="uniqueId"
                     value={newUser?.uniqueId}
@@ -364,6 +364,7 @@ export function StudentsSignUp() {
                             ? "green"
                             : "red", // Change the asterisk color to red
                       },
+                      fontSize: ".8em",
                     }}
                   />
                 </Grid>
@@ -372,6 +373,7 @@ export function StudentsSignUp() {
                   <CustomTextField
                     select
                     fullWidth
+                    size="small"
                     label="Select Programme"
                     name="programme"
                     value={newUser?.programme}
@@ -390,6 +392,7 @@ export function StudentsSignUp() {
                             ? "green"
                             : "red", // Change the asterisk color to red
                       },
+                      fontSize: ".8em",
                     }}
                   >
                     {allProgrammes?.map((programme) => (
@@ -404,6 +407,7 @@ export function StudentsSignUp() {
                   <CustomTextField
                     select
                     fullWidth
+                    size="small"
                     label={"Class"}
                     name="class"
                     value={newUser?.class}
@@ -418,6 +422,7 @@ export function StudentsSignUp() {
                         color:
                           newUser?.class && !classInputError ? "green" : "red", // Change the asterisk color to red
                       },
+                      fontSize: ".8em",
                     }}
                   >
                     {allClassSections?.map((section) => (
@@ -431,6 +436,7 @@ export function StudentsSignUp() {
                 <Grid item xs={12}>
                   <CustomTextField
                     fullWidth
+                    size="small"
                     label={"Username"}
                     name="userName"
                     value={newUser?.userName}
@@ -447,6 +453,7 @@ export function StudentsSignUp() {
                             ? "green"
                             : "red", // Change the asterisk color to red
                       },
+                      fontSize: ".8em",
                     }}
                   />
                 </Grid>
@@ -454,6 +461,7 @@ export function StudentsSignUp() {
                 <Grid item xs={12}>
                   <CustomTextField
                     fullWidth
+                    size="small"
                     label={"Password"}
                     name="password"
                     value={newUser?.password}
@@ -492,6 +500,7 @@ export function StudentsSignUp() {
                             ? "green"
                             : "red", // Change the asterisk color to red
                       },
+                      fontSize: ".8em",
                     }}
                   />
                 </Grid>
@@ -499,6 +508,7 @@ export function StudentsSignUp() {
                 <Grid item xs={12}>
                   <CustomTextField
                     fullWidth
+                    size="small"
                     label={"Confirm Password"}
                     name="confirmPassword"
                     value={newUser?.confirmPassword}
@@ -535,11 +545,12 @@ export function StudentsSignUp() {
                             ? "green"
                             : "red", // Change the asterisk color to red
                       },
+                      fontSize: ".8em",
                     }}
                   />
                 </Grid>
               </Grid>
-              <Box>
+              <Box textAlign={"center"}>
                 <FormControlLabel
                   control={
                     <Checkbox
@@ -561,15 +572,16 @@ export function StudentsSignUp() {
                       color: `${!checked ? "red" : "green"}`, // Change the color of the asterisk to red
                     },
                     "& .MuiTypography-root": {
-                      fontSize: ".9em", // Apply font size to the label text
+                      fontSize: ".8em", // Apply font size to the label text
                     },
                   }}
                 />
               </Box>
               <Box mt={1}>
-                <Typography fontSize={".9em"}>
+                <Typography variant="h6" fontSize={".8em"} textAlign={"center"}>
                   Already have an account?{" "}
                   <Typography
+                    variant="h6"
                     component={"span"}
                     onClick={() => {
                       localStorage.setItem("loginAction", "Students Login"),
@@ -586,14 +598,14 @@ export function StudentsSignUp() {
                 type="submit"
                 variant="contained"
                 fullWidth
+                size="small"
                 sx={{
                   backgroundColor: "green",
-                  margin: "1rem 0",
-                  padding: ".5rem",
                   letterSpacing: "1px",
                   textTransform: "capitalize",
-                  fontSize: "1em",
-                  minHeight: "3.7rem",
+                  fontSize: ".9em",
+                  minHeight: "1.5rem",
+                  marginTop: ".5rem",
                 }}
               >
                 {loadingComplete === false && (
