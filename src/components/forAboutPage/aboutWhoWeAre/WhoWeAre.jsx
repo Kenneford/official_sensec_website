@@ -37,11 +37,13 @@ export function WhoWeAre() {
               </Box>
               <h4 id="anthem">Who We Are</h4>
               <p id="we">
-                In the heart of Senya Beraku, a coastal community nestled along
-                the serene shores of the Central Region of Ghana, Senya Senior
-                High School stands as a citadel of education. Founded on 7th
-                February 1991, Senya Senior High School, affectionately called
-                Great SENSEC, has not only been a source of academic excellence
+                Senya Senior High School{" "}
+                <span style={{ fontWeight: 500 }}>(Senya SHS)</span> in Ghana is
+                a secondary educational institution dedicated to academic
+                excellence and student development. The school provides quality
+                education and fosters discipline, leadership, and innovation
+                among students. Senya Senior High School stands as a citadel of
+                education and has not only been a source of academic excellence
                 but has also played a pivotal role in shaping the minds and
                 future of countless students.
               </p>
@@ -67,7 +69,9 @@ export function WhoWeAre() {
                 a symbol of academic excellence. Its journey, marked by
                 resilience and determination, exemplifies the transformative
                 power of education. As the school continues to empower
-                generations{" "}
+                generations of students with the light of knowledge, it remains
+                a source of pride for the community and a beacon of hope for a
+                brighter future for its students.
               </p>
               <h4 id="anthem">Our Anthems</h4>
               <Box display={{ sx: "block", sm: "flex" }} gap={1}>

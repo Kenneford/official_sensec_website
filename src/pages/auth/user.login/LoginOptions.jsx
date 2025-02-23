@@ -433,6 +433,10 @@ export function LoginOptions() {
                     textTransform: "capitalize",
                     fontSize: ".9em",
                     minHeight: "1.5rem",
+                    transition: ".5s ease",
+                    "&:hover": {
+                      backgroundColor: "#059d26",
+                    },
                   }}
                   onClick={() => {
                     localStorage.setItem("loginAction", "NT-Staffs Login");

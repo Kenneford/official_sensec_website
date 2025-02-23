@@ -59,8 +59,9 @@ export function CreateNewData({ setCurrentAction, setCurrentLink }) {
         {/* Buttons to create new data */}
         <Box
           sx={{
-            width: { xs: "100%", sm: "95%", md: "90%", lg: "90%", xl: "75%" },
+            width: { xs: "100%", sm: "95%", md: "90%", lg: "90%", xl: "60%" },
             padding: "1rem .5rem",
+            margin: "auto",
           }}
           className="createNewDataWrap"
         >

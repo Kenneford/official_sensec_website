@@ -4,94 +4,61 @@
 .contactWrap {
   background-color: #fff;
   color: colors.$secondaryTextColor;
-  // padding: 2rem 0;
   font-size: calc(0.7rem + 1vmin);
   h2 {
-    font-size: 1.2em;
+    font-size: 0.9em;
     color: #696969;
     margin-bottom: 0.5rem;
   }
   p {
     line-height: sizes.$line_height;
     margin-bottom: 0.5rem;
-    font-size: 1em;
+    font-size: 0.8em;
   }
   .contactContainer {
-    width: sizes.$container_Width_Center;
-    margin: auto;
     .contactContent {
-      padding: 2rem 0;
-      width: 100%;
-      display: grid;
-      gap: 2rem;
-      grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
       .title {
         .contactsDetails {
           color: #292929;
+          margin-top: 1rem;
+          h3 {
+            font-size: 0.7em;
+          }
           div {
-            margin: 0.5rem 0;
             h3 {
               padding: 0.5rem 0;
             }
             span {
-              font-size: 1em;
+              font-size: 0.7em;
             }
           }
-          .address {
-            background-color: colors.$light_grey;
+          .contactItem {
+            -webkit-box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+            box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
             padding: 0.5rem;
             border-radius: 0.5rem;
+            margin: 0.5rem 0;
             div {
               display: flex;
               align-items: center;
               gap: 0.5rem;
-            }
-          }
-          .email {
-            background-color: colors.$light_grey;
-            padding: 0.5rem;
-            border-radius: 0.5rem;
-            div {
-              display: flex;
-              align-items: center;
-              gap: 0.5rem;
-            }
-          }
-          .phone {
-            background-color: colors.$light_grey;
-            padding: 0.5rem;
-            border-radius: 0.5rem;
-            div {
-              display: flex;
-              align-items: center;
-              gap: 0.5rem;
-            }
-          }
-          .support {
-            background-color: colors.$light_grey;
-            padding: 0.5rem;
-            border-radius: 0.5rem;
-            align-items: center;
-            div {
-              display: flex;
-              align-items: center;
-              gap: 0.5rem;
+              .icons {
+                font-size: 1em;
+              }
             }
           }
         }
       }
       .follow {
-        // padding-top: 1rem;
-        // h2 {
-        //   padding: 0rem 0 0.5rem;
-        //   color: colors.$secondaryTextColor;
-        // }
+        margin-top: 1rem;
         .icons {
           display: flex;
-          // margin-top: -0.5rem;
           gap: 0.5rem;
           .icon {
             transition: 1s ease;
+            &:hover {
+              cursor: pointer;
+            }
           }
           .icon:nth-child(1) {
             color: #58abfe;
@@ -120,52 +87,24 @@
         }
       }
       .messageBox {
-        padding-top: 2rem;
-        // h2 {
-        //   padding: 1rem 0;
-        // }
-        // p {
-        //   line-height: sizes.$line_height;
-        //   padding-bottom: 1rem;
-        //   font-size: 1.2rem;
-        // }
-        form {
+        .form {
           display: flex;
           flex-direction: column;
           max-width: 100%;
-          padding: 1rem 1.5rem 1.5rem;
-          background-color: #292929;
-          color: #fff;
+          color: #696969;
           border-radius: 0.5rem;
+          -webkit-box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
+          box-shadow: 0px 0px 16px -8px rgba(0, 0, 0, 0.68);
           h4 {
             padding: 1rem 0 0.5rem;
-          }
-          .input {
-            padding: 0.5rem;
-            font-size: 1em;
-            width: 100%;
-            border-radius: 0.2rem;
-            border: 2px solid transparent;
-            &:focus {
-              border: 2px solid #58abfe;
-            }
+            font-size: 0.8em;
+            font-weight: 400;
           }
           .emailSender {
-            // display: flex;
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 1rem;
             width: inherit;
-            // input {
-            //   width: 100%;
-            // }
-            .userLeft {
-              input {
-                // padding: 1rem;
-              }
-            }
-            .userRight {
-            }
           }
           .subject {
             .subjectInput {
@@ -176,13 +115,14 @@
             .textarea {
               width: 100%;
               height: 15rem;
-              font-size: 1em;
+              font-size: 0.8em;
               padding: 0.5rem;
               margin-bottom: 1rem;
               outline: none;
               resize: none;
               border-radius: 0.2rem;
-              border: 2px solid transparent;
+              border: 1px solid #d2d2d2cc;
+              font-family: "Roboto";
               &:focus {
                 border: 2px solid #58abfe;
               }
@@ -192,14 +132,15 @@
             }
           }
           .sendMessageBtn {
-            padding: 1rem;
-            height: 4rem;
+            padding: 0.5rem;
+            min-height: 3rem;
             font-size: 1em;
             border-radius: 0.5rem;
             background-color: transparent;
             border: 2px solid #fff;
             color: #fff;
             transition: 0.4s ease-out;
+            text-transform: capitalize;
             cursor: pointer;
             &:hover {
               background-color: colors.$primaryColor;
@@ -209,11 +150,10 @@
         }
       }
       .locationMap {
-        // h2 {
-        //   padding: 0rem 0 1rem;
-        // }
+        margin-top: 1rem;
         iframe {
           width: 100%;
+          height: 15rem;
           border-radius: 0.5rem;
           border: 1px solid #292929;
         }
@@ -224,182 +164,5 @@
     position: relative;
     color: #fff;
     background-color: #292929;
-  }
-  @media screen and (max-width: 2550px) {
-    .contactContainer {
-      width: sizes.$container_Width_Center;
-      padding: 0 1rem;
-      .contactContent {
-        grid-template-columns: repeat(auto-fit, minmax(650px, 1fr));
-        .title {
-          h1 {
-            // font-size: 1.5rem;
-          }
-          .contactsDetails {
-            color: #292929;
-            div {
-              margin: 0.5rem 0;
-            }
-          }
-        }
-      }
-    }
-  }
-  @media screen and (max-width: 2550px) {
-    .contactContainer {
-      width: sizes.$container_Width_Center;
-      padding: 0 1rem;
-      .contactContent {
-        grid-template-columns: repeat(auto-fit, minmax(650px, 1fr));
-        .title {
-          h1 {
-            // font-size: 1.5rem;
-          }
-          .contactsDetails {
-            color: #292929;
-            div {
-              margin: 0.5rem 0;
-            }
-          }
-        }
-      }
-    }
-  }
-  @media screen and (max-width: 1820px) {
-    .contactContainer {
-      width: sizes.$container_Width_Center;
-      padding: 0 1rem;
-      .contactContent {
-        grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-        .title {
-          h1 {
-            // font-size: 1.5rem;
-          }
-          .contactsDetails {
-            color: #292929;
-            div {
-              margin: 0.5rem 0;
-            }
-          }
-        }
-      }
-    }
-  }
-  @media screen and (max-width: 1418px) {
-    .contactContainer {
-      width: sizes.$container_Width_Center;
-      padding: 0 1rem;
-      .contactContent {
-        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-        .title {
-          h1 {
-            // font-size: 1.5rem;
-          }
-          .contactsDetails {
-            color: #292929;
-            div {
-              margin: 0.5rem 0;
-            }
-          }
-        }
-      }
-    }
-  }
-  @media screen and (max-width: 1200px) {
-    .contactContainer {
-      width: sizes.$container_Width_fit;
-      padding: 0 1rem;
-      .contactContent {
-        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-        .title {
-          h1 {
-            // font-size: 1.5rem;
-          }
-          .contactsDetails {
-            color: #292929;
-            div {
-              margin: 0.5rem 0;
-            }
-          }
-        }
-      }
-    }
-  }
-  @media screen and (max-width: 960px) {
-    .contactContainer {
-      width: sizes.$container_Width_fit;
-      padding: 0 1rem;
-      .contactContent {
-        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-        .title {
-          h1 {
-            // font-size: 1.5rem;
-          }
-          .contactsDetails {
-            color: #292929;
-            div {
-              margin: 0.5rem 0;
-            }
-          }
-        }
-      }
-    }
-  }
-  @media screen and (max-width: 670px) {
-    .contactContainer {
-      .contactContent {
-        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-        .title {
-          .contactsDetails {
-            div {
-              margin: 0.5rem 0;
-            }
-          }
-        }
-      }
-    }
-  }
-  @media screen and (max-width: 370px) {
-    .contactContainer {
-      .contactContent {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      }
-    }
-  }
-  @media screen and (max-width: 270px) {
-    .contactContainer {
-      .contactContent {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        .title {
-          .contactsDetails {
-            div {
-              margin: 0.5rem 0;
-            }
-          }
-        }
-      }
-    }
-  }
-  @media screen and (max-width: 225px) {
-    .contactContainer {
-      .contactContent {
-        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-        .title {
-          h1 {
-            // font-size: 1.5rem;
-          }
-          .contactsDetails {
-            color: #292929;
-            div {
-              margin: 0.5rem 0;
-              min-height: 5rem;
-              div {
-                flex-wrap: wrap;
-              }
-            }
-          }
-        }
-      }
-    }
   }
 }

@@ -22,6 +22,7 @@ import {
 import Redirection from "../../../components/pageLoading/Redirection";
 import LoadingProgress from "../../../components/pageLoading/LoadingProgress";
 import SmallFooter from "../../../components/footer/SmallFooter";
+import { Helmet } from "react-helmet-async";
 
 export function Login() {
   // Getting data from redux state
@@ -250,6 +251,27 @@ export function Login() {
 
   return (
     <>
+      <Helmet>
+        <title>User Login - Senya SHS</title>
+        <meta
+          name="description"
+          content="The Great Sensec is glad to have you here. Kindly fill all required fields to create a new account."
+        />
+        <meta
+          name="keywords"
+          content="Senya SHS User Login, Sensec User Login, Sensec Official Website User Login"
+        />
+        <meta property="og:title" content="User Login | Senya SHS" />
+        <meta
+          property="og:description"
+          content="The Great Sensec is glad to have you here. Kindly fill all required fields to create a new account."
+        />
+        <link
+          rel="canonical"
+          href="https://www.senyashs.com/sensec/login_options"
+        />
+        <link rel="icon" type="image/png" href="/assets/sensec-logo1.png" />
+      </Helmet>
       <Box
         sx={{
           width: { xs: "95%", sm: "36rem" },
@@ -448,6 +470,10 @@ export function Login() {
                 fontSize: ".9em",
                 minHeight: "1.5rem",
                 marginTop: ".5rem",
+                transition: ".5s ease",
+                "&:hover": {
+                  backgroundColor: "#059d26",
+                },
               }}
             >
               {/* Sign-up */}

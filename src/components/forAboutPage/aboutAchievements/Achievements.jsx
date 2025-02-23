@@ -132,7 +132,7 @@ export function Achievements() {
                 <p>
                   When your ward/child is enrolled at Sensec, he/she shall
                   benefit from a holistic lifelong education that will empowers
-                  them to effect positive change in their lives and community
+                  them to effect positive change in their lives and community.
                 </p>
               </Box>
             </Box>
