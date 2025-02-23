@@ -15,7 +15,10 @@ const pages = [
   "/sensec/students/enrollment/placement_check",
   "/sensec/students/enrollment/documentation",
   "/sensec/new_employment",
-  // Add more pages here
+  "/sensec/login_options",
+  "/sensec/sign_up/staffs",
+  "/sensec/sign_up/students",
+  "/sensec/forgot_password",
 ];
 
 const sitemapContent = `<?xml version="1.0" encoding="UTF-8"?>
