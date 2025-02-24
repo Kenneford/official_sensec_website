@@ -21,12 +21,21 @@ export default function FacilitiesSection() {
           <Box className="facilitiesContent">
             <Box className="facilitiesLeft">
               <p>
-                There are many variations of passages of Lorem Ipsum available,
-                but the majority have suffered alteration in some form, by
-                injected humour, or randomised words which don't look even
-                slightly believable. If you are going to use a passage of Lorem
-                Ipsum, you need to be sure there isn't anything embarrassing
-                hidden in the middle of text.
+                In terms of facilities, Senya Senior High School is equipped
+                with <span style={{ fontWeight: "500" }}>classrooms</span>, an
+                <span style={{ fontWeight: "500" }}>ICT lab</span>, a{" "}
+                <span style={{ fontWeight: "500" }}>library</span>, and a{" "}
+                <span style={{ fontWeight: "500" }}>dining hall</span>. In{" "}
+                <span style={{ fontWeight: "500" }}>2016</span>, a borehole was
+                constructed to provide a reliable water source for the
+                boys&apos; dormitory. More recently, in February 2025,{" "}
+                <span style={{ fontWeight: "500" }}>Kosmos Energy Ghana</span>{" "}
+                donated a{" "}
+                <span style={{ fontWeight: "500" }}>fully equipped clinic</span>{" "}
+                to the school, enhancing healthcare services for{" "}
+                <span style={{ fontWeight: "500" }}>over 1,540 students</span>{" "}
+                and <span style={{ fontWeight: "500" }}>110 staff members</span>
+                .
               </p>
               <Link to={"/sensec/facilities"}>
                 <button className="facilityBtn">Discover More</button>
@@ -43,9 +52,9 @@ export default function FacilitiesSection() {
                   >
                     <Box className="colorOverlay">
                       <h4>Science Laboratory</h4>
-                      <Link to={"/sensec/facility?=science_laboratory"}>
+                      {/* <Link to={"/sensec/facility?=science_laboratory"}>
                         <button>View</button>
-                      </Link>
+                      </Link> */}
                     </Box>
                   </Box>
                 </Grid>
@@ -58,9 +67,9 @@ export default function FacilitiesSection() {
                   >
                     <Box className="colorOverlay">
                       <h4>Computer Classroom</h4>
-                      <Link to={"/sensec/facility?=computer_classroom"}>
+                      {/* <Link to={"/sensec/facility?=computer_classroom"}>
                         <button>View</button>
-                      </Link>
+                      </Link> */}
                     </Box>
                   </Box>
                 </Grid>
@@ -73,9 +82,9 @@ export default function FacilitiesSection() {
                   >
                     <Box className="colorOverlay">
                       <h4>School Library</h4>
-                      <Link to={"/sensec/facility?=library"}>
+                      {/* <Link to={"/sensec/facility?=library"}>
                         <button>View</button>
-                      </Link>
+                      </Link> */}
                     </Box>
                   </Box>
                 </Grid>
@@ -88,9 +97,9 @@ export default function FacilitiesSection() {
                   >
                     <Box className="colorOverlay">
                       <h4>Football Field</h4>
-                      <Link to={"/sensec/facility?=football_field"}>
+                      {/* <Link to={"/sensec/facility?=football_field"}>
                         <button>View</button>
-                      </Link>
+                      </Link> */}
                     </Box>
                   </Box>
                 </Grid>
@@ -103,9 +112,9 @@ export default function FacilitiesSection() {
                   >
                     <Box className="colorOverlay">
                       <h4>School Canteen</h4>
-                      <Link to={"/sensec/facility?=canteen"}>
+                      {/* <Link to={"/sensec/facility?=canteen"}>
                         <button>View</button>
-                      </Link>
+                      </Link> */}
                     </Box>
                   </Box>
                 </Grid>
@@ -118,9 +127,9 @@ export default function FacilitiesSection() {
                   >
                     <Box className="colorOverlay">
                       <h4>Dormitories</h4>
-                      <Link to={"/sensec/facility?="}>
+                      {/* <Link to={"/sensec/facility?="}>
                         <button>View</button>
-                      </Link>
+                      </Link> */}
                     </Box>
                   </Box>
                 </Grid>
