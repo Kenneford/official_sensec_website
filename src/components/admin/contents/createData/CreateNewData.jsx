@@ -10,6 +10,7 @@ export function CreateNewData({ setCurrentAction, setCurrentLink }) {
   const authUser = useSelector(getAuthUser);
   const adminLink = localStorage.getItem("currentAdminLink");
   const adminAction = localStorage.getItem("currentAdminAction");
+  const updateSensecSchoolData = localStorage.getItem("updateSensecSchoolData");
   const navigate = useNavigate();
   const { adminCurrentAction, adminCurrentLink } = useParams();
 
@@ -40,7 +41,11 @@ export function CreateNewData({ setCurrentAction, setCurrentLink }) {
       >
         <h1 className="dashAction">
           {adminCurrentAction?.replace(/_/g, "-")} /{" "}
-          <span>{adminCurrentLink?.replace(/_/g, " ")}</span>
+          <span>
+            {!updateSensecSchoolData
+              ? adminCurrentLink?.replace(/_/g, " ")
+              : "Update Data"}
+          </span>
         </h1>
         {/* Main search bar */}
         {/* <Box sx={{ display: { xs: "none", sm: "block" } }}>

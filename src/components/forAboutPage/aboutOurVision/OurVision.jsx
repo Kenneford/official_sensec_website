@@ -5,9 +5,25 @@ import { Box, Typography } from "@mui/material";
 import { ContainerBox } from "../../../muiStyling/muiStyling";
 import Parser from "html-react-parser";
 import { FetchSensecSchoolData } from "../../../data/blogs/FetchSensecSchoolData";
+import { getAuthUser } from "../../../features/auth/authSlice";
+import { useSelector } from "react-redux";
+import { HashLink } from "react-router-hash-link";
+import { Edit } from "@mui/icons-material";
 
 export function OurVision() {
+  const authUser = useSelector(getAuthUser);
   const sensecSchoolData = FetchSensecSchoolData();
+
+  const scrollWithOffset = (el) => {
+    const yCoordinate = el.getBoundingClientRect().top + window.scrollY;
+    const yOffset = -80;
+    window.scrollTo({ top: yCoordinate + yOffset, behavior: "smooth" });
+  };
+  //THIS REMOVES THE NavLINK TAG FROM THE URL
+  if (window.location.hash) {
+    window.history.replaceState("", document.title, window.location.pathname);
+  }
+
   return (
     <Box borderTop={"1px solid #ccc"}>
       <ContainerBox
@@ -19,7 +35,27 @@ export function OurVision() {
       >
         <Box className="visionWrap" id="vision">
           <Box className="visionCont">
-            <h4>Vision And Values</h4>
+            <h4>
+              Vision And Values{" "}
+              {authUser?.roles?.includes("Admin") && (
+                <HashLink
+                  to={`/sensec/users/${authUser?.uniqueId}/admin/Actions/Create_Data/school_data/new#editVisionOfSchool`}
+                  smooth
+                  scroll={scrollWithOffset}
+                  onClick={() =>
+                    localStorage.setItem(
+                      "updateSensecSchoolData",
+                      "Name Of School"
+                    )
+                  }
+                >
+                  <Edit
+                    titleAccess="Update Name Of School"
+                    sx={{ fontSize: "1em" }}
+                  />
+                </HashLink>
+              )}
+            </h4>
             <Box className="vision">
               <Box className="visionRight">
                 <Box

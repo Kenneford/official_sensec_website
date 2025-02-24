@@ -1,12 +1,27 @@
 import React from "react";
 import "./whoWeAre.scss";
-import { Box } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { ContainerBox } from "../../../muiStyling/muiStyling";
 import { FetchSensecSchoolData } from "../../../data/blogs/FetchSensecSchoolData";
 import Parser from "html-react-parser";
+import { Edit } from "@mui/icons-material";
+import { HashLink } from "react-router-hash-link";
+import { useSelector } from "react-redux";
+import { getAuthUser } from "../../../features/auth/authSlice";
 
 export function WhoWeAre() {
+  const authUser = useSelector(getAuthUser);
   const sensecSchoolData = FetchSensecSchoolData();
+
+  const scrollWithOffset = (el) => {
+    const yCoordinate = el.getBoundingClientRect().top + window.scrollY;
+    const yOffset = -80;
+    window.scrollTo({ top: yCoordinate + yOffset, behavior: "smooth" });
+  };
+  //THIS REMOVES THE NavLINK TAG FROM THE URL
+  if (window.location.hash) {
+    window.history.replaceState("", document.title, window.location.pathname);
+  }
 
   return (
     <ContainerBox
@@ -18,7 +33,27 @@ export function WhoWeAre() {
     >
       <Box component="div" className="weWrap">
         <Box component="div" className="weCont">
-          <h1>About {sensecSchoolData[0]?.nameOfSchool}</h1>
+          <h1>
+            About {sensecSchoolData[0]?.nameOfSchool}{" "}
+            {authUser?.roles?.includes("Admin") && (
+              <HashLink
+                to={`/sensec/users/${authUser?.uniqueId}/admin/Actions/Create_Data/school_data/new`}
+                smooth
+                scroll={scrollWithOffset}
+                onClick={() =>
+                  localStorage.setItem(
+                    "updateSensecSchoolData",
+                    "Name Of School"
+                  )
+                }
+              >
+                <Edit
+                  titleAccess="Update Name Of School"
+                  sx={{ fontSize: "1em" }}
+                />
+              </HashLink>
+            )}{" "}
+          </h1>
           <Box className="aboutContent">
             <Box className="aboutRight">
               <Box
@@ -36,16 +71,96 @@ export function WhoWeAre() {
             <Box className="aboutUsLeft">
               {/* <h2>About Senya Senior High School</h2> */}
               <Box className="salutation">
-                <h4 className="title">Salutation</h4>
+                <h4 className="title">
+                  Salutation{" "}
+                  {authUser?.roles?.includes("Admin") && (
+                    <HashLink
+                      to={`/sensec/users/${authUser?.uniqueId}/admin/Actions/Create_Data/school_data/new`}
+                      smooth
+                      scroll={scrollWithOffset}
+                      onClick={() =>
+                        localStorage.setItem(
+                          "updateSensecSchoolData",
+                          "Name Of School"
+                        )
+                      }
+                    >
+                      <Edit
+                        titleAccess="Update Name Of School"
+                        sx={{ fontSize: "1em" }}
+                      />
+                    </HashLink>
+                  )}
+                </h4>
                 <span>{sensecSchoolData[0]?.greetings}</span>
               </Box>
-              <h4 id="anthem">Who We Are</h4>
+              <h4 id="anthem">
+                Who We Are{" "}
+                {authUser?.roles?.includes("Admin") && (
+                  <HashLink
+                    to={`/sensec/users/${authUser?.uniqueId}/admin/Actions/Create_Data/school_data/new#editWhoWeAre`}
+                    smooth
+                    scroll={scrollWithOffset}
+                    onClick={() =>
+                      localStorage.setItem(
+                        "updateSensecSchoolData",
+                        "Update Who We Are"
+                      )
+                    }
+                  >
+                    <Edit
+                      titleAccess="Update Name Of School"
+                      sx={{ fontSize: "1em" }}
+                    />
+                  </HashLink>
+                )}
+              </h4>
               <Box id="we">{Parser(`${sensecSchoolData[0]?.whoWeAre}`)}</Box>
-              <h4 id="anthem">Academic Excellence</h4>
+              <h4 id="anthem">
+                Academic Excellence{" "}
+                {authUser?.roles?.includes("Admin") && (
+                  <HashLink
+                    to={`/sensec/users/${authUser?.uniqueId}/admin/Actions/Create_Data/school_data/new#editAcademicExcellence`}
+                    smooth
+                    scroll={scrollWithOffset}
+                    onClick={() =>
+                      localStorage.setItem(
+                        "updateSensecSchoolData",
+                        "Anthem Of School"
+                      )
+                    }
+                  >
+                    <Edit
+                      titleAccess="Update Name Of School"
+                      sx={{ fontSize: "1em" }}
+                    />
+                  </HashLink>
+                )}
+              </h4>
               <Box id="we">
                 {Parser(`${sensecSchoolData[0]?.academicExcellence}`)}
               </Box>
-              <h4 id="anthem">Our Anthems</h4>
+              <h4 id="anthem">
+                Our Anthems{" "}
+                {authUser?.roles?.includes("Admin") && (
+                  <HashLink
+                    to={`/sensec/users/${authUser?.uniqueId}/admin/Actions/Create_Data/school_data/new#editAnthem`}
+                    smooth
+                    scroll={scrollWithOffset}
+                    onClick={() =>
+                      localStorage.setItem(
+                        "updateSensecSchoolData",
+                        "Anthem Of School"
+                      )
+                    }
+                  >
+                    <Edit
+                      titleAccess="Update Name Of School"
+                      sx={{ fontSize: "1em" }}
+                    />
+                  </HashLink>
+                )}
+              </h4>
               <Box gap={1}>
                 {Parser(`${sensecSchoolData[0]?.anthems}`)}
                 {/* Anthem 1

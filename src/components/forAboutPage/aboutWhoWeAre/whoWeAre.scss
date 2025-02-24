@@ -5,9 +5,24 @@
   font-size: calc(0.7rem + 1vmin);
   .weCont {
     h1 {
+      // display: flex;
+      flex-wrap: wrap;
+      word-break: break-word;
+      overflow-wrap: break-word;
+      white-space: normal;
       font-size: 1.2em;
       padding-bottom: 1.5rem;
       color: #696969;
+      // wordBreak: "break-word", // Allows breaking long words
+      // overflowWrap: "break-word", // Ensures proper wrapping
+      // whiteSpace: "normal", // Al
+      a {
+        font-size: calc(0.7rem + 1vmin);
+        color: #696969;
+        background-color: transparent;
+        cursor: pointer;
+        margin-bottom: -0.5rem;
+      }
     }
     p {
       line-height: sizes.$line_height;
@@ -36,7 +51,18 @@
       }
       .aboutUsLeft {
         h4 {
+          flex-wrap: wrap;
+          word-break: break-word;
+          overflow-wrap: break-word;
+          white-space: normal;
           padding-bottom: 1rem;
+          a {
+            font-size: calc(0.7rem + 1vmin);
+            color: #696969;
+            background-color: transparent;
+            cursor: pointer;
+            margin-bottom: -1rem;
+          }
         }
         .salutation {
           padding-bottom: 1rem;

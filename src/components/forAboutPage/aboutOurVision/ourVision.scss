@@ -8,6 +8,13 @@
     h4 {
       padding-bottom: 1.5rem;
       color: #696969;
+      a {
+        font-size: calc(0.7rem + 1vmin);
+        color: #696969;
+        background-color: transparent;
+        cursor: pointer;
+        margin-bottom: -1rem;
+      }
     }
     .vision {
       color: #696969;

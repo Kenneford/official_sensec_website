@@ -13,8 +13,13 @@ import {
 } from "../../../data/students/FetchAllStudents";
 import Parser from "html-react-parser";
 import { FetchSensecSchoolData } from "../../../data/blogs/FetchSensecSchoolData";
+import { getAuthUser } from "../../../features/auth/authSlice";
+import { useSelector } from "react-redux";
+import { HashLink } from "react-router-hash-link";
+import { Edit } from "@mui/icons-material";
 
 export function Achievements() {
+  const authUser = useSelector(getAuthUser);
   const sensecSchoolData = FetchSensecSchoolData();
   console.log(sensecSchoolData);
   const allPrograms = FetchAllProgrammes();
@@ -26,6 +31,16 @@ export function Achievements() {
 
   const xScreen = screenWidth < 300;
   console.log(xScreen);
+
+  const scrollWithOffset = (el) => {
+    const yCoordinate = el.getBoundingClientRect().top + window.scrollY;
+    const yOffset = -80;
+    window.scrollTo({ top: yCoordinate + yOffset, behavior: "smooth" });
+  };
+  //THIS REMOVES THE NavLINK TAG FROM THE URL
+  if (window.location.hash) {
+    window.history.replaceState("", document.title, window.location.pathname);
+  }
 
   useEffect(() => {
     // Function to update the screen width
@@ -41,6 +56,7 @@ export function Achievements() {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
   return (
     <Box borderTop={"1px solid #ccc"}>
       <ContainerBox
@@ -52,7 +68,27 @@ export function Achievements() {
       >
         <Box className="achieveWrap" id="achievements">
           <Box className="achieveCont">
-            <h4>Achievements</h4>
+            <h4>
+              Achievements{" "}
+              {authUser?.roles?.includes("Admin") && (
+                <HashLink
+                  to={`/sensec/users/${authUser?.uniqueId}/admin/Actions/Create_Data/school_data/new#editAchievementsOfSchool`}
+                  smooth
+                  scroll={scrollWithOffset}
+                  onClick={() =>
+                    localStorage.setItem(
+                      "updateSensecSchoolData",
+                      "Name Of School"
+                    )
+                  }
+                >
+                  <Edit
+                    titleAccess="Update Name Of School"
+                    sx={{ fontSize: "1em" }}
+                  />
+                </HashLink>
+              )}
+            </h4>
             <Box className="achievements">
               <Box className="achievementLeft">
                 <Box
