@@ -6,12 +6,17 @@ import {
 } from "../../features/schoolDataSlice/schoolDataSlice";
 
 const FetchSensecSchoolData = () => {
+  const { updateSchoolStatus } = useSelector((state) => state.schoolData);
   const dispatch = useDispatch();
   const sensecSchoolData = useSelector(getSensecSchoolData);
 
   useEffect(() => {
-    dispatch(fetchSensecSchoolData());
-  }, [dispatch]);
+    if (updateSchoolStatus === "success") {
+      dispatch(fetchSensecSchoolData());
+    } else {
+      dispatch(fetchSensecSchoolData());
+    }
+  }, [dispatch, updateSchoolStatus]);
 
   return sensecSchoolData;
 };

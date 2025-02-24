@@ -33,15 +33,9 @@ import { AcademicGrade } from "../create/academicGrade/AcademicGrade";
 // import CreateSchoolData from "../create/schoolData/CreateSchoolData";
 // import CreateTimeTable from "../create/timeTable/CreateTimeTable";
 
-export function NewDataContainer({
-  setCurrentAction,
-  setCurrentLink,
-  currentAction,
-  currentLink,
-}) {
+export function NewDataContainer() {
   const authUser = useSelector(getAuthUser);
-  const adminLink = localStorage.getItem("currentAdminLink");
-  const adminAction = localStorage.getItem("currentAdminAction");
+  const updateSensecSchoolData = localStorage.getItem("updateSensecSchoolData");
   const navigate = useNavigate();
   const { adminCurrentAction, adminCurrentLink, data } = useParams();
   return (
@@ -60,7 +54,11 @@ export function NewDataContainer({
       >
         <h1 className="dashAction">
           {adminCurrentAction?.replace(/_/g, "-")} /{" "}
-          <span>{adminCurrentLink?.replace(/_/g, " ")}</span>
+          <span>
+            {!updateSensecSchoolData
+              ? adminCurrentLink?.replace(/_/g, " ")
+              : "Update School Data"}
+          </span>
         </h1>
         {/* Main search bar */}
         {/* <Box sx={{ display: { xs: "none", sm: "block" } }}>
@@ -72,177 +70,185 @@ export function NewDataContainer({
         </Box> */}
       </Box>
       {/* Buttons to create new data */}
-      <Box
-        sx={{
-          borderBottom: "1px solid #cccc",
-        }}
-      >
+      {!updateSensecSchoolData && (
         <Box
           sx={{
-            width: { xs: "100%", sm: "95%", md: "90%", lg: "90%", xl: "60%" },
-            padding: "1rem .5rem",
-            margin: "auto",
+            borderBottom: "1px solid #cccc",
           }}
-          className="newDataContainerWrap"
         >
-          <button
-            className={
-              data === "school_batch" ? "activeCreateBtn" : "createBtn"
-            }
-            onClick={() => {
-              navigate(
-                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/school_batch/new`
-              );
+          <Box
+            sx={{
+              width: { xs: "100%", sm: "95%", md: "90%", lg: "90%", xl: "60%" },
+              padding: "1rem .5rem",
+              margin: "auto",
             }}
+            className="newDataContainerWrap"
           >
-            School Batch
-          </button>
-          <button
-            className={
-              data === "placement_batch" ? "activeCreateBtn" : "createBtn"
-            }
-            onClick={() => {
-              navigate(
-                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/placement_batch/new`
-              );
-            }}
-          >
-            Placement Batch
-          </button>
-          <button
-            className={
-              data === "academic_year" ? "activeCreateBtn" : "createBtn"
-            }
-            onClick={() =>
-              navigate(
-                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/academic_year/new`
-              )
-            }
-          >
-            Academic Year
-          </button>
-          <button
-            className={
-              data === "academic_term" ? "activeCreateBtn" : "createBtn"
-            }
-            onClick={() =>
-              navigate(
-                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/academic_term/new`
-              )
-            }
-          >
-            Academic Term
-          </button>
-          <button
-            className={data === "class_level" ? "activeCreateBtn" : "createBtn"}
-            onClick={() =>
-              navigate(
-                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/class_level/new`
-              )
-            }
-          >
-            Class Level
-          </button>
-          <button
-            className={data === "program" ? "activeCreateBtn" : "createBtn"}
-            onClick={() =>
-              navigate(
-                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/program/new`
-              )
-            }
-          >
-            Program
-          </button>
-          <button
-            className={
-              data === "division_program" ? "activeCreateBtn" : "createBtn"
-            }
-            onClick={() =>
-              navigate(
-                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/division_program/new`
-              )
-            }
-          >
-            Division Program
-          </button>
-          <button
-            className={
-              data === "class_section" ? "activeCreateBtn" : "createBtn"
-            }
-            onClick={() =>
-              navigate(
-                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/class_section/new`
-              )
-            }
-          >
-            Class Section
-          </button>
-          <button
-            className={data === "house" ? "activeCreateBtn" : "createBtn"}
-            onClick={() =>
-              navigate(
-                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/house/new`
-              )
-            }
-          >
-            House
-          </button>
-          <button
-            className={data === "subject" ? "activeCreateBtn" : "createBtn"}
-            onClick={() =>
-              navigate(
-                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/subject/new`
-              )
-            }
-          >
-            Subject
-          </button>
-          <button
-            className={
-              data === "old_students_group" ? "activeCreateBtn" : "createBtn"
-            }
-            onClick={() =>
-              navigate(
-                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/old_students_group/new`
-              )
-            }
-          >
-            Graduates Group
-          </button>
-          <button
-            className={data === "school_data" ? "activeCreateBtn" : "createBtn"}
-            onClick={() => {
-              navigate(
-                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/school_data/new`
-              );
-            }}
-          >
-            School Data
-          </button>
-          <button
-            className={data === "time_table" ? "activeCreateBtn" : "createBtn"}
-            onClick={() => {
-              navigate(
-                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/time_table/new`
-              );
-            }}
-          >
-            Time Table
-          </button>
-          <button
-            className={
-              data === "academic_grade" ? "activeCreateBtn" : "createBtn"
-            }
-            onClick={() => {
-              navigate(
-                `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/academic_grade/new`
-              );
-            }}
-          >
-            Academic Grade
-          </button>
+            <button
+              className={
+                data === "school_batch" ? "activeCreateBtn" : "createBtn"
+              }
+              onClick={() => {
+                navigate(
+                  `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/school_batch/new`
+                );
+              }}
+            >
+              School Batch
+            </button>
+            <button
+              className={
+                data === "placement_batch" ? "activeCreateBtn" : "createBtn"
+              }
+              onClick={() => {
+                navigate(
+                  `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/placement_batch/new`
+                );
+              }}
+            >
+              Placement Batch
+            </button>
+            <button
+              className={
+                data === "academic_year" ? "activeCreateBtn" : "createBtn"
+              }
+              onClick={() =>
+                navigate(
+                  `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/academic_year/new`
+                )
+              }
+            >
+              Academic Year
+            </button>
+            <button
+              className={
+                data === "academic_term" ? "activeCreateBtn" : "createBtn"
+              }
+              onClick={() =>
+                navigate(
+                  `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/academic_term/new`
+                )
+              }
+            >
+              Academic Term
+            </button>
+            <button
+              className={
+                data === "class_level" ? "activeCreateBtn" : "createBtn"
+              }
+              onClick={() =>
+                navigate(
+                  `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/class_level/new`
+                )
+              }
+            >
+              Class Level
+            </button>
+            <button
+              className={data === "program" ? "activeCreateBtn" : "createBtn"}
+              onClick={() =>
+                navigate(
+                  `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/program/new`
+                )
+              }
+            >
+              Program
+            </button>
+            <button
+              className={
+                data === "division_program" ? "activeCreateBtn" : "createBtn"
+              }
+              onClick={() =>
+                navigate(
+                  `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/division_program/new`
+                )
+              }
+            >
+              Division Program
+            </button>
+            <button
+              className={
+                data === "class_section" ? "activeCreateBtn" : "createBtn"
+              }
+              onClick={() =>
+                navigate(
+                  `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/class_section/new`
+                )
+              }
+            >
+              Class Section
+            </button>
+            <button
+              className={data === "house" ? "activeCreateBtn" : "createBtn"}
+              onClick={() =>
+                navigate(
+                  `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/house/new`
+                )
+              }
+            >
+              House
+            </button>
+            <button
+              className={data === "subject" ? "activeCreateBtn" : "createBtn"}
+              onClick={() =>
+                navigate(
+                  `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/subject/new`
+                )
+              }
+            >
+              Subject
+            </button>
+            <button
+              className={
+                data === "old_students_group" ? "activeCreateBtn" : "createBtn"
+              }
+              onClick={() =>
+                navigate(
+                  `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/old_students_group/new`
+                )
+              }
+            >
+              Graduates Group
+            </button>
+            <button
+              className={
+                data === "school_data" ? "activeCreateBtn" : "createBtn"
+              }
+              onClick={() => {
+                navigate(
+                  `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/school_data/new`
+                );
+              }}
+            >
+              School Data
+            </button>
+            <button
+              className={
+                data === "time_table" ? "activeCreateBtn" : "createBtn"
+              }
+              onClick={() => {
+                navigate(
+                  `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/time_table/new`
+                );
+              }}
+            >
+              Time Table
+            </button>
+            <button
+              className={
+                data === "academic_grade" ? "activeCreateBtn" : "createBtn"
+              }
+              onClick={() => {
+                navigate(
+                  `/sensec/users/${authUser?.uniqueId}/admin/${adminCurrentAction}/${adminCurrentLink}/academic_grade/new`
+                );
+              }}
+            >
+              Academic Grade
+            </button>
+          </Box>
         </Box>
-      </Box>
+      )}
       {/* Show form based on button selection */}
       {data === "school_batch" && <CreateAcademicBatch />}
       {data === "placement_batch" && <CreatePlacementBatch />}
