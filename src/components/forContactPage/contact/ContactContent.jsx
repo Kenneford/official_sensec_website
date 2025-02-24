@@ -188,7 +188,7 @@ export default function ContactContent() {
             <Box item xs={12} sm={6} className="locationMap">
               <h2>Location</h2>
               <iframe
-                title="sensecMap"
+                title="sensec_location"
                 // src="https://www.google.com/maps?q=5.410616, -0.505370&hl=en&z=14&output=embed"
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6680.147688730123!2d-0.5097847354054883!3d5.410943016471147!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xfdfb72dbac8012d%3A0x32e187eb1c520b4e!2sSENYA%20SENIOR%20HIGH%20SCHOOL!5e0!3m2!1sen!2sde!4v1681719352650!5m2!1sen!2sde"
                 width="600"
