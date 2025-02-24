@@ -1,7 +1,7 @@
 import React from "react";
 import "./cadet.scss";
 import { Link } from "react-router-dom";
-import { Box } from "@mui/material";
+import { Avatar, Box, Typography } from "@mui/material";
 import { ContainerBox } from "../../../muiStyling/muiStyling";
 
 export default function CadetSection() {
@@ -14,18 +14,49 @@ export default function CadetSection() {
         }}
       >
         <Box className="overlay">
-          <h1>School Cadet</h1>
+          <Typography
+            variant="h1"
+            fontSize={"1.7em"}
+            fontWeight={500}
+            letterSpacing={1}
+            textAlign={"center"}
+          >
+            School Cadet
+          </Typography>
         </Box>
       </Box>
       <Box className="cadetCont">
         <Box className="trainer">
-          <img
-            src="https://images.unsplash.com/photo-1583249238726-0c5159e46750?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"
-            alt=""
-          />
+          <Box
+            sx={{
+              width: "5em",
+              height: "5em",
+            }}
+          >
+            <Avatar
+              src="https://images.unsplash.com/photo-1583249238726-0c5159e46750?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"
+              alt="Cadet Trainer Image"
+              sx={{
+                width: "100%",
+                height: "100%",
+                borderRadius: "50%",
+                objectFit: "cover",
+                top: { xs: "-2em", sm: "-3em" },
+              }}
+            />
+          </Box>
           <Box className="trainerInfo">
-            <span className="name">Servant Kenn</span>
-            <span className="title">( Cadet Trainer )</span>
+            <Typography
+              variant="h6"
+              fontSize={"1em"}
+              color="#696969"
+              className="name"
+            >
+              Servant Kenn
+            </Typography>
+            <Typography variant="h6" fontSize={".8em"} className="title">
+              ( Cadet Trainer )
+            </Typography>
           </Box>
         </Box>
         <ContainerBox
@@ -38,7 +69,13 @@ export default function CadetSection() {
           }}
         >
           <Box className="message">
-            <h3>A Message from our Cadet</h3>
+            <Typography
+              variant="h3"
+              fontSize={"1em"}
+              sx={{ textAlign: "center" }}
+            >
+              A Message from our Cadet
+            </Typography>
             <p>
               The Sensec Cadet was established in 2011. The purpose is to
               promote discipline, patriotism and fitness required for rigorous

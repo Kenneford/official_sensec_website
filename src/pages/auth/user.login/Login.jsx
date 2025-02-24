@@ -112,7 +112,6 @@ export function Login() {
         toastId: "loginRejection",
       });
     } else {
-      console.log("Form submitted!");
       dispatch(
         userLogin({
           uniqueId: newUser?.uniqueId,
