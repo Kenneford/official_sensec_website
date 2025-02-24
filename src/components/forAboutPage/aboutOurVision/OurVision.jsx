@@ -1,10 +1,13 @@
 import React from "react";
 import "./ourVision.scss";
 import { Link } from "react-router-dom";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { ContainerBox } from "../../../muiStyling/muiStyling";
+import Parser from "html-react-parser";
+import { FetchSensecSchoolData } from "../../../data/blogs/FetchSensecSchoolData";
 
 export function OurVision() {
+  const sensecSchoolData = FetchSensecSchoolData();
   return (
     <Box borderTop={"1px solid #ccc"}>
       <ContainerBox
@@ -32,11 +35,11 @@ export function OurVision() {
                 />
               </Box>
               <Box className="visionLeft">
-                <p>
-                  A School that provides learners with excellent academics,
-                  skills development and strong ethical foundation for national
-                  development.
-                </p>
+                <Box>
+                  {Parser(
+                    `${sensecSchoolData[0]?.schoolVision?.visionStatement}`
+                  )}
+                </Box>
                 <h5
                   style={{
                     marginBottom: ".5rem",
@@ -45,11 +48,11 @@ export function OurVision() {
                 >
                   Mission Statement
                 </h5>
-                <p>
-                  To educate learners to achieve excellence, develop their
-                  skills and build ethical behaviour that contributes to
-                  national development .
-                </p>
+                <Box>
+                  {Parser(
+                    `${sensecSchoolData[0]?.schoolVision?.missionStatement}`
+                  )}
+                </Box>
                 <h5
                   style={{
                     marginBottom: ".5rem",
@@ -65,7 +68,8 @@ export function OurVision() {
                   // flexDirection={"column"}
                   fontSize={".9em"}
                 >
-                  <p>
+                  {Parser(`${sensecSchoolData[0]?.schoolVision?.coreValues}`)}
+                  {/* <p>
                     <span>1.</span> Discipline{" "}
                   </p>
                   <p>
@@ -82,14 +86,13 @@ export function OurVision() {
                   </p>
                   <p>
                     <span>6.</span> Teamwork{" "}
-                  </p>
+                  </p> */}
                 </Box>
                 {/* <Link to={"#"}>
                   <button className="visionBtn">Learn More</button>
                 </Link> */}
               </Box>
             </Box>
-            <Box className=""></Box>
           </Box>
         </Box>
       </ContainerBox>

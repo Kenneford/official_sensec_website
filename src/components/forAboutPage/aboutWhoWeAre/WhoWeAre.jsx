@@ -2,8 +2,12 @@ import React from "react";
 import "./whoWeAre.scss";
 import { Box } from "@mui/material";
 import { ContainerBox } from "../../../muiStyling/muiStyling";
+import { FetchSensecSchoolData } from "../../../data/blogs/FetchSensecSchoolData";
+import Parser from "html-react-parser";
 
 export function WhoWeAre() {
+  const sensecSchoolData = FetchSensecSchoolData();
+
   return (
     <ContainerBox
       sx={{
@@ -14,7 +18,7 @@ export function WhoWeAre() {
     >
       <Box component="div" className="weWrap">
         <Box component="div" className="weCont">
-          <h1>About Senya Senior High School</h1>
+          <h1>About {sensecSchoolData[0]?.nameOfSchool}</h1>
           <Box className="aboutContent">
             <Box className="aboutRight">
               <Box
@@ -33,49 +37,18 @@ export function WhoWeAre() {
               {/* <h2>About Senya Senior High School</h2> */}
               <Box className="salutation">
                 <h4 className="title">Salutation</h4>
-                <span>The Great Sensec! Forever Great!</span>
+                <span>{sensecSchoolData[0]?.greetings}</span>
               </Box>
               <h4 id="anthem">Who We Are</h4>
-              <p id="we">
-                Senya Senior High School{" "}
-                <span style={{ fontWeight: 500 }}>(Senya SHS)</span> in Ghana is
-                a secondary educational institution dedicated to academic
-                excellence and student development. The school provides quality
-                education and fosters discipline, leadership, and innovation
-                among students. Senya Senior High School stands as a citadel of
-                education and has not only been a source of academic excellence
-                but has also played a pivotal role in shaping the minds and
-                future of countless students.
-              </p>
+              <Box id="we">{Parser(`${sensecSchoolData[0]?.whoWeAre}`)}</Box>
               <h4 id="anthem">Academic Excellence</h4>
-              <p id="we">
-                As the years passed, SENSEC steadily gained reputation for
-                academic excellence. The school’s committed faculty and staff
-                worked tirelessly to provide students with well-rounded
-                education that went beyond the confines of textbooks. Students
-                are encouraged to explore their potential, develop critical
-                thinking skills, and engage in extracurricular activities
-              </p>
-              <p>
-                One notable aspect of Sensec’s success was its dominance in
-                district-held debate competition and quizzes. The school’s
-                debate team consistently displayed eloquence and analytical
-                prowess, earning numerous accolades and trophies. These
-                victories not only brought recognition to the school but also
-                instilled a sense of pride among the students and community.
-              </p>
-              <p>
-                In a nutshell, SENSEC has grown from modest beginnings to become
-                a symbol of academic excellence. Its journey, marked by
-                resilience and determination, exemplifies the transformative
-                power of education. As the school continues to empower
-                generations of students with the light of knowledge, it remains
-                a source of pride for the community and a beacon of hope for a
-                brighter future for its students.
-              </p>
+              <Box id="we">
+                {Parser(`${sensecSchoolData[0]?.academicExcellence}`)}
+              </Box>
               <h4 id="anthem">Our Anthems</h4>
-              <Box display={{ sx: "block", sm: "flex" }} gap={1}>
-                {/* Anthem 1 */}
+              <Box gap={1}>
+                {Parser(`${sensecSchoolData[0]?.anthems}`)}
+                {/* Anthem 1
                 <Box flex={1}>
                   <Box sx={{ mb: "1rem" }}>
                     <span
@@ -98,7 +71,7 @@ export function WhoWeAre() {
                     embrace <br /> The true knowledge that brings forth light
                   </p>
                 </Box>
-                {/* Anthem 2 */}
+                Anthem 2
                 <Box flex={1.5}>
                   <Box sx={{ mb: "1rem" }}>
                     <span
@@ -117,7 +90,7 @@ export function WhoWeAre() {
                     justifyContent={{ sm: "space-between" }}
                     gap={1}
                   >
-                    {/* Chorus */}
+                    Chorus
                     <Box width={"50%"}>
                       <h5>Chorus</h5>
                       <p>
@@ -126,7 +99,7 @@ export function WhoWeAre() {
                         learn and work <br /> For the betterment of Mother Ghana
                       </p>
                     </Box>
-                    {/* 1st Verse */}
+                    1st Verse
                     <Box width={"50%"}>
                       <h5>1st Verse</h5>
                       <p>
@@ -141,7 +114,7 @@ export function WhoWeAre() {
                     gap={1}
                     justifyContent={{ sm: "space-between" }}
                   >
-                    {/* 2nd Verse */}
+                    2nd Verse
                     <Box width={"50%"}>
                       <h5>2nd Verse</h5>
                       <p>
@@ -153,7 +126,7 @@ export function WhoWeAre() {
                         <br /> Cloud your dreams for greatness
                       </p>
                     </Box>
-                    {/* 3rd Verse */}
+                    3rd Verse
                     <Box width={"50%"}>
                       <h5>3rd Verse</h5>
                       <p>
@@ -165,7 +138,7 @@ export function WhoWeAre() {
                       </p>
                     </Box>
                   </Box>
-                </Box>
+                </Box> */}
               </Box>
             </Box>
           </Box>

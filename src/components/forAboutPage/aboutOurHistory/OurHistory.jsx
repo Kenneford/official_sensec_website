@@ -3,8 +3,11 @@ import "./ourHistory.scss";
 import { Link } from "react-router-dom";
 import { Box } from "@mui/material";
 import { ContainerBox } from "../../../muiStyling/muiStyling";
+import Parser from "html-react-parser";
+import { FetchSensecSchoolData } from "../../../data/blogs/FetchSensecSchoolData";
 
 export function OurHistory() {
+  const sensecSchoolData = FetchSensecSchoolData();
   return (
     <Box borderTop={"1px solid #ccc"}>
       <ContainerBox
@@ -32,22 +35,21 @@ export function OurHistory() {
                 />
               </Box>
               <Box className="historyLeft">
-                <p>
+                {Parser(`${sensecSchoolData[0]?.history}`)}
+                {/* <p>
                   In the heart of Senya Beraku, a coastal community nestled
                   along the serene shores of the Central Region of Ghana, Senya
                   Senior High School, affectionately called &quot;
                   <span style={{ fontWeight: 500 }}>The Great Sensec</span>
                   &quot;, was established on{" "}
-                  <spann style={{ fontWeight: 500 }}>7th February, 1991</spann>,
+                  <span style={{ fontWeight: 500 }}>7th February, 1991</span>,
                   when a group of visionary educators and community leaders came
                   together with a shared dream – to provide quality education to
                   the youth of Senya Beraku and its catchment areas. These
                   founders believed that{" "}
-                  <spann style={{ fontWeight: 500 }}>
-                    “Knowledge is Light”
-                  </spann>
-                  , a belief that later became motto of the school and would
-                  come to define the essence of the school.
+                  <span style={{ fontWeight: 500 }}>“Knowledge is Light”</span>,
+                  a belief that later became motto of the school and would come
+                  to define the essence of the school.
                 </p>
                 <p>
                   During its early years, the school faced numerous challenges,
@@ -73,7 +75,7 @@ export function OurHistory() {
                   <span style={{ fontWeight: 500 }}>(CSSPS)</span>, Management
                   of the school introduced the boarding and hostel systems to
                   accommodate students who came from afar.
-                </p>
+                </p> */}
                 {/* <Link to={"#"}>
                   <button className="historyBtn">Learn More</button>
                 </Link> */}

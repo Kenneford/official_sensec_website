@@ -2,13 +2,9 @@
 @use "../../../utilities/colors";
 
 .cadetWrap {
-  // background-color: #282828;
-  // background-color: #fff;
-  // padding-bottom: 2rem;
+  font-size: calc(0.7rem + 1vmin);
   .banner {
-    // width: 100%;
     background-size: cover;
-    // background-position: center;
     background-attachment: fixed;
     .overlay {
       height: 20rem;
@@ -20,43 +16,35 @@
       align-items: center;
       background-color: rgba(0, 0, 0, 0.5);
       color: #fff;
-      h1 {
-        font-size: 1.7em;
-        letter-spacing: 1px;
-        // padding-top: 2rem;
-        // text-transform: uppercase;
-      }
     }
   }
   .cadetCont {
-    // width: sizes.$container_Width_lg;
-    // margin: auto;
-    // height: 60vh;
+    font-size: calc(0.7rem + 1vmin);
     .trainer {
       position: relative;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      img {
-        position: absolute;
-        top: -5rem;
-        width: 10rem;
-        height: 10rem;
-        object-fit: cover;
-        border-radius: 50%;
-      }
+      // img {
+      //   position: absolute;
+      //   top: -3.5rem;
+      //   // width: 5em;
+      //   // height: 5em;
+      //   object-fit: cover;
+      //   border-radius: 50%;
+      // }
       .trainerInfo {
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        padding-top: 6rem;
+        margin-top: -2em;
         color: #000;
-        .name {
-          font-size: 1.3rem;
-          font-weight: 600;
-        }
+        // .name {
+        //   font-size: 1.3rem;
+        //   font-weight: 600;
+        // }
         .title {
           color: green;
           font-weight: 500;
@@ -71,7 +59,7 @@
       color: #000;
       font-size: calc(0.7rem + 1vmin);
       h3 {
-        font-size: 1em;
+        // font-size: 1em;
         text-transform: uppercase;
         letter-spacing: 1.5px;
         color: #696969;
@@ -80,7 +68,7 @@
         font-size: 1em;
         line-height: sizes.$line_height;
         padding: 1.5rem 0 2rem;
-        font-style: italic;
+        // font-style: italic;
         color: #696969;
       }
       a {
@@ -91,7 +79,6 @@
           font-weight: 500;
           transition: 0.4s ease;
           color: #fff;
-          font-size: 1.2em;
           cursor: pointer;
           border-radius: 5px;
         }
@@ -101,180 +88,4 @@
       }
     }
   }
-  // @media screen and (max-width: 1024px) {
-  // }
-  // @media screen and (max-width: 960px) {
-  // }
-  // @media screen and (max-width: 460px) {
-  //   .banner {
-  //     // width: 100%;
-  //     background-size: cover;
-  //     // background-position: center;
-  //     background-attachment: fixed;
-  //     .overlay {
-  //       height: 15rem;
-  //       h2 {
-  //         font-size: 1.7rem;
-  //       }
-  //     }
-  //   }
-  //   .cadetCont {
-  //     width: sizes.$container_Width_lg;
-  //     margin: auto;
-  //     height: 50vh;
-  //     .trainer {
-  //       position: relative;
-  //       display: flex;
-  //       flex-direction: column;
-  //       justify-content: center;
-  //       align-items: center;
-  //       img {
-  //         position: absolute;
-  //         top: -3rem;
-  //         width: 6rem;
-  //         height: 6rem;
-  //         object-fit: cover;
-  //         border-radius: 50%;
-  //       }
-  //       .trainerInfo {
-  //         display: flex;
-  //         flex-direction: column;
-  //         justify-content: center;
-  //         align-items: center;
-  //         padding-top: 4rem;
-  //         color: #000;
-  //         .name {
-  //           font-size: 1.1rem;
-  //           font-weight: 600;
-  //         }
-  //         .title {
-  //           font-size: 0.8rem;
-  //         }
-  //       }
-  //     }
-  //     .message {
-  //       display: flex;
-  //       flex-direction: column;
-  //       justify-content: center;
-  //       align-items: center;
-  //       width: 100%;
-  //       margin: 0;
-  //       padding-top: 1rem;
-  //       color: #000;
-  //       h3 {
-  //         font-size: 1rem;
-  //         text-transform: uppercase;
-  //         letter-spacing: 1.5px;
-  //       }
-  //       p {
-  //         font-size: 1rem;
-  //         line-height: sizes.$line_height;
-  //         padding: 1.5rem 0 1rem;
-  //         // font-style: italic;
-  //       }
-  //       a {
-  //         color: #fff;
-  //         .cadetBtn {
-  //           background-color: #0fc80f;
-  //           padding: 0.5rem;
-  //           font-weight: 500;
-  //           transition: 0.4s ease;
-  //           color: #fff;
-  //           font-size: 1rem;
-  //           cursor: pointer;
-  //           border-radius: 5px;
-  //         }
-  //         .cadetBtn:hover {
-  //           background-color: colors.$primaryColor;
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
-  // @media screen and (max-width: 376px) {
-  //   .banner {
-  //     // width: 100%;
-  //     background-size: cover;
-  //     // background-position: center;
-  //     background-attachment: fixed;
-  //     .overlay {
-  //       height: 15rem;
-  //       h2 {
-  //         font-size: 1.7rem;
-  //       }
-  //     }
-  //   }
-  //   .cadetCont {
-  //     width: sizes.$container_Width_lg;
-  //     margin: auto;
-  //     height: 55vh;
-  //     .trainer {
-  //       position: relative;
-  //       display: flex;
-  //       flex-direction: column;
-  //       justify-content: center;
-  //       align-items: center;
-  //       img {
-  //         position: absolute;
-  //         top: -3rem;
-  //         width: 6rem;
-  //         height: 6rem;
-  //         object-fit: cover;
-  //         border-radius: 50%;
-  //       }
-  //       .trainerInfo {
-  //         display: flex;
-  //         flex-direction: column;
-  //         justify-content: center;
-  //         align-items: center;
-  //         padding-top: 4rem;
-  //         color: #000;
-  //         .name {
-  //           font-size: 1.1rem;
-  //           font-weight: 600;
-  //         }
-  //         .title {
-  //           font-size: 0.8rem;
-  //         }
-  //       }
-  //     }
-  //     .message {
-  //       display: flex;
-  //       flex-direction: column;
-  //       justify-content: center;
-  //       align-items: center;
-  //       width: 100%;
-  //       margin: 0;
-  //       padding-top: 1rem;
-  //       color: #000;
-  //       h3 {
-  //         font-size: 1rem;
-  //         text-transform: uppercase;
-  //         letter-spacing: 1.5px;
-  //       }
-  //       p {
-  //         font-size: 1rem;
-  //         line-height: sizes.$line_height;
-  //         padding: 1.5rem 0 1rem;
-  //         // font-style: italic;
-  //       }
-  //       a {
-  //         color: #fff;
-  //         .cadetBtn {
-  //           background-color: #0fc80f;
-  //           padding: 0.5rem;
-  //           font-weight: 500;
-  //           transition: 0.4s ease;
-  //           color: #fff;
-  //           font-size: 1rem;
-  //           cursor: pointer;
-  //           border-radius: 5px;
-  //         }
-  //         .cadetBtn:hover {
-  //           background-color: colors.$primaryColor;
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
 }

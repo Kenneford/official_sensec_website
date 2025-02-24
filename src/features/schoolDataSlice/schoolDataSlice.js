@@ -5,7 +5,7 @@ import tokenInterceptor from "../../apiEndPoint/interceptors";
 
 const initialState = {
   schoolDetails: "",
-  allSchoolData: [],
+  sensecSchoolDataInfo: [],
   successMessage: "",
   error: "",
   addSchoolStatus: "",
@@ -30,13 +30,11 @@ export const addSchoolData = createAsyncThunk(
   }
 );
 
-export const fetchAllSchoolData = createAsyncThunk(
-  "SchoolData/fetchAllSchoolData",
-  async ({ rejectWithValue }) => {
+export const fetchSensecSchoolData = createAsyncThunk(
+  "SchoolData/fetchSensecSchoolData",
+  async (rejectWithValue) => {
     try {
-      const res = await axios.get(
-        `${SENSEC_API_ENDPOINT}/school_data/fetch_all`
-      );
+      const res = await axios.get(`${SENSEC_API_ENDPOINT}/school_data/fetch`);
       return res.data;
     } catch (error) {
       console.log(error.response.data);
@@ -80,20 +78,20 @@ const schoolDataSlice = createSlice({
       };
     });
 
-    builder.addCase(fetchAllSchoolData.pending, (state) => {
+    builder.addCase(fetchSensecSchoolData.pending, (state) => {
       return { ...state, fetchSchoolDataStatus: "pending" };
     });
-    builder.addCase(fetchAllSchoolData.fulfilled, (state, action) => {
+    builder.addCase(fetchSensecSchoolData.fulfilled, (state, action) => {
       if (action.payload) {
         return {
           ...state,
-          allSchoolData: action.payload.sensecSchoolData,
+          sensecSchoolDataInfo: action.payload.sensecSchoolData,
           fetchSuccessMessage: action.payload.successMessage,
           fetchSchoolDataStatus: "success",
         };
       } else return state;
     });
-    builder.addCase(fetchAllSchoolData.rejected, (state, action) => {
+    builder.addCase(fetchSensecSchoolData.rejected, (state, action) => {
       return {
         ...state,
         fetchSchoolDataStatus: "rejected",
@@ -104,6 +102,7 @@ const schoolDataSlice = createSlice({
 });
 
 export const { resetAddSchoolData } = schoolDataSlice.actions;
-export const getSensecSchoolData = (state) => state.schoolData.allSchoolData;
+export const getSensecSchoolData = (state) =>
+  state.schoolData.sensecSchoolDataInfo;
 
 export default schoolDataSlice.reducer;

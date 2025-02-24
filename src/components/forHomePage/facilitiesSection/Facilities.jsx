@@ -22,13 +22,14 @@ export default function FacilitiesSection() {
             <Box className="facilitiesLeft">
               <p>
                 In terms of facilities, Senya Senior High School is equipped
-                with <span style={{ fontWeight: "500" }}>classrooms</span>, an
+                with <span style={{ fontWeight: "500" }}>classrooms</span>, an{" "}
                 <span style={{ fontWeight: "500" }}>ICT lab</span>, a{" "}
                 <span style={{ fontWeight: "500" }}>library</span>, and a{" "}
                 <span style={{ fontWeight: "500" }}>dining hall</span>. In{" "}
                 <span style={{ fontWeight: "500" }}>2016</span>, a borehole was
                 constructed to provide a reliable water source for the
-                boys&apos; dormitory. More recently, in February 2025,{" "}
+                boys&apos; dormitory. More recently, in{" "}
+                <span style={{ fontWeight: "500" }}>February 2025</span>,{" "}
                 <span style={{ fontWeight: "500" }}>Kosmos Energy Ghana</span>{" "}
                 donated a{" "}
                 <span style={{ fontWeight: "500" }}>fully equipped clinic</span>{" "}

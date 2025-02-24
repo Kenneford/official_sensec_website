@@ -13,16 +13,15 @@ import {
 } from "../../../../../../muiStyling/muiStyling";
 import {
   addSchoolData,
-  fetchAllSchoolData,
-  getSensecSchoolData,
   resetAddSchoolData,
 } from "../../../../../../features/schoolDataSlice/schoolDataSlice";
 import LoadingProgress from "../../../../../pageLoading/LoadingProgress";
 import { TaskAlt } from "@mui/icons-material";
 import SmallFooter from "../../../../../footer/SmallFooter";
+import { FetchSensecSchoolData } from "../../../../../../data/blogs/FetchSensecSchoolData";
 
 export function CreateSchoolInfoData() {
-  const allSensecData = useSelector(getSensecSchoolData);
+  const sensecSchoolData = FetchSensecSchoolData();
   const {
     successMessage,
     error,
@@ -68,33 +67,26 @@ export function CreateSchoolInfoData() {
     useState("");
   //TINYMCE Editr ref
   const editorRef = useRef(null);
-  const [schoolData, setSchoolData] = useState({
-    nameOfSchool: nameOfSchool ? nameOfSchool : "",
-    slogan: sloganOfSchool ? sloganOfSchool : "",
-    greetings: greetingsOfSchool ? greetingsOfSchool : "",
-    schoolLogo: loadLogo ? loadLogo : null,
-    whoWeAre: whoWeAreText ? whoWeAreText : "",
-    academicExcellence: academicExcellenceText ? academicExcellenceText : "",
-    anthem: anthemText ? anthemText : "",
-    visionStatement: visionText ? visionText : "",
-    mission: missionText ? missionText : "",
-    achievementText: achievementText ? achievementText : "",
-    coreValues: coreValuesText ? coreValuesText : "",
-    history: historyText ? historyText : "",
-  });
+  const [schoolData, setSchoolData] = useState();
+  console.log(schoolData);
 
   const handleLogoFileUpload = (e) => {
     if (e.target.files.length !== 0) {
       setSchoolData({ ...schoolData, [e.target.name]: e.target.files[0] });
     }
-    const reader = new FileReader();
-    reader.readAsDataURL(e.target.files[0]);
-    reader.onloadend = () => {
-      setLoadLogo(reader.result);
-    };
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.readAsDataURL(e.target.files[0]);
+      reader.onloadend = () => {
+        setLoadLogo(reader.result);
+        localStorage.setItem("sensecLogo", reader.result);
+      };
+    }
   };
 
-  const canCreate = schoolData?.logo;
+  const canCreate = Boolean(loadLogo);
+
   const createSchoolData = (e) => {
     e.preventDefault();
     const data = {
@@ -106,7 +98,7 @@ export function CreateSchoolInfoData() {
       academicExcellence: schoolData.academicExcellence,
       anthem: schoolData.anthem,
       achievementText: schoolData.achievementText,
-      visionStatement: schoolData.vision,
+      visionStatement: schoolData.visionStatement,
       mission: schoolData.mission,
       coreValues: schoolData.coreValues,
       history: schoolData.history,
@@ -114,6 +106,42 @@ export function CreateSchoolInfoData() {
     dispatch(addSchoolData(data));
   };
 
+  useEffect(() => {
+    const sensecLogo = localStorage.getItem("sensecLogo");
+    if (sensecLogo) {
+      setLoadLogo(sensecLogo);
+    }
+  }, []);
+  //
+  useEffect(() => {
+    setSchoolData({
+      nameOfSchool: nameOfSchool ? nameOfSchool : "",
+      slogan: sloganOfSchool ? sloganOfSchool : "",
+      greetings: greetingsOfSchool ? greetingsOfSchool : "",
+      schoolLogo: loadLogo ? loadLogo : null,
+      whoWeAre: whoWeAreText ? whoWeAreText : "",
+      academicExcellence: academicExcellenceText ? academicExcellenceText : "",
+      anthem: anthemText ? anthemText : "",
+      visionStatement: visionText ? visionText : "",
+      mission: missionText ? missionText : "",
+      achievementText: achievementText ? achievementText : "",
+      coreValues: coreValuesText ? coreValuesText : "",
+      history: historyText ? historyText : "",
+    });
+  }, [
+    nameOfSchool,
+    sloganOfSchool,
+    greetingsOfSchool,
+    loadLogo,
+    whoWeAreText,
+    academicExcellenceText,
+    anthemText,
+    visionText,
+    missionText,
+    achievementText,
+    coreValuesText,
+    historyText,
+  ]);
   // Handle input errors
   useEffect(() => {
     if (anthemText) {
@@ -146,10 +174,6 @@ export function CreateSchoolInfoData() {
     coreValuesText,
     historyText,
   ]);
-  // Fetch School Data
-  useEffect(() => {
-    dispatch(fetchAllSchoolData());
-  }, [dispatch]);
 
   useEffect(() => {
     if (addSchoolStatus === "pending") {

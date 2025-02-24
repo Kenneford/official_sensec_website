@@ -11,8 +11,12 @@ import {
   FetchAllApprovedStudents,
   FetchAllGraduatedStudents,
 } from "../../../data/students/FetchAllStudents";
+import Parser from "html-react-parser";
+import { FetchSensecSchoolData } from "../../../data/blogs/FetchSensecSchoolData";
 
 export function Achievements() {
+  const sensecSchoolData = FetchSensecSchoolData();
+  console.log(sensecSchoolData);
   const allPrograms = FetchAllProgrammes();
   const allApprovedStudents = FetchAllApprovedStudents();
   const alumni = FetchAllGraduatedStudents();
@@ -65,75 +69,7 @@ export function Achievements() {
               </Box>
               {/* </Box> */}
               <Box className="achievementRight">
-                {/* <h5>Various Achievements</h5> */}
-                <p>
-                  SENSEC has achieved numerous accolades in academic and
-                  co-curricular activities. The school boasts of experienced
-                  teaching and non-teaching staff who are dedicated to ensuring
-                  that students achieve academic and co-curricular success.
-                  Academically, the school produces students who gain admissions
-                  into the various tertiary institutions in Ghana and abroad.
-                </p>
-                <p>
-                  In the field of sports, the school for several years excel in
-                  many disciplines. In 2023 alone, the school placed first in
-                  the Zone 6 Athletics Competitions. The other participating
-                  schools include, Winneba Senior High School, Awutu-Winton
-                  Senior High School, Fettehman Senior High School, T.I
-                  Ahamadiyya Senior High School, Potsin, Uncle Rich Senior High
-                  School and Zion Girls’ Senior High School, Winneba.
-                </p>
-              </Box>
-              <Box>
-                <p>
-                  In the ball games held at Awutu-Winton SHS, SENSEC came first
-                  in boys football competition, first in the boys volley ball
-                  competition and third in the girls volley ball competition and
-                  third in the girls’ netball competition.
-                </p>
-                <p>
-                  SENSEC successfully defended its title in the inter-school
-                  District 67th Independence Day Debate competitions held on
-                  Wednesday 22nd November 2023 at the premises of the Awutu
-                  Senya District Education Office. The other participating
-                  schools include; Awutu Winton Senior High School, Bawjiase
-                  Community Senior High Technical School, Bontrase Senior High
-                  School and Obrachire Senior High Technical School.{" "}
-                </p>
-                <p>
-                  This feat qualified SENSEC for the Zonal Debate Competition
-                  held on January 4, 2024 at Winneba SHS. At the Zonal
-                  competition too, SENSEC chalked the ultimate prize by being
-                  adjudged the best Debating School and therefore qualified to
-                  represent the zone at the regional level. The Regional or
-                  Super Zonal Debate competition took place on the 26th January,
-                  2024 at St. Augustine College in Cape-Coast. Here too, the
-                  Debate team of SENSEC did exceptionally well by placing
-                  second, losing out narrowly to Mfantsiman SHS who took the
-                  ultimate prize.
-                </p>
-                <p>
-                  SENSEC also placed first runners-up in the Awutu Senya
-                  District’s 66th Independence Day Quiz Competition with
-                  Obrachire SHTS coming first. In the District’s 67th
-                  Independence Day Quiz, SENSEC won the competition and
-                  represented the District at the Zonal level. SENSEC Quiz team
-                  failed to progress from the Zonal level.
-                </p>
-                <p>
-                  In September 2023, SENSEC won the maiden edition of the Ahoba
-                  Kese Festival Science, Mathematics and General Knowledge quiz
-                  competition organised by the Gomoa Fetteh Traditional Council.
-                  T.I Ahamadiyya SHS, Potsin, came second. The other
-                  participants are Hope College, Awutu Winton Senior High School
-                  and Fettehman SHS. SENSEC was presented with a trophy and cash
-                  prize of 700 cedis.
-                </p>
-                <p>
-                  When your ward/child is enrolled at Sensec, he/she shall
-                  benefit from a holistic lifelong education that will empowers
-                  them to effect positive change in their lives and community.
-                </p>
+                {Parser(`${sensecSchoolData[0]?.achievements?.text}`)}
               </Box>
             </Box>
             <Box m={"1rem 0"}>
