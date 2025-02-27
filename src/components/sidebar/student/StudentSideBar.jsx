@@ -29,14 +29,6 @@ import {
   Tv,
 } from "@mui/icons-material";
 // import "./adminSidebar.scss";
-import {
-  AccountLinks,
-  ActionsLinks,
-  AdminAttendanceLinks,
-  AssessmentLinks,
-  AdminDashboardLinks,
-  UsersLinks,
-} from "../../lazyLoading/auth/AuthLazyComponents";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchAllUsers,
@@ -44,28 +36,31 @@ import {
   getAuthUser,
 } from "../../../features/auth/authSlice";
 import { useEffect } from "react";
-import { FetchAllProgrammes } from "../../../data/programme/FetchProgrammeData";
+import {
+  FetchAllFlattenedProgrammes,
+  FetchAllProgrammes,
+} from "../../../data/programme/FetchProgrammeData";
 import { FetchAllUsers } from "../../../data/allUsers/FetchAllUsers";
+import { StudentDashboardLinks } from "./student.sidebar.links/StudentDashboardLinks";
+import { StudentAccountLinks } from "./student.sidebar.links/StudentAccountLinks";
+import { StudentAttendanceLinks } from "./student.sidebar.links/StudentAttendanceLinks";
+import { StudentReportLinks } from "./student.sidebar.links/StudentReportLinks";
 
-export function StudentSideBar({
-  isSidebarOpen,
-  toggleSidebar,
-  setCurrentAction,
-  setCurrentLink,
-  navbar,
-}) {
+export function StudentSideBar({ hovered, currentTerm, currentAcademicYear }) {
   const dispatch = useDispatch();
   const authUser = useSelector(getAuthUser);
   const allUsers = FetchAllUsers();
-  const allProgrammes = FetchAllProgrammes();
+  const allProgrammes = FetchAllFlattenedProgrammes();
   // Find logged in student
   const studentInfo = allUsers?.find(
     (user) => user?.uniqueId === authUser?.uniqueId
   );
   // Find student's programme
   const studentProgrammeInfo = allProgrammes?.find(
-    (programme) => programme?._id === studentInfo?.studentSchoolData?.program
+    (programme) =>
+      programme?._id === studentInfo?.studentSchoolData?.program?.programId
   );
+  console.log(authUser);
   console.log(allProgrammes);
   console.log(studentProgrammeInfo);
 
@@ -75,7 +70,7 @@ export function StudentSideBar({
 
   return (
     <>
-      {/* Button to toggle sidebar */}
+      {/* User Info */}
       <Box
         sx={{
           backgroundColor: "#292929",
@@ -89,7 +84,19 @@ export function StudentSideBar({
           borderBottom: "2px solid #02b202",
         }}
       >
-        <IconButton
+        <Box
+          sx={{
+            textAlign: "center",
+            color: "#696969",
+            pt: 1,
+            fontSize: "1rem",
+          }}
+        >
+          <span>{currentTerm?.name}</span>
+          {"-"}
+          <span>{currentAcademicYear?.yearRange}</span>
+        </Box>
+        {/* <IconButton
           sx={{
             position: "absolute",
             top: ".5rem",
@@ -111,23 +118,28 @@ export function StudentSideBar({
               }}
             />
           )}
-        </IconButton>
+        </IconButton> */}
         {/* User Info */}
         <Box className="userInfo">
           <img src={authUser?.personalInfo?.profilePicture?.url} alt="" />
-          {isSidebarOpen && (
-            <Collapse
-              in={isSidebarOpen}
+          {hovered && (
+            <Box
               className="infoText"
               //   sx={{
               //     transition: "0.5s ease", // Smooth transition when toggling
               //   }}
             >
               <span>{authUser?.personalInfo?.fullName}</span>
-              {authUser && (
-                <Typography>({studentProgrammeInfo?.name})</Typography>
+              {studentProgrammeInfo && (
+                <Typography>
+                  [{" "}
+                  {studentProgrammeInfo?.divisionName
+                    ? studentProgrammeInfo?.divisionName
+                    : studentProgrammeInfo?.programmeName}{" "}
+                  ]
+                </Typography>
               )}
-            </Collapse>
+            </Box>
           )}
         </Box>
       </Box>
@@ -135,7 +147,7 @@ export function StudentSideBar({
         component={"div"}
         id="sidebarContentWrap"
         sx={{
-          padding: isSidebarOpen ? "0 1rem" : "0 .5rem",
+          padding: hovered ? "0 1rem" : "0 .5rem",
         }}
       >
         {/* Sidebar content */}
@@ -146,56 +158,12 @@ export function StudentSideBar({
           }}
         >
           {/* Add content that overflows */}
-          <div className="sidebarContentLinksWrap">
-            {/* Dashboard */}
-            <>
-              <AdminDashboardLinks
-                isSidebarOpen={isSidebarOpen}
-                setCurrentAction={setCurrentAction}
-                setCurrentLink={setCurrentLink}
-              />
-            </>
-            {/* Actions */}
-            <>
-              <ActionsLinks
-                isSidebarOpen={isSidebarOpen}
-                setCurrentAction={setCurrentAction}
-                setCurrentLink={setCurrentLink}
-              />
-            </>
-            {/* Users */}
-            <>
-              <UsersLinks
-                isSidebarOpen={isSidebarOpen}
-                setCurrentAction={setCurrentAction}
-                setCurrentLink={setCurrentLink}
-              />
-            </>
-            {/* Attendance */}
-            <>
-              <AdminAttendanceLinks
-                isSidebarOpen={isSidebarOpen}
-                setCurrentAction={setCurrentAction}
-                setCurrentLink={setCurrentLink}
-              />
-            </>
-            {/* Assessment */}
-            <>
-              <AssessmentLinks
-                isSidebarOpen={isSidebarOpen}
-                setCurrentAction={setCurrentAction}
-                setCurrentLink={setCurrentLink}
-              />
-            </>
-            {/* Account */}
-            <>
-              <AccountLinks
-                isSidebarOpen={isSidebarOpen}
-                setCurrentAction={setCurrentAction}
-                setCurrentLink={setCurrentLink}
-              />
-            </>
-          </div>
+          <Box className="sidebarContentLinksWrap">
+            <StudentDashboardLinks hovered={hovered} />
+            <StudentAttendanceLinks hovered={hovered} />
+            <StudentReportLinks hovered={hovered} />
+            <StudentAccountLinks hovered={hovered} />
+          </Box>
         </Box>
       </Box>
     </>
@@ -203,9 +171,7 @@ export function StudentSideBar({
 }
 
 StudentSideBar.propTypes = {
-  isSidebarOpen: PropTypes.bool,
-  toggleSidebar: PropTypes.func,
-  setCurrentAction: PropTypes.func,
-  setCurrentLink: PropTypes.func,
-  navbar: PropTypes.bool,
+  hovered: PropTypes.bool,
+  currentTerm: PropTypes.object,
+  currentAcademicYear: PropTypes.object,
 };

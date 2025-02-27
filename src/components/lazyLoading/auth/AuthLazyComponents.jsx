@@ -2,6 +2,16 @@ import PageLoading from "../../pageLoading/PageLoading";
 import lazyWithSuspense from "../LazyLoading";
 
 // For Auth Users
+export const ForgotPassword = lazyWithSuspense(
+  () =>
+    import("../../../pages/auth/resetPassword/ForgotPassword").then(
+      (module) => {
+        return { default: module.ForgotPassword };
+      }
+    ),
+  <PageLoading />,
+  "ForgotPassword"
+);
 export const AuthUserDashboard = lazyWithSuspense(
   () =>
     import("../../../pages/auth/AuthUserDashboard").then((module) => {

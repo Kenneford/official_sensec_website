@@ -1,119 +1,165 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./studentDashboard.scss";
 import { DataGridPro } from "@mui/x-data-grid-pro";
 import { useDemoData } from "@mui/x-data-grid-generator";
-import { Avatar, Box } from "@mui/material";
+import { Avatar, Box, Stack, Typography } from "@mui/material";
 import DataTable from "react-data-table-component";
-
-const fakeStudents = [
-  {
-    firstName: "Evans",
-    lastName: "Osei-Tutu",
-    programme: "Agric Science",
-    classLevel: "Level 100",
-  },
-  {
-    firstName: "Mavis",
-    lastName: "Donkor",
-    programme: "General Arts",
-    classLevel: "Level 200",
-  },
-];
+import { toast } from "react-toastify";
+import NotAuthorized from "../notAuthorized/NotAuthorized";
+import {
+  Outlet,
+  useNavigate,
+  useOutletContext,
+  useParams,
+} from "react-router-dom";
+import { useSelector } from "react-redux";
+import { getAuthUser } from "../../features/auth/authSlice";
+import { NavigationBar } from "../navbar/NavigationBar";
+import {
+  CourseMates,
+  StudentDashboardOverview,
+} from "../lazyLoading/student/StudentsLazyLoadingComponents";
 
 export function StudentDashboard() {
-  const [multiStudents, setMultiStudents] = useState([]);
-  const customUserTableStyle = {
-    headRow: {
-      style: {
-        backgroundColor: "#555",
-        color: "#fff",
-      },
-    },
-    headColumn: {
-      style: {
-        border: "1rem solid red",
-        justifyContent: "center",
-        // color: "#fff",
-      },
-    },
-    headCells: {
-      style: {
-        fontSize: "1.2rem",
-        justifyContent: "center",
-        // borderLeft: ".2rem solid red",
-        // backgroundColor: "blue",
-        // color: "#fff",
-      },
-    },
-    cells: {
-      style: {
-        // backgroundColor: "#cccc",
-        // color: "#fff",
-        paddingTop: ".5rem",
-        paddingBottom: ".5rem",
-        fontSize: "1rem",
-        justifyContent: "center",
-        // marginTop: ".5rem",
-        // marginBottom: ".5rem",
-      },
-    },
-  };
+  const authUser = useSelector(getAuthUser);
 
-  const handleMultiSelect = (state) => {
-    setMultiStudents(state.selectedRows);
-  };
-  const studentDataFormat = [
-    {
-      name: "Image",
-      selector: (row) =>
-        row?.profilePicture ? (
-          <Avatar
-            className="studentImg"
-            src={
-              row?.personalInfo
-                ? row?.personalInfo?.profilePicture?.url
-                : row?.personalInfo?.profilePicture
-            }
-            alt=""
-          />
-        ) : (
-          <Avatar
-            className="studentImg"
-            src={"/assets/femaleAvatar.png"}
-            alt=""
-          />
-        ),
-      sortable: true,
-    },
-    {
-      name: "First Name",
-      selector: (row) => row?.firstName,
-      sortable: true,
-    },
-    { name: "Surname", selector: (row) => row?.lastName },
-    {
-      name: "Program",
-      selector: (row) => (row?.programme ? row?.programme : "---"),
-    },
-    {
-      name: "Level",
-      selector: (row) => (row?.classLevel ? row?.classLevel : "---"),
-    },
-  ];
-  const title = "All Enrolled Students Data";
+  const navigate = useNavigate();
+  const {
+    currentAction,
+    setCurrentAction,
+    currentLink,
+    setCurrentLink,
+    setOpenSubNavLinks,
+    openSubNavLinks,
+    setOpenUserActions,
+    openUserActions,
+    setOpenSignUpActions,
+    openSignUpActions,
+    setOpenMenuLinks,
+    openMenuLinks,
+    isSidebarOpen,
+    openSearchModal,
+    setOpenSearchModal,
+    hovered,
+    setHovered,
+    drawerWidthCollapsed,
+    drawerWidthExpanded,
+  } = useOutletContext();
+  const { studentCurrentAction, studentCurrentLink } = useParams();
+  console.log(studentCurrentLink);
+
+  useEffect(() => {
+    if (!authUser?.roles?.includes("Student")) {
+      toast.error("You are not an authorized user!", {
+        position: "top-right",
+        theme: "light",
+        toastId: "unAuthorizedInfo",
+      });
+      return;
+    }
+  }, [authUser]);
+
+  if (!authUser?.roles?.includes("Student")) {
+    return <NotAuthorized />;
+  }
+
   return (
-    <DataTable
-      title={title}
-      columns={studentDataFormat}
-      data={fakeStudents}
-      customStyles={customUserTableStyle}
-      pagination
-      selectableRows
-      fixedHeader
-      selectableRowsHighlight
-      highlightOnHover
-      responsive
-      onSelectedRowsChange={handleMultiSelect}
-    />
+    <Box>
+      <Stack
+        direction="column"
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#fff",
+          padding: ".3rem 0",
+          height: "4.5rem",
+        }}
+      >
+        <Box
+          onClick={() => {
+            // Click handler
+            localStorage.removeItem("currentNavLink");
+            navigate("/sensec/homepage");
+          }}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            cursor: "pointer",
+          }}
+        >
+          <Avatar
+            src="/assets/sensec-logo1.png"
+            sx={{ alignItems: "center" }}
+          />
+          <Box sx={{ display: "flex", height: "1.5rem" }}>
+            <Typography variant="h6" color="green">
+              Sen
+            </Typography>
+            <Typography variant="h6" color="#aeae0d">
+              sec
+            </Typography>
+          </Box>
+        </Box>
+      </Stack>
+      <Box>
+        <NavigationBar
+          setOpenSubNavLinks={setOpenSubNavLinks}
+          openSubNavLinks={openSubNavLinks}
+          setOpenUserActions={setOpenUserActions}
+          openUserActions={openUserActions}
+          setOpenSignUpActions={setOpenSignUpActions}
+          openSignUpActions={openSignUpActions}
+          setOpenMenuLinks={setOpenMenuLinks}
+          openMenuLinks={openMenuLinks}
+          currentAction={currentAction}
+          setCurrentAction={setCurrentAction}
+          currentLink={currentLink}
+          setCurrentLink={setCurrentLink}
+          isSidebarOpen={isSidebarOpen}
+          openSearchModal={openSearchModal}
+          setOpenSearchModal={setOpenSearchModal}
+        />
+      </Box>
+      <Box
+        sx={{
+          fontSize: "calc(0.7rem + 1vmin)",
+          // marginTop: fixedNavbar ? "20rem" : "",
+        }}
+      >
+        {studentCurrentLink === "Overview" && <StudentDashboardOverview />}
+        {studentCurrentLink === "Coursemates" && <CourseMates />}
+        {studentCurrentLink === "Lecturers" && <StudentDashboardOverview />}
+        {studentCurrentLink === "Weekly_Lectures" && (
+          <StudentDashboardOverview />
+        )}
+        {studentCurrentLink === "Blogs" && <StudentDashboardOverview />}
+      </Box>
+      <Outlet
+        context={{
+          currentAction,
+          setCurrentAction,
+          currentLink,
+          setCurrentLink,
+          setOpenSubNavLinks,
+          openSubNavLinks,
+          setOpenUserActions,
+          openUserActions,
+          setOpenSignUpActions,
+          openSignUpActions,
+          setOpenMenuLinks,
+          openMenuLinks,
+          isSidebarOpen,
+          openSearchModal,
+          setOpenSearchModal,
+          hovered,
+          setHovered,
+          drawerWidthCollapsed,
+          drawerWidthExpanded,
+        }}
+      />
+    </Box>
   );
 }

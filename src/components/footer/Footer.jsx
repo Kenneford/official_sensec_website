@@ -110,7 +110,14 @@ export default function Footer() {
                       })
                     }
                   >
-                    <a href="tel:+491784535757">
+                    <a
+                      href="tel:+491784535757"
+                      style={{
+                        flexWrap: "wrap",
+                        wordBreak: "break-word", // Allows breaking words to wrap text
+                        overflowWrap: "break-word", // Ensures long words like email addresses wrap
+                      }}
+                    >
                       <LocalPhoneIcon style={{ color: "" }} />
                       +233 508 670 598
                     </a>
@@ -122,12 +129,28 @@ export default function Footer() {
                     onClick={handleWhatsAppCallClick}
                   >
                     <WhatsAppIcon style={{ color: "rgb(25, 173, 30)" }} />
-                    <p>+233 245 940 586</p>
+                    <p
+                      style={{
+                        flexWrap: "wrap",
+                        wordBreak: "break-word", // Allows breaking words to wrap text
+                        overflowWrap: "break-word", // Ensures long words like email addresses wrap
+                      }}
+                    >
+                      +233 245 940 586
+                    </p>
                   </button>
                 </span>
                 <span>
                   <MailOutlineIcon style={{ color: "" }} />
-                  <p>sensec@gmail.com</p>
+                  <p
+                    style={{
+                      flexWrap: "wrap",
+                      wordBreak: "break-word", // Allows breaking words to wrap text
+                      overflowWrap: "break-word", // Ensures long words like email addresses wrap
+                    }}
+                  >
+                    sensec@gmail.com
+                  </p>
                 </span>
               </div>
               <div className="socials">

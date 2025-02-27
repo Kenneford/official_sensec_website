@@ -83,7 +83,7 @@ export function SideBar({
             hovered={hovered}
           />
         )}
-        {authUser?.roles?.includes("student") && (
+        {authUser?.roles?.includes("Student") && (
           <StudentSideBar
             toggleSidebar={toggleSidebar}
             setCurrentAction={setCurrentAction}

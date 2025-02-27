@@ -12,7 +12,7 @@ import { Box, Button } from "@mui/material";
 import { verifyUser } from "../../../features/auth/authSlice";
 import UserDataNotFound from "../../userNotFound/UserDataNotFound";
 
-export function VerificationTimeOut() {
+export function VerifiedUser() {
   const allUsers = FetchAllUsers();
 
   const currentYear = new Date().getFullYear();
@@ -34,24 +34,12 @@ export function VerificationTimeOut() {
     setGoToSignUpLoadingComplete(false);
     setTimeout(() => {
       setGoToSignUpLoadingComplete(true);
-      dispatch(verifyUser({ userId: uniqueId, emailToken }));
     }, 3000);
     setTimeout(() => {
       localStorage.removeItem("userToken");
-      if (signedUpUserFound?.studentStatusExtend) {
-        navigate("/sensec/sign_up/students");
-      } else {
-        navigate("/sensec/sign_up/staffs");
-      }
+      navigate("/sensec/login_options");
     }, 6000);
   };
-
-  useEffect(() => {
-    // Delete user's old signup info on page navigation
-    return () => {
-      dispatch(verifyUser({ userId: uniqueId, emailToken }));
-    };
-  }, [dispatch, emailToken, uniqueId]);
 
   if (!signedUpUserFound) {
     return <UserDataNotFound dataType={"User"} />;
@@ -88,7 +76,7 @@ export function VerificationTimeOut() {
             padding: { xs: "1rem .5rem", sm: "1rem" },
           }}
         >
-          <h1>Verification Expired!</h1>
+          <h1>Verified User</h1>
           <Box className="imageWrap">
             {signedUpUserFound && (
               <img
@@ -119,10 +107,10 @@ export function VerificationTimeOut() {
             }}
           >
             <p>
-              Your verification token has expired. Kindly sign up again and
-              verify your email to activate a new user account.
+              Your account has been verified. Kindly go to the login options and
+              select an option to login.
             </p>
-            <p className="thanks">Go To Sign Up👇🏾</p>
+            <p className="thanks">Let&apos;s go👇🏾</p>
           </Box>
           <Box display={"flex"} justifyContent={"center"} mb={2}>
             <Button

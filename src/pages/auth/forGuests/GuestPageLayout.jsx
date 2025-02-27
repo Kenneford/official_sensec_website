@@ -14,6 +14,7 @@ import {
   PageNotFound,
 } from "../../../components/lazyLoading/LazyComponents";
 import {
+  ForgotPassword,
   Login,
   LoginOptions,
   SignUpContainer,
@@ -21,6 +22,8 @@ import {
 } from "../../../components/lazyLoading/auth/AuthLazyComponents";
 import SearchForm from "../../../components/searchForm/SearchForm";
 import { NavigationBar } from "../../../components/navbar/NavigationBar";
+import { Blogs } from "../../../components/lazyLoading/admin/AdminLazyLoadingComponents";
+import SchoolFacilities from "../../facilities/SchoolFacilities";
 
 export function GuestPageLayout() {
   const { currentGuestPage, uniqueId } = useParams();
@@ -126,6 +129,9 @@ export function GuestPageLayout() {
       {location?.pathname === "/sensec/login" && <Login />}
       {location?.pathname === "/sensec/login_options" && <LoginOptions />}
       {location?.pathname === "/sensec/new_employment" && <EmploymentForm />}
+      {location?.pathname === "/sensec/facilities" && <SchoolFacilities />}
+      {location?.pathname === "/sensec/blogs" && <Blogs />}
+      {location?.pathname === "/sensec/forgot_password" && <ForgotPassword />}
       {/* {location?.pathname ===
         `/sensec/sign_up/partners/${signUpId}/successful` && (
         <SignUpSuccessPage />

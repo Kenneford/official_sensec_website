@@ -84,10 +84,10 @@ const navbarLinks = [
     name: "contact",
     path: "/sensec/contact#contactPage",
   },
-  {
-    name: "blog",
-    path: "/sensec/blogs#blogsPage",
-  },
+  // {
+  //   name: "blog",
+  //   path: "/sensec/blogs#blogsPage",
+  // },
   {
     name: "others",
     path: "#",
@@ -142,8 +142,8 @@ export function NavigationBar({
       path: {
         admin: `/sensec/users/${authUser?.uniqueId}/admin/Dashboard/Overview`,
         lecturer: `/sensec/users/${authUser?.uniqueId}/lecturer/Dashboard/Overview`,
-        nt_Staff: `/sensec/users/${authUser?.uniqueId}/nt_staff#staff`,
-        student: `/sensec/users/${authUser?.uniqueId}/student#student`,
+        nt_Staff: `/sensec/users/${authUser?.uniqueId}/nt_staff/Dashboard/Overview`,
+        student: `/sensec/users/${authUser?.uniqueId}/student/Dashboard/Overview`,
       },
     },
     // {
@@ -169,10 +169,10 @@ export function NavigationBar({
       name: "Contact",
       path: "/sensec/contact#contactPage",
     },
-    {
-      name: "Blog",
-      path: "/sensec/blogs#blogsPage",
-    },
+    // {
+    //   name: "Blog",
+    //   path: "/sensec/blogs#blogsPage",
+    // },
     {
       name: "Check Placement",
       path: "/sensec/students/enrollment/placement_check",
@@ -320,9 +320,10 @@ export function NavigationBar({
                 sx={{
                   display: { xs: "block", sm: "none" },
                   fontSize: { xs: "1.5", md: "2rem" },
+                  cursor: "pointer",
                 }}
               />
-              {authUser ? (
+              {/* {authUser ? (
                 <Box
                   component={"button"}
                   onClick={() => setOpenSearchModal(true)}
@@ -366,7 +367,7 @@ export function NavigationBar({
                     handleEscapeKey={handleEscapeKey}
                   />
                 </Box>
-              )}
+              )} */}
             </Box>
           ) : (
             <Box display={"flex"} alignItems={"center"}>
@@ -375,9 +376,10 @@ export function NavigationBar({
                 sx={{
                   display: { xs: "block", sm: "none" },
                   fontSize: { xs: "1.5", md: "2rem" },
+                  cursor: "pointer",
                 }}
               />
-              {!authUser ? (
+              {/* {!authUser ? (
                 <Box
                   component={"button"}
                   onClick={() => setOpenSearchModal(true)}
@@ -421,7 +423,7 @@ export function NavigationBar({
                     handleEscapeKey={handleEscapeKey}
                   />
                 </Box>
-              )}
+              )} */}
             </Box>
           )}
           <Box display={isScrolled && isDashboard ? "none" : "block"}>
@@ -720,7 +722,8 @@ export function NavigationBar({
                   )}
                 </Box>
               ))}
-              <Box
+              {/* Search Box */}
+              {/* <Box
                 component={"button"}
                 onClick={() => setOpenSearchModal(true)}
                 bgcolor={"transparent"}
@@ -739,7 +742,7 @@ export function NavigationBar({
                 open={openSearchModal}
                 onClose={() => setOpenSearchModal(false)}
                 handleEscapeKey={handleEscapeKey}
-              />
+              /> */}
             </>
           </Box>
         </Box>

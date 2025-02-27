@@ -19,7 +19,7 @@ import Redirection from "../../../components/pageLoading/Redirection";
 import { FetchAllUsers } from "../../../data/allUsers/FetchAllUsers";
 import { Helmet } from "react-helmet-async";
 
-export default function ForgotPassword() {
+export function ForgotPassword() {
   const {
     currentAction,
     setCurrentAction,
@@ -160,73 +160,6 @@ export default function ForgotPassword() {
           href="https://www.senyashs.com/assets/sensec-logo1.png"
         />
       </Helmet>
-      {/* School Logo */}
-      <Box
-        direction="column"
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#fff",
-          padding: ".3rem 0",
-          height: "4.5rem",
-        }}
-      >
-        <Box
-          onClick={() => {
-            // Click handler
-            localStorage.removeItem("currentNavLink");
-            navigate("/sensec/homepage");
-          }}
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            cursor: "pointer",
-          }}
-        >
-          <Avatar
-            src="/assets/sensec-logo1.png"
-            sx={{ alignItems: "center" }}
-          />
-          <Box sx={{ display: "flex", height: "1.5rem" }}>
-            <Typography variant="h6" color="green">
-              Sen
-            </Typography>
-            <Typography variant="h6" color="#aeae0d">
-              sec
-            </Typography>
-          </Box>
-        </Box>
-      </Box>
-      {/* Main navbar links */}
-      <Box
-        sx={{
-          position: "sticky",
-          top: 0,
-          backgroundColor: "#fff",
-          padding: 0,
-          zIndex: 3,
-        }}
-      >
-        <NavigationBar
-          setOpenSubNavLinks={setOpenSubNavLinks}
-          openSubNavLinks={openSubNavLinks}
-          setOpenUserActions={setOpenUserActions}
-          openUserActions={openUserActions}
-          setOpenSignUpActions={setOpenSignUpActions}
-          openSignUpActions={openSignUpActions}
-          setOpenMenuLinks={setOpenMenuLinks}
-          openMenuLinks={openMenuLinks}
-          currentAction={currentAction}
-          setCurrentAction={setCurrentAction}
-          currentLink={currentLink}
-          setCurrentLink={setCurrentLink}
-          openSearchModal={openSearchModal}
-          setOpenSearchModal={setOpenSearchModal}
-        />
-      </Box>
       {!requestSuccessful && (
         <Box
           sx={{

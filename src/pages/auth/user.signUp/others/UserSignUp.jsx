@@ -16,23 +16,17 @@ import {
   Checkbox,
   FormControlLabel,
   Grid,
-  MenuItem,
   Typography,
 } from "@mui/material";
 import { CustomTextField } from "../../../../muiStyling/muiStyling";
 import {
-  fetchAllUsers,
   getAllUsers,
+  getAuthUser,
   resetSignUpState,
   userSignUp,
 } from "../../../../features/auth/authSlice";
 import Redirection from "../../../../components/pageLoading/Redirection";
 import LoadingProgress from "../../../../components/pageLoading/LoadingProgress";
-import {
-  fetchAllClassSections,
-  getAllClassSections,
-} from "../../../../features/academics/classSectionSlice";
-import { FetchAllProgrammes } from "../../../../data/programme/FetchProgrammeData";
 import { FetchAllUsers } from "../../../../data/allUsers/FetchAllUsers";
 import { Helmet } from "react-helmet-async";
 
@@ -43,9 +37,8 @@ export function UserSignUp() {
   console.log(signUpAction);
 
   // Getting data from redux state
+  const authUser = FetchAllUsers(getAuthUser);
   const allUsers = FetchAllUsers(getAllUsers);
-  const allProgrammes = FetchAllProgrammes();
-  const allClassSections = useSelector(getAllClassSections);
 
   // Redux state management
   const { signUpStatus, successMessage, error } = useSelector(
@@ -61,8 +54,6 @@ export function UserSignUp() {
 
   // Input values error state handling
   const [uniqueIDInputError, setUniqueIDInputError] = useState(false);
-  const [programmeInputError, setProgrammeInputError] = useState(false);
-  const [classInputError, setClassInputError] = useState(false);
   const [userNameInputError, setUserNameInputError] = useState(false);
   const [passwordInputError, setPasswordInputError] = useState(false);
   const [confirmPasswordInputError, setConfirmPasswordInputError] =
@@ -217,6 +208,23 @@ export function UserSignUp() {
     userFound,
     signUpAction,
   ]);
+
+  // Function to redirect users to their dashboard
+  const getUserRolePath = () => {
+    if (authUser?.roles?.includes("Admin")) return "admin/Dashboard/Overview";
+    if (authUser?.roles?.includes("Lecturer"))
+      return "lecturer/Dashboard/Overview";
+    if (authUser?.roles?.includes("Student"))
+      return "student/Dashboard/Overview";
+    if (authUser?.roles?.includes("NT-Staff"))
+      return "nt_staff/Dashboard/Overview";
+    return "*";
+  };
+  const userRolePath = getUserRolePath();
+
+  if (authUser?.uniqueId) {
+    navigate(`/sensec/users/${authUser?.uniqueId}/${userRolePath}`);
+  }
 
   return (
     <>

@@ -1,42 +1,26 @@
-import { useState, useEffect } from "react";
 import { KeyboardArrowUp } from "@mui/icons-material";
 import { Fab, useTheme, Zoom } from "@mui/material";
+import PropTypes from "prop-types";
 
-export default function ScrollToTopButton() {
-  const [showButton, setShowButton] = useState(false);
-
-  const handleScroll = () => {
-    if (window.scrollY > 300) {
-      setShowButton(true);
-    } else {
-      setShowButton(false);
-    }
-  };
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
-
+export default function ScrollToTopButton({ showButton, scrollToTop }) {
   const theme = useTheme();
 
   return (
     <Zoom in={showButton}>
       <Fab
+        title="Scroll To Top"
         color="success"
-        size="medium"
+        size="small"
         onClick={scrollToTop}
         aria-label="Scroll to top"
         style={{
-          position: "fixed",
-          bottom: theme.spacing(4),
-          right: theme.spacing(4),
+          width: "2.2rem",
+          height: "2.2rem",
+          borderRadius: "100%",
+          transition: "all 0.3s ease-in-out", // Smooth movement
+          // position: "fixed",
+          // bottom: theme.spacing(4),
+          // right: theme.spacing(4),
         }}
       >
         <KeyboardArrowUp />
@@ -44,3 +28,8 @@ export default function ScrollToTopButton() {
     </Zoom>
   );
 }
+
+ScrollToTopButton.propTypes = {
+  showButton: PropTypes.bool,
+  scrollToTop: PropTypes.func,
+};
