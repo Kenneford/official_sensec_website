@@ -11,6 +11,7 @@ import LoadingProgress from "../../pageLoading/LoadingProgress";
 import Redirection from "../../pageLoading/Redirection";
 import { Box, Button } from "@mui/material";
 import { ContainerBox } from "../../../muiStyling/muiStyling";
+import UserDataNotFound from "../../userNotFound/UserDataNotFound";
 
 export function NotSignedUp() {
   const allUsers = FetchAllUsers();
@@ -46,21 +47,7 @@ export function NotSignedUp() {
   };
 
   if (!signedUpUserFound) {
-    return (
-      <h3
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          textAlign: "center",
-          marginTop: "2rem",
-          color: "#cccc",
-        }}
-      >
-        Loading data...
-        {/* <LoadingProgress color={"#696969"} size={"1.3rem"} /> */}
-      </h3>
-    );
+    return <UserDataNotFound dataType={"Facilities"} />;
   }
   return (
     <Box
@@ -105,10 +92,15 @@ export function NotSignedUp() {
             {signedUpUserFound && (
               <p>
                 Hi{" "}
-                <span>
-                  {signedUpUserFound?.personalInfo?.firstName}{" "}
-                  {signedUpUserFound?.personalInfo?.lastName},
-                </span>
+                {!signedUpUserFound?.roles?.includes("Student") && (
+                  <span>
+                    {signedUpUserFound?.personalInfo?.firstName}{" "}
+                    {signedUpUserFound?.personalInfo?.lastName},
+                  </span>
+                )}
+                {signedUpUserFound?.roles?.includes("Student") && (
+                  <span>{signedUpUserFound?.personalInfo?.fullName},</span>
+                )}
               </p>
             )}
           </Box>

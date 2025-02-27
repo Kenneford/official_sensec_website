@@ -9,6 +9,28 @@ export const StudentDashboard = lazyWithSuspense(
   <PageLoading />,
   "StudentDashboardComponent"
 );
+// Student Dashboard Overview
+export const StudentDashboardOverview = lazyWithSuspense(
+  () =>
+    import("../../student/components/overview/StudentDashboardOverview").then(
+      (module) => {
+        return { default: module.StudentDashboardOverview };
+      }
+    ),
+  <PageLoading />,
+  "StudentDashboardOverviewComponent"
+);
+// Student Dashboard Overview
+export const CourseMates = lazyWithSuspense(
+  () =>
+    import("../../student/components/courseMates/CourseMates").then(
+      (module) => {
+        return { default: module.CourseMates };
+      }
+    ),
+  <PageLoading />,
+  "CourseMatesComponent"
+);
 // Student Enrollment Form
 export const EnrollmentForm = lazyWithSuspense(
   () =>

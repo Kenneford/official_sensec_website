@@ -8,6 +8,7 @@ import {
   useParams,
 } from "react-router-dom";
 import {
+  AcademicSemesters,
   AdminAttendance,
   Blogs,
   ClassLevels,
@@ -147,11 +148,12 @@ export function AdminDashboard() {
       >
         {adminCurrentLink === "Overview" && <AdminDashboardOverview />}
         {adminCurrentLink === "Class_Levels" && <ClassLevels />}
+        {adminCurrentLink === "Semesters" && <AcademicSemesters />}
         {adminCurrentLink === "Class_Sections" && <ClassSectionsData />}
         {adminCurrentLink === "Programmes_&_Subjects" && (
           <SchoolProgrammesData />
         )}
-        {adminCurrentLink === "Blogs" && <Blogs />}
+        {/* {adminCurrentLink === "Blogs" && <Blogs />} */}
         {adminCurrentLink === "Create_Data" && !pathname?.includes("new") && (
           <CreateNewData />
         )}

@@ -1,0 +1,242 @@
+.teacherOverviewWrap {
+  font-size: calc(0.7rem + 1vmin);
+  // margin-bottom: 2rem;
+  .content {
+    background-color: #fff;
+    .dashBoardContent {
+      // display: grid;
+      // grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      // gap: 1rem;
+      padding: 1rem 0;
+      margin-bottom: 1rem;
+      .card {
+        font-size: 1em;
+        padding: 1.5rem 1rem;
+        border-radius: 0.4rem;
+        color: #fff;
+        cursor: pointer;
+        a {
+          color: #fff;
+        }
+        // &:nth-child(1) {
+        //   background-color: #292929;
+        // }
+        // &:nth-child(2) {
+        //   background-color: green;
+        // }
+        // &:nth-child(3) {
+        //   background-color: #414141;
+        // }
+        // &:nth-child(4) {
+        //   background-color: #7a0080;
+        // }
+        // &:nth-child(5) {
+        //   background-color: #005780;
+        //   .titleFlex {
+        //     h3 {
+        //       padding-bottom: unset;
+        //     }
+        //     display: flex;
+        //     justify-content: space-between;
+        //     align-items: center;
+        //     padding-bottom: 2rem;
+        //   }
+        //   .pending {
+        //     padding: 0.5rem;
+        //     border-radius: 0.3rem;
+        //     transition: 0.4s ease;
+        //     &:hover {
+        //       background-color: #fff;
+        //       color: #292929;
+        //     }
+        //   }
+        // }
+        // &:nth-child(6) {
+        //   background-color: #4f088d;
+        // }
+        // &:nth-child(7) {
+        //   background-color: #8d0818;
+        // }
+        // &:nth-child(8) {
+        //   background-color: #4e6802;
+        // }
+        h3 {
+          padding-bottom: 2rem;
+          font-size: 0.8em;
+        }
+        .cardInfo {
+          display: flex;
+          justify-content: space-between;
+          .cardInfoIcons {
+            padding-bottom: 1.5rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+            .tvIcon {
+              position: absolute;
+              left: 0.8rem;
+              top: -0.6rem;
+              //   font-size: 2.5rem;
+            }
+          }
+          .cardTotal {
+            font-size: 0.8em;
+          }
+        }
+        .pending {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          h4 {
+            font-weight: 400;
+            font-size: 0.8em;
+          }
+          .cardPending {
+            // font-size: 1.5rem;
+          }
+        }
+      }
+    }
+    .noticeBox {
+      // width: 60%;
+      // margin: auto;
+      .noticeCont {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        // align-items: center;
+        border-top: 1px solid #696969;
+        .h3Cont {
+          position: relative;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          padding: 0 2rem;
+          font-size: 0.8em;
+          h3 {
+            position: absolute;
+            top: -0.8rem;
+            background-color: #fff;
+            padding: 0 1rem;
+            color: #696969;
+            // transform: translate(-50%);
+          }
+        }
+        .inputFields {
+          padding: unset;
+          form {
+            .postImageFileUpload {
+              display: flex;
+              flex-direction: column;
+              //   width: 100%;
+              // margin-left: 16.2rem;
+              justify-content: center;
+              align-items: center;
+              padding-top: 2rem;
+              img {
+                max-width: 22em;
+                min-width: 17em;
+                height: auto;
+                object-fit: cover;
+                border-radius: 0.4rem;
+                // border: 0.2rem solid #292929;
+              }
+              .postImgIcon {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 10em;
+                width: 10em;
+                height: 10em;
+                border-radius: 0.4rem;
+                border: 0.2rem solid #cccc;
+                color: #696969;
+                .postImgIconWrap {
+                  display: flex;
+                  flex-direction: column;
+                  gap: 0.5rem;
+                  justify-content: center;
+                  align-items: center;
+                  cursor: pointer;
+                  p {
+                    font-size: 0.8em;
+                  }
+                }
+              }
+            }
+            .content {
+              width: 100%;
+              //   position: relative;
+              display: flex;
+              flex-direction: column;
+              //   justify-content: center;
+              //   align-items: center;
+              .title {
+                position: relative;
+                // max-width: 70%;
+                margin-top: 2rem;
+                .titleText {
+                  border: 1px solid #cccc;
+                  padding: 0.5rem;
+                  //   width: 100%;
+                  border-radius: 0.4rem;
+                  font-size: 1.5rem;
+                  &:focus {
+                    // width: 70%;
+                  }
+                }
+              }
+              .editor {
+                // position: relative;
+                // max-width: 70%;
+                margin-top: 2rem;
+                .editorTitle {
+                  background-color: #fff;
+                  //   padding: 0 0 0.5rem;
+                  margin-bottom: 0.5rem;
+                  font-weight: 400;
+                  font-size: 1.1em;
+                }
+                .editorBox {
+                  //style to hide tinyMCE logo on the editor
+                  .tox-statusbar {
+                    a,
+                    .tox-statusbar__help-text {
+                      display: none;
+                    }
+                    .tox-statusbar__text-container {
+                      display: flex;
+                      justify-content: space-between;
+                    }
+                  }
+                  .tox-editor-header {
+                    z-index: 0;
+                  }
+                  .tox-notification {
+                    z-index: 0;
+                    position: unset;
+                  }
+                }
+              }
+              .noticeBtn {
+                // width: 70%;
+                height: 3rem;
+                padding: 0.5rem 1rem;
+                font-size: 1.2rem;
+                border-radius: 0.4rem;
+                margin: 1.5rem 0;
+                background-color: green;
+                color: #fff;
+                transition: 0.4s ease-in-out;
+                cursor: pointer;
+                &:hover {
+                  background-color: rgb(6, 168, 6);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

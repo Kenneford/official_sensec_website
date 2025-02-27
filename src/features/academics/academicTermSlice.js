@@ -5,12 +5,15 @@ import tokenInterceptor from "../../apiEndPoint/interceptors";
 
 const initialState = {
   academicTermInfo: "",
+  updatedSemester: "",
   currentAcademicTerm: "",
   allAcademicTerms: [],
   successMessage: "",
+  fetchSuccessMessage: "",
   error: "",
   createStatus: "",
   fetchStatus: "",
+  updateSemesterStatus: "",
 };
 
 export const createAcademicTerm = createAsyncThunk(
@@ -20,6 +23,21 @@ export const createAcademicTerm = createAsyncThunk(
       const res = await tokenInterceptor.post(`/academics/terms/create`, {
         academicTermData,
       });
+      return res.data;
+    } catch (error) {
+      console.log(error.response.data);
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+export const updateAcademicTermStatus = createAsyncThunk(
+  "AcademicTerm/updateAcademicTermStatus",
+  async (data, { rejectWithValue }) => {
+    try {
+      const res = await tokenInterceptor.put(
+        `/academics/terms/${data?.semesterId}/status/set`,
+        data
+      );
       return res.data;
     } catch (error) {
       console.log(error.response.data);
@@ -55,7 +73,16 @@ export const fetchAllAcademicTerms = createAsyncThunk(
 const academicTermSlice = createSlice({
   name: "AcademicTerm",
   initialState,
-  reducers: {},
+  reducers: {
+    resetUpdateSemesterStatusState(state) {
+      return {
+        ...state,
+        updateSemesterStatus: "",
+        successMessage: "",
+        error: "",
+      };
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(createAcademicTerm.pending, (state) => {
       return { ...state, createStatus: "pending" };
@@ -77,6 +104,27 @@ const academicTermSlice = createSlice({
         error: action.payload,
       };
     });
+    // updateAcademicTermStatus
+    builder.addCase(updateAcademicTermStatus.pending, (state) => {
+      return { ...state, updateSemesterStatus: "pending" };
+    });
+    builder.addCase(updateAcademicTermStatus.fulfilled, (state, action) => {
+      if (action.payload) {
+        return {
+          ...state,
+          updatedSemester: action.payload.updatedSemesterStatus,
+          successMessage: action.payload.successMessage,
+          updateSemesterStatus: "success",
+        };
+      } else return state;
+    });
+    builder.addCase(updateAcademicTermStatus.rejected, (state, action) => {
+      return {
+        ...state,
+        updateSemesterStatus: "rejected",
+        error: action.payload,
+      };
+    });
 
     builder.addCase(fetchAllAcademicTerms.pending, (state) => {
       return { ...state, fetchStatus: "pending" };
@@ -86,7 +134,7 @@ const academicTermSlice = createSlice({
         return {
           ...state,
           allAcademicTerms: action.payload.academicTerms,
-          successMessage: action.payload.successMessage,
+          fetchSuccessMessage: action.payload.successMessage,
           fetchStatus: "success",
         };
       } else return state;
@@ -107,7 +155,7 @@ const academicTermSlice = createSlice({
         return {
           ...state,
           currentAcademicTerm: action.payload.currentAcademicTerm,
-          successMessage: action.payload.successMessage,
+          fetchSuccessMessage: action.payload.successMessage,
           fetchStatus: "success",
         };
       } else return state;
@@ -122,6 +170,7 @@ const academicTermSlice = createSlice({
   },
 });
 
+export const { resetUpdateSemesterStatusState } = academicTermSlice.actions;
 export const getAllAcademicTerms = (state) =>
   state.academicTerm.allAcademicTerms;
 export const getCurrentAcademicTerm = (state) =>

@@ -27,18 +27,18 @@ import {
 
 const testimonials = [
   {
-    name: "John Doe",
+    name: "Christabel Doe",
     image:
       "https://images.unsplash.com/photo-1542596768-5d1d21f1cf98?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
-    text: "This is the best service I have ever used!",
+    text: "This is my root!!! One of the good schools in the region no doubt! Nice environment and good tutors who will take their time to nature your ward. Let your child select SENSEC",
     programme: "Web Developer",
     yearGraduated: " 2009",
   },
   {
-    name: "Jane Smith",
+    name: "Susanna Smith",
     image:
       "https://images.unsplash.com/photo-1592275772614-ec71b19e326f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
-    text: "Highly recommend this company!",
+    text: "Senya Senior High is one of the best school in Ghana.",
     programme: "Caterer",
     yearGraduated: " 2003",
   },
@@ -46,15 +46,15 @@ const testimonials = [
     name: "Alex Johnson",
     image:
       "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
-    text: "Incredible experience from start to finish.",
+    text: "Good school and hostel facilities for males.",
     programme: "Lecturer",
     yearGraduated: " 2009",
   },
   {
-    name: "Emily Davis",
+    name: "Elvis Davis",
     image:
       "https://images.unsplash.com/photo-1520341280432-4749d4d7bcf9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
-    text: "Professional and quick!",
+    text: "It's a great place for any Ghanaian student. In fact, one of the best school you can ever find in Mother-Ghana.",
     programme: "Bank Manager",
     yearGraduated: " 2017",
   },
@@ -169,188 +169,16 @@ export default function AlumniTestimonialSection() {
               </span>
             </Box>
             <Box className="testimonialText">
-              <p>{test?.text}</p>
+              <Typography>{test?.text}</Typography>
             </Box>
           </SwiperSlide>
         ))}
-        {/* <SwiperSlide className="testimonial">
-          <Box className="alumniImg">
-            <img
-              src="https://images.unsplash.com/photo-1542596768-5d1d21f1cf98?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"
-              alt=""
-            />
-          </Box>
-          <Box className="alumniInfo">
-            <h5>Jennifer Aboagye</h5>
-            <span>Web Developer (2009)</span>
-          </Box>
-          <Box className="testimonialText">
-            <p>
-              There are many variations of passages of Lorem Ipsum available,
-              but the majority have suffered alteration in some form, by
-              injected humour, or randomised words which don't look even
-              slightly believable. If you are going to use a passage of Lorem
-              Ipsum .
-            </p>
-          </Box>
-        </SwiperSlide>
-        <SwiperSlide className="testimonial">
-          <Box className="alumniImg">
-            <img
-              src="https://images.unsplash.com/photo-1592275772614-ec71b19e326f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"
-              alt=""
-            />
-          </Box>
-          <Box className="alumniInfo">
-            <h5>Millicent Ama Gyamfoah</h5>
-            <span>Caterer (2003)</span>
-          </Box>
-          <Box className="testimonialText">
-            <p>
-              There are many variations of passages of Lorem Ipsum available,
-              but the majority have suffered alteration in some form, by
-              injected humour, or randomised words which don't look even
-              slightly believable. If you are going to use a passage of Lorem
-              Ipsum .
-            </p>
-          </Box>
-        </SwiperSlide>
-        <SwiperSlide className="testimonial">
-          <Box className="alumniImg">
-            <img
-              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"
-              alt=""
-            />
-          </Box>
-          <Box className="alumniInfo">
-            <h5>Benjamin Acquah</h5>
-            <span>Lecturer (2009)</span>
-          </Box>
-          <Box className="testimonialText">
-            <p>
-              There are many variations of passages of Lorem Ipsum available,
-              but the majority have suffered alteration in some form, by
-              injected humour, or randomised words which don't look even
-              slightly believable. If you are going to use a passage of Lorem
-              Ipsum .
-            </p>
-          </Box>
-        </SwiperSlide>
-        <SwiperSlide className="testimonial">
-          <Box className="alumniImg">
-            <img
-              src="https://images.unsplash.com/photo-1520341280432-4749d4d7bcf9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"
-              alt=""
-            />
-          </Box>
-          <Box className="alumniInfo">
-            <h5>Stephen Ansah</h5>
-            <span>Bank Manager (2017)</span>
-          </Box>
-          <Box className="testimonialText">
-            <p>
-              There are many variations of passages of Lorem Ipsum available,
-              but the majority have suffered alteration in some form, by
-              injected humour, or randomised words which don't look even
-              slightly believable. If you are going to use a passage of Lorem
-              Ipsum .
-            </p>
-          </Box>
-        </SwiperSlide> */}
         <Box className="slider-controler">
           <Box className="swiper-button-prev slider-arrow"></Box>
           <Box className="swiper-button-next slider-arrow"></Box>
           <Box className="swiper-pagination"></Box>
         </Box>
       </Swiper>
-      {/* <Footer /> */}
     </Box>
-    // <Swiper
-    //   slidesPerView={2}
-    //   spaceBetween={30}
-    //   autoplay={{ delay: 3000, disableOnInteraction: false }}
-    //   pagination={{ clickable: true }}
-    //   loop={true}
-    //   breakpoints={{
-    //     // When window width is <= 640px, show 1 slide per view
-    //     640: { slidesPerView: 1 },
-    //     // When window width is >= 768px, show 2 slides per view
-    //     768: { slidesPerView: 2 },
-    //   }}
-    // >
-    //   {testimonials.map((testimonial, index) => (
-    //     <SwiperSlide key={index}>
-    //       <Card sx={{ minWidth: 275 }}>
-    //         <CardContent>
-    //           <Grid container spacing={2} alignItems="center">
-    //             <Grid item>
-    //               <Avatar
-    //                 alt={testimonial.name}
-    //                 src={testimonial.image}
-    //                 sx={{ width: 56, height: 56 }}
-    //               />
-    //             </Grid>
-    //             <Grid item xs>
-    //               <Typography variant="h6" component="Box">
-    //                 {testimonial.name}
-    //               </Typography>
-    //               <Typography variant="body2" color="text.secondary">
-    //                 {testimonial.review}
-    //               </Typography>
-    //             </Grid>
-    //           </Grid>
-    //         </CardContent>
-    //       </Card>
-    //     </SwiperSlide>
-    //   ))}
-    // </Swiper>
-    // <Box sx={{ width: "80%", margin: "auto", mt: 5 }}>
-    //   <Slider {...settings}>
-    //     {testimonials.map((_, testimonial) => (
-    //       <Grid container spacing={3} key={testimonial}>
-    //         {testimonials
-    //           .slice(testimonial * 2, testimonial * 2 + 2)
-    //           .map((testimonial) => (
-    //             <Grid item xs={12} md={6} key={testimonial?.name}>
-    //               <Card
-    //                 sx={{ display: "flex", alignItems: "center", padding: 2 }}
-    //               >
-    //                 <Avatar
-    //                   src={testimonial.image}
-    //                   sx={{ width: 80, height: 80, mr: 2 }}
-    //                 />
-    //                 <CardContent>
-    //                   <Typography variant="h6">{testimonial.name}</Typography>
-    //                   <Typography variant="body2">
-    //                     {testimonial.text}
-    //                   </Typography>
-    //                 </CardContent>
-    //               </Card>
-    //             </Grid>
-    //           ))}
-    //       </Grid>
-    //     ))}
-    //   </Slider>
-    // </Box>
-    // <Container sx={{ mt: 5, textAlign: "center" }}>
-    //   <Box
-    //     sx={{
-    //       display: "flex",
-    //       flexDirection: "column",
-    //       alignItems: "center",
-    //       transition: "transform 0.5s ease-in-out",
-    //     }}
-    //   >
-    //     <Avatar
-    //       alt={testimonials[activeIndex].name}
-    //       src={testimonials[activeIndex].image}
-    //       sx={{ width: 150, height: 150, mb: 2 }}
-    //     />
-    //     <Typography variant="h6">{testimonials[activeIndex].name}</Typography>
-    //     <Typography variant="body1" sx={{ mt: 1, maxWidth: 600 }}>
-    //       {testimonials[activeIndex].feedback}
-    //     </Typography>
-    //   </Box>
-    // </Container>
   );
 }

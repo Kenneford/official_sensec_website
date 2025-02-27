@@ -492,6 +492,16 @@ export const SearchAttendance = lazyWithSuspense(
   <PageLoading />,
   "SearchAttendanceComponent"
 );
+export const AcademicSemesters = lazyWithSuspense(
+  () =>
+    import("../../admin/contents/academicSemesters/AcademicSemesters").then(
+      (module) => {
+        return { default: module.AcademicSemesters };
+      }
+    ),
+  <PageLoading />,
+  "AcademicSemestersComponent"
+);
 
 // Admins Assessment Links
 // Admins Account Links

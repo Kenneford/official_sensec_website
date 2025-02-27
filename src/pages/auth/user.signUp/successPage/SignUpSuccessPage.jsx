@@ -181,10 +181,15 @@ export function SignUpSuccessPage() {
                 {signedUpUserFound && (
                   <p>
                     Hi{" "}
-                    <span>
-                      {signedUpUserFound?.personalInfo?.firstName}{" "}
-                      {signedUpUserFound?.personalInfo?.lastName}
-                    </span>
+                    {!signedUpUserFound?.roles?.includes("Student") && (
+                      <span>
+                        {signedUpUserFound?.personalInfo?.firstName}{" "}
+                        {signedUpUserFound?.personalInfo?.lastName},
+                      </span>
+                    )}
+                    {signedUpUserFound?.roles?.includes("Student") && (
+                      <span>{signedUpUserFound?.personalInfo?.fullName},</span>
+                    )}
                   </p>
                 )}
               </Box>

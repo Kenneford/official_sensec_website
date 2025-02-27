@@ -35,7 +35,7 @@ export function OurVision() {
       >
         <Box className="visionWrap" id="vision">
           <Box className="visionCont">
-            <h4>
+            <h4 id="ourVision">
               Vision And Values{" "}
               {authUser?.roles?.includes("Admin") && (
                 <HashLink

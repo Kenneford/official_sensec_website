@@ -3,12 +3,15 @@ import "../../sidebar.scss";
 import PropTypes from "prop-types";
 import {
   AutoStories,
-  CalendarMonth,
   Class,
   Equalizer,
   ExpandLess,
   ExpandMore,
+  ListAltOutlined,
+  NoteAlt,
   RssFeed,
+  SchoolOutlined,
+  SupervisedUserCircle,
   Tv,
 } from "@mui/icons-material";
 import { HashLink, NavHashLink } from "react-router-hash-link";
@@ -21,16 +24,17 @@ import { useSelector } from "react-redux";
 
 const quickLinks = [
   { name: "Overview" },
-  { name: "Class Levels" },
-  { name: "Class Sections" },
-  { name: "Programmes & Subjects" },
-  { name: "Semesters" },
+  { name: "Coursemates" },
+  { name: "Lecturers" },
+  { name: "Weekly Lectures" },
+  // { name: "View Attendance" },
+  // { name: "Holidays" },
   { name: "Blogs" },
 ];
 
-export function AdminDashboardLinks({ hovered }) {
+export function StudentDashboardLinks({ hovered }) {
   const authAdmin = useSelector(getAuthUser);
-  const { adminCurrentLink } = useParams();
+  const { studentCurrentLink } = useParams();
 
   // Set sub-link to expand on page render
   const [openDashBoardLinks, setOpenDashBoardLinks] = useState(true);
@@ -98,28 +102,35 @@ export function AdminDashboardLinks({ hovered }) {
               key={qLink?.name}
               to={`/sensec/users/${
                 authAdmin?.uniqueId
-              }/admin/Dashboard/${qLink?.name?.replace(/ /g, "_")}`}
+              }/student/Dashboard/${qLink?.name?.replace(/ /g, "_")}`}
               smooth
-              title={!hovered ? qLink.name : ""}
+              title={!hovered ? qLink?.name : ""}
               className={
-                qLink.name === adminCurrentLink?.replace(/_/g, " ")
+                qLink?.name === studentCurrentLink?.replace(/_/g, " ")
                   ? "currentAdminSidebarLink"
                   : "notCurrentAdminSidebarLink"
               }
               // onClick={() => {
               //   setCurrentAction("Dashboard");
-              //   setCurrentLink(qLink.name);
+              //   setCurrentLink(qLink?.name);
               // }}
             >
-              {qLink.name === "Overview" && <Tv className="icon" />}
-              {qLink.name === "Class Levels" && <Equalizer className="icon" />}
-              {qLink.name === "Class Sections" && <Class className="icon" />}
-              {qLink.name === "Semesters" && <CalendarMonth className="icon" />}
-              {qLink.name === "Programmes & Subjects" && (
-                <AutoStories className="icon" />
+              {qLink?.name === "Overview" && <Tv className="icon" />}
+              {qLink?.name === "Coursemates" && (
+                <SchoolOutlined className="icon" />
               )}
-              {qLink.name === "Blogs" && <RssFeed className="icon" />}
-              {hovered && <h4>{qLink.name}</h4>}
+              {qLink?.name === "Lecturers" && (
+                <SupervisedUserCircle className="icon" />
+              )}
+              {qLink?.name === "Weekly Lectures" && (
+                <NoteAlt className="icon" />
+              )}
+              {qLink?.name === "View Attendance" && (
+                <ListAltOutlined className="icon" />
+              )}
+              {qLink?.name === "Holidays" && <Equalizer className="icon" />}
+              {qLink?.name === "Blogs" && <RssFeed className="icon" />}
+              {hovered && <h4>{qLink?.name}</h4>}
             </HashLink>
           ))}
         </div>
@@ -128,6 +139,6 @@ export function AdminDashboardLinks({ hovered }) {
   );
 }
 
-AdminDashboardLinks.propTypes = {
+StudentDashboardLinks.propTypes = {
   hovered: PropTypes.bool,
 };

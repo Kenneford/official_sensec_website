@@ -94,7 +94,7 @@ export function WhoWeAre() {
                 </h4>
                 <span>{sensecSchoolData[0]?.greetings}</span>
               </Box>
-              <h4 id="anthem">
+              <h4 id="whoWeAre">
                 Who We Are{" "}
                 {authUser?.roles?.includes("Admin") && (
                   <HashLink

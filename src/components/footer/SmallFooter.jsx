@@ -3,7 +3,6 @@ import "./smallFooter.scss";
 
 export default function SmallFooter() {
   return (
-    // <Box id="smallFooterWrap">
     <Box className="smallFooterContent">
       <p>
         Copyright &copy;2023{" "}
@@ -18,8 +17,6 @@ export default function SmallFooter() {
         ></span>
         All Rights Reserved.
       </p>
-      {/* <p>All Rights Reserved.</p> */}
     </Box>
-    // </Box>
   );
 }

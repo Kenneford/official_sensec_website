@@ -35,7 +35,7 @@ export function OurHistory() {
       >
         <Box className="historyWrap" id="history">
           <Box className="historyCont">
-            <h4>
+            <h4 id="ourHistory">
               Our History{" "}
               {authUser?.roles?.includes("Admin") && (
                 <HashLink

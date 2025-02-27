@@ -24,8 +24,10 @@ import {
   VerificationTimeOut,
 } from "../../lazyLoading/auth/AuthLazyComponents";
 import { FetchAllUsers } from "../../../data/allUsers/FetchAllUsers";
-import { Box, Button, Grid } from "@mui/material";
+import { Box, Button, Grid, Typography } from "@mui/material";
 import PageLoading from "../../pageLoading/PageLoading";
+import UserDataNotFound from "../../userNotFound/UserDataNotFound";
+import { VerifiedUser } from "./VerifiedUser";
 
 export function ConfirmVerification() {
   const dispatch = useDispatch();
@@ -150,12 +152,15 @@ export function ConfirmVerification() {
   }, [dispatch, navigate, verifyEmailStatus, error, successMessage, user]);
 
   if (!user) {
-    return <PageLoading />;
+    return <UserDataNotFound />;
   }
   return (
     <>
+      {!verificationData && user?.signedUp && user?.isVerified && (
+        <VerifiedUser />
+      )}
       {checkDataExpiry && <VerificationTimeOut />}
-      {!verificationData && <NotSignedUp />}
+      {!verificationData && !user?.signedUp && <NotSignedUp />}
       {!checkDataExpiry && verificationData && user && (
         <Box
           sx={{
@@ -196,10 +201,15 @@ export function ConfirmVerification() {
                 )}
                 <p>
                   Hi{" "}
-                  <span>
-                    {user?.personalInfo?.firstName}{" "}
-                    {user?.personalInfo?.lastName},
-                  </span>
+                  {!user?.roles?.includes("Student") && (
+                    <span>
+                      {user?.personalInfo?.firstName}{" "}
+                      {user?.personalInfo?.lastName},
+                    </span>
+                  )}
+                  {user?.roles?.includes("Student") && (
+                    <span>{user?.personalInfo?.fullName},</span>
+                  )}
                 </p>
               </Box>
               <Box

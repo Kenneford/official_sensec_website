@@ -22,6 +22,7 @@ import {
 import { CustomTextField } from "../../../../muiStyling/muiStyling";
 import {
   fetchAllUsers,
+  getAuthUser,
   resetSignUpState,
   userSignUp,
 } from "../../../../features/auth/authSlice";
@@ -31,7 +32,7 @@ import {
   fetchAllClassSections,
   getAllClassSections,
 } from "../../../../features/academics/classSectionSlice";
-import { FetchAllProgrammes } from "../../../../data/programme/FetchProgrammeData";
+import { FetchAllFlattenedProgrammes } from "../../../../data/programme/FetchProgrammeData";
 import { FetchAllUsers } from "../../../../data/allUsers/FetchAllUsers";
 import SmallFooter from "../../../../components/footer/SmallFooter";
 import { Helmet } from "react-helmet-async";
@@ -42,8 +43,9 @@ export function StudentsSignUp() {
   const { signUpAction } = useParams();
 
   // Getting data from redux state
+  const authUser = FetchAllUsers(getAuthUser);
   const allUsers = FetchAllUsers();
-  const allProgrammes = FetchAllProgrammes();
+  const allFlattenedProgrammes = FetchAllFlattenedProgrammes();
   const allClassSections = useSelector(getAllClassSections);
 
   // Redux state management
@@ -92,12 +94,15 @@ export function StudentsSignUp() {
     confirmPassword: "",
   });
   console.log(newUser);
+  console.log(allUsers);
 
   // Find student who want to sign-up
   const studentFound = allUsers?.find(
     (user) =>
-      user?.uniqueId === newUser?.uniqueId && user?.roles?.includes("student")
+      user?.uniqueId === newUser?.uniqueId && user?.roles?.includes("Student")
   );
+  console.log(studentFound);
+
   // Check for existing username
   const existingUserName = allUsers?.find(
     (user) => user?.userSignUpDetails?.userName === newUser?.userName
@@ -142,7 +147,7 @@ export function StudentsSignUp() {
     if (
       newUser?.uniqueId !== "" &&
       newUser?.programme !== "" &&
-      newUser?.programme !== studentFound?.studentSchoolData?.program
+      newUser?.programme !== studentFound?.studentSchoolData?.program?.programId
     ) {
       setProgrammeInputError(true);
     } else {
@@ -153,7 +158,7 @@ export function StudentsSignUp() {
       newUser?.uniqueId !== "" &&
       newUser?.class !== "" &&
       newUser?.class !==
-        studentFound?.studentSchoolData?.currentClassLevelSection
+        studentFound?.studentSchoolData?.currentClassLevelSection?._id
     ) {
       setClassInputError(true);
       return;
@@ -228,7 +233,10 @@ export function StudentsSignUp() {
         setRedirecting(true);
       }, 5000);
       setTimeout(() => {
-        `/sensec/sign_up/${signUpAction}/${studentFound?.uniqueId}/successful`;
+        localStorage.removeItem("signUpAction");
+        navigate(
+          `/sensec/sign_up/${signUpAction}/${studentFound?.uniqueId}/successful`
+        );
         dispatch(resetSignUpState());
       }, 7000);
     }
@@ -241,6 +249,23 @@ export function StudentsSignUp() {
     studentFound,
     signUpAction,
   ]);
+
+  // Function to redirect users to their dashboard
+  const getUserRolePath = () => {
+    if (authUser?.roles?.includes("Admin")) return "admin/Dashboard/Overview";
+    if (authUser?.roles?.includes("Lecturer"))
+      return "lecturer/Dashboard/Overview";
+    if (authUser?.roles?.includes("Student"))
+      return "student/Dashboard/Overview";
+    if (authUser?.roles?.includes("NT-Staff"))
+      return "nt_staff/Dashboard/Overview";
+    return "*";
+  };
+  const userRolePath = getUserRolePath();
+
+  if (authUser?.uniqueId) {
+    navigate(`/sensec/users/${authUser?.uniqueId}/${userRolePath}`);
+  }
 
   return (
     <>
@@ -399,9 +424,11 @@ export function StudentsSignUp() {
                       fontSize: ".8em",
                     }}
                   >
-                    {allProgrammes?.map((programme) => (
+                    {allFlattenedProgrammes?.map((programme) => (
                       <MenuItem key={programme?._id} value={programme?._id}>
-                        {programme?.name}
+                        {programme?.name
+                          ? programme?.name
+                          : programme?.divisionName}
                       </MenuItem>
                     ))}
                   </CustomTextField>

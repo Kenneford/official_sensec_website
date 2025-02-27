@@ -100,8 +100,6 @@ export function SchoolProgrammesData() {
     (cSubj) => cSubj._id === currentRowId
   );
 
-  const deleteSubjectStatus = "";
-
   const customStyle = {
     headRow: {
       style: {

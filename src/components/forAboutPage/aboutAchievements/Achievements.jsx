@@ -68,7 +68,7 @@ export function Achievements() {
       >
         <Box className="achieveWrap" id="achievements">
           <Box className="achieveCont">
-            <h4>
+            <h4 id="ourAchievements">
               Achievements{" "}
               {authUser?.roles?.includes("Admin") && (
                 <HashLink

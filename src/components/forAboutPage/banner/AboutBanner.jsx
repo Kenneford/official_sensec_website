@@ -3,6 +3,16 @@ import "./aboutBanner.scss";
 import { HashLink } from "react-router-hash-link";
 
 export function AboutBanner() {
+  const scrollWithOffset = (el) => {
+    const yCoordinate = el.getBoundingClientRect().top + window.scrollY;
+    const yOffset = -70;
+    window.scrollTo({ top: yCoordinate + yOffset, behavior: "smooth" });
+  };
+  //THIS REMOVES THE NavLINK TAG FROM THE URL
+  if (window.location.hash) {
+    window.history.replaceState("", document.title, window.location.pathname);
+  }
+
   return (
     <Box className="bannerWrap">
       <Box
@@ -17,10 +27,37 @@ export function AboutBanner() {
         </Box>
       </Box>
       <Box className="aboutLinks">
-        <HashLink to={"#"}>Vision</HashLink>
-        <HashLink to={"#"}>History</HashLink>
-        <HashLink to={"#"}>Achievements</HashLink>
-        <HashLink to={"#"}>Our Team</HashLink>
+        <HashLink
+          to={"/sensec/about#whoWeAre"}
+          smooth
+          scroll={scrollWithOffset}
+        >
+          Who We Are
+        </HashLink>
+        <HashLink
+          to={"/sensec/about#ourVision"}
+          smooth
+          scroll={scrollWithOffset}
+        >
+          Vision
+        </HashLink>
+        <HashLink
+          to={"/sensec/about#ourHistory"}
+          smooth
+          scroll={scrollWithOffset}
+        >
+          History
+        </HashLink>
+        <HashLink
+          to={"/sensec/about#ourAchievements"}
+          smooth
+          scroll={scrollWithOffset}
+        >
+          Achievements
+        </HashLink>
+        {/* <HashLink to={"/sensec/about#ourTeam"} smooth scroll={scrollWithOffset}>
+          Our Team
+        </HashLink> */}
       </Box>
     </Box>
   );
