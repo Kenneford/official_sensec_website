@@ -91,6 +91,7 @@ function App() {
           display: "flex",
           alignItems: "center",
           gap: 1,
+          zIndex: 1250,
         }}
       >
         <DeveloperInfo
