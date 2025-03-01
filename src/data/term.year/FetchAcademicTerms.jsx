@@ -7,18 +7,23 @@ import {
 import { useEffect } from "react";
 
 const FetchAllAcademicTerms = () => {
-  const { updateSemesterStatus } = useSelector((state) => state.academicTerm);
+  const { updateSemesterStatus, deleteSemesterStatus } = useSelector(
+    (state) => state.academicTerm
+  );
   const dispatch = useDispatch();
   const allAcademicTerms = useSelector(getAllAcademicTerms);
   useEffect(() => {
-    if (updateSemesterStatus === "success") {
+    if (
+      updateSemesterStatus === "success" ||
+      deleteSemesterStatus === "success"
+    ) {
       setTimeout(() => {
         dispatch(fetchAllAcademicTerms());
       }, 3000);
     } else {
       dispatch(fetchAllAcademicTerms());
     }
-  }, [dispatch, updateSemesterStatus]);
+  }, [dispatch, updateSemesterStatus, deleteSemesterStatus]);
 
   return allAcademicTerms;
 };

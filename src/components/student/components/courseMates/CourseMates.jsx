@@ -1,121 +1,93 @@
+import "./courseMates.scss";
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import SearchIcon from "@mui/icons-material/Search";
 import DataTable from "react-data-table-component";
-import { useNavigate, useParams } from "react-router-dom";
-// import { studentSearch } from "../../../features/student/studentsSlice";
+import { Box } from "@mui/material";
 import { getAuthUser } from "../../../../features/auth/authSlice";
-import { FetchAllClassSections } from "../../../../data/class/FetchClassSections";
+import {
+  FetchAllApprovedStudents,
+  FetchStudentsCourseMates,
+} from "../../../../data/students/FetchAllStudents";
+import {
+  courseMatesColumn,
+  studentsColumn,
+} from "../../../../usersInfoDataFormat/UsersInfoDataFormat";
+import SearchFilter from "../../../searchForm/SearchFilter";
 import { customUserTableStyle } from "../../../../usersInfoDataFormat/usersInfoTableStyle";
-import { studentsColumn } from "../../../../usersInfoDataFormat/UsersInfoDataFormat";
-import { FetchClassSectionStudents } from "../../../../data/students/FetchAllStudents";
+import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 
 export function CourseMates() {
-  const userInfo = useSelector(getAuthUser);
-  const allClassLevelSections = FetchAllClassSections();
-  const {
-    fetchingStudentStatus,
-    searchStatus,
-    searchStudentStatus,
-    studentError,
-    studentSuccessMessage,
-  } = useSelector((state) => state.student);
-  console.log(allClassLevelSections);
-  const classSection = allClassLevelSections.find(
-    (section) =>
-      section._id === userInfo?.studentSchoolData?.currentClassLevelSection?._id
-  );
-  console.log(classSection);
-  const [searchStudent, setSearchStudent] = useState("");
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const authStudent = useSelector(getAuthUser);
+  console.log(authStudent);
+
   const { studentCurrentAction, studentCurrentLink } = useParams();
 
-  const courseMates = FetchClassSectionStudents(userInfo);
-  const filteredMates = classSection?.students?.filter(
-    (std) => std?.uniqueId !== userInfo?.uniqueId
+  const approvedStudents = FetchAllApprovedStudents();
+
+  const programmeStudents = FetchStudentsCourseMates({
+    authStudent,
+    programme: authStudent?.programme,
+    classLevelFound: authStudent?.currentClassLevel,
+  });
+
+  console.log(programmeStudents);
+
+  const [searchStudent, setSearchStudent] = useState("");
+
+  const filteredStudents = programmeStudents?.filter(
+    (std) =>
+      std?.personalInfo?.fullName?.toLowerCase()?.includes(searchStudent) ||
+      std?.personalInfo?.fullName?.includes(searchStudent)
   );
 
-  const customStyle = {
-    headRow: {
-      style: {
-        backgroundColor: "#555",
-        color: "#fff",
-      },
-    },
-    headColumn: {
-      style: {
-        border: "1rem solid red",
-        // color: "#fff",
-      },
-    },
-    headCells: {
-      style: {
-        fontSize: "1.2rem",
-        // borderLeft: ".2rem solid red",
-        // backgroundColor: "blue",
-        // color: "#fff",
-      },
-    },
-    cells: {
-      style: {
-        // backgroundColor: "#cccc",
-        // color: "#fff",
-        paddingTop: ".5rem",
-        paddingBottom: ".5rem",
-        // marginTop: ".5rem",
-        // marginBottom: ".5rem",
-      },
-    },
+  const columnData = {
+    authStudent,
+    studentCurrentAction,
+    studentCurrentLink,
   };
+  const studentDataFormat = courseMatesColumn(columnData);
 
-  const studentColumn = studentsColumn();
-  const handleStudentSearch = (e) => {
-    e.preventDefault();
-    if (searchStudent) {
-      // dispatch(studentSearch(searchStudent));
-      navigate(`/sensec/admin/search_student?student_name=${searchStudent}`);
-    }
-  };
-  //Filter current logged in student from coursemates
-  // useEffect(() => {
-  //   setCourseMates(
-  //     classSection?.students?.filter(
-  //       (student) => student.uniqueId !== userInfo.uniqueId
-  //     )
-  //   );
-  // }, [classSection?.students, userInfo.uniqueId]);
-
+  const courseMates = `Coursemates / Total = 
+              ${programmeStudents?.length}`;
   return (
-    <div className="studentTotal" id="allStudents">
-      <div className="searchWrap">
-        <div className="searchCont">
-          <h1 className="dashAction" style={{ backgroundColor: "#383838" }}>
-            {studentCurrentAction} / <span>{studentCurrentLink}</span>
-          </h1>
-          <form onSubmit={handleStudentSearch} className="studentSearch">
-            <input
-              type="text"
-              value={searchStudent}
-              onChange={(e) => setSearchStudent(e.target.value)}
-              placeholder="Search for a student..."
-              autoComplete="off"
-              id="search"
-            />
-            <button type="submit">
-              <SearchIcon className="searchIcon" />
-            </button>
-          </form>
-        </div>
-      </div>
-      <div className="totalStudentsWrap">
-        <div className="searchDetails">
-          {courseMates?.length === 0 && searchStudent !== "" && (
+    <>
+      {/* Current dashboard title */}
+      <Box
+        component={"div"}
+        id="studentDashboardHeaderWrap"
+        sx={{
+          position: "sticky",
+          top: 0,
+          backgroundColor: "#fff",
+          padding: 0,
+          // zIndex: 1,
+        }}
+      >
+        <h1 className="dashAction">
+          {studentCurrentAction?.replace(/_/g, "-")} /{" "}
+          <span>{studentCurrentLink?.replace(/_/g, " ")}</span>
+        </h1>
+        {/* Main search bar */}
+        <Box sx={{ display: { xs: "none", sm: "block" } }}>
+          <SearchFilter
+            value={searchStudent}
+            onChange={setSearchStudent}
+            placeholder={"Search"}
+          />
+        </Box>
+      </Box>
+      <Box
+        className="allStudentsData"
+        id="allStudents"
+        padding={{ xs: " 1rem .5rem", sm: " 1rem" }}
+      >
+        <Box className="searchDetails">
+          {filteredStudents?.length === 0 && searchStudent !== "" && (
             <p className="searchInfo">
-              We couldn't find any matches for "{searchStudent}"
+              We couldn&apos;t find any matches for &quot;{searchStudent}&quot;
             </p>
           )}
-          {courseMates?.length === 0 && searchStudent !== "" && (
+          {filteredStudents?.length === 0 && searchStudent !== "" && (
             <p
               style={{
                 paddingLeft: "1.5rem",
@@ -129,29 +101,26 @@ export function CourseMates() {
           )}
           {searchStudent && (
             <p className="searchInfo">
-              Total Students Found = {courseMates?.length}
+              Total Coursemates Found = {filteredStudents?.length}
             </p>
           )}
           {!searchStudent && (
             <p className="searchInfo">
-              Total Students = {filteredMates?.length}
+              Total Students = {approvedStudents?.length}
             </p>
           )}
-        </div>
-        <div className="totalStudentsCont">
+        </Box>
+        <Box className="studentDataTable">
           <DataTable
-            columns={studentColumn}
-            data={courseMates}
+            title={courseMates}
+            columns={studentDataFormat}
+            data={filteredStudents}
             customStyles={customUserTableStyle}
             pagination
-            // selectableRows
-            fixedHeader
-            selectableRowsHighlight
             highlightOnHover
-            responsive
           />
-        </div>
-      </div>
-    </div>
+        </Box>
+      </Box>
+    </>
   );
 }
