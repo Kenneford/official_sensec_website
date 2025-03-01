@@ -2064,111 +2064,172 @@ const pendingStudentsColumn = (columnData) => {
   ];
   return pendingStudentsColumn;
 };
-// const courseMatesColumn = () => {
-//   const studentColumn = [
-//     {
-//       name: "Image",
-//       selector: (row) =>
-//         row?.personalInfo?.profilePicture ? (
-//           <HashLink
-//             // scroll={scrollWithOffset}
-//             // smooth
-//             to={`/sensec/admin/Students/student_info/${row?.personalInfo?.firstName.replace(
-//               / /g,
-//               "_"
-//             )}_${row?.personalInfo?.lastName}/${row?.uniqueId}#studentInfo`}
-//             title="View Student Info"
-//           >
-//             <img
-//               className="studentImg"
-//               src={
-//                 row?.personalInfo?.profilePicture?.url
-//                   ? row?.personalInfo?.profilePicture?.url
-//                   : row?.personalInfo?.profilePicture
-//               }
-//               alt=""
-//             />
-//           </HashLink>
-//         ) : (
-//           <HashLink
-//             // scroll={scrollWithOffset}
-//             // smooth
-//             className="noImgLink"
-//             to={`/sensec/admin/Students/student_info/${row?.personalInfo?.firstName}_${row?.personalInfo?.lastName}/${row?.personalInfo?.uniqueId}#studentInfo`}
-//             title="View Student Info"
-//           >
-//             {row?.personalInfo?.gender === "Male" && (
-//               <img
-//                 className="studentImg"
-//                 src={"/assets/maleAvatar.png"}
-//                 alt=""
-//               />
-//             )}
-//             {row?.personalInfo?.gender === "Female" && (
-//               <img
-//                 className="studentImg"
-//                 src={"/assets/femaleAvatar.png"}
-//                 alt=""
-//               />
-//             )}
-//             {row?.personalInfo?.gender === "" && (
-//               <div className="noImg">
-//                 <p>No</p>
-//                 <p>Image</p>
-//               </div>
-//             )}
-//           </HashLink>
-//         ),
-//     },
-//     {
-//       name: "First Name",
-//       selector: (row) => row?.personalInfo?.firstName,
-//       sortable: true,
-//     },
-//     { name: "Surname", selector: (row) => row?.personalInfo?.lastName },
-//     // {
-//     //   name: "Date Of Birth",
-//     //   selector: (row) =>
-//     //     row?.personalInfo?.dateOfBirth
-//     //       ? dateFormatter.format(new Date(row?.personalInfo?.dateOfBirth))
-//     //       : "---",
-//     // },
-//     {
-//       name: "Program",
-//       selector: (row) =>
-//         row?.studentSchoolData?.program
-//           ? row.studentSchoolData?.program.name
-//           : "---",
-//     },
-//     {
-//       name: "Student-ID",
-//       selector: (row) => row?.uniqueId,
-//       sortable: true,
-//     },
-//     {
-//       name: "Email",
-//       selector: (row) =>
-//         row?.contactAddress?.email ? row?.contactAddress?.email : "---",
-//     },
-//     {
-//       name: "Enrolled Date",
-//       selector: (row) =>
-//         row?.studentStatusExtend?.dateEnrolled
-//           ? dateFormatter.format(
-//               new Date(row?.studentStatusExtend?.dateEnrolled)
-//             )
-//           : "---",
-//     },
-//     {
-//       name: "Batch",
-//       selector: (row) =>
-//         row.studentSchoolData?.batch?.yearRange
-//           ? `${row?.studentSchoolData?.batch?.yearRange.replace(/-/g, "/")}`
-//           : "---",
-//     },
-//   ];
-//   return studentColumn;
-// };
+const courseMatesColumn = () => {
+  const studentColumn = [
+    {
+      name: "Image",
+      selector: (row) =>
+        row?.personalInfo?.profilePicture ? (
+          <Box>
+            <Avatar
+              // className="studentImg"
+              src={
+                row?.personalInfo?.profilePicture?.url
+                  ? row?.personalInfo?.profilePicture?.url
+                  : row?.personalInfo?.profilePicture
+              }
+              sx={{
+                width: "1.5em",
+                height: "1.5em",
+                borderRadius: ".4rem",
+                objectFit: "cover",
+              }}
+              alt=""
+            />
+          </Box>
+        ) : (
+          <Box className="noImgLink">
+            {row?.personalInfo?.gender === "Male" && (
+              <img
+                className="studentImg"
+                src={"/assets/maleAvatar.png"}
+                alt=""
+              />
+            )}
+            {row?.personalInfo?.gender === "Female" && (
+              <img
+                className="studentImg"
+                src={"/assets/femaleAvatar.png"}
+                alt=""
+              />
+            )}
+            {row?.personalInfo?.gender === "" && (
+              <div className="noImg">
+                <p>No</p>
+                <p>Image</p>
+              </div>
+            )}
+          </Box>
+        ),
+    },
+    {
+      name: "Full Name",
+      selector: (row) => (
+        <Box>
+          <p>{row?.personalInfo?.fullName}</p>
+        </Box>
+      ),
+      sortable: true,
+    },
+    {
+      name: "Date Of Birth",
+      selector: (row) => {
+        if (!row?.personalInfo?.dateOfBirth) return "---";
+        const date = new Date(row?.personalInfo?.dateOfBirth);
+        // Adjust for timezones explicitly if needed
+        const utcDate = new Date(
+          date.getTime() + date.getTimezoneOffset() * 60000
+        );
+        return (
+          <Box>
+            <p title={dateFormatter.format(utcDate)}>
+              {dateFormatter.format(utcDate)?.slice(0, -6)}
+            </p>
+          </Box>
+        );
+      },
+    },
+    {
+      name: "Programme",
+      selector: (row) => {
+        const allFlattenedProgrammes = FetchAllFlattenedProgrammes();
+        const studentProgramFound = allFlattenedProgrammes?.find(
+          (program) =>
+            program?._id === row.studentSchoolData?.program?.programId
+        );
+        if (studentProgramFound) {
+          return (
+            <Box>
+              <p
+                title={
+                  studentProgramFound?.name
+                    ? studentProgramFound?.name
+                    : studentProgramFound?.divisionName
+                }
+              >
+                {studentProgramFound?.name
+                  ? studentProgramFound?.name
+                  : studentProgramFound?.divisionName}
+              </p>
+            </Box>
+          );
+        }
+        return "---";
+      },
+    },
+    {
+      name: "Student-ID",
+      selector: (row) => (
+        <Box>
+          <p>{row?.uniqueId}</p>
+        </Box>
+      ),
+      sortable: true,
+    },
+    // {
+    //   name: "Enrolled Date",
+    //   selector: (row) =>
+    //     dateFormatter.format(new Date(row?.studentStatusExtend?.dateEnrolled)),
+    // },
+    {
+      name: "Batch",
+      selector: (row) => (
+        <Box>
+          <p>
+            {row.studentSchoolData?.batch?.yearRange
+              ? `${row?.studentSchoolData?.batch?.yearRange.replace(/-/g, "/")}`
+              : "---"}
+          </p>
+        </Box>
+      ),
+    },
+    {
+      name: "Level",
+      selector: (row) =>
+        row.studentSchoolData?.currentClassLevel && (
+          <Box className="tableClassLevel">
+            {row.studentSchoolData?.currentClassLevel?.name === "Level 100" && (
+              <p className="firstYearTag" title="1st Year">
+                1
+              </p>
+            )}
+            {row.studentSchoolData?.currentClassLevel?.name === "Level 200" && (
+              <p className="secondYearTag" title="2nd Year">
+                2
+              </p>
+            )}
+            {row.studentSchoolData?.currentClassLevel?.name === "Level 300" &&
+              !row.isGraduated && (
+                <p className="thirdYearTag" title="3rd Year">
+                  3
+                </p>
+              )}
+            {row.isGraduated && (
+              <p className="isGraduated" title="Graduated">
+                <SchoolOutlined />
+              </p>
+            )}
+          </Box>
+        ),
+    },
+    {
+      name: "Email",
+      selector: (row) =>
+        row?.contactAddress?.email ? row?.contactAddress?.email : "---",
+    },
+  ];
+  return studentColumn;
+};
 
 const teachersColumn = (columnData) => {
   const teachersDataFormat = [
@@ -3882,7 +3943,7 @@ export {
   //   hangingTeachersColumn,
   studentsColumn,
   pendingStudentsColumn,
-  //   courseMatesColumn,
+  courseMatesColumn,
   //   hangingEmploymentsColumn,
   graduatesColumn,
   nTStaffsColumn,

@@ -91,19 +91,17 @@ const FetchApprovedClassLevelStudents = (class_level) => {
 const FetchProgrammeStudents = (programmeFound) => {
   const allApprovedStudents = FetchAllApprovedStudents();
 
-  const classLevelStudents = allApprovedStudents?.filter(
+  const programStudents = allApprovedStudents?.filter(
     (std) => std && std?.studentSchoolData?.program?._id === programmeFound
   );
 
-  return classLevelStudents;
+  return programStudents;
 };
-//Fetch ClassLevel Students
+//Fetch ClassSection Students
 const FetchClassSectionStudents = ({ class_section, classLevelFound }) => {
-  console.log(class_section);
-
   const allApprovedStudents = FetchAllStudents();
   if (class_section) {
-    const classLevelStudents = allApprovedStudents?.filter(
+    const classSectionStudents = allApprovedStudents?.filter(
       (std) =>
         (std?.studentStatusExtend?.enrollmentStatus === "approved" &&
           std?.studentSchoolData?.currentClassLevel?._id ===
@@ -115,7 +113,26 @@ const FetchClassSectionStudents = ({ class_section, classLevelFound }) => {
             class_section)
     );
 
-    return classLevelStudents;
+    return classSectionStudents;
+  }
+};
+//Fetch Students CourseMates
+const FetchStudentsCourseMates = ({
+  authStudent,
+  programme,
+  classLevelFound,
+}) => {
+  const allApprovedStudents = FetchAllStudents();
+  if (programme) {
+    const courseMates = allApprovedStudents?.filter(
+      (std) =>
+        std?.studentStatusExtend?.enrollmentStatus === "approved" &&
+        std?.studentSchoolData?.currentClassLevel?._id === classLevelFound &&
+        std?.studentSchoolData?.program?.programId === programme &&
+        std?.uniqueId !== authStudent?.uniqueId
+    );
+
+    return courseMates;
   }
 };
 
@@ -128,4 +145,5 @@ export {
   FetchProgrammeStudents,
   FetchAllGraduatedStudents,
   FetchClassSectionStudents,
+  FetchStudentsCourseMates,
 };
