@@ -6,14 +6,19 @@ import tokenInterceptor from "../../apiEndPoint/interceptors";
 const initialState = {
   academicTermInfo: "",
   updatedSemester: "",
+  deletedSemester: "",
   currentAcademicTerm: "",
   allAcademicTerms: [],
   successMessage: "",
+  updateSuccessMessage: "",
   fetchSuccessMessage: "",
+  deleteSuccessMessage: "",
   error: "",
   createStatus: "",
   fetchStatus: "",
+  deleteStatus: "",
   updateSemesterStatus: "",
+  deleteSemesterStatus: "",
 };
 
 export const createAcademicTerm = createAsyncThunk(
@@ -45,7 +50,6 @@ export const updateAcademicTermStatus = createAsyncThunk(
     }
   }
 );
-
 export const fetchCurrentTerm = createAsyncThunk(
   "AcademicTerm/fetchCurrentTerm",
   async () => {
@@ -69,6 +73,20 @@ export const fetchAllAcademicTerms = createAsyncThunk(
     }
   }
 );
+export const deleteAcademicTerm = createAsyncThunk(
+  "AcademicTerm/deleteAcademicTerm",
+  async (data, { rejectWithValue }) => {
+    try {
+      const res = await tokenInterceptor.delete(
+        `/academics/terms/${data?.semesterId}/delete`
+      );
+      return res.data;
+    } catch (error) {
+      console.log(error.response.data);
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 
 const academicTermSlice = createSlice({
   name: "AcademicTerm",
@@ -78,7 +96,15 @@ const academicTermSlice = createSlice({
       return {
         ...state,
         updateSemesterStatus: "",
-        successMessage: "",
+        updateSuccessMessage: "",
+        error: "",
+      };
+    },
+    resetDeleteSemesterState(state) {
+      return {
+        ...state,
+        deletedSemesterSemesterStatus: "",
+        deleteSuccessMessage: "",
         error: "",
       };
     },
@@ -113,7 +139,7 @@ const academicTermSlice = createSlice({
         return {
           ...state,
           updatedSemester: action.payload.updatedSemesterStatus,
-          successMessage: action.payload.successMessage,
+          updateSuccessMessage: action.payload.successMessage,
           updateSemesterStatus: "success",
         };
       } else return state;
@@ -167,10 +193,32 @@ const academicTermSlice = createSlice({
         error: action.payload,
       };
     });
+    // deleteAcademicTerm
+    builder.addCase(deleteAcademicTerm.pending, (state) => {
+      return { ...state, deleteSemesterStatus: "pending" };
+    });
+    builder.addCase(deleteAcademicTerm.fulfilled, (state, action) => {
+      if (action.payload) {
+        return {
+          ...state,
+          deletedSemester: action.payload.deletedAcademicTerm,
+          deleteSuccessMessage: action.payload.successMessage,
+          deleteSemesterStatus: "success",
+        };
+      } else return state;
+    });
+    builder.addCase(deleteAcademicTerm.rejected, (state, action) => {
+      return {
+        ...state,
+        deleteSemesterStatus: "rejected",
+        error: action.payload,
+      };
+    });
   },
 });
 
-export const { resetUpdateSemesterStatusState } = academicTermSlice.actions;
+export const { resetUpdateSemesterStatusState, resetDeleteSemesterState } =
+  academicTermSlice.actions;
 export const getAllAcademicTerms = (state) =>
   state.academicTerm.allAcademicTerms;
 export const getCurrentAcademicTerm = (state) =>

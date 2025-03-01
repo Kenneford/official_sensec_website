@@ -1,33 +1,43 @@
-import { Link } from "react-router-dom";
 import "./academicSemesters.scss";
 import { useParams } from "react-router-dom";
-import { DeleteForever, Edit } from "@mui/icons-material";
+import { DeleteForever, TaskAlt } from "@mui/icons-material";
 import DataTable from "react-data-table-component";
 import { Box, Button } from "@mui/material";
-import { FetchAllClassLevels } from "../../../../data/class/FetchClassLevel";
-import {
-  FetchApprovedClassLevelStudents,
-  FetchPendingClassLevelStudents,
-} from "../../../../data/students/FetchAllStudents";
-import { FetchAllClassLevelLecturers } from "../../../../data/lecturers/FetchLecturers";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getAuthUser } from "../../../../features/auth/authSlice";
 import NotAuthorized from "../../../notAuthorized/NotAuthorized";
 import { FetchAllAcademicTerms } from "../../../../data/term.year/FetchAcademicTerms";
 import { dateFormatter } from "../../../../dateFormatter/DateFormatter";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import UpdateSemesterStatusModal from "../../../modals/UpdateSemesterStatusModal";
+import { resetDeleteSemesterState } from "../../../../features/academics/academicTermSlice";
+import { toast } from "react-toastify";
+import DeleteSemesterModal from "../../../modals/DeleteSemesterModal";
+import UpdateSemesterNameModal from "../../../modals/UpdateSemesterNameModal";
 
 export function AcademicSemesters() {
   const authAdmin = useSelector(getAuthUser);
   const { adminCurrentAction, adminCurrentLink } = useParams();
+  const dispatch = useDispatch();
+
+  const { deleteSemesterStatus, deleteSuccessMessage, error } = useSelector(
+    (state) => state.academicTerm
+  );
 
   const allAcademicSemesters = FetchAllAcademicTerms();
   console.log(allAcademicSemesters);
 
   const [openUpdateSemesterStatusModal, setOpenUpdateSemesterStatusModal] =
     useState(false);
+  const [openUpdateSemesterNameModal, setOpenUpdateSemesterNameModal] =
+    useState(false);
+  const [openDeleteSemesterStatusModal, setOpenDeleteSemesterStatusModal] =
+    useState(false);
   const [semesterToUpdate, setSemesterToUpdate] = useState(null);
+  const [changeSemesterName, setChangeSemesterName] = useState(false);
+  const [semesterToDelete, setSemesterToDelete] = useState(null);
+  const [semesterItem, setSemesterItem] = useState(null);
+  const [deletingComplete, setDeletingComplete] = useState(null);
 
   const customStyle = {
     headRow: {
@@ -70,7 +80,28 @@ export function AcademicSemesters() {
   const semesterColumn = [
     {
       name: "Semesters",
-      selector: (row) => row?.name?.slice(0, -9),
+      selector: (row) => (
+        <Button
+          size="small"
+          sx={{
+            color: "#ac0b84",
+            // padding: "unset",
+            // fontWeight: 300,
+            fontSize: ".75rem",
+            textTransform: "capitalize",
+            "&:hover": {
+              backgroundColor: "transparent",
+            },
+          }}
+          onClick={() => {
+            setSemesterToUpdate(row);
+            setChangeSemesterName(true);
+            setOpenUpdateSemesterNameModal(true);
+          }}
+        >
+          {row?.name?.replace(/\b(Semester|Term)\b/, " ").trim()}
+        </Button>
+      ),
       sortable: true,
     },
     {
@@ -174,15 +205,91 @@ export function AcademicSemesters() {
     //     </Link>
     //   ),
     // },
-    // {
-    //   name: "Delete",
-    //   selector: (row) => (
-    //     <button className="deleteLink">
-    //       <DeleteForever />
-    //     </button>
-    //   ),
-    // },
+    {
+      name: "Delete",
+      selector: (row) => (
+        <Button
+          // className="deleteLink"
+          sx={{
+            padding: "unset",
+            textTransform: "capitalize",
+            fontSize: ".75rem",
+            color: "#e10b0b",
+            "&:hover": {
+              backgroundColor: "transparent",
+            },
+          }}
+          size="small"
+          onClick={() => {
+            setSemesterToDelete(row);
+            setSemesterItem(row?._id);
+            setOpenDeleteSemesterStatusModal(true);
+          }}
+        >
+          {semesterItem && semesterItem === row._id && (
+            <>
+              {deletingComplete === false && (
+                <Box
+                  className="promotionSpinner"
+                  sx={{
+                    fontSize: "1em",
+                  }}
+                >
+                  <p>Deleting</p>
+                  <span className="dot-ellipsis" style={{}}>
+                    <span className="dot">.</span>
+                    <span className="dot">.</span>
+                    <span className="dot">.</span>
+                  </span>
+                </Box>
+              )}
+              {deletingComplete && deleteSemesterStatus === "success" && (
+                <>
+                  <span>Deleted</span> <TaskAlt />
+                </>
+              )}
+            </>
+          )}
+          {deletingComplete === null && <DeleteForever />}
+          {row._id !== semesterItem && deletingComplete !== null && (
+            <DeleteForever />
+          )}
+        </Button>
+      ),
+    },
   ];
+
+  // Delete Semester status
+  useEffect(() => {
+    if (deleteSemesterStatus === "pending") {
+      setDeletingComplete(false);
+    }
+    if (deleteSemesterStatus === "rejected") {
+      setTimeout(() => {
+        error?.errorMessage?.message?.map((err) =>
+          toast.error(err, {
+            position: "top-right",
+            theme: "light",
+            // toastId: successId,
+          })
+        );
+      }, 1000);
+      setTimeout(() => {
+        setDeletingComplete(null);
+        dispatch(resetDeleteSemesterState());
+      }, 2000);
+      return;
+    }
+    if (deleteSemesterStatus === "success") {
+      setTimeout(() => {
+        setDeletingComplete(true);
+      }, 2000);
+      setTimeout(() => {
+        setDeletingComplete(null);
+        dispatch(resetDeleteSemesterState());
+      }, 7000);
+    }
+  }, [deleteSemesterStatus, error, dispatch, deleteSuccessMessage]);
 
   const allCLevels = `All Class Levels / Total = ${allAcademicSemesters?.length}`;
   if (!authAdmin?.roles?.includes("Admin")) {
@@ -233,6 +340,28 @@ export function AcademicSemesters() {
           open={openUpdateSemesterStatusModal}
           onClose={() => setOpenUpdateSemesterStatusModal(false)}
           semesterToUpdate={semesterToUpdate}
+          changeSemesterName={changeSemesterName}
+          authAdmin={authAdmin}
+          // subject={currentRowId}
+          // Semesterme={programToUpdate}
+          // loadingComplete={loadingComplete}
+          // assignLecturerStatus={assignLecturerStatus}
+        />
+        <UpdateSemesterNameModal
+          open={openUpdateSemesterNameModal}
+          onClose={() => setOpenUpdateSemesterNameModal(false)}
+          semesterToUpdate={semesterToUpdate}
+          changeSemesterName={changeSemesterName}
+          authAdmin={authAdmin}
+          // subject={currentRowId}
+          // Semesterme={programToUpdate}
+          // loadingComplete={loadingComplete}
+          // assignLecturerStatus={assignLecturerStatus}
+        />
+        <DeleteSemesterModal
+          open={openDeleteSemesterStatusModal}
+          onClose={() => setOpenDeleteSemesterStatusModal(false)}
+          semesterToDelete={semesterToDelete}
           authAdmin={authAdmin}
           // subject={currentRowId}
           // Semesterme={programToUpdate}
