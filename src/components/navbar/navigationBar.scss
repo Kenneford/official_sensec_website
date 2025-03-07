@@ -12,17 +12,14 @@
       align-items: center;
       margin: 0.5rem;
       cursor: pointer;
-      color: #fff;
       &:hover {
         color: yellow;
       }
       text-transform: capitalize;
-      // margin: 0;
       font-size: 0.9em;
     }
     #otherLinks {
       position: relative;
-      // z-index: 100;
       .otherLinksWrap {
         display: flex;
         align-items: center;
@@ -146,97 +143,97 @@
       }
     }
   }
-  .subNav {
-    position: sticky;
-    top: 0;
-    z-index: 9999;
-    // right: 10%;
-    display: flex;
-    flex-direction: column;
-    .openSubNavLinks {
-      display: flex;
-      flex-direction: column;
-      width: 12rem;
-      .otherLinkSelected {
-        min-width: inherit;
-        padding: 0.6rem 1rem;
-        font-size: 1rem;
-        animation: animateNavMenuItems 400ms linear forwards;
-        transform-origin: top right;
-        opacity: 0;
-        background-color: #292929;
-        color: #fff;
-        border-left: 3px solid transparent;
-        &:hover {
-          background-color: #323232;
-          border-left: 3px solid #fff;
-        }
-        &:nth-child(1) {
-          animation-delay: 200ms;
-          border-radius: 0.2rem 0.2rem 0 0;
-          // border-bottom: 1px solid #ccc;
-        }
-        &:nth-child(2) {
-          animation-delay: 300ms;
-          border-top: 1px solid #ccc;
-        }
-        &:nth-child(3) {
-          animation-delay: 400ms;
-          border-top: 1px solid #ccc;
-        }
-        &:nth-child(4) {
-          animation-delay: 500ms;
-          border-top: 1px solid #ccc;
-        }
-        &:nth-child(5) {
-          animation-delay: 600ms;
-          border-top: 1px solid #ccc;
-        }
-        &:nth-child(6) {
-          animation-delay: 700ms;
-          border-top: 1px solid #ccc;
-        }
-        &:nth-child(7) {
-          animation-delay: 800ms;
-          border-top: 1px solid #ccc;
-        }
-        &:nth-child(8) {
-          animation-delay: 900ms;
-          border-top: 1px solid #ccc;
-        }
-        &:nth-child(8) {
-          animation-delay: 1000ms;
-          border-top: 1px solid #ccc;
-        }
-        &:nth-child(9) {
-          animation-delay: 1100ms;
-          border-top: 1px solid #ccc;
-        }
-        &:nth-child(10) {
-          animation-delay: 1200ms;
-          border-top: 1px solid #ccc;
-        }
-        &:nth-child(11) {
-          animation-delay: 1300ms;
-          border-top: 1px solid #ccc;
-        }
-      }
-      .otherLinkSelected.selected {
-        color: yellow;
-        border-bottom: 1px solid transparent;
-      }
-    }
-    .closeSubNavLinks {
-      height: 0px;
-      max-height: 0px;
-      opacity: 1;
-      overflow: hidden;
-      transition: 0.5s ease-in-out;
-      //   position: absolute;
-      display: flex;
-      flex-direction: column;
-    }
-  }
+  // .subNav {
+  //   position: sticky;
+  //   top: 0;
+  //   z-index: 9999;
+  //   // right: 10%;
+  //   display: flex;
+  //   flex-direction: column;
+  //   .openSubNavLinks {
+  //     display: flex;
+  //     flex-direction: column;
+  //     width: 12rem;
+  //     .otherLinkSelected {
+  //       min-width: inherit;
+  //       padding: 0.6rem 1rem;
+  //       font-size: 1rem;
+  //       animation: animateNavMenuItems 400ms linear forwards;
+  //       transform-origin: top right;
+  //       opacity: 0;
+  //       background-color: #292929;
+  //       color: #fff;
+  //       border-left: 3px solid transparent;
+  //       &:hover {
+  //         background-color: #323232;
+  //         border-left: 3px solid #fff;
+  //       }
+  //       &:nth-child(1) {
+  //         animation-delay: 200ms;
+  //         border-radius: 0.2rem 0.2rem 0 0;
+  //         // border-bottom: 1px solid #ccc;
+  //       }
+  //       &:nth-child(2) {
+  //         animation-delay: 300ms;
+  //         border-top: 1px solid #ccc;
+  //       }
+  //       &:nth-child(3) {
+  //         animation-delay: 400ms;
+  //         border-top: 1px solid #ccc;
+  //       }
+  //       &:nth-child(4) {
+  //         animation-delay: 500ms;
+  //         border-top: 1px solid #ccc;
+  //       }
+  //       &:nth-child(5) {
+  //         animation-delay: 600ms;
+  //         border-top: 1px solid #ccc;
+  //       }
+  //       &:nth-child(6) {
+  //         animation-delay: 700ms;
+  //         border-top: 1px solid #ccc;
+  //       }
+  //       &:nth-child(7) {
+  //         animation-delay: 800ms;
+  //         border-top: 1px solid #ccc;
+  //       }
+  //       &:nth-child(8) {
+  //         animation-delay: 900ms;
+  //         border-top: 1px solid #ccc;
+  //       }
+  //       &:nth-child(8) {
+  //         animation-delay: 1000ms;
+  //         border-top: 1px solid #ccc;
+  //       }
+  //       &:nth-child(9) {
+  //         animation-delay: 1100ms;
+  //         border-top: 1px solid #ccc;
+  //       }
+  //       &:nth-child(10) {
+  //         animation-delay: 1200ms;
+  //         border-top: 1px solid #ccc;
+  //       }
+  //       &:nth-child(11) {
+  //         animation-delay: 1300ms;
+  //         border-top: 1px solid #ccc;
+  //       }
+  //     }
+  //     .otherLinkSelected.selected {
+  //       color: yellow;
+  //       border-bottom: 1px solid transparent;
+  //     }
+  //   }
+  //   .closeSubNavLinks {
+  //     height: 0px;
+  //     max-height: 0px;
+  //     opacity: 1;
+  //     overflow: hidden;
+  //     transition: 0.5s ease-in-out;
+  //     //   position: absolute;
+  //     display: flex;
+  //     flex-direction: column;
+  //   }
+  // }
   #smallScreenMenu {
     position: absolute;
     // min-width: 10rem;

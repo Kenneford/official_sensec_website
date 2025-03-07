@@ -23,8 +23,7 @@ const faqs = [
     question: "Does the school have a laboratory?",
     answer:
       "Sure, our school has a standard science laboratory which helps promotes scientific literacy among students by helping them develop among other competencies, problem solving skills, critical thinking, and appreciation of the importance of technology.",
-    link: "#",
-    // link: "/sensec/science_laboratory#science_laboratory",
+    link: "/sensec/courses#General Science",
   },
   {
     question: "How much is the boarding fees per semester?",
@@ -45,7 +44,7 @@ export function QuestionsSection() {
   console.log(openFAQ);
   const scrollWithOffset = (el) => {
     const yCoordinate = el.getBoundingClientRect().top + window.scrollY;
-    const yOffset = -150;
+    const yOffset = -80;
     window.scrollTo({ top: yCoordinate + yOffset, behavior: "smooth" });
   };
 

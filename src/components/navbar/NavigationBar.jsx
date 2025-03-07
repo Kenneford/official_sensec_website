@@ -27,7 +27,7 @@ const signUpOptions = [
     path: "/sensec/sign_up/students",
   },
   {
-    name: "Others",
+    name: "Staffs Sign-up",
     path: "/sensec/sign_up/staffs",
   },
 ];
@@ -69,27 +69,31 @@ const userActions = [
 ];
 const navbarLinks = [
   {
-    name: "homepage",
+    name: "Home",
     path: "/sensec/homepage#homePage",
   },
   {
-    name: "about",
+    name: "About",
     path: "/sensec/about#aboutPage",
   },
   {
-    name: "courses",
+    name: "Courses",
     path: "/sensec/courses#allProgrammes",
   },
   {
-    name: "contact",
+    name: "Contact",
     path: "/sensec/contact#contactPage",
   },
-  // {
-  //   name: "blog",
-  //   path: "/sensec/blogs#blogsPage",
-  // },
   {
-    name: "others",
+    name: "Blogs",
+    path: "/sensec/blogs#blogsPage",
+  },
+  {
+    name: "Gallery",
+    path: "/sensec/gallery#galleryPage",
+  },
+  {
+    name: "Others",
     path: "#",
   },
 ];
@@ -115,6 +119,7 @@ export function NavigationBar({
   const authUser = useSelector(getAuthUser);
   const allUsers = useSelector(getAllUsers);
   const { currentGuestPage, enrollment } = useParams();
+  console.log(currentGuestPage);
 
   const otherLinks = [
     {
@@ -146,6 +151,10 @@ export function NavigationBar({
         student: `/sensec/users/${authUser?.uniqueId}/student/Dashboard/Overview`,
       },
     },
+    {
+      name: "Pay Fees",
+      path: "/sensec/pay_fees#paymentPage",
+    },
     // {
     //   name: "Join Sensosa",
     //   path: "/sensec/users/Dashboard",
@@ -169,10 +178,14 @@ export function NavigationBar({
       name: "Contact",
       path: "/sensec/contact#contactPage",
     },
-    // {
-    //   name: "Blog",
-    //   path: "/sensec/blogs#blogsPage",
-    // },
+    {
+      name: "blogs",
+      path: "/sensec/blogs#blogsPage",
+    },
+    {
+      name: "Gallery",
+      path: "/sensec/gallery#galleryPage",
+    },
     {
       name: "Check Placement",
       path: "/sensec/students/enrollment/placement_check",
@@ -544,10 +557,12 @@ export function NavigationBar({
                     to={link?.path}
                     smooth
                     scroll={scrollWithOffset}
-                    sx={{
+                    style={{
                       // my: 2,
                       color: `${
-                        currentGuestPage && link?.name === currentGuestPage
+                        currentNavLink &&
+                        currentNavLink !== "Others" &&
+                        link?.name === currentNavLink
                           ? "yellow"
                           : "white"
                       }`,
@@ -555,19 +570,19 @@ export function NavigationBar({
                     onClick={() => {
                       // Click handler
                       localStorage.setItem("currentNavLink", link?.name);
-                      if (link?.name === "others") {
+                      if (link?.name === "Others") {
                         setOpenUserLinks(
                           !openUserLinks,
                           setOpenSubNavLinks(!openSubNavLinks)
                         );
                       } else {
-                        // localStorage.removeItem("currentOtherNavLink");
+                        localStorage.removeItem("currentOtherNavLink");
                       }
                       navigate(link?.path);
                     }}
                   >
-                    {link?.name === "homepage" ? "Home" : link?.name}
-                    {link?.name == "others" && (
+                    {link?.name}
+                    {link?.name == "Others" && (
                       <>
                         {!openUserLinks ? (
                           <ExpandMoreIcon className="expandMoreIcon" />
@@ -577,7 +592,7 @@ export function NavigationBar({
                       </>
                     )}
                   </HashLink>
-                  {link?.name === "others" && (
+                  {link?.name === "Others" && (
                     <Box id="otherLinks">
                       <button
                         className={

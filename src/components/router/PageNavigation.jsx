@@ -16,6 +16,7 @@ import {
   Home,
   PageNotFound,
   PageNotFoundError,
+  Payment,
   PlacementCheckOverview,
   StudentDataOverview,
   StudentEnrollment,
@@ -165,6 +166,10 @@ export default function PageNavigation() {
               path: "placement_check/:studentName/:studentIndexNo",
               element: <PlacementCheckOverview />,
             },
+            // {
+            //   path: ":studentIndexNo/pay_fees",
+            //   element: <Payment />,
+            // },
             {
               path: "online/:studentIndexNo",
               element: <StudentEnrollment />,

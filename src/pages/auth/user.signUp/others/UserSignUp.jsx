@@ -29,6 +29,7 @@ import Redirection from "../../../../components/pageLoading/Redirection";
 import LoadingProgress from "../../../../components/pageLoading/LoadingProgress";
 import { FetchAllUsers } from "../../../../data/allUsers/FetchAllUsers";
 import { Helmet } from "react-helmet-async";
+import SmallFooter from "../../../../components/footer/SmallFooter";
 
 export function UserSignUp() {
   const dispatch = useDispatch();
@@ -558,6 +559,7 @@ export function UserSignUp() {
           </Box>
         </Box>
       </Box>
+      <SmallFooter />
     </>
   );
 }

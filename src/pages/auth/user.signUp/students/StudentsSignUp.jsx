@@ -19,7 +19,10 @@ import {
   MenuItem,
   Typography,
 } from "@mui/material";
-import { CustomTextField } from "../../../../muiStyling/muiStyling";
+import {
+  CustomMenuProps,
+  CustomTextField,
+} from "../../../../muiStyling/muiStyling";
 import {
   fetchAllUsers,
   getAuthUser,
@@ -414,6 +417,9 @@ export function StudentsSignUp() {
                         ? "Not enrolled into selected programme!"
                         : ""
                     }
+                    slotProps={{
+                      select: { MenuProps: CustomMenuProps },
+                    }}
                     sx={{
                       "& .MuiInputLabel-asterisk": {
                         color:
@@ -448,6 +454,9 @@ export function StudentsSignUp() {
                     helperText={
                       classInputError ? "You're not in this class!" : ""
                     }
+                    slotProps={{
+                      select: { MenuProps: CustomMenuProps },
+                    }}
                     sx={{
                       "& .MuiInputLabel-asterisk": {
                         color:
