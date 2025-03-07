@@ -179,7 +179,7 @@ export function NavigationBar({
       path: "/sensec/contact#contactPage",
     },
     {
-      name: "blogs",
+      name: "Blogs",
       path: "/sensec/blogs#blogsPage",
     },
     {
