@@ -48,7 +48,7 @@ export default function BlogCard({ blogId, title, content, image, postedBy }) {
   return (
     <Card>
       <Box className="blogWrapper">
-        <Box className="blogTopLeft">
+        <Box className="blogTopLeft" px={2}>
           <p>Posted by:</p>
           <Link to="#" className="blogBy">
             <span className="blogUsername">
