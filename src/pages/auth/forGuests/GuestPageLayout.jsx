@@ -13,6 +13,8 @@ import {
   Gallery,
   Home,
   PageNotFound,
+  PrivacyPolicy,
+  TermsOfService,
 } from "../../../components/lazyLoading/LazyComponents";
 import {
   ForgotPassword,
@@ -134,6 +136,8 @@ export function GuestPageLayout() {
       {location?.pathname === "/sensec/blogs" && <Blogs />}
       {location?.pathname === "/sensec/forgot_password" && <ForgotPassword />}
       {location?.pathname === "/sensec/gallery" && <Gallery />}
+      {location?.pathname === "/sensec/terms_of_service" && <TermsOfService />}
+      {location?.pathname === "/sensec/privacy_policy" && <PrivacyPolicy />}
       {/* {location?.pathname ===
         `/sensec/sign_up/partners/${signUpId}/successful` && (
         <SignUpSuccessPage />

@@ -89,10 +89,18 @@ export default function Footer() {
             </div>
             <div className="policy">
               <h3>Legal Terms</h3>
-              <HashLink to={"#"} smooth scroll={scrollWithOffset}>
+              <HashLink
+                to={"/sensec/privacy_policy"}
+                smooth
+                scroll={scrollWithOffset}
+              >
                 Privacy Policy
               </HashLink>
-              <HashLink to={"#"} smooth scroll={scrollWithOffset}>
+              <HashLink
+                to={"/sensec/terms_of_service"}
+                smooth
+                scroll={scrollWithOffset}
+              >
                 Terms of Service
               </HashLink>
             </div>
