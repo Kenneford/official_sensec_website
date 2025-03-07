@@ -316,6 +316,7 @@ export function NavigationBar({
       <StyledNavbar.Navbar>
         {/* Menu Icons */}
         <Box
+          display={{ xs: "block", sm: "none" }}
           sx={{
             flex: "1",
             display: {
@@ -439,7 +440,8 @@ export function NavigationBar({
               )} */}
             </Box>
           )}
-          <Box display={isScrolled && isDashboard ? "none" : "block"}>
+          {/* <Box display={isScrolled && isDashboard ? "none" : "block"}> */}
+          <Box display={{ xs: "block", sm: "none" }}>
             {openMenuLinks && (
               <Box id="smallScreenMenu">
                 <Box>
