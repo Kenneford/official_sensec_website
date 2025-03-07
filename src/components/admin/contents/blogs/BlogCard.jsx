@@ -22,6 +22,7 @@ import Parser from "html-react-parser";
 import { dateFormatter } from "../../../../dateFormatter/DateFormatter";
 import { useSelector } from "react-redux";
 import { getAuthUser } from "../../../../features/auth/authSlice";
+import { motion } from "framer-motion";
 
 export default function BlogCard({ blogId, title, content, image, postedBy }) {
   // const { postOptions, setPostOptions } = useOutletContext();

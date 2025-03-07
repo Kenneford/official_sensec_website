@@ -18,10 +18,12 @@ import {
   PageNotFoundError,
   Payment,
   PlacementCheckOverview,
+  PrivacyPolicy,
   StudentDataOverview,
   StudentEnrollment,
   StudentPlacementCheck,
   StudentPlacementVerification,
+  TermsOfService,
 } from "../lazyLoading/LazyComponents";
 import {
   AuthUserDashboard,
@@ -120,6 +122,14 @@ export default function PageNavigation() {
           path: "/sensec/blogs",
           element: <Blogs />,
         },
+        // {
+        //   path: "/sensec/terms_of_service",
+        //   element: <TermsOfService />,
+        // },
+        // {
+        //   path: "/sensec/privacy_policy",
+        //   element: <PrivacyPolicy />,
+        // },
         // {
         //   path: "/sensec/facilities",
         //   element: <SchoolFacilities />,

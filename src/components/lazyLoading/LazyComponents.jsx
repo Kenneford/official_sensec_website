@@ -320,3 +320,19 @@ export const AdminDashboard = lazyWithSuspense(
   <PageLoading />,
   "AdminDashboard"
 );
+export const PrivacyPolicy = lazyWithSuspense(
+  () =>
+    import("../../pages/policies_&_terms/PrivacyPolicy").then((module) => {
+      return { default: module.PrivacyPolicy };
+    }),
+  <PageLoading />,
+  "PrivacyPolicy"
+);
+export const TermsOfService = lazyWithSuspense(
+  () =>
+    import("../../pages/policies_&_terms/TermsOfService").then((module) => {
+      return { default: module.TermsOfService };
+    }),
+  <PageLoading />,
+  "TermsOfService"
+);
