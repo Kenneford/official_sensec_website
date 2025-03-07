@@ -149,7 +149,7 @@ export default function Footer() {
                       overflowWrap: "break-word", // Ensures long words like email addresses wrap
                     }}
                   >
-                    sensec@gmail.com
+                    senya.shs.1991@gmail.com
                   </p>
                 </span>
               </div>

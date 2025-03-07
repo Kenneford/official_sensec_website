@@ -239,6 +239,7 @@ export function StudentPlacementVerification() {
         setIsVerified(false);
       }, 5000);
       setTimeout(() => {
+        // navigate(`/sensec/students/enrollment/${maskedStudentIndex}/pay_fees`);
         if (adminCurrentAction) {
           navigate(
             `/sensec/users/${authUser?.uniqueId}/admin/User-Types/Students/${maskedStudentIndex}/new_enrollment`
@@ -375,6 +376,7 @@ export function StudentPlacementVerification() {
       }, 6000);
       setTimeout(() => {
         dispatch(resetPlacementVerificationState()); // Reset Verification State
+        // navigate(`/sensec/students/enrollment/${maskedStudentIndex}/pay_fees`);
         if (adminCurrentAction) {
           navigate(
             `/sensec/users/${authUser?.uniqueId}/admin/User-Types/Students/${maskedStudentIndex}/new_enrollment`

@@ -10,6 +10,7 @@ import {
   Contact,
   Courses,
   EmploymentForm,
+  Gallery,
   Home,
   PageNotFound,
 } from "../../../components/lazyLoading/LazyComponents";
@@ -132,6 +133,7 @@ export function GuestPageLayout() {
       {location?.pathname === "/sensec/facilities" && <SchoolFacilities />}
       {location?.pathname === "/sensec/blogs" && <Blogs />}
       {location?.pathname === "/sensec/forgot_password" && <ForgotPassword />}
+      {location?.pathname === "/sensec/gallery" && <Gallery />}
       {/* {location?.pathname ===
         `/sensec/sign_up/partners/${signUpId}/successful` && (
         <SignUpSuccessPage />

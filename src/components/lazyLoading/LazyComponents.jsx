@@ -91,6 +91,14 @@ export const Courses = lazyWithSuspense(
   <PageLoading />,
   "CoursesPage"
 );
+export const Payment = lazyWithSuspense(
+  () =>
+    import("../../pages/payments/Payment").then((module) => {
+      return { default: module.Payment };
+    }),
+  <PageLoading />,
+  "PaymentPage"
+);
 export const CoursesBanner = lazyWithSuspense(
   () =>
     import("../forCoursesPage/banner/CoursesBanner").then((module) => {
@@ -106,6 +114,14 @@ export const AllCourses = lazyWithSuspense(
     }),
   <PageLoading />,
   "AllCoursesPage"
+);
+export const Gallery = lazyWithSuspense(
+  () =>
+    import("../../pages/gallery/Gallery").then((module) => {
+      return { default: module.Gallery };
+    }),
+  <PageLoading />,
+  "GalleryPage"
 );
 export const QuestionsSection = lazyWithSuspense(
   () =>

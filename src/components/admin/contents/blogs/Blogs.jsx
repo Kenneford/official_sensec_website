@@ -230,7 +230,7 @@ export function Blogs() {
             }}
           >
             <Avatar
-              src="https://www.senyashs.com/assets/sensec-logo1.png"
+              src="/assets/sensec-logo1.png"
               alt="Sensec Logo"
               sx={{ alignItems: "center" }}
             />
@@ -280,24 +280,31 @@ export function Blogs() {
         <Box
           // sx={{ display: { xs: "none", sm: "block" } }}
           sx={{
-            width: { xs: "100%", sm: "95%", md: "90%", lg: "90%", xl: "70%" },
+            // width: { xs: "100%", sm: "95%", md: "90%", lg: "90%", xl: "70%" },
             // padding: ".3rem",
             position: "sticky",
             top: "3.45rem",
             zIndex: 2,
             backgroundColor: "#fff",
           }}
-          margin={"auto"}
+          m={".5rem"}
         >
-          <Grid container>
-            <Grid item xs={12}>
-              <BlogSearchFilter
-                value={searchedBlog}
-                onChange={handleOnChange}
-                placeholder={"Search"}
-              />
+          <Box
+            m={"auto"}
+            sx={{
+              maxWidth: 960,
+            }}
+          >
+            <Grid container>
+              <Grid item xs={12}>
+                <BlogSearchFilter
+                  value={searchedBlog}
+                  onChange={handleOnChange}
+                  placeholder={"Search"}
+                />
+              </Grid>
             </Grid>
-          </Grid>
+          </Box>
         </Box>
       )}
       {adminCurrentAction && (
@@ -331,13 +338,7 @@ export function Blogs() {
           <Box m={".5rem"}>
             <Box
               sx={{
-                width: {
-                  xs: "100%",
-                  sm: "95%",
-                  md: "90%",
-                  lg: "90%",
-                  xl: "70%",
-                },
+                maxWidth: 960,
               }}
               margin={"auto"}
             >
