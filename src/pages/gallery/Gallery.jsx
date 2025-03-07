@@ -13,6 +13,7 @@ import SmallFooter from "../../components/footer/SmallFooter";
 import SearchFilter from "../../components/searchForm/SearchFilter";
 import SearchForm from "../../components/searchForm/SearchForm";
 import { Search } from "@mui/icons-material";
+import { CustomSearchField } from "../../muiStyling/muiStyling";
 
 export function Gallery() {
   const [images, setImages] = useState([
@@ -73,35 +74,14 @@ export function Gallery() {
               marginBottom: 3,
             }}
           >
-            <TextField
-              label="Search Images"
+            <CustomSearchField
+              label="Search"
               variant="outlined"
-              maxWidth={960}
+              //   maxWidth={960}
               fullWidth
               onChange={(e) => setSearch(e.target.value)}
               sx={{
                 marginTop: 1,
-                backgroundColor: "#fff",
-                "& .MuiOutlinedInput-root": {
-                  color: "#696969", // Custom focus label color
-                  "& legend": {
-                    display: "inline",
-                    width: "auto", // Ensure the label width is appropriate
-                  },
-                  "&.Mui-focused fieldset": {
-                    borderColor: "#454343ad", // Change focus border color
-                    boxShadow: "2px 2px 3px 0px #454343ad",
-                  },
-                  // Border styles for hover
-                  "&:hover fieldset": {
-                    border: ".5px solid #454343ad", // Border on hover
-                    boxShadow: "2px 2px 3px 0px #1a0505ad",
-                  },
-                },
-                // Label size and color for focused state
-                "& .MuiInputLabel-root.Mui-focused": {
-                  color: "#696969", // Custom focus label color
-                },
               }}
               size="small"
               slotProps={{
@@ -118,7 +98,7 @@ export function Gallery() {
           {filteredImages?.length > 0 ? (
             <Grid container spacing={3}>
               {filteredImages.map((image) => (
-                <Grid item xs={12} sm={6} md={4} key={image._id}>
+                <Grid item xs={12} sm={6} md={4} key={image.title}>
                   <Card>
                     <CardMedia
                       component="img"
