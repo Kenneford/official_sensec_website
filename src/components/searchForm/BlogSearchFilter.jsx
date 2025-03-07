@@ -3,7 +3,10 @@ import "./blogSearch.scss";
 import { Box, InputAdornment, Typography } from "@mui/material";
 // import { useDispatch, useSelector } from "react-redux";
 import PropType from "prop-types";
-import { CustomTextField } from "../../muiStyling/muiStyling";
+import {
+  CustomSearchField,
+  CustomTextField,
+} from "../../muiStyling/muiStyling";
 import { Search } from "@mui/icons-material";
 
 export default function BlogSearchFilter({ value, onChange, placeholder }) {
@@ -16,36 +19,23 @@ export default function BlogSearchFilter({ value, onChange, placeholder }) {
   return (
     <Box position={"relative"} className="searchBar">
       <form className="searchForm" onSubmit={handleSearch}>
-        <CustomTextField
+        <CustomSearchField
           fullWidth
           label={placeholder}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           autoComplete="off"
+          sx={{
+            marginTop: 1,
+          }}
+          size="small"
           slotProps={{
             input: {
               endAdornment: (
-                <InputAdornment
-                  position="end"
-                  sx={{ "&:hover": { cursor: "pointer" } }}
-                >
-                  <Search sx={{ color: "#696969" }} />
+                <InputAdornment position="end">
+                  <Search sx={{ "&:hover": { cursor: "pointer" } }} />
                 </InputAdornment>
               ),
-            },
-          }}
-          sx={{
-            height: "3rem",
-            "& .MuiInputBase-root": {
-              height: "100%",
-              boxSizing: "border-box", // Ensures padding is accounted for
-              backgroundColor: "#fff",
-              paddingRight: ".5rem",
-            },
-            "& .MuiInputBase-input": {
-              padding: "0 14px", // Adjust vertical and horizontal padding
-              display: "flex",
-              alignItems: "center",
             },
           }}
         />

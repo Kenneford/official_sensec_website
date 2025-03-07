@@ -276,7 +276,7 @@ export function Blogs() {
           </Box>
         </Box>
       )}
-      {!adminCurrentAction && (
+      {!adminCurrentAction && !addNewBlog && (
         <Box
           // sx={{ display: { xs: "none", sm: "block" } }}
           sx={{
