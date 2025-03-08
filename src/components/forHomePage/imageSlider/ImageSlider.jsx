@@ -21,8 +21,8 @@ const sliderImages = [
     description:
       "Kindly watch this short video on how to log into your portal.",
     actionButtonText: "Click Here",
-    actionLink: "/sensec/students",
-    alt: "Student Portal Image",
+    actionLink: "/sensec/portal/how_to_login",
+    alt: "Portal Image",
   },
   {
     url: "https://images.unsplash.com/photo-1506377872008-6645d9d29ef7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
@@ -198,7 +198,10 @@ export function ImageSlider() {
                   </Typography>
                 </motion.div>
                 <motion.button
-                  onClick={() => navigate(image.actionLink)}
+                  onClick={() => {
+                    localStorage.removeItem("currentNavLink");
+                    navigate(image.actionLink);
+                  }}
                   id="ImgSliderBtn"
                   initial={"off"}
                   whileInView={"on"}

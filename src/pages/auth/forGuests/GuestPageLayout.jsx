@@ -13,6 +13,7 @@ import {
   Gallery,
   Home,
   PageNotFound,
+  PortalLoginVideo,
   PrivacyPolicy,
   TermsOfService,
 } from "../../../components/lazyLoading/LazyComponents";
@@ -138,6 +139,9 @@ export function GuestPageLayout() {
       {location?.pathname === "/sensec/gallery" && <Gallery />}
       {location?.pathname === "/sensec/terms_of_service" && <TermsOfService />}
       {location?.pathname === "/sensec/privacy_policy" && <PrivacyPolicy />}
+      {location?.pathname === "/sensec/portal/how_to_login" && (
+        <PortalLoginVideo />
+      )}
       {/* {location?.pathname ===
         `/sensec/sign_up/partners/${signUpId}/successful` && (
         <SignUpSuccessPage />
