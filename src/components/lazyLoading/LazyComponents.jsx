@@ -336,3 +336,11 @@ export const TermsOfService = lazyWithSuspense(
   <PageLoading />,
   "TermsOfService"
 );
+export const PortalLoginVideo = lazyWithSuspense(
+  () =>
+    import("../../pages/portalLoginVideo/PortalLoginVideo").then((module) => {
+      return { default: module.PortalLoginVideo };
+    }),
+  <PageLoading />,
+  "PortalLoginVideo"
+);
