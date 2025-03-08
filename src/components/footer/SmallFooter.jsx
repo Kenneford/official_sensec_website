@@ -2,10 +2,11 @@ import { Box } from "@mui/material";
 import "./smallFooter.scss";
 
 export default function SmallFooter() {
+  const currentYear = new Date().getFullYear();
   return (
     <Box className="smallFooterContent">
       <p>
-        Copyright &copy;2023{" "}
+        Copyright &copy;{currentYear}{" "}
         <span style={{ color: "#0fc80f", marginLeft: ".3rem" }}>Sen</span>
         <span style={{ color: "yellow" }}>sec</span>
         <span
