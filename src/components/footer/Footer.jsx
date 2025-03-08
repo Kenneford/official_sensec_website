@@ -8,6 +8,7 @@ import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import LocalPhoneIcon from "@mui/icons-material/LocalPhone";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import { HashLink } from "react-router-hash-link";
+import { Box, Grid, Typography } from "@mui/material";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -45,144 +46,182 @@ export default function Footer() {
   };
 
   return (
-    <div className="footer">
-      <div className="footerWrap">
-        <div className="footerCont">
-          <div className="footerLogo">
-            <h1>
+    <Box className="footer">
+      <Box
+        display={"flex"}
+        flexDirection={"column"}
+        justifyContent={"center"}
+        maxWidth={1020}
+        m={"auto"}
+        className="footerWrap"
+        p={1}
+      >
+        <Box className="footerCont">
+          <Box mb={2} className="footerLogo">
+            <Typography variant="h1" fontSize={"1.5rem"} fontWeight={500}>
               Sen<span>sec</span>
-            </h1>
-            <p>The Great Sensec!</p>
-            <p>Forever Great!</p>
-          </div>
-          <div className="footerContent">
-            <div className="pageLinks">
-              <h3>Usefull Links</h3>
-              <HashLink
-                to={"/sensec/homepage#homePage"}
-                smooth
-                scroll={scrollWithOffset}
-              >
-                Home
-              </HashLink>
-              <HashLink
-                to={"/sensec/about#aboutPage"}
-                smooth
-                scroll={scrollWithOffset}
-              >
-                About
-              </HashLink>
-              <HashLink
-                to={"/sensec/courses#allProgrammes"}
-                smooth
-                scroll={scrollWithOffset}
-              >
-                Courses
-              </HashLink>
-              <HashLink
-                to={"/sensec/contact#contactPage"}
-                smooth
-                scroll={scrollWithOffset}
-              >
-                Contact
-              </HashLink>
-            </div>
-            <div className="policy">
-              <h3>Legal Terms</h3>
-              <HashLink
-                to={"/sensec/privacy_policy"}
-                smooth
-                scroll={scrollWithOffset}
-              >
-                Privacy Policy
-              </HashLink>
-              <HashLink
-                to={"/sensec/terms_of_service"}
-                smooth
-                scroll={scrollWithOffset}
-              >
-                Terms of Service
-              </HashLink>
-            </div>
-            <div className="contactUs">
-              <h3>Contact Us</h3>
-              <div className="contactIcons">
-                <span>
-                  <button
-                    id="myCallButton"
-                    onClick={() =>
-                      gtag("event", "click", {
-                        event_category: "Button",
-                        event_label: "Call",
-                        value: 1,
-                      })
-                    }
-                  >
-                    <a
-                      href="tel:+491784535757"
-                      style={{
-                        flexWrap: "wrap",
-                        wordBreak: "break-word", // Allows breaking words to wrap text
-                        overflowWrap: "break-word", // Ensures long words like email addresses wrap
-                      }}
-                    >
-                      <LocalPhoneIcon style={{ color: "" }} />
-                      +233 508 670 598
-                    </a>
-                  </button>
-                </span>
-                <span>
-                  <button
-                    id="myWhatsAppButton"
-                    onClick={handleWhatsAppCallClick}
-                  >
-                    <WhatsAppIcon style={{ color: "rgb(25, 173, 30)" }} />
-                    <p
-                      style={{
-                        flexWrap: "wrap",
-                        wordBreak: "break-word", // Allows breaking words to wrap text
-                        overflowWrap: "break-word", // Ensures long words like email addresses wrap
-                      }}
-                    >
-                      +233 245 940 586
-                    </p>
-                  </button>
-                </span>
-                <span>
-                  <MailOutlineIcon style={{ color: "" }} />
-                  <p
-                    style={{
-                      flexWrap: "wrap",
-                      wordBreak: "break-word", // Allows breaking words to wrap text
-                      overflowWrap: "break-word", // Ensures long words like email addresses wrap
-                    }}
-                  >
-                    senya.shs.1991@gmail.com
-                  </p>
-                </span>
-              </div>
-              <div className="socials">
-                <h3>Follow Us</h3>
-                <div className="socialsIcons">
-                  <span className="icon">
-                    <FacebookIcon titleAccess="Facebook Link" />
-                  </span>
-                  <span className="icon">
-                    <InstagramIcon titleAccess="Instagram Link" />
-                  </span>
-                  <span className="icon">
-                    <LinkedInIcon titleAccess="LinkedIn Link" />
-                  </span>
-                  <span className="icon">
-                    <TwitterIcon titleAccess="Twitter Link" />
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      {/* <div className="chatIcon" onClick={openChat}>
+            </Typography>
+            <Typography fontSize={".8rem"} color="#ccc">
+              The Great Sensec!
+            </Typography>
+            <Typography fontSize={".8rem"} color="#ccc">
+              Forever Great!
+            </Typography>
+          </Box>
+          <Box className="footerContent">
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={8}>
+                <Grid container spacing={2}>
+                  <Grid item xs={6}>
+                    <Box className="pageLinks">
+                      <h3>Useful Links</h3>
+                      <HashLink
+                        to={"/sensec/homepage#homePage"}
+                        smooth
+                        scroll={scrollWithOffset}
+                      >
+                        Home
+                      </HashLink>
+                      <HashLink
+                        to={"/sensec/about#aboutPage"}
+                        smooth
+                        scroll={scrollWithOffset}
+                      >
+                        About
+                      </HashLink>
+                      <HashLink
+                        to={"/sensec/courses#allProgrammes"}
+                        smooth
+                        scroll={scrollWithOffset}
+                      >
+                        Courses
+                      </HashLink>
+                      <HashLink
+                        to={"/sensec/contact#contactPage"}
+                        smooth
+                        scroll={scrollWithOffset}
+                      >
+                        Contact
+                      </HashLink>
+                    </Box>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Box className="policy">
+                      <h3>Legal Terms</h3>
+                      <HashLink
+                        to={"/sensec/privacy_policy"}
+                        smooth
+                        scroll={scrollWithOffset}
+                        onClick={() =>
+                          localStorage.removeItem("currentNavLink")
+                        }
+                      >
+                        Privacy Policy
+                      </HashLink>
+                      <HashLink
+                        to={"/sensec/terms_of_service"}
+                        smooth
+                        scroll={scrollWithOffset}
+                        onClick={() =>
+                          localStorage.removeItem("currentNavLink")
+                        }
+                      >
+                        Terms of Service
+                      </HashLink>
+                    </Box>
+                  </Grid>
+                </Grid>
+              </Grid>
+              <Grid item xs={12} sm={4}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <Box className="contactUs">
+                      <h3>Contact Us</h3>
+                      <Box className="contactIcons">
+                        <span>
+                          <button
+                            id="myCallButton"
+                            onClick={() =>
+                              gtag("event", "click", {
+                                event_category: "Button",
+                                event_label: "Call",
+                                value: 1,
+                              })
+                            }
+                          >
+                            <a
+                              href="tel:+491784535757"
+                              style={{
+                                flexWrap: "wrap",
+                                wordBreak: "break-word", // Allows breaking words to wrap text
+                                overflowWrap: "break-word", // Ensures long words like email addresses wrap
+                              }}
+                            >
+                              <LocalPhoneIcon style={{ color: "#cccc" }} />
+                              +233 508 670 598
+                            </a>
+                          </button>
+                        </span>
+                        <span>
+                          <button
+                            id="myWhatsAppButton"
+                            onClick={handleWhatsAppCallClick}
+                          >
+                            <WhatsAppIcon
+                              style={{ color: "rgb(25, 173, 30)" }}
+                            />
+                            <p
+                              style={{
+                                flexWrap: "wrap",
+                                wordBreak: "break-word", // Allows breaking words to wrap text
+                                overflowWrap: "break-word", // Ensures long words like email addresses wrap
+                              }}
+                            >
+                              +233 245 940 586
+                            </p>
+                          </button>
+                        </span>
+                        <span>
+                          <MailOutlineIcon style={{ color: "#cccc" }} />
+                          <p
+                            style={{
+                              flexWrap: "wrap",
+                              wordBreak: "break-word", // Allows breaking words to wrap text
+                              overflowWrap: "break-word", // Ensures long words like email addresses wrap
+                            }}
+                          >
+                            senya.shs.1991@gmail.com
+                          </p>
+                        </span>
+                      </Box>
+                    </Box>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Box className="socials">
+                      <h3>Follow Us</h3>
+                      <Box className="socialsIcons">
+                        <span className="icon">
+                          <FacebookIcon titleAccess="Facebook Link" />
+                        </span>
+                        <span className="icon">
+                          <InstagramIcon titleAccess="Instagram Link" />
+                        </span>
+                        <span className="icon">
+                          <LinkedInIcon titleAccess="LinkedIn Link" />
+                        </span>
+                        <span className="icon">
+                          <TwitterIcon titleAccess="Twitter Link" />
+                        </span>
+                      </Box>
+                    </Box>
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Grid>
+          </Box>
+        </Box>
+      </Box>
+      {/* <Box className="chatIcon" onClick={openChat}>
         {!openChatBox ? (
           <ChatIcon
             style={{
@@ -194,32 +233,32 @@ export default function Footer() {
         ) : (
           <CloseIcon className="closeChatIcon" titleAccess="Close Chat" />
         )}
-      </div>
+      </Box>
       {openChatBox && (
-        <div className="chatModal">
-          <div className="msgBox">
+        <Box className="chatModal">
+          <Box className="msgBox">
             <p>This is a message!</p>
-          </div>
-          <div className="inputField">
+          </Box>
+          <Box className="inputField">
             <input type="text" className="msgInput" />
             <TelegramIcon className="sendIcon" />
-          </div>
-        </div>
+          </Box>
+        </Box>
       )} */}
-      <div className="rights">
+      <Box className="rights">
         <p>
           Copyright &copy;{currentYear}{" "}
           <span style={{ color: "#0fc80f" }}>Sen</span>
           <span style={{ color: "yellow" }}>sec</span>
         </p>
-        <div
+        <Box
           style={{
             border: "1px solid #fff",
             height: "15px",
           }}
-        ></div>
+        ></Box>
         <p>All Rights Reserved!</p>
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }

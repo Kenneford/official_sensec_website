@@ -22,7 +22,7 @@ export function TermsOfService() {
           color="#696969"
           m={"0 0 1rem"}
         >
-          Terms Of Service | Senya SHS
+          Terms Of Service - Senya SHS
         </Typography>
         <Box>
           <Typography fontWeight={500} color="#696969" mb={2}>
@@ -32,11 +32,19 @@ export function TermsOfService() {
             </span>
           </Typography>
           <Typography mb={2}>
-            These Terms of Service (&quot;Terms&quot;) govern your use of the
-            website (www.senyashs.com) operated by Senya Senior High School
-            (&quot;we,&quot; &quot;our,&quot; &quot;us&quot;). By accessing or
-            using this website, you agree to be bound by these Terms. If you do
-            not agree, you should not use our website.
+            These Terms of Service{" "}
+            <span style={{ fontWeight: 500 }}>(&quot;Terms&quot;)</span> govern
+            your use of the website{" "}
+            <span style={{ fontWeight: 500 }}>(www.senyashs.com)</span> operated
+            by{" "}
+            <span style={{ fontWeight: 500 }}>
+              Senya Senior High School (&quot;we,&quot; &quot;our,&quot;
+              &quot;us&quot;)
+            </span>
+            . By accessing or using this website, you agree to be bound by these
+            <span style={{ fontWeight: 500 }}>Terms</span>. If you{" "}
+            <span style={{ fontWeight: 500 }}>do not agree</span>, you should
+            not use our website.
           </Typography>
           <Box mb={2}>
             <Typography fontWeight={500} mb={1}>
@@ -45,9 +53,12 @@ export function TermsOfService() {
             <ul style={{ listStyle: "circle" }}>
               <li style={{ marginLeft: "2rem", marginBottom: ".5rem" }}>
                 <Typography>
-                  This website is provided for informational purposes about
-                  Senya Senior High School, its programs, and activities. You
-                  may use the website solely for personal, non-commercial use.
+                  This website is provided for informational purposes about{" "}
+                  <span style={{ fontWeight: 500 }}>
+                    Senya Senior High School
+                  </span>
+                  , its programs, and activities. You may use the website solely
+                  for personal, non-commercial use.
                 </Typography>
               </li>
               <li style={{ marginLeft: "2rem", marginBottom: ".5rem" }}>
@@ -120,9 +131,11 @@ export function TermsOfService() {
               </li>
               <li style={{ marginLeft: "2rem" }}>
                 <Typography>
-                  The website is provided &quot;as is,&quot; without any express
-                  or implied warranties. We do not guarantee that the website
-                  will be error-free, secure, or available at all times.
+                  The website is provided{" "}
+                  <span style={{ fontWeight: 500 }}>&quot;as is,&quot;</span>{" "}
+                  without any express or implied warranties. We do not guarantee
+                  that the website will be error-free, secure, or available at
+                  all times.
                 </Typography>
               </li>
             </ul>
@@ -133,7 +146,10 @@ export function TermsOfService() {
             </Typography>
             <Box>
               <Typography>
-                To the fullest extent permitted by law, Senya Senior High School
+                To the fullest extent permitted by law,{" "}
+                <span style={{ fontWeight: 500 }}>
+                  Senya Senior High School
+                </span>{" "}
                 will not be liable for any damages arising out of or in
                 connection with the use of our website. This includes direct,
                 indirect, incidental, consequential, or punitive damages, even

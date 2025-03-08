@@ -59,50 +59,14 @@ function App() {
       <TokenExpiry />
       <PageNavigation />
       <ToastContainer style={{ top: "-.1rem" }} />
-      {/* <Box
-        sx={{
-          position: "fixed",
-          bottom: 30,
-          right: 7,
-          display: "flex",
-          alignItems: "center",
-          gap: 1,
-        }}
-        gap={1}
-      >
-        <WebsiteDeveloperButton
-          showButton={showButton}
-          setAnchorEl={setAnchorEl}
-          handleClick={handleClick}
-        />
-        {showButton && (
-          <ScrollToTopButton
-            showButton={showButton}
-            setShowButton={setShowButton}
-            scrollToTop={scrollToTop}
-          />
-        )}
-      </Box> */}
-      <Box
-        sx={{
-          position: "fixed",
-          bottom: 20,
-          right: 0,
-          display: "flex",
-          alignItems: "center",
-          gap: 1,
-          zIndex: 1250,
-        }}
-      >
-        <DeveloperInfo
-          open={open}
-          handleClick={handleClick}
-          handleClickAway={handleClickAway}
-          showButton={showButton}
-          setShowButton={setShowButton}
-          scrollToTop={scrollToTop}
-        />
-      </Box>
+      <DeveloperInfo
+        open={open}
+        handleClick={handleClick}
+        handleClickAway={handleClickAway}
+        showButton={showButton}
+        setShowButton={setShowButton}
+        scrollToTop={scrollToTop}
+      />
     </>
   );
 }
