@@ -15,6 +15,16 @@ import { CustomTextField } from "../../muiStyling/muiStyling";
 import { FetchCurrentAcademicTerms } from "../../data/term.year/FetchAcademicTerms";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { NavigationBar } from "../../components/navbar/NavigationBar";
+import { toast } from "react-toastify";
+import {
+  makePayment,
+  resetMakePaymentData,
+} from "../../features/payments/paymentsSlice";
+import { useDispatch, useSelector } from "react-redux";
+import LoadingProgress from "../../components/pageLoading/LoadingProgress";
+import { TaskAlt } from "@mui/icons-material";
+import Redirection from "../../components/pageLoading/Redirection";
+import Cookies from "js-cookie";
 
 export function Payment() {
   const {
@@ -32,27 +42,36 @@ export function Payment() {
     openMenuLinks,
   } = useOutletContext();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const studentIndexNo = localStorage.getItem("studentIndexNo");
+  // TODO ==>> Fetch All Payments
+
+  const { makePaymentStatus, error, successMessage } = useSelector(
+    (state) => state.payments
+  );
+
+  const studentIndexNo = Cookies.get("masked_student_index");
 
   const [paymentMethod, setPaymentMethod] = useState("");
   const [studentId, setStudentId] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [amount, setAmount] = useState("");
   const [schoolName, setSchoolName] = useState("Senya SHS");
+  const [loadingComplete, setLoadingComplete] = useState(null);
+  const [redirecting, setRedirecting] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  // const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const [paymentState, setPaymentState] = useState({
-    paymentMethod: "",
-    studentId: studentIndexNo,
+    provider: "",
+    studentId: studentIndexNo || "",
     phoneNumber: "",
     amount: "",
     schoolName: "Senya SHS",
     nameOfBank: "",
     accountHolder: "",
-    accountNumber: "",
-    currency: "",
+    email: "",
+    reference: "",
   });
   console.log(paymentState);
 
@@ -66,48 +85,70 @@ export function Payment() {
   const currentYear = new Date().getFullYear();
   const semester = FetchCurrentAcademicTerms();
 
+  // TODO ==>> Find Existing Payment and navigate
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
-    setSuccess(false);
-
-    // Send the payment request to the backend
-    try {
-      const response = await axios.post(`${SENSEC_API_ENDPOINT}/pay_fees`, {
-        paymentMethod: paymentState?.paymentMethod,
-        studentId: paymentState?.studentId,
-        phoneNumber: paymentState?.phoneNumber,
-        amount: paymentState?.amount,
-        schoolName: paymentState?.schoolName,
-        year: currentYear,
-        semester,
-        nameOfBank: paymentState?.nameOfBank,
-        accountHolder: paymentState?.accountHolder,
-        accountNumber: paymentState?.accountNumber,
-        enrollmentFees: studentIndexNo ? true : false,
-      });
-      console.log(response?.data);
-
-      if (response.data.success) {
-        setSuccess(true);
-      } else {
-        setError("Payment request failed!");
-      }
-    } catch (error) {
-      setError("Payment request failed!", error);
-    } finally {
-      setLoading(false);
-    }
+    const data = {
+      provider: paymentState?.provider,
+      studentId: paymentState?.studentId,
+      phoneNumber: paymentState?.phoneNumber,
+      amount: Number(paymentState?.amount),
+      reference: paymentState?.reference,
+      year: currentYear,
+      semester,
+      email: paymentState?.email,
+    };
+    dispatch(makePayment(data));
   };
 
+  // Handle enrollment status check
   useEffect(() => {
-    if (success) {
-      setTimeout(() => {
-        navigate(`/sensec/students/enrollment/online/${studentIndexNo}`);
-      }, 3000);
+    if (makePaymentStatus === "pending") {
+      setLoadingComplete(false);
     }
-  }, [success, studentIndexNo, navigate]);
+    if (makePaymentStatus === "rejected") {
+      setTimeout(() => {
+        error?.errorMessage?.message?.map((err) =>
+          toast.error(err, {
+            position: "top-right",
+            theme: "light",
+            toastId: err,
+          })
+        );
+      }, 1000);
+      setTimeout(() => {
+        setLoadingComplete(null);
+        dispatch(resetMakePaymentData());
+      }, 3000);
+      return;
+    }
+    if (makePaymentStatus === "success") {
+      setTimeout(() => {
+        setLoadingComplete(true);
+      }, 3000);
+      setTimeout(() => {
+        setRedirecting(true);
+        dispatch(resetMakePaymentData());
+      }, 6000);
+      setTimeout(() => {
+        // setRedirecting(false);
+        // setLoadingComplete(null);
+        Cookies.remove("masked_student_index");
+        if (paymentState?.reference === "Enrolment") {
+          navigate(`/sensec/students/enrollment/online/${studentIndexNo}`);
+        }
+      }, 9000);
+    }
+  }, [
+    navigate,
+    dispatch,
+    makePaymentStatus,
+    error,
+    successMessage,
+    studentIndexNo,
+    paymentState,
+  ]);
 
   return (
     <>
@@ -196,7 +237,7 @@ export function Payment() {
             color="#696969"
             sx={{ fontSize: "1.4rem", fontWeight: 500 }}
           >
-            School Fees Payment
+            Student Transactions
           </Typography>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={2}>
@@ -205,6 +246,7 @@ export function Payment() {
                   label="Student ID"
                   variant="outlined"
                   fullWidth
+                  size="small"
                   name="studentId"
                   value={paymentState?.studentId}
                   onChange={handleInputValue}
@@ -221,6 +263,7 @@ export function Payment() {
                   label="Phone Number"
                   variant="outlined"
                   fullWidth
+                  size="small"
                   name="phoneNumber"
                   value={paymentState?.phoneNumber}
                   onChange={handleInputValue}
@@ -235,36 +278,63 @@ export function Payment() {
               <Grid item xs={12} sm={6}>
                 <CustomTextField
                   select
-                  label="Payment Method"
+                  label="Provider"
                   variant="outlined"
                   fullWidth
-                  name="paymentMethod"
-                  value={paymentState?.paymentMethod}
+                  size="small"
+                  name="provider"
+                  value={paymentState?.provider}
                   onChange={handleInputValue}
                   required
                   sx={{
                     "& .MuiInputLabel-asterisk": {
-                      color: paymentState?.paymentMethod ? "green" : "red", // Change the asterisk color to red
+                      color: paymentState?.provider ? "green" : "red", // Change the asterisk color to red
                     },
                   }}
                 >
-                  <MenuItem value="Mobile Money" sx={{ fontSize: ".8rem" }}>
-                    Mobile Money
+                  <MenuItem value="MTN" sx={{ fontSize: ".8rem" }}>
+                    MTN
                   </MenuItem>
-                  <MenuItem value="Bank Transfer" sx={{ fontSize: ".8rem" }}>
-                    Bank Transfer
+                  <MenuItem value="AirtelTigo" sx={{ fontSize: ".8rem" }}>
+                    AirtelTigo
                   </MenuItem>
-                  <MenuItem value="Bank Transfer" sx={{ fontSize: ".8rem" }}>
-                    Card Transfer
+                  <MenuItem value="Telecel/Vodafone" sx={{ fontSize: ".8rem" }}>
+                    Telecel/Vodafone
                   </MenuItem>
                 </CustomTextField>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <CustomTextField
                   select
+                  label="Reference"
+                  variant="outlined"
+                  fullWidth
+                  size="small"
+                  name="reference"
+                  value={paymentState?.reference}
+                  onChange={handleInputValue}
+                  required
+                  sx={{
+                    "& .MuiInputLabel-asterisk": {
+                      color: paymentState?.reference ? "green" : "red", // Change the asterisk color to red
+                    },
+                  }}
+                >
+                  <MenuItem value="Enrolment" sx={{ fontSize: ".8rem" }}>
+                    Enrolment
+                  </MenuItem>
+                  <MenuItem value="Report" sx={{ fontSize: ".8rem" }}>
+                    Report
+                  </MenuItem>
+                </CustomTextField>
+              </Grid>
+              {/* <Grid item xs={12} sm={6}>
+                <CustomTextField
+                  select
                   label="Currency"
                   variant="outlined"
                   fullWidth
+                  size="small"
                   name="currency"
                   value={paymentState?.currency}
                   onChange={handleInputValue}
@@ -285,14 +355,15 @@ export function Payment() {
                     Card Transfer
                   </MenuItem>
                 </CustomTextField>
-              </Grid>
-              {paymentState?.paymentMethod === "Bank Transfer" && (
+              </Grid> */}
+              {/* {paymentState?.paymentMethod === "Bank Transfer" && (
                 <>
                   <Grid item xs={12} sm={6}>
                     <CustomTextField
                       label="Name of Bank"
                       variant="outlined"
                       fullWidth
+                      size="small"
                       name="nameOfBank"
                       value={paymentState?.nameOfBank}
                       onChange={handleInputValue}
@@ -309,6 +380,7 @@ export function Payment() {
                       label="Account Holder"
                       variant="outlined"
                       fullWidth
+                      size="small"
                       name="accountHolder"
                       value={paymentState?.accountHolder}
                       onChange={handleInputValue}
@@ -325,6 +397,7 @@ export function Payment() {
                       label="Account Number"
                       variant="outlined"
                       fullWidth
+                      size="small"
                       name="accountNumber"
                       value={paymentState?.accountNumber}
                       onChange={handleInputValue}
@@ -337,12 +410,30 @@ export function Payment() {
                     />
                   </Grid>
                 </>
-              )}
+              )} */}
               <Grid item xs={12} sm={6}>
                 <CustomTextField
-                  label="Amount (GHS)"
+                  label="Email"
                   variant="outlined"
                   fullWidth
+                  size="small"
+                  name="email"
+                  value={paymentState?.email}
+                  onChange={handleInputValue}
+                  required
+                  sx={{
+                    "& .MuiInputLabel-asterisk": {
+                      color: paymentState?.email ? "green" : "red", // Change the asterisk color to red
+                    },
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <CustomTextField
+                  label="Amount (GHS¢)"
+                  variant="outlined"
+                  fullWidth
+                  size="small"
                   type="number"
                   name="amount"
                   value={paymentState?.amount}
@@ -369,35 +460,69 @@ export function Payment() {
             required
           /> */}
 
-            {paymentState?.paymentMethod && (
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                fullWidth
-                sx={{
-                  marginTop: 2,
-                  backgroundColor: "green",
-                  transition: ".5s ease",
-                  "&:hover": {
-                    backgroundColor: "#09a80c",
-                  },
-                }}
-                disabled={loading}
-              >
-                {loading ? (
-                  <CircularProgress size={24} />
-                ) : paymentState?.paymentMethod === "MTN Momo" ? (
-                  "Pay via MoMo"
-                ) : (
-                  "Pay via Bank Transfer"
+            {/* {paymentState?.provider && ( */}
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
+              sx={{
+                marginTop: 2,
+                backgroundColor: "green",
+                transition: ".5s ease",
+                "&:hover": {
+                  backgroundColor: "#09a80c",
+                },
+                textTransform: "capitalize",
+                height: "2.5rem",
+                display: "flex",
+                alignItems: "center",
+                lineHeight: "1rem",
+              }}
+              disabled={loading}
+            >
+              {loadingComplete === false && (
+                <LoadingProgress color={"#fff"} size={"1.1rem"} />
+              )}
+              {loadingComplete === true &&
+                makePaymentStatus === "success" &&
+                !redirecting && (
+                  <>
+                    <span>Successful</span>{" "}
+                    <TaskAlt style={{ fontSize: "1.2rem" }} />
+                  </>
                 )}
-              </Button>
-            )}
+              {loadingComplete === null && "Make Payment"}
+              {redirecting && <Redirection color={"#fff"} size={"1.1rem"} />}
+            </Button>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
+              sx={{
+                marginTop: 2,
+                backgroundColor: "#292929",
+                transition: ".5s ease",
+                "&:hover": {
+                  backgroundColor: "#3a3a3a",
+                },
+                textTransform: "capitalize",
+                height: "2.5rem",
+                display: "flex",
+                alignItems: "center",
+              }}
+              onClick={() =>
+                navigate(`/sensec/students/enrollment/online/${studentIndexNo}`)
+              }
+            >
+              Skip
+            </Button>
+            {/* )} */}
           </form>
         </Box>
 
-        {error && (
+        {/* {error && (
           <Typography color="error" align="center" sx={{ marginTop: 2 }}>
             {error}
           </Typography>
@@ -407,7 +532,7 @@ export function Payment() {
           <Typography color="primary" align="center" sx={{ marginTop: 2 }}>
             Payment request created successfully!
           </Typography>
-        )}
+        )} */}
       </Box>
     </>
   );

@@ -295,13 +295,18 @@ export function StudentPlacementCheck() {
         }}
       >
         <h1
-          style={{ textAlign: "center", color: "#696969", fontSize: "1.5rem" }}
+          style={{
+            textAlign: "center",
+            color: "#696969",
+            fontSize: "1.2em",
+            marginTop: "1rem",
+          }}
         >
           Student Placement Check
         </h1>
         <Box
           component="div"
-          id="placementFormWrap"
+          // id="placementFormWrap"
           sx={{
             maxWidth: 600,
             mx: { xs: "0", sm: "auto" },
@@ -310,6 +315,8 @@ export function StudentPlacementCheck() {
             border: "1px solid #ccc",
             borderRadius: "8px",
             backgroundColor: "#f9f9f9",
+            filter: "drop-shadow(0 0 0 rgb(255, 255, 255, 0.68))",
+            boxShadow: "0px 1px 9px 1px #292929",
           }}
         >
           <Box
@@ -326,7 +333,7 @@ export function StudentPlacementCheck() {
               component={"h3"}
               mb={3}
               color="#696969"
-              fontSize={"1.1rem"}
+              fontSize={".9rem"}
               lineHeight={"1.2em"}
               letterSpacing={"1px"}
               // textAlign={"center"}
@@ -339,6 +346,7 @@ export function StudentPlacementCheck() {
               <Grid item xs={12} sm={6}>
                 <CustomTextField
                   fullWidth
+                  size="small"
                   label="JHS Index No."
                   name="jhsIndexNo"
                   value={formData?.jhsIndexNo}
@@ -361,6 +369,7 @@ export function StudentPlacementCheck() {
               <Grid item xs={12} sm={6}>
                 <CustomTextField
                   fullWidth
+                  size="small"
                   label="Year Graduated"
                   name="yearGraduated"
                   value={formData?.yearGraduated}
@@ -388,10 +397,13 @@ export function StudentPlacementCheck() {
                   type="submit"
                   fullWidth
                   sx={{
-                    height: "3.5rem",
+                    height: "2.5rem",
                     letterSpacing: "1px",
                     textTransform: "capitalize",
-                    fontSize: "1em",
+                    fontSize: ".8rem",
+                    display: "flex",
+                    alignItems: "center",
+                    lineHeight: "1rem",
                   }}
                 >
                   {loadingComplete === false && (

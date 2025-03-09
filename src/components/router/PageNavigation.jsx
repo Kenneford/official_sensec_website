@@ -122,6 +122,10 @@ export default function PageNavigation() {
           path: "/sensec/blogs",
           element: <Blogs />,
         },
+        {
+          path: "/sensec/pay_fees",
+          element: <Payment />,
+        },
         // {
         //   path: "/sensec/terms_of_service",
         //   element: <TermsOfService />,

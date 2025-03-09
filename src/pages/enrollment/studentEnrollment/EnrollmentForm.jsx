@@ -55,6 +55,8 @@ import {
 } from "../../../features/academics/academicYearSlice";
 import Cookies from "js-cookie";
 import { Helmet } from "react-helmet-async";
+import { FetchAllPlacementStudents } from "../../../data/students/FetchPlacementStudents";
+import SmallFooter from "../../../components/footer/SmallFooter";
 
 export function EnrollmentForm() {
   const {
@@ -79,16 +81,17 @@ export function EnrollmentForm() {
   const studentIndex = Cookies.get("masked_student_index");
   const allProgrammes = FetchAllProgrammes();
   const allStudents = FetchAllStudents();
+  const allPlacementStudents = FetchAllPlacementStudents();
   const allClassLevels = FetchAllClassLevels();
   const allBatches = FetchAllBatches();
   const allFlattenedProgrammes = FetchAllFlattenedProgrammes();
   const allDivisionProgrammes = useSelector(getAllDivisionProgrammes);
-  const allPlacementStudents = useSelector(getAllPlacementStudents);
+  // const allPlacementStudents = useSelector(getAllPlacementStudents);
   const allCreatedAcademicYears = useSelector(getAllAcademicYears);
   const { enrollmentStatus, error, successMessage } = useSelector(
     (state) => state.student
   );
-  console.log("allBatches: ", allBatches);
+  console.log("allPlacementStudents: ", allPlacementStudents);
 
   //Get current year and random number for student's unique-Id
   const currentYear = new Date().getFullYear();
@@ -129,6 +132,10 @@ export function EnrollmentForm() {
   // New Student state
   const [studentId, setStudentId] = useState("");
   const [unMaskedStudentId, setUnMaskedStudentId] = useState("");
+  const [enrolmentCode, setEnrolmentCode] = useState("");
+  const [isPaidStudent, setIsPaidStudent] = useState(false);
+  const [confirmingPayment, setConfirmingPayment] = useState(null);
+  const [canFillForm, setCanFillForm] = useState(false);
 
   const [newStudent, setNewStudent] = useState({
     uniqueId: studentId ? studentId : "",
@@ -263,10 +270,11 @@ export function EnrollmentForm() {
   // Find placement student
   const memoizedPlacementStudentData = useMemo(() => {
     const placementStudentFound = allPlacementStudents?.find(
-      (std) => std?.jhsIndexNo === studentIndex
+      (std) =>
+        std?.jhsIndexNo === studentIndex || std?.jhsIndexNo === studentIndexNo
     );
     return placementStudentFound;
-  }, [allPlacementStudents, studentIndex]);
+  }, [allPlacementStudents, studentIndex, studentIndexNo]);
 
   // Get Student Batch
   const placementYear = memoizedPlacementStudentData?.yearGraduated;
@@ -368,7 +376,7 @@ export function EnrollmentForm() {
     // if (newStudent?.program) {
     //   dispatch(fetchAllDivisionProgrammes({ programId: newStudent?.program }));
     // }
-    dispatch(fetchAllPlacementStudents());
+    // dispatch(fetchAllPlacementStudents());
     dispatch(fetchAllAcademicYears());
   }, [dispatch, newStudent]);
 
@@ -446,11 +454,57 @@ export function EnrollmentForm() {
   //     : "---"
   // );
 
+  // Find Paid Placement Student
   useEffect(() => {
-    if (!studentIndex) {
-      navigate("/");
+    if (confirmingPayment === false) {
+      const paidStudent = allPlacementStudents?.find(
+        (std) =>
+          std?.enrollmentCode === enrolmentCode &&
+          std?.jhsIndexNo === studentIndexNo
+      );
+      if (paidStudent && paidStudent?.enrollmentFeesPaid) {
+        setIsPaidStudent(true);
+        setTimeout(() => {
+          setConfirmingPayment(true);
+        }, 3000);
+      }
+      if (paidStudent && !paidStudent?.enrollmentFeesPaid) {
+        setTimeout(() => {
+          toast.error("Please complete your enrolment payment first!", {
+            position: "top-right",
+            theme: "light",
+            toastId: "enrolmentPaymentError",
+          });
+          setConfirmingPayment(null);
+          return;
+        }, 3000);
+      }
+      if (enrolmentCode && !paidStudent) {
+        setTimeout(() => {
+          toast.error("Enrolment code not valid!", {
+            position: "top-right",
+            theme: "light",
+            toastId: "inValidEnrolmentCodeError",
+          });
+          setConfirmingPayment(null);
+          return;
+        }, 3000);
+      }
     }
-  }, [navigate, studentIndex]);
+    if (confirmingPayment) {
+      setTimeout(() => {
+        setConfirmingPayment(null);
+        setCanFillForm(true);
+      }, 3000);
+    }
+  }, [
+    navigate,
+    allPlacementStudents,
+    studentIndexNo,
+    enrolmentCode,
+    confirmingPayment,
+    studentIndex,
+  ]);
 
   // Handle enrollment status check
   useEffect(() => {
@@ -635,37 +689,141 @@ export function EnrollmentForm() {
           display: "flex",
           flexDirection: "column",
           position: "relative",
+          fontSize: "calc(.7rem + 1vmin)",
         }}
       >
-        <Typography
-          variant="h6"
-          fontSize={{ xs: "1.2rem", sm: "1.2rem", md: "1.4rem", lg: "1.7rem" }}
-          textAlign={"center"}
-          color="#696969"
+        <h1
+          style={{
+            textAlign: "center",
+            color: "#696969",
+            fontSize: "1.2em",
+            // marginTop: "2rem",
+          }}
         >
           Student Online Enrollment
-        </Typography>
-        <Typography textAlign={"center"} color="#696969">
+        </h1>
+        <Typography textAlign={"center"} fontSize={".8em"} color="#696969">
           ({" "}
           <span style={{ fontWeight: "500" }}>
             {currentYear}/{currentYear + 1}
           </span>{" "}
           Academic Year )
         </Typography>
-        <Box
-          component="div"
-          id="enrollmentFormWrap"
-          sx={{
-            maxWidth: 1000,
-            mx: "auto",
-            mt: 5,
-            p: 3,
-            border: "1px solid #ccc",
-            borderRadius: "8px",
-            backgroundColor: "#f9f9f9",
-          }}
-        >
-          {/* <Typography
+        {!canFillForm && (
+          <Box>
+            <Box
+              maxWidth={400}
+              margin={"auto"}
+              my={2}
+              sx={{
+                filter: "drop-shadow(0 0 0 rgb(255, 255, 255, 0.68))",
+                boxShadow: "0px 1px 9px 1px #292929",
+                padding: "1rem 1rem 2rem",
+                borderRadius: ".4rem",
+              }}
+            >
+              <Typography
+                variant="h6"
+                color="#696969"
+                mb={1}
+                align="center"
+                fontSize={".9em"}
+              >
+                Confirm Payment
+              </Typography>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <CustomTextField
+                    fullWidth
+                    label="Enrolment Code"
+                    name="enrolmentCode"
+                    size="small"
+                    value={enrolmentCode || ""}
+                    onChange={(e) => setEnrolmentCode(e.target.value)}
+                    className="textField"
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Button
+                    fullWidth
+                    onClick={() => {
+                      setConfirmingPayment(false);
+                      if (!enrolmentCode) {
+                        setTimeout(() => {
+                          toast.error("Enrolment code required!", {
+                            position: "top-right",
+                            theme: "light",
+                            toastId: "enrolmentCodeEmptyError",
+                          });
+                        }, 1000);
+                        setTimeout(() => {
+                          setConfirmingPayment(null);
+                          return;
+                        }, 3000);
+                      }
+                    }}
+                    sx={{
+                      bgcolor: "green",
+                      color: "#fff",
+                      textTransform: "capitalize",
+                      height: "2.5rem",
+                      display: "flex",
+                      alignItems: "center",
+                      p: 1,
+                    }}
+                  >
+                    {confirmingPayment === false && (
+                      <LoadingProgress color={"#fff"} size={"1.1rem"} />
+                    )}
+                    {confirmingPayment === true && isPaidStudent && (
+                      <>
+                        <span>Successful</span>{" "}
+                        <TaskAlt style={{ fontSize: "1.2rem" }} />
+                      </>
+                    )}
+                    {confirmingPayment === null && "Confirm"}
+                  </Button>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    sx={{
+                      marginTop: 2,
+                      backgroundColor: "#292929",
+                      transition: ".5s ease",
+                      "&:hover": {
+                        backgroundColor: "#3a3a3a",
+                      },
+                      textTransform: "capitalize",
+                      height: "2.5rem",
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                    onClick={() => setCanFillForm(true)}
+                  >
+                    Skip
+                  </Button>
+                </Grid>
+              </Grid>
+            </Box>
+          </Box>
+        )}
+        {canFillForm && (
+          <Box
+            component="div"
+            id="enrollmentFormWrap"
+            sx={{
+              maxWidth: 1000,
+              mx: "auto",
+              mt: 5,
+              p: 3,
+              border: "1px solid #ccc",
+              borderRadius: "8px",
+              backgroundColor: "#f9f9f9",
+            }}
+          >
+            {/* <Typography
           variant="h6"
           component={"p"}
           fontWeight={300}
@@ -684,19 +842,19 @@ export function EnrollmentForm() {
         //   sure to fill all required fields in order to ensure a successful
           enrollment.
         </Typography> */}
-          <form
-            onSubmit={handleSubmit}
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: "2rem",
-              padding: ".5rem 0",
-              fontSize: "calc(0.7rem + 1vmin)",
-            }}
-          >
-            {/* <Avatar
+            <form
+              onSubmit={handleSubmit}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: "2rem",
+                padding: ".5rem 0",
+                fontSize: "calc(0.7rem + 1vmin)",
+              }}
+            >
+              {/* <Avatar
             src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
             sx={{
               width: "7rem",
@@ -704,449 +862,472 @@ export function EnrollmentForm() {
               "&:hover": { cursor: "pointer" },
             }}
           /> */}
-            {/* <Avatar {...stringAvatar("Kent Dodds")} /> */}
-            <Grid container spacing={3}>
-              {/* Student First Name */}
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <CustomTextField
-                  fullWidth
-                  label="Full Name"
-                  name="fullName"
-                  value={memoizedPlacementStudentData?.fullName || ""}
-                  onChange={handleChange}
-                  slotProps={{
-                    input: { readOnly: true },
-                  }}
-                  className="textField"
-                />
-              </Grid>
-              {/* Place Of Birth */}
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <CustomTextField
-                  fullWidth
-                  label="Place Of Birth"
-                  name="placeOfBirth"
-                  value={newStudent?.placeOfBirth || ""}
-                  onChange={handleChange}
-                  required
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color: newStudent?.placeOfBirth ? "green" : "red", // Change the asterisk color to red
-                    },
-                  }}
-                />
-              </Grid>
-              {/* Date Of Birth */}
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <CustomTextField
-                  fullWidth
-                  label="Date Of Birth"
-                  name="dateOfBirth"
-                  value={
-                    memoizedPlacementStudentData?.dateOfBirth
-                      ? dateFormatter.format(
-                          new Date(memoizedPlacementStudentData?.dateOfBirth)
-                        )
-                      : ""
-                  }
-                  onChange={handleChange}
-                  slotProps={{
-                    input: { readOnly: true },
-                  }}
-                />
-              </Grid>
-              {/* Nationality */}
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <CustomTextField
-                  fullWidth
-                  label="Nationality"
-                  name="nationality"
-                  value={newStudent?.nationality || ""}
-                  onChange={handleChange}
-                  required
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color: newStudent?.nationality ? "green" : "red", // Change the asterisk color to red
-                    },
-                  }}
-                />
-              </Grid>
-              {/* Gender Selection */}
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <CustomTextField
-                  select
-                  fullWidth
-                  label="Gender"
-                  name="gender"
-                  value={memoizedPlacementStudentData?.gender || ""}
-                  onChange={handleChange}
-                  slotProps={{
-                    input: { readOnly: true },
-                  }}
-                >
-                  <MenuItem value="Male">Male</MenuItem>
-                  <MenuItem value="Female">Female</MenuItem>
-                </CustomTextField>
-              </Grid>
-              {/* Mother Tongue */}
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <CustomTextField
-                  select
-                  slotProps={{
-                    select: { MenuProps: CustomMenuProps },
-                  }}
-                  fullWidth
-                  label="Mother Tongue"
-                  name="motherTongue"
-                  value={newStudent?.motherTongue || ""}
-                  onChange={handleChange}
-                  required
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color: newStudent?.motherTongue ? "green" : "red", // Change the asterisk color to red
-                    },
-                  }}
-                >
-                  <MenuItem value="Twi">Twi</MenuItem>
-                  <MenuItem value="Fante">Fante</MenuItem>
-                  <MenuItem value="Ga">Ga</MenuItem>
-                  <MenuItem value="Ewe">Ewe</MenuItem>
-                  <MenuItem value="Nzema">Nzema</MenuItem>
-                  <MenuItem value="Hausa">Hausa</MenuItem>
-                  <MenuItem value="Gonja">Gonja</MenuItem>
-                  <MenuItem value="Kwa">Kwa</MenuItem>
-                  <MenuItem value="Dagbani">Dagbani</MenuItem>
-                  <MenuItem value="Dagaare">Dagaare</MenuItem>
-                  <MenuItem value="Kulango">Kulango</MenuItem>
-                  <MenuItem value="Senufo">Senufo</MenuItem>
-                  <MenuItem value="Mande">Mande</MenuItem>
-                  <MenuItem value="Dangme">Dangme</MenuItem>
-                  <MenuItem value="other">Other</MenuItem>
-                </CustomTextField>
-              </Grid>
-              {/* Other Tongue */}
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <CustomTextField
-                  select
-                  slotProps={{
-                    select: { MenuProps: CustomMenuProps },
-                  }}
-                  fullWidth
-                  label="Other Tongue"
-                  name="otherTongue"
-                  value={newStudent?.otherTongue || ""}
-                  onChange={handleChange}
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color: newStudent?.otherTongue ? "green" : "red", // Change the asterisk color to red
-                    },
-                  }}
-                >
-                  <MenuItem value="English">English</MenuItem>
-                  <MenuItem value="French">French</MenuItem>
-                  <MenuItem value="Spanish">Spanish</MenuItem>
-                  <MenuItem value="Deutsch">Deutsch</MenuItem>
-                  <MenuItem value="Italian">Italian</MenuItem>
-                  <MenuItem value="Arabic">Arabic</MenuItem>
-                  <MenuItem value="other">Other</MenuItem>
-                </CustomTextField>
-              </Grid>
-              {/* Complexion */}
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <CustomTextField
-                  select
-                  slotProps={{
-                    select: { MenuProps: CustomMenuProps },
-                  }}
-                  fullWidth
-                  label="Complexion"
-                  name="complexion"
-                  value={newStudent?.complexion || ""}
-                  onChange={handleChange}
-                  required
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color: newStudent?.complexion ? "green" : "red", // Change the asterisk color to red
-                    },
-                  }}
-                >
-                  <MenuItem value="Very Fair">Very Fair</MenuItem>
-                  <MenuItem value="Fair">Fair</MenuItem>
-                  <MenuItem value="Medium">Medium</MenuItem>
-                  <MenuItem value="Olive">Olive</MenuItem>
-                  <MenuItem value="Brown">Brown</MenuItem>
-                  <MenuItem value="Black">Black</MenuItem>
-                </CustomTextField>
-              </Grid>
-              {/* Height */}
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <CustomTextField
-                  fullWidth
-                  label="Height"
-                  name="height"
-                  value={newStudent?.height || ""}
-                  onChange={handleChange}
-                  required
-                  slotProps={{
-                    input: {
-                      endAdornment: (
-                        <InputAdornment position="end">ft</InputAdornment>
-                      ),
-                    },
-                  }}
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color: newStudent?.height ? "green" : "red", // Change the asterisk color to red
-                    },
-                  }}
-                />
-              </Grid>
-              {/* Weight */}
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <CustomTextField
-                  fullWidth
-                  label="Weight"
-                  name="weight"
-                  value={newStudent?.weight || ""}
-                  onChange={handleChange}
-                  required
-                  slotProps={{
-                    input: {
-                      endAdornment: (
-                        <InputAdornment position="end">kg</InputAdornment>
-                      ),
-                    },
-                  }}
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color: newStudent?.weight ? "green" : "red", // Change the asterisk color to red
-                    },
-                  }}
-                />
-              </Grid>
-              {/* Region */}
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <CustomTextField
-                  fullWidth
-                  select
-                  slotProps={{
-                    select: { MenuProps: CustomMenuProps },
-                  }}
-                  label="Region"
-                  name="region"
-                  value={newStudent?.region || ""}
-                  onChange={handleChange}
-                  required
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color: newStudent?.region ? "green" : "red", // Change the asterisk color to red
-                    },
-                  }}
-                >
-                  <MenuItem value="Greater Accra">Greater Accra</MenuItem>
-                  <MenuItem value="Ashanti">Ashanti</MenuItem>
-                  <MenuItem value="Volta">Volta</MenuItem>
-                  <MenuItem value="Central">Central</MenuItem>
-                  <MenuItem value="Eastern">Eastern</MenuItem>
-                  <MenuItem value="Western">Western</MenuItem>
-                  <MenuItem value="Oti">Oti</MenuItem>
-                  <MenuItem value="Bono">Bono</MenuItem>
-                  <MenuItem value="Bono East">Bono East</MenuItem>
-                  <MenuItem value="Ahafo">Ahafo</MenuItem>
-                  <MenuItem value="Brong Ahafo">Brong Ahafo</MenuItem>
-                  <MenuItem value="Northern">Northern</MenuItem>
-                  <MenuItem value="Western North">Western North</MenuItem>
-                  <MenuItem value="Upper West">Upper West</MenuItem>
-                  <MenuItem value="Upper East">Upper East</MenuItem>
-                  <MenuItem value="North East">North East</MenuItem>
-                </CustomTextField>
-              </Grid>
-              {/* HomeTown */}
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <CustomTextField
-                  fullWidth
-                  label="HomeTown"
-                  name="homeTown"
-                  value={newStudent?.homeTown || ""}
-                  onChange={handleChange}
-                  required
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color: newStudent?.homeTown ? "green" : "red", // Change the asterisk color to red
-                    },
-                  }}
-                />
-              </Grid>
-              {/* House Address */}
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <CustomTextField
-                  fullWidth
-                  label="House Address"
-                  name="residentialAddress"
-                  value={newStudent?.residentialAddress || ""}
-                  onChange={handleChange}
-                  required
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color: newStudent?.residentialAddress ? "green" : "red", // Change the asterisk color to red
-                    },
-                  }}
-                />
-              </Grid>
-              {/* District */}
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <CustomTextField
-                  fullWidth
-                  label="District"
-                  name="district"
-                  value={newStudent?.district || ""}
-                  onChange={handleChange}
-                  required
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color: newStudent?.district ? "green" : "red", // Change the asterisk color to red
-                    },
-                  }}
-                />
-              </Grid>
-              {/* Current City */}
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <CustomTextField
-                  fullWidth
-                  label="Current City"
-                  name="currentCity"
-                  value={newStudent?.currentCity || ""}
-                  onChange={handleChange}
-                  required
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color: newStudent?.currentCity ? "green" : "red", // Change the asterisk color to red
-                    },
-                  }}
-                />
-              </Grid>
-              {/* GPS Address */}
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <CustomTextField
-                  fullWidth
-                  label="GPS Address"
-                  name="gpsAddress"
-                  value={newStudent?.gpsAddress || ""}
-                  onChange={handleChange}
-                  required
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color: newStudent?.gpsAddress ? "green" : "red", // Change the asterisk color to red
-                    },
-                  }}
-                />
-              </Grid>
-              {/* Email */}
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <CustomTextField
-                  fullWidth
-                  label="Email"
-                  name="email"
-                  value={newStudent?.email || ""}
-                  onChange={handleChange}
-                  required
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color: newStudent?.email ? "green" : "red", // Change the asterisk color to red
-                    },
-                  }}
-                />
-              </Grid>
-              {/* Mobile */}
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <CustomTextField
-                  fullWidth
-                  label="Mobile"
-                  name="mobile"
-                  value={newStudent?.mobile || ""}
-                  onChange={handleChange}
-                  required
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color: newStudent?.mobile ? "green" : "red", // Change the asterisk color to red
-                    },
-                  }}
-                />
-              </Grid>
-              {/* JHS Attended */}
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <CustomTextField
-                  fullWidth
-                  label="JHS Attended"
-                  name="jhsAttended"
-                  value={memoizedPlacementStudentData?.jhsAttended || ""}
-                  onChange={handleChange}
-                  slotProps={{
-                    input: { readOnly: true },
-                  }}
-                />
-              </Grid>
-              {/* JHS Graduated Year */}
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <CustomTextField
-                  fullWidth
-                  label="Year Graduated [ JHS ]"
-                  name="completedJhs"
-                  value={memoizedPlacementStudentData?.yearGraduated || ""}
-                  onChange={handleChange}
-                  slotProps={{
-                    input: { readOnly: true },
-                  }}
-                />
-              </Grid>
-              {/* JHS Index No. */}
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <CustomTextField
-                  fullWidth
-                  label="JHS Index No."
-                  name="jhsIndexNo"
-                  value={studentIndexNo || ""}
-                  onChange={handleChange}
-                  slotProps={{ input: { readOnly: true } }}
-                />
-              </Grid>
-              {/* Programme Selection */}
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <CustomTextField
-                  select
-                  slotProps={{
-                    select: { MenuProps: CustomMenuProps },
-                  }}
-                  fullWidth
-                  label="Select Programme"
-                  name="program"
-                  value={newStudent?.program || ""}
-                  onChange={handleChange}
-                  required
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color: newStudent?.program ? "green" : "red", // Change the asterisk color to red
-                    },
-                  }}
-                  // slotProps={{
-                  //   input: { readOnly: true },
-                  // }}
-                >
-                  {allFlattenedProgrammes?.map((programme) => (
-                    <MenuItem key={programme?._id} value={programme?._id}>
-                      {programme?.name
-                        ? programme?.name
-                        : programme?.divisionName}
-                    </MenuItem>
-                  ))}
-                </CustomTextField>
-              </Grid>
-              {/* Division Program (conditional) */}
-              {/* {allDivisionProgrammes && allDivisionProgrammes?.length > 0 && (
+              {/* <Avatar {...stringAvatar("Kent Dodds")} /> */}
+              <Grid container spacing={3}>
+                {/* Student First Name */}
+                <Grid item xs={12} sm={6} md={4} lg={4}>
+                  <CustomTextField
+                    fullWidth
+                    size="small"
+                    label="Full Name"
+                    name="fullName"
+                    value={memoizedPlacementStudentData?.fullName || ""}
+                    onChange={handleChange}
+                    slotProps={{
+                      input: { readOnly: true },
+                    }}
+                    className="textField"
+                  />
+                </Grid>
+                {/* Place Of Birth */}
+                <Grid item xs={12} sm={6} md={4} lg={4}>
+                  <CustomTextField
+                    fullWidth
+                    size="small"
+                    label="Place Of Birth"
+                    name="placeOfBirth"
+                    value={newStudent?.placeOfBirth || ""}
+                    onChange={handleChange}
+                    required
+                    sx={{
+                      "& .MuiInputLabel-asterisk": {
+                        color: newStudent?.placeOfBirth ? "green" : "red", // Change the asterisk color to red
+                      },
+                    }}
+                  />
+                </Grid>
+                {/* Date Of Birth */}
+                <Grid item xs={12} sm={6} md={4} lg={4}>
+                  <CustomTextField
+                    fullWidth
+                    size="small"
+                    label="Date Of Birth"
+                    name="dateOfBirth"
+                    value={
+                      memoizedPlacementStudentData?.dateOfBirth
+                        ? dateFormatter.format(
+                            new Date(memoizedPlacementStudentData?.dateOfBirth)
+                          )
+                        : ""
+                    }
+                    onChange={handleChange}
+                    slotProps={{
+                      input: { readOnly: true },
+                    }}
+                  />
+                </Grid>
+                {/* Nationality */}
+                <Grid item xs={12} sm={6} md={4} lg={4}>
+                  <CustomTextField
+                    fullWidth
+                    size="small"
+                    label="Nationality"
+                    name="nationality"
+                    value={newStudent?.nationality || ""}
+                    onChange={handleChange}
+                    required
+                    sx={{
+                      "& .MuiInputLabel-asterisk": {
+                        color: newStudent?.nationality ? "green" : "red", // Change the asterisk color to red
+                      },
+                    }}
+                  />
+                </Grid>
+                {/* Gender Selection */}
                 <Grid item xs={12} sm={6} md={4} lg={4}>
                   <CustomTextField
                     select
                     fullWidth
+                    size="small"
+                    label="Gender"
+                    name="gender"
+                    value={memoizedPlacementStudentData?.gender || ""}
+                    onChange={handleChange}
+                    slotProps={{
+                      input: { readOnly: true },
+                    }}
+                  >
+                    <MenuItem value="Male">Male</MenuItem>
+                    <MenuItem value="Female">Female</MenuItem>
+                  </CustomTextField>
+                </Grid>
+                {/* Mother Tongue */}
+                <Grid item xs={12} sm={6} md={4} lg={4}>
+                  <CustomTextField
+                    select
+                    slotProps={{
+                      select: { MenuProps: CustomMenuProps },
+                    }}
+                    fullWidth
+                    size="small"
+                    label="Mother Tongue"
+                    name="motherTongue"
+                    value={newStudent?.motherTongue || ""}
+                    onChange={handleChange}
+                    required
+                    sx={{
+                      "& .MuiInputLabel-asterisk": {
+                        color: newStudent?.motherTongue ? "green" : "red", // Change the asterisk color to red
+                      },
+                    }}
+                  >
+                    <MenuItem value="Twi">Twi</MenuItem>
+                    <MenuItem value="Fante">Fante</MenuItem>
+                    <MenuItem value="Ga">Ga</MenuItem>
+                    <MenuItem value="Ewe">Ewe</MenuItem>
+                    <MenuItem value="Nzema">Nzema</MenuItem>
+                    <MenuItem value="Hausa">Hausa</MenuItem>
+                    <MenuItem value="Gonja">Gonja</MenuItem>
+                    <MenuItem value="Kwa">Kwa</MenuItem>
+                    <MenuItem value="Dagbani">Dagbani</MenuItem>
+                    <MenuItem value="Dagaare">Dagaare</MenuItem>
+                    <MenuItem value="Kulango">Kulango</MenuItem>
+                    <MenuItem value="Senufo">Senufo</MenuItem>
+                    <MenuItem value="Mande">Mande</MenuItem>
+                    <MenuItem value="Dangme">Dangme</MenuItem>
+                    <MenuItem value="other">Other</MenuItem>
+                  </CustomTextField>
+                </Grid>
+                {/* Other Tongue */}
+                <Grid item xs={12} sm={6} md={4} lg={4}>
+                  <CustomTextField
+                    select
+                    slotProps={{
+                      select: { MenuProps: CustomMenuProps },
+                    }}
+                    fullWidth
+                    size="small"
+                    label="Other Tongue"
+                    name="otherTongue"
+                    value={newStudent?.otherTongue || ""}
+                    onChange={handleChange}
+                    sx={{
+                      "& .MuiInputLabel-asterisk": {
+                        color: newStudent?.otherTongue ? "green" : "red", // Change the asterisk color to red
+                      },
+                    }}
+                  >
+                    <MenuItem value="English">English</MenuItem>
+                    <MenuItem value="French">French</MenuItem>
+                    <MenuItem value="Spanish">Spanish</MenuItem>
+                    <MenuItem value="Deutsch">Deutsch</MenuItem>
+                    <MenuItem value="Italian">Italian</MenuItem>
+                    <MenuItem value="Arabic">Arabic</MenuItem>
+                    <MenuItem value="other">Other</MenuItem>
+                  </CustomTextField>
+                </Grid>
+                {/* Complexion */}
+                <Grid item xs={12} sm={6} md={4} lg={4}>
+                  <CustomTextField
+                    select
+                    slotProps={{
+                      select: { MenuProps: CustomMenuProps },
+                    }}
+                    fullWidth
+                    size="small"
+                    label="Complexion"
+                    name="complexion"
+                    value={newStudent?.complexion || ""}
+                    onChange={handleChange}
+                    required
+                    sx={{
+                      "& .MuiInputLabel-asterisk": {
+                        color: newStudent?.complexion ? "green" : "red", // Change the asterisk color to red
+                      },
+                    }}
+                  >
+                    <MenuItem value="Very Fair">Very Fair</MenuItem>
+                    <MenuItem value="Fair">Fair</MenuItem>
+                    <MenuItem value="Medium">Medium</MenuItem>
+                    <MenuItem value="Olive">Olive</MenuItem>
+                    <MenuItem value="Brown">Brown</MenuItem>
+                    <MenuItem value="Black">Black</MenuItem>
+                  </CustomTextField>
+                </Grid>
+                {/* Height */}
+                <Grid item xs={12} sm={6} md={4} lg={4}>
+                  <CustomTextField
+                    fullWidth
+                    size="small"
+                    label="Height"
+                    name="height"
+                    value={newStudent?.height || ""}
+                    onChange={handleChange}
+                    required
+                    slotProps={{
+                      input: {
+                        endAdornment: (
+                          <InputAdornment position="end">ft</InputAdornment>
+                        ),
+                      },
+                    }}
+                    sx={{
+                      "& .MuiInputLabel-asterisk": {
+                        color: newStudent?.height ? "green" : "red", // Change the asterisk color to red
+                      },
+                    }}
+                  />
+                </Grid>
+                {/* Weight */}
+                <Grid item xs={12} sm={6} md={4} lg={4}>
+                  <CustomTextField
+                    fullWidth
+                    size="small"
+                    label="Weight"
+                    name="weight"
+                    value={newStudent?.weight || ""}
+                    onChange={handleChange}
+                    required
+                    slotProps={{
+                      input: {
+                        endAdornment: (
+                          <InputAdornment position="end">kg</InputAdornment>
+                        ),
+                      },
+                    }}
+                    sx={{
+                      "& .MuiInputLabel-asterisk": {
+                        color: newStudent?.weight ? "green" : "red", // Change the asterisk color to red
+                      },
+                    }}
+                  />
+                </Grid>
+                {/* Region */}
+                <Grid item xs={12} sm={6} md={4} lg={4}>
+                  <CustomTextField
+                    fullWidth
+                    size="small"
+                    select
+                    slotProps={{
+                      select: { MenuProps: CustomMenuProps },
+                    }}
+                    label="Region"
+                    name="region"
+                    value={newStudent?.region || ""}
+                    onChange={handleChange}
+                    required
+                    sx={{
+                      "& .MuiInputLabel-asterisk": {
+                        color: newStudent?.region ? "green" : "red", // Change the asterisk color to red
+                      },
+                    }}
+                  >
+                    <MenuItem value="Greater Accra">Greater Accra</MenuItem>
+                    <MenuItem value="Ashanti">Ashanti</MenuItem>
+                    <MenuItem value="Volta">Volta</MenuItem>
+                    <MenuItem value="Central">Central</MenuItem>
+                    <MenuItem value="Eastern">Eastern</MenuItem>
+                    <MenuItem value="Western">Western</MenuItem>
+                    <MenuItem value="Oti">Oti</MenuItem>
+                    <MenuItem value="Bono">Bono</MenuItem>
+                    <MenuItem value="Bono East">Bono East</MenuItem>
+                    <MenuItem value="Ahafo">Ahafo</MenuItem>
+                    <MenuItem value="Brong Ahafo">Brong Ahafo</MenuItem>
+                    <MenuItem value="Northern">Northern</MenuItem>
+                    <MenuItem value="Western North">Western North</MenuItem>
+                    <MenuItem value="Upper West">Upper West</MenuItem>
+                    <MenuItem value="Upper East">Upper East</MenuItem>
+                    <MenuItem value="North East">North East</MenuItem>
+                  </CustomTextField>
+                </Grid>
+                {/* HomeTown */}
+                <Grid item xs={12} sm={6} md={4} lg={4}>
+                  <CustomTextField
+                    fullWidth
+                    size="small"
+                    label="HomeTown"
+                    name="homeTown"
+                    value={newStudent?.homeTown || ""}
+                    onChange={handleChange}
+                    required
+                    sx={{
+                      "& .MuiInputLabel-asterisk": {
+                        color: newStudent?.homeTown ? "green" : "red", // Change the asterisk color to red
+                      },
+                    }}
+                  />
+                </Grid>
+                {/* House Address */}
+                <Grid item xs={12} sm={6} md={4} lg={4}>
+                  <CustomTextField
+                    fullWidth
+                    size="small"
+                    label="House Address"
+                    name="residentialAddress"
+                    value={newStudent?.residentialAddress || ""}
+                    onChange={handleChange}
+                    required
+                    sx={{
+                      "& .MuiInputLabel-asterisk": {
+                        color: newStudent?.residentialAddress ? "green" : "red", // Change the asterisk color to red
+                      },
+                    }}
+                  />
+                </Grid>
+                {/* District */}
+                <Grid item xs={12} sm={6} md={4} lg={4}>
+                  <CustomTextField
+                    fullWidth
+                    size="small"
+                    label="District"
+                    name="district"
+                    value={newStudent?.district || ""}
+                    onChange={handleChange}
+                    required
+                    sx={{
+                      "& .MuiInputLabel-asterisk": {
+                        color: newStudent?.district ? "green" : "red", // Change the asterisk color to red
+                      },
+                    }}
+                  />
+                </Grid>
+                {/* Current City */}
+                <Grid item xs={12} sm={6} md={4} lg={4}>
+                  <CustomTextField
+                    fullWidth
+                    size="small"
+                    label="Current City"
+                    name="currentCity"
+                    value={newStudent?.currentCity || ""}
+                    onChange={handleChange}
+                    required
+                    sx={{
+                      "& .MuiInputLabel-asterisk": {
+                        color: newStudent?.currentCity ? "green" : "red", // Change the asterisk color to red
+                      },
+                    }}
+                  />
+                </Grid>
+                {/* GPS Address */}
+                <Grid item xs={12} sm={6} md={4} lg={4}>
+                  <CustomTextField
+                    fullWidth
+                    size="small"
+                    label="GPS Address"
+                    name="gpsAddress"
+                    value={newStudent?.gpsAddress || ""}
+                    onChange={handleChange}
+                    required
+                    sx={{
+                      "& .MuiInputLabel-asterisk": {
+                        color: newStudent?.gpsAddress ? "green" : "red", // Change the asterisk color to red
+                      },
+                    }}
+                  />
+                </Grid>
+                {/* Email */}
+                <Grid item xs={12} sm={6} md={4} lg={4}>
+                  <CustomTextField
+                    fullWidth
+                    size="small"
+                    label="Email"
+                    name="email"
+                    value={newStudent?.email || ""}
+                    onChange={handleChange}
+                    required
+                    sx={{
+                      "& .MuiInputLabel-asterisk": {
+                        color: newStudent?.email ? "green" : "red", // Change the asterisk color to red
+                      },
+                    }}
+                  />
+                </Grid>
+                {/* Mobile */}
+                <Grid item xs={12} sm={6} md={4} lg={4}>
+                  <CustomTextField
+                    fullWidth
+                    size="small"
+                    label="Mobile"
+                    name="mobile"
+                    value={newStudent?.mobile || ""}
+                    onChange={handleChange}
+                    required
+                    sx={{
+                      "& .MuiInputLabel-asterisk": {
+                        color: newStudent?.mobile ? "green" : "red", // Change the asterisk color to red
+                      },
+                    }}
+                  />
+                </Grid>
+                {/* JHS Attended */}
+                <Grid item xs={12} sm={6} md={4} lg={4}>
+                  <CustomTextField
+                    fullWidth
+                    size="small"
+                    label="JHS Attended"
+                    name="jhsAttended"
+                    value={memoizedPlacementStudentData?.jhsAttended || ""}
+                    onChange={handleChange}
+                    slotProps={{
+                      input: { readOnly: true },
+                    }}
+                  />
+                </Grid>
+                {/* JHS Graduated Year */}
+                <Grid item xs={12} sm={6} md={4} lg={4}>
+                  <CustomTextField
+                    fullWidth
+                    size="small"
+                    label="Year Graduated [ JHS ]"
+                    name="completedJhs"
+                    value={memoizedPlacementStudentData?.yearGraduated || ""}
+                    onChange={handleChange}
+                    slotProps={{
+                      input: { readOnly: true },
+                    }}
+                  />
+                </Grid>
+                {/* JHS Index No. */}
+                <Grid item xs={12} sm={6} md={4} lg={4}>
+                  <CustomTextField
+                    fullWidth
+                    size="small"
+                    label="JHS Index No."
+                    name="jhsIndexNo"
+                    value={studentIndexNo || ""}
+                    onChange={handleChange}
+                    slotProps={{ input: { readOnly: true } }}
+                  />
+                </Grid>
+                {/* Programme Selection */}
+                <Grid item xs={12} sm={6} md={4} lg={4}>
+                  <CustomTextField
+                    select
+                    slotProps={{
+                      select: { MenuProps: CustomMenuProps },
+                    }}
+                    fullWidth
+                    size="small"
+                    label="Select Programme"
+                    name="program"
+                    value={newStudent?.program || ""}
+                    onChange={handleChange}
+                    required
+                    sx={{
+                      "& .MuiInputLabel-asterisk": {
+                        color: newStudent?.program ? "green" : "red", // Change the asterisk color to red
+                      },
+                    }}
+                    // slotProps={{
+                    //   input: { readOnly: true },
+                    // }}
+                  >
+                    {allFlattenedProgrammes?.map((programme) => (
+                      <MenuItem key={programme?._id} value={programme?._id}>
+                        {programme?.name
+                          ? programme?.name
+                          : programme?.divisionName}
+                      </MenuItem>
+                    ))}
+                  </CustomTextField>
+                </Grid>
+                {/* Division Program (conditional) */}
+                {/* {allDivisionProgrammes && allDivisionProgrammes?.length > 0 && (
+                <Grid item xs={12} sm={6} md={4} lg={4}>
+                  <CustomTextField
+                    select
+                    fullWidth
+                    size="small"
                     label="Division Program"
                     name="divisionProgram"
                     value={newStudent?.divisionProgram || ""}
@@ -1168,14 +1349,15 @@ export function EnrollmentForm() {
                   </CustomTextField>
                 </Grid>
               )} */}
-              {/* Optional Elective Subject (conditional) */}
-              {/* {selectedDivisionProgramme &&
+                {/* Optional Elective Subject (conditional) */}
+                {/* {selectedDivisionProgramme &&
                 selectedDivisionProgramme?.optionalElectiveSubjects?.length >
                   0 && (
                   <Grid item xs={12} sm={6} md={4} lg={4}>
                     <CustomTextField
                       select
                       fullWidth
+                    size="small"
                       label="Optional Elective Subject"
                       name="optionalElectiveSubject"
                       value={newStudent?.optionalElectiveSubject || ""}
@@ -1199,231 +1381,242 @@ export function EnrollmentForm() {
                     </CustomTextField>
                   </Grid>
                 )} */}
-              {filteredOptionalSubjects &&
-                filteredOptionalSubjects?.length > 0 && (
-                  <Grid item xs={12} sm={6} md={4} lg={4}>
-                    <CustomTextField
-                      select
-                      slotProps={{
-                        select: { MenuProps: CustomMenuProps },
-                      }}
-                      fullWidth
-                      label="Optional Elective Subject"
-                      name="optionalElectiveSubject"
-                      value={newStudent?.optionalElectiveSubject || ""}
-                      onChange={handleChange}
-                      required
-                      sx={{
-                        "& .MuiInputLabel-asterisk": {
-                          color: newStudent?.optionalElectiveSubject
-                            ? "green"
-                            : "red", // Change the asterisk color to red
-                        },
-                      }}
-                    >
-                      {filteredOptionalSubjects?.map((subject) => (
-                        <MenuItem key={subject?._id} value={subject?._id}>
-                          {subject?.subjectName}
-                        </MenuItem>
-                      ))}
-                    </CustomTextField>
-                  </Grid>
-                )}
-              {/* Class Level Selection */}
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <CustomTextField
-                  select
-                  fullWidth
-                  slotProps={{
-                    select: { MenuProps: CustomMenuProps },
-                  }}
-                  label="Class Level"
-                  name="currentClassLevel"
-                  value={newStudent?.currentClassLevel || ""}
-                  onChange={handleChange}
-                  required
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color: newStudent?.currentClassLevel ? "green" : "red", // Change the asterisk color to red
-                    },
-                  }}
-                >
-                  {allClassLevels?.map((cLevel) => (
-                    <MenuItem key={cLevel?._id} value={cLevel?._id}>
-                      {cLevel?.name}
-                    </MenuItem>
-                  ))}
-                </CustomTextField>
-              </Grid>
-              {/* Batch Selection */}
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <CustomTextField
-                  select
-                  slotProps={{
-                    select: { MenuProps: CustomMenuProps },
-                  }}
-                  fullWidth
-                  label="Batch"
-                  name="batch"
-                  value={newStudent?.batch || ""}
-                  onChange={handleChange}
-                  required
-                  // slotProps={{
-                  //   input: { readOnly: true },
-                  // }}
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color: newStudent?.batch ? "green" : "red", // Change the asterisk color to red
-                    },
-                  }}
-                >
-                  {allBatches?.map((batch) => (
-                    <MenuItem key={batch?._id} value={batch?._id}>
-                      {batch?.yearRange}
-                    </MenuItem>
-                  ))}
-                </CustomTextField>
-              </Grid>
-              {/* Academic Year Selection */}
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <CustomTextField
-                  select
-                  slotProps={{
-                    select: { MenuProps: CustomMenuProps },
-                  }}
-                  fullWidth
-                  label="Academic Year"
-                  name="currentAcademicYear"
-                  value={newStudent?.currentAcademicYear || ""}
-                  onChange={handleChange}
-                  required
-                  sx={{
-                    "& .MuiInputLabel-asterisk": {
-                      color: newStudent?.currentAcademicYear ? "green" : "red", // Change the asterisk color to red
-                    },
-                  }}
-                  // disabled
-                >
-                  {allCreatedAcademicYears?.map((year) => (
-                    <MenuItem key={year?._id} value={year?._id}>
-                      {year?.yearRange}
-                    </MenuItem>
-                  ))}
-                </CustomTextField>
-              </Grid>
-              {/* Residential Status Selection */}
-              <Grid item xs={12} sm={6} md={4} lg={4}>
-                <CustomTextField
-                  select
-                  slotProps={{
-                    select: { MenuProps: CustomMenuProps },
-                    input: { readOnly: true },
-                  }}
-                  fullWidth
-                  label="Residential Status"
-                  name="residentialStatus"
-                  value={memoizedPlacementStudentData?.boardingStatus || ""}
-                  onChange={handleChange}
-                  // slotProps={{
-                  // }}
-                >
-                  <MenuItem value="Day">Day</MenuItem>
-                  <MenuItem value="Boarding">Boarding</MenuItem>
-                  <MenuItem value="Hostel">Hostel</MenuItem>
-                  <MenuItem value="Private">Private</MenuItem>
-                  <MenuItem value="Lecturers Bungalow">
-                    Lecturers Bungalow
-                  </MenuItem>
-                </CustomTextField>
-              </Grid>
-
-              {/* Submit Button */}
-              <Grid item xs={12}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Grid item xs={12} sm={4}>
-                    <Button
-                      variant="contained"
-                      component="label"
-                      fullWidth
-                      sx={{
-                        textTransform: "capitalize",
-                        backgroundColor: "#292929",
-                        padding: "1rem",
-                      }}
-                    >
-                      Upload Image
-                      <input
-                        type="file"
-                        hidden
-                        accept="image/*"
-                        onChange={handleImageFileUpload}
-                      />
-                    </Button>
-                  </Grid>
-                  <Grid item xs={12} sm={4}>
-                    {imagePreview && (
-                      <Box
-                        display="flex"
-                        justifyContent="center"
-                        alignItems="center"
-                        height="100%"
+                {filteredOptionalSubjects &&
+                  filteredOptionalSubjects?.length > 0 && (
+                    <Grid item xs={12} sm={6} md={4} lg={4}>
+                      <CustomTextField
+                        select
+                        slotProps={{
+                          select: { MenuProps: CustomMenuProps },
+                        }}
+                        fullWidth
+                        size="small"
+                        label="Optional Elective Subject"
+                        name="optionalElectiveSubject"
+                        value={newStudent?.optionalElectiveSubject || ""}
+                        onChange={handleChange}
+                        required
+                        sx={{
+                          "& .MuiInputLabel-asterisk": {
+                            color: newStudent?.optionalElectiveSubject
+                              ? "green"
+                              : "red", // Change the asterisk color to red
+                          },
+                        }}
                       >
-                        <Avatar
-                          src={imagePreview}
-                          alt="Profile Preview"
-                          sx={{
-                            width: "6rem",
-                            height: "6rem",
-                            borderRadius: ".4rem",
-                            border: "1px solid #696969",
-                            padding: ".2rem",
-                          }}
+                        {filteredOptionalSubjects?.map((subject) => (
+                          <MenuItem key={subject?._id} value={subject?._id}>
+                            {subject?.subjectName}
+                          </MenuItem>
+                        ))}
+                      </CustomTextField>
+                    </Grid>
+                  )}
+                {/* Class Level Selection */}
+                <Grid item xs={12} sm={6} md={4} lg={4}>
+                  <CustomTextField
+                    select
+                    fullWidth
+                    size="small"
+                    slotProps={{
+                      select: { MenuProps: CustomMenuProps },
+                    }}
+                    label="Class Level"
+                    name="currentClassLevel"
+                    value={newStudent?.currentClassLevel || ""}
+                    onChange={handleChange}
+                    required
+                    sx={{
+                      "& .MuiInputLabel-asterisk": {
+                        color: newStudent?.currentClassLevel ? "green" : "red", // Change the asterisk color to red
+                      },
+                    }}
+                  >
+                    {allClassLevels?.map((cLevel) => (
+                      <MenuItem key={cLevel?._id} value={cLevel?._id}>
+                        {cLevel?.name}
+                      </MenuItem>
+                    ))}
+                  </CustomTextField>
+                </Grid>
+                {/* Batch Selection */}
+                <Grid item xs={12} sm={6} md={4} lg={4}>
+                  <CustomTextField
+                    select
+                    slotProps={{
+                      select: { MenuProps: CustomMenuProps },
+                    }}
+                    fullWidth
+                    size="small"
+                    label="Batch"
+                    name="batch"
+                    value={newStudent?.batch || ""}
+                    onChange={handleChange}
+                    required
+                    // slotProps={{
+                    //   input: { readOnly: true },
+                    // }}
+                    sx={{
+                      "& .MuiInputLabel-asterisk": {
+                        color: newStudent?.batch ? "green" : "red", // Change the asterisk color to red
+                      },
+                    }}
+                  >
+                    {allBatches?.map((batch) => (
+                      <MenuItem key={batch?._id} value={batch?._id}>
+                        {batch?.yearRange}
+                      </MenuItem>
+                    ))}
+                  </CustomTextField>
+                </Grid>
+                {/* Academic Year Selection */}
+                <Grid item xs={12} sm={6} md={4} lg={4}>
+                  <CustomTextField
+                    select
+                    slotProps={{
+                      select: { MenuProps: CustomMenuProps },
+                    }}
+                    fullWidth
+                    size="small"
+                    label="Academic Year"
+                    name="currentAcademicYear"
+                    value={newStudent?.currentAcademicYear || ""}
+                    onChange={handleChange}
+                    required
+                    sx={{
+                      "& .MuiInputLabel-asterisk": {
+                        color: newStudent?.currentAcademicYear
+                          ? "green"
+                          : "red", // Change the asterisk color to red
+                      },
+                    }}
+                    // disabled
+                  >
+                    {allCreatedAcademicYears?.map((year) => (
+                      <MenuItem key={year?._id} value={year?._id}>
+                        {year?.yearRange}
+                      </MenuItem>
+                    ))}
+                  </CustomTextField>
+                </Grid>
+                {/* Residential Status Selection */}
+                <Grid item xs={12} sm={6} md={4} lg={4}>
+                  <CustomTextField
+                    select
+                    slotProps={{
+                      select: { MenuProps: CustomMenuProps },
+                      input: { readOnly: true },
+                    }}
+                    fullWidth
+                    size="small"
+                    label="Residential Status"
+                    name="residentialStatus"
+                    value={memoizedPlacementStudentData?.boardingStatus || ""}
+                    onChange={handleChange}
+                    // slotProps={{
+                    // }}
+                  >
+                    <MenuItem value="Day">Day</MenuItem>
+                    <MenuItem value="Boarding">Boarding</MenuItem>
+                    <MenuItem value="Hostel">Hostel</MenuItem>
+                    <MenuItem value="Private">Private</MenuItem>
+                    <MenuItem value="Lecturers Bungalow">
+                      Lecturers Bungalow
+                    </MenuItem>
+                  </CustomTextField>
+                </Grid>
+
+                {/* Submit Button */}
+                <Grid item xs={12}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Grid item xs={12} sm={4}>
+                      <Button
+                        variant="contained"
+                        component="label"
+                        fullWidth
+                        size="small"
+                        sx={{
+                          textTransform: "capitalize",
+                          backgroundColor: "#292929",
+                          padding: ".5rem",
+                        }}
+                      >
+                        Upload Image
+                        <input
+                          type="file"
+                          hidden
+                          accept="image/*"
+                          onChange={handleImageFileUpload}
                         />
-                      </Box>
+                      </Button>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      {imagePreview && (
+                        <Box
+                          display="flex"
+                          justifyContent="center"
+                          alignItems="center"
+                          height="100%"
+                        >
+                          <Avatar
+                            src={imagePreview}
+                            alt="Profile Preview"
+                            sx={{
+                              width: "6rem",
+                              height: "6rem",
+                              borderRadius: ".4rem",
+                              border: "1px solid #696969",
+                              padding: ".2rem",
+                            }}
+                          />
+                        </Box>
+                      )}
+                    </Grid>
+                  </Box>
+                </Grid>
+                {/* Submit Button */}
+                <Grid item xs={12}>
+                  <Button
+                    variant="contained"
+                    color="success"
+                    type="submit"
+                    fullWidth
+                    size="small"
+                    sx={{
+                      // height: "3.5rem",
+                      letterSpacing: "1px",
+                      textTransform: "capitalize",
+                      fontSize: "1.2rem",
+                    }}
+                  >
+                    {loadingComplete === false && (
+                      <LoadingProgress color={"#fff"} size={"1.5rem"} />
                     )}
-                  </Grid>
-                </Box>
-              </Grid>
-              {/* Submit Button */}
-              <Grid item xs={12}>
-                <Button
-                  variant="contained"
-                  color="success"
-                  type="submit"
-                  fullWidth
-                  sx={{
-                    height: "3.5rem",
-                    letterSpacing: "1px",
-                    textTransform: "capitalize",
-                    fontSize: "1.2rem",
-                  }}
-                >
-                  {loadingComplete === false && (
-                    <LoadingProgress color={"#fff"} size={"1.5rem"} />
-                  )}
-                  {loadingComplete === true &&
-                    enrollmentStatus === "success" &&
-                    !redirecting && (
-                      <>
-                        <span>Successful</span> <TaskAlt />
-                      </>
+                    {loadingComplete === true &&
+                      enrollmentStatus === "success" &&
+                      !redirecting && (
+                        <>
+                          <span>Successful</span> <TaskAlt />
+                        </>
+                      )}
+                    {loadingComplete === null && "Submit Enrollment"}
+                    {redirecting && (
+                      <Redirection color={"#fff"} size={"1.5rem"} />
                     )}
-                  {loadingComplete === null && "Submit Enrollment"}
-                  {redirecting && (
-                    <Redirection color={"#fff"} size={"1.5rem"} />
-                  )}
-                </Button>
+                  </Button>
+                </Grid>
               </Grid>
-            </Grid>
-          </form>
-        </Box>
+            </form>
+          </Box>
+        )}
       </ContainerBox>
+      <SmallFooter />
     </>
   );
 }

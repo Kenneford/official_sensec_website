@@ -151,10 +151,10 @@ export function NavigationBar({
         student: `/sensec/users/${authUser?.uniqueId}/student/Dashboard/Overview`,
       },
     },
-    // {
-    //   name: "Pay Fees",
-    //   path: "/sensec/pay_fees#paymentPage",
-    // },
+    {
+      name: "Pay Fees",
+      path: "/sensec/pay_fees#paymentPage",
+    },
     // {
     //   name: "Join Sensosa",
     //   path: "/sensec/users/Dashboard",
@@ -213,6 +213,10 @@ export function NavigationBar({
         nt_Staff: `/sensec/users/${authUser?.uniqueId}/nt_staff#staff`,
         student: `/sensec/users/${authUser?.uniqueId}/student#student`,
       },
+    },
+    {
+      name: "Pay Fees",
+      path: "/sensec/pay_fees#paymentPage",
     },
     // {
     //   name: "Join Sensosa",
