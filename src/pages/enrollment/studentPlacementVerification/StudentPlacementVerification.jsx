@@ -213,13 +213,7 @@ export function StudentPlacementVerification() {
         setIsVerified(false);
       }, 5000);
       setTimeout(() => {
-        if (adminCurrentAction) {
-          navigate(
-            `/sensec/users/${authUser?.uniqueId}/admin/User-Types/Students/${maskedStudentIndex}/new_enrollment`
-          );
-        } else {
-          navigate(`/sensec/students/enrollment/online/${maskedStudentIndex}`);
-        }
+        navigate(`/sensec/pay_fees`);
       }, 7000);
     }
     //If placement verified but enrollment not yet started, navigate to enrollment page
@@ -240,13 +234,7 @@ export function StudentPlacementVerification() {
       }, 5000);
       setTimeout(() => {
         // navigate(`/sensec/students/enrollment/${maskedStudentIndex}/pay_fees`);
-        if (adminCurrentAction) {
-          navigate(
-            `/sensec/users/${authUser?.uniqueId}/admin/User-Types/Students/${maskedStudentIndex}/new_enrollment`
-          );
-        } else {
-          navigate(`/sensec/students/enrollment/online/${maskedStudentIndex}`);
-        }
+        navigate(`/sensec/pay_fees`);
       }, 7000);
     }
     //If placement not verified and not enrolled, then verify student and begin the enrolment process
@@ -377,13 +365,7 @@ export function StudentPlacementVerification() {
       setTimeout(() => {
         dispatch(resetPlacementVerificationState()); // Reset Verification State
         // navigate(`/sensec/students/enrollment/${maskedStudentIndex}/pay_fees`);
-        if (adminCurrentAction) {
-          navigate(
-            `/sensec/users/${authUser?.uniqueId}/admin/User-Types/Students/${maskedStudentIndex}/new_enrollment`
-          );
-        } else {
-          navigate(`/sensec/students/enrollment/online/${maskedStudentIndex}`);
-        }
+        navigate(`/sensec/pay_fees`);
       }, 9000);
     }
   }, [
@@ -517,13 +499,18 @@ export function StudentPlacementVerification() {
       )}
       <ContainerBox component="div" id="placementVerificationWrap">
         <h1
-          style={{ textAlign: "center", color: "#696969", fontSize: "1.5rem" }}
+          style={{
+            textAlign: "center",
+            color: "#696969",
+            fontSize: "1.2em",
+            marginTop: "1rem",
+          }}
         >
           Student Placement Verification
         </h1>
         <Box
           component="div"
-          id="placementFormWrap"
+          // id="placementFormWrap"
           sx={{
             maxWidth: 600,
             mx: "auto",
@@ -532,6 +519,8 @@ export function StudentPlacementVerification() {
             border: "1px solid #ccc",
             borderRadius: "8px",
             backgroundColor: "#f9f9f9",
+            filter: "drop-shadow(0 0 0 rgb(255, 255, 255, 0.68))",
+            boxShadow: "0px 1px 9px 1px #292929",
           }}
         >
           <Box
@@ -548,10 +537,10 @@ export function StudentPlacementVerification() {
               component={"h3"}
               mb={3}
               color="#696969"
-              fontSize={"1.1rem"}
+              fontSize={".9rem"}
               lineHeight={"1.2em"}
               letterSpacing={"1px"}
-              textAlign={"center"}
+              // textAlign={"center"}
             >
               Kindly verify your placement to begin your enrollment.
             </Typography>
@@ -559,6 +548,7 @@ export function StudentPlacementVerification() {
               <Grid item xs={12} sm={6}>
                 <CustomTextField
                   fullWidth
+                  size="small"
                   label="JHS Index No."
                   name="jhsIndexNo"
                   value={formData?.jhsIndexNo}
@@ -581,6 +571,7 @@ export function StudentPlacementVerification() {
               <Grid item xs={12} sm={6}>
                 <CustomTextField
                   fullWidth
+                  size="small"
                   label="Year Graduated [ JHS ]"
                   name="yearGraduated"
                   value={formData?.yearGraduated}
@@ -608,14 +599,17 @@ export function StudentPlacementVerification() {
                   type="submit"
                   fullWidth
                   sx={{
-                    height: "3.5rem",
+                    height: "2.5rem",
                     letterSpacing: "1px",
                     textTransform: "capitalize",
-                    fontSize: "1em",
+                    fontSize: ".8rem",
+                    display: "flex",
+                    alignItems: "center",
+                    lineHeight: "1rem",
                   }}
                 >
                   {loadingComplete === false && (
-                    <LoadingProgress color={"#fff"} size={"1.5rem"} />
+                    <LoadingProgress color={"#fff"} size={"1.3rem"} />
                   )}
                   {loadingComplete &&
                     isVerified &&
@@ -636,7 +630,7 @@ export function StudentPlacementVerification() {
                     )}
                   {loadingComplete === null && "Verify Placement"}
                   {redirecting && (
-                    <Redirection color={"#fff"} size={"1.5rem"} />
+                    <Redirection color={"#fff"} size={"1.3rem"} />
                   )}
                 </Button>
               </Grid>

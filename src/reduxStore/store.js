@@ -19,6 +19,7 @@ import ReportReducer from "../features/reports/reportSlice";
 import AttendanceReducer from "../features/academics/attendanceSlice";
 import supportEmailReducer from "../features/supportCenter/supportEmailSlice";
 import schoolDataReducer from "../features/schoolDataSlice/schoolDataSlice";
+import PaymentReducer from "../features/payments/paymentsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -42,5 +43,6 @@ export const store = configureStore({
     attendance: AttendanceReducer,
     supportEmail: supportEmailReducer,
     schoolData: schoolDataReducer,
+    payments: PaymentReducer,
   },
 });

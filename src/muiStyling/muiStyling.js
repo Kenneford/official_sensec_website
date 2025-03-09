@@ -73,13 +73,8 @@ export const ContainerBox = styled(Box)({
   flexDirection: "column",
 });
 export const CustomTextField = styled(TextField)({
-  "& .MuiInputLabel-root": {
-    fontSize: ".9em", // Default label size
-    transition: "font-size 0.2s, color 0.2s",
-  },
-  // Border styles for focused state
   "& .MuiOutlinedInput-root": {
-    fontSize: ".9em",
+    color: "#696969", // Custom focus label color
     "& legend": {
       display: "inline",
       width: "auto", // Ensure the label width is appropriate
@@ -90,20 +85,13 @@ export const CustomTextField = styled(TextField)({
     },
     // Border styles for hover
     "&:hover fieldset": {
-      fontSize: "1.05em",
       border: ".5px solid #454343ad", // Border on hover
       boxShadow: "2px 2px 3px 0px #1a0505ad",
     },
   },
   // Label size and color for focused state
   "& .MuiInputLabel-root.Mui-focused": {
-    fontSize: ".9em", // Larger size on focus
-    color: "#454343ad", // Custom focus label color
-  },
-  // Shrinked label (when value exists)
-  "& .MuiInputLabel-root.MuiFormLabel-filled": {
-    fontSize: ".9em", // Matches focused label size
-    color: "#454343ad",
+    color: "#696969", // Custom focus label color
   },
   // Target the required asterisk
   "& .MuiInputLabel-asterisk": {
